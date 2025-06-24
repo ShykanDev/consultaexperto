@@ -235,7 +235,14 @@ const createUserData = async (user: UserCredential) => {
     await setDoc(docRef, {
       name: formData.fullName,
       email: formData.email,
-      age: formData.age,
+      isBanned: false,
+      banReason: null,
+      bannedAt: null,
+      bannedBy: null,
+      isSuspended: false,
+      suspendedAt: null,
+      suspendedBy: null,
+      suspendedReason: null,
       terms: formData.acceptedTerms,
       createdAt: Timestamp.now(),
       userId: user.user.uid,
@@ -256,10 +263,11 @@ const createUserData = async (user: UserCredential) => {
       userId: user.user.uid,
     });
 
-    console.log("Usuario y subcolecciones creadas");
+    notyf.success("Usuario creado exitosamente");
 
   } catch (error) {
     console.error("Error al crear usuario o subcolecciones:", error);
+    notyf.error(`Error al crear usuario, intente de nuevo: ${error}`);
   }
 }
 
@@ -295,6 +303,7 @@ const register = async () => {
     showConfirmPassword.value = false
   } catch (error) {
     console.log(error);
+    notyf.error(`Error al crear usuario, intente de nuevo: ${error}`);
   }
 }
 

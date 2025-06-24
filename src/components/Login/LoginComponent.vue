@@ -154,6 +154,17 @@ import clientStore from '@/store/client';
 import { onIonViewDidEnter,
   onIonViewWillLeave,
   onIonViewDidLeave } from '@ionic/vue';
+import {Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+const notyf = new Notyf({
+  position:{
+    x:'center',
+    y:'top'
+  },
+  duration: 3000,
+  dismissible: true,
+  ripple: true,
+});
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
@@ -183,13 +194,11 @@ const verifyIsExpert = async (email: string) => {
   }
 }
 
-
 const login = async () => {
   setLoading(true);
   try {
     const user = await signInWithEmailAndPassword(auth, email.value, password.value);
     if (!user) {
-      console.log('no se logro iniciar sesion');
       setLoading(false);
       return;
     }
@@ -201,7 +210,6 @@ const login = async () => {
         authStore().setUserName(user.user.displayName || '');
         authStore().setUserEmail(user.user.email);
         authStore().setIsExpert(true);
-        console.log('el usuario es experto');
         router.push('/expert');
       }
       if (!isExpert) {
@@ -214,15 +222,12 @@ const login = async () => {
         authStore().setUserEmail(user.user.email);
         authStore().setIsClient(true);
         router.push('/tabs/experts-list');
-        console.log('el usuario no es experto');
-        
       }
-      
-      
     }
     setLoading(false);
   } catch (error) {
-    console.log(error);
+    console.log(error)
+    notyf.error(`Error al iniciar sesión, intente de nuevo: ${error}`);
     setLoading(false);
     }
     finally{

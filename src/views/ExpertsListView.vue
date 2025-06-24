@@ -61,9 +61,9 @@
       <p class="leading-relaxed text-gray-600">
         Nuestros profesionales están comprometidos con brindarte un servicio a medida, respondiendo a tus dudas y ayudándote a lograr tus objetivos de manera rápida y eficiente.
       </p>
-      <a href="/contact" class="inline-block px-8 py-3 font-medium text-white bg-blue-600 rounded-lg shadow transition duration-300 hover:bg-blue-700">
+      <ion-button router-link="/contact"  router-direction="back"  class="inline-block px-8 py-3 font-medium text-white bg-blue-600 rounded-lg shadow transition duration-300 hover:bg-blue-700">
         Contáctanos
-      </a>
+      </ion-button>
     </div>
     <div class="md:w-1/2">
       <img src="../assets/img/expertChoose.jpg" alt="Expertos en acción" class="object-cover w-full h-auto rounded-xl shadow-xl">
@@ -72,10 +72,10 @@
 </section>
 
 <!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
-<section v-if="expertPopup" @click.self="toggleExpertPopup('close')" class="flex overflow-auto fixed top-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
+<section v-if="expertPopup" @click.self="toggleExpertPopup('close')" class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
   
   <!-- loader dots spinner -->
-  <div v-if="mockExperts.length === 0" class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-96 min-h-[400px]">
+  <div v-if="mockExperts.length === 0" class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
     <article 
   v-for="(e,i) in 4" 
   :key="i" 
@@ -86,7 +86,7 @@
 </article>
    </div>
    
-  <div v-if="mockExperts" @click.stop class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
+  <div v-if="mockExperts.length > 0" @click.stop class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
     <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expertName="expert.name" :expertImage="expert.image" :expertSummary="expert.bio" :expertSpecialty="expert.specialty" :expertRating="expert.rating" :expert-image="expert.imgUrl" :expertUid="expert.userUid"/>
   </div>
  </section>
@@ -147,7 +147,6 @@
       <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Áreas de Especialización</h2>
       <section class="py-16 bg-gray-100">
     <div class="container px-6 mx-auto">
-      <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Áreas de Especialización</h2>
       <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
         <SpecializationCard
           v-for="(specialization, index) in specializations"
@@ -246,7 +245,7 @@ import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
 import SpecializationCard from '@/components/ExpertList/SpecializationCard.vue';
 import { userStore } from '@/store/user';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonAccordionGroup, IonAccordion, IonItem, IonLabel, onIonViewDidLeave, onIonViewDidEnter } from '@ionic/vue';
-import { collection, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
 import { onMounted, ref } from 'vue';
 
 
@@ -274,71 +273,83 @@ import psychologistImg from '../assets/img/psychologist.jpg';
 import teacherImg from '../assets/img/teacher.jpg';
 import chefImg from '../assets/img/chef.jpg';
 import LoaderDots from '@/animations/LoaderDots.vue';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+const notyf = new Notyf({
+  position: {
+    x: 'center',
+    y: 'top'
+  },
+  duration: 3000,
+  dismissible: true,
+  ripple: true,
+})
 
 const specializations = ref([
   {
     title: "Contador",
-    description: "Expertos en contabilidad para gestionar tus finanzas de forma precisa y confiable.",
+    description: "Profesionales en contabilidad dedicados a manejar tus finanzas con precisión, asegurando que cada transacción sea registrada y analizada para ofrecerte informes financieros claros y confiables que te ayuden a tomar decisiones informadas.",
     image: calculadoraImg
   },
   {
     title: "Arquitecto",
-    description: "Diseño y planificación de espacios con profesionalismo y creatividad.",
+    description: "Expertos en diseño y planificación de espacios que combinan funcionalidad y estética, creando ambientes innovadores y personalizados que se adaptan a tus necesidades y estilo de vida, desde conceptos iniciales hasta la supervisión de la construcción.",
     image: arquitectoImg
   },
   {
     title: "Servicios Web",
-    description: "Desarrollo de soluciones digitales a medida para potenciar tu presencia online.",
+    description: "Desarrolladores de soluciones digitales integrales que incluyen diseño de sitios web, aplicaciones móviles y estrategias de comercio electrónico, todo personalizado para mejorar tu presencia en línea y optimizar la experiencia de tus usuarios.",
     image: webImg
   },
   {
     title: "Publicidad",
-    description: "Estrategias creativas para difundir y potenciar la imagen de tu marca.",
+    description: "Creadores de campañas publicitarias innovadoras que utilizan una mezcla de creatividad y análisis de mercado para posicionar tu marca, atraer a tu público objetivo y aumentar tu visibilidad en diversos medios y plataformas.",
     image: publicidadImg
   },
   {
-    title: "Traductores",
-    description: "Especialistas en comunicación multilingüe para romper barreras idiomáticas.",
+    title: "Traductor",
+    description: "Especialistas en comunicación multilingüe que ofrecen servicios de traducción e interpretación precisos y culturales, facilitando la comunicación efectiva en múltiples idiomas para negocios, documentos legales y contenido multimedia.",
     image: traductorImg
   },
   {
     title: "Peritaje",
-    description: "Evaluaciones técnicas y profesionales con rigor y precisión.",
+    description: "Profesionales técnicos que realizan evaluaciones detalladas y objetivas en diversas áreas, proporcionando informes periciales rigurosos y precisos que son esenciales para procesos legales, seguros y toma de decisiones técnicas.",
     image: peritajeImg
   },
   {
     title: "Ingeniería en Computación",
-    description: "Innovación tecnológica y desarrollo de sistemas a la vanguardia.",
+    description: "Expertos en tecnología que desarrollan sistemas y soluciones informáticas avanzadas, desde software y hardware hasta redes y seguridad, impulsando la innovación y la eficiencia en diversos sectores industriales y comerciales.",
     image: computacionImg
   },
   {
     title: "Gestoría en Trámites",
-    description: "Optimiza tus gestiones administrativas con asesorías especializadas.",
+    description: "Asesores especializados en la gestión y optimización de trámites administrativos y legales, ayudándote a navegar por los procesos burocráticos de manera eficiente y sin complicaciones, asegurando que todos tus documentos estén en orden.",
     image: gestoriaImg
   },
   {
     title: "Marketing",
-    description: "Conecta con tu audiencia a través de estrategias innovadoras y efectivas.",
+    description: "Estrategas en marketing que diseñan planes integrales para conectar con tu audiencia, utilizando herramientas digitales y tradicionales para aumentar el engagement, fidelizar clientes y mejorar el posicionamiento de tu marca en el mercado.",
     image: marketingImg
   },
   {
     title: "Abogado",
-    description: "Conecta con un abogado especializado para recibir asesoría legal directa y resolver tus asuntos jurídicos.",
+    description: "Profesionales del derecho que ofrecen asesoría legal especializada en diversas áreas, desde derecho corporativo hasta familiar, proporcionando representación legal y soluciones jurídicas efectivas para proteger tus intereses y resolver conflictos.",
     image: lawImg
   },
   {
-    title: "Psicólogo/a",
-    description: "Asesoría psicológica para resolver tus dudas y resolver tus problemas.",
+    title: "Psicologo/a",
+    description: "Especialistas en salud mental que brindan asesoría y terapia psicológica para ayudarte a manejar y superar desafíos emocionales y conductuales, promoviendo el bienestar y la salud mental a través de técnicas y estrategias personalizadas.",
     image: psychologistImg
   },
   {
     title: "Maestro",
-    description: "Asesoría educativa para resolver tus dudas y resolver tus problemas.",
+    description: "Educadores dedicados a proporcionar asesoría y apoyo académico, ayudándote a resolver dudas, mejorar tus habilidades de aprendizaje y alcanzar tus objetivos educativos a través de métodos pedagógicos efectivos y personalizados.",
     image: teacherImg
   },
   {
     title: "Chef",
-    description: "Asesoría culinaria para resolver tus dudas y resolver tus problemas.",
+    description: "Expertos culinarios que ofrecen asesoría y técnicas avanzadas de cocina, ayudándote a resolver dudas culinarias, mejorar tus habilidades en la cocina y crear platos deliciosos y presentables con ingredientes y métodos de alta calidad.",
     image: chefImg
   }
 ]);
@@ -477,8 +488,8 @@ const experts = ref([
 
 const getExpertSelection = (expert:string) => {
   toggleExpertPopup('open');
-  gettingMockExperts();
-}
+  gettingMockExperts(expert);
+} 
 
 const expertPopup = ref(false);
 
@@ -486,23 +497,23 @@ const toggleExpertPopup = (action: 'open' | 'close') => (action) === 'open' ? ex
 
 const mockExperts = ref([]);
 const mockExpertsCollection = collection(db, 'MockExperts');
-const gettingMockExperts = async () => {
+const gettingMockExperts = async (expert:string) => {
+  mockExperts.value = []; 
+  const q = query(mockExpertsCollection, where('specialty', '==', expert));
   try {
-    const querySnapshot = await getDocs(mockExpertsCollection);
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
+      console.log(doc.data().specialty);
+      
       mockExperts.value.push({
         id: doc.id,
         ...doc.data()
       });
     });
-    console.log(mockExperts.value);
-    
   } catch (error) {
-    console.log(error);
-    
+      notyf.error(`Error al obtener los expertos ${error}`);
   }
 }
-
 
 const names = [
   [

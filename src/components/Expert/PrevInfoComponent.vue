@@ -42,8 +42,9 @@
         </div>
   
         <!-- Button to view availability -->
+        <!-- TODO: This should be updated to getExpertSelection function -->
         <button
-          @click="viewSchedule"
+          @click="viewSchedule" 
           class="px-4 py-2 ml-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
         >
           Ver Disponibilidad

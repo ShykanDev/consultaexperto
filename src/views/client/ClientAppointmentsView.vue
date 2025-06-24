@@ -48,7 +48,7 @@ const getUserAppointments = async () => {
         if(querySnapshot.empty){
             return;
         }   
-        userAppointments.value = querySnapshot.docs.map((doc) => doc.data() as Appointment);
+        userAppointments.value = querySnapshot.docs.map((doc) => doc.data() as Appointment).filter((appointment) => appointment.expertName !== null);
     } catch (error) {
         console.log(error);
     }

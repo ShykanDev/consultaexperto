@@ -377,7 +377,7 @@ const props = defineProps({
 
 
 import '@vuepic/vue-datepicker/dist/main.css'
-import { addDoc, collection, doc, getDocs, getFirestore, query, Timestamp, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, query, setDoc, Timestamp, updateDoc, where } from 'firebase/firestore';
 import DateSquare from '@/ExpertoInfoView/DateSquare.vue';
 import clientStore from '@/store/client';
 import { authStore } from '@/store/auth';
@@ -633,8 +633,8 @@ const addFutureAppointment = async () => {
 const addAppointmentToClient = async() => {
   try {
  //Get the user subcollection that'll match the uid from pinia
- const usersCollection = collection(db, `users/${authStore().getUserUid}/FutureAppointments`);
- await addDoc(usersCollection, {
+ const customId = doc(db, `users/${authStore().getUserUid}/FutureAppointments/${sysStore.getSelectedExpertUid}`)
+ await setDoc(customId, {
    hour: useAppointmentStore().selectedHour,
    day: useAppointmentStore().dayName,
    formattedDate: useAppointmentStore().formattedDate,
@@ -687,7 +687,7 @@ const scheduleAppointment = async () => {
   const appointmentStore = useAppointmentStore();
 
   //Validate if user is logged in
-  if (!authStore().getUserUid || !client.getClientUid) {
+  if (!authStore().getUserUid || !client.getClientUid || !authStore().isAuth) {
     notyf.error('Por favor inicie sesión para programar una cita');
     authStore().isAuth = false;
     authStore().setUserUid('');
@@ -715,7 +715,8 @@ const scheduleAppointment = async () => {
       isLoading.value = false;
       return;
     }
-
+   
+    
     // Resto del código para programar la cita
     console.log('Programando cita para:', {
       day: appointmentStore.dayName,
@@ -736,6 +737,8 @@ const scheduleAppointment = async () => {
     // Check if no documents were found
     if (querySnapshot.empty) {
       console.error('No se encontró el horario del experto');
+      notyf.error('No se encontró el horario del experto');
+      isLoading.value = false; 
       return;
     }
 
@@ -777,10 +780,14 @@ const scheduleAppointment = async () => {
     } else {
       // If the day was not found in the document
       console.error('Día no encontrado en el horario');
+      notyf.error('Día no encontrado en el horario');
+      isLoading.value = false; 
     }
   } catch (error) {
     // Error handling for updating the document
     console.error('Error al actualizar el horario en Firebase:', error);
+    notyf.error(`Error al actualizar el horario en Firebase: ${error}`);
+    isLoading.value = false; 
   } finally {
     // End the loading state
     isLoading.value = false;

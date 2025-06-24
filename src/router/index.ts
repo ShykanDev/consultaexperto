@@ -99,6 +99,20 @@ const routes: Array<RouteRecordRaw> = [
     meta:{
       requiresAuth: true
     }
+  },
+  {
+    path: '/contact',
+    component: () => import('@/views/ContactView.vue'),
+    meta:{
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/help',
+    component: () => import('@/views/HelpView.vue'),
+    meta:{
+      requiresAuth: false
+    }
   }
 ]
 
