@@ -126,8 +126,6 @@
           Ir al inicio de sesión
         </span>
       </ion-button>
-
-
       </form>
     </ion-content>
   </template>
@@ -143,23 +141,28 @@
 
   import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, UserCredential } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, UserCredential, updateCurrentUser, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc, collection, addDoc, Timestamp } from 'firebase/firestore';
+import { toastController } from '@ionic/vue';
 
+const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
+    const toast = await toastController.create({
+      message: message,
+      duration: 5000,
+      position: position,
+      color: color,
+      translucent: true,
+      swipeGesture:'vertical',
+      buttons: [
+        {
+          text: 'cerrar',
+          role: 'cancel',
+        }
+      ]
+    });
 
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css'; // for React, Vue and Svelte
-
-// Create an instance of Notyf
-const notyf = new Notyf({
-   position:{
-    x:'center',
-    y:'top'
-   },
-   dismissible:true,
-   duration:4000,
-    ripple:true
-});
+    await toast.present();
+  };
 
 
   // Lógica del formulario
@@ -186,7 +189,7 @@ const notyf = new Notyf({
 //Función para verificar si es menor de edad (18 años)
 const checkIfMinor = () => {
   if (!date.value) {
-    notyf.error('Por favor, selecciona tu fecha de nacimiento');
+    presentToast('top', 'Por favor, selecciona tu fecha de nacimiento');
     return;
   }
 
@@ -203,9 +206,8 @@ const checkIfMinor = () => {
   }
 
   isMinor.value = age < 18;
-  // notyf.success(`Edad calculada: ${age} años - ${isMinor.value ? "El usuario es menor de edad" : "El usuario es mayor de edad"}`);
-  // notyf.success(`Edad calculada: ${age} años - ${isMinor.value ? "El usuario es menor de edad" : "El usuario es mayor de edad"}`);
-  isMinor.value ? notyf.error('Debe ser mayor de edad para poder registrarse, teniendo ' + age + ' años no es posible registrarse' ) : notyf.success('Edad de ' + age + ' años válida');
+  presentToast('top', `Edad calculada: ${age} años - ${isMinor.value ? "El usuario es menor de edad" : "El usuario es mayor de edad"}`);
+  isMinor.value ? presentToast('top', 'Debe ser mayor de edad para poder registrarse, teniendo ' + age + ' años no es posible registrarse' ) : presentToast('top', 'Edad de ' + age + ' años válida');
   return isMinor.value;
 };
 
@@ -219,12 +221,12 @@ const db = getFirestore();
 
 const createUserData = async (user: UserCredential) => {
   if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword || !formData.acceptedTerms) {
-    notyf.error('Por favor, completa todos los campos');
+    presentToast('top', 'Por favor, completa todos los campos', 'danger');
     return;
   }
 
   if (formData.password !== formData.confirmPassword) {
-    notyf.error('Las contraseñas no coinciden');
+    presentToast('top', 'Las contraseñas no coinciden', 'danger');
     return;
   }
 
@@ -263,11 +265,11 @@ const createUserData = async (user: UserCredential) => {
       userId: user.user.uid,
     });
 
-    notyf.success("Usuario creado exitosamente");
+    presentToast('top', "Usuario creado exitosamente", 'success');
 
   } catch (error) {
     console.error("Error al crear usuario o subcolecciones:", error);
-    notyf.error(`Error al crear usuario, intente de nuevo: ${error}`);
+    presentToast('top', `Error al crear usuario, intente de nuevo: ${error}`, 'danger');
   }
 }
 
@@ -278,18 +280,22 @@ const register = async () => {
   if (isMinor.value) return
   //change this to be more explicit and know what the error is
   if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword || !formData.acceptedTerms) {
-    notyf.error('Por favor, completa todos los campos');
+    presentToast('top', 'Por favor, completa todos los campos', 'danger');
     return;
   }
 
   if (formData.password !== formData.confirmPassword) {
-    notyf.error('Las contraseñas no coinciden');
+    presentToast('top', 'Las contraseñas no coinciden', 'danger');
     return;
   }
  // TODO ADD IT LATER: if (!validateForm()) return
   try {
-    const user = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+    const user = await createUserWithEmailAndPassword(auth, formData.email, formData.password    )
+    await updateProfile(user.user, {
+      displayName: formData.fullName
+    })
     sendEmailVerification(user.user)
+    presentToast('top', 'Usuario creado exitosamente, verifique su correo electrónica para activar su cuenta', 'success')
     await createUserData(user)
 
     //Once user has created his account successfully, reset the register fields
@@ -303,7 +309,7 @@ const register = async () => {
     showConfirmPassword.value = false
   } catch (error) {
     console.log(error);
-    notyf.error(`Error al crear usuario, intente de nuevo: ${error}`);
+    presentToast('top', `Error al crear usuario, intente de nuevo: ${error}`, 'danger');
   }
 }
 

@@ -3,10 +3,10 @@
         <ion-header>
             <ion-toolbar>
                 <ion-title class="text-base font-bold text-blue-500 sm:text-xl font-quicksand">Ayuda</ion-title>
-                <div class="flex">
-            <span v-html="currentName" :key="currentName" :class="{'pl-2': expertPopup}"></span>
+                <div slot="end" class="flex">
+            <span v-html="currentName" :key="currentName" class="text-xs"></span>
           </div>
-                <ion-buttons slot="end">
+                <ion-buttons slot="start">
                     <ion-button @click="router.back()">
                         <v-icon name="md-arrowbackiosnew-round" color="blue"   class="animate-fade-left" /> 
                         <span class="text-base text-blue-700 animate-fade-left animate-delay-100">atras</span>

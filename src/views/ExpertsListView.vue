@@ -3,14 +3,13 @@
 
 <ion-header>
   <ion-toolbar>
-    <div class="flex justify-between items-center pr-3 w-full">
-          <ion-title v-if="!expertPopup" class="text-base font-bold text-green-700 sm:text-xl font-quicksand">Listado de Expertos</ion-title>
+
+          <ion-title v-if="!expertPopup" class="text-sm font-bold text-right text-green-700 font-quicksand">Listado de Expertos</ion-title>
           <div class="flex">
-            <span v-html="currentName" :key="currentName" :class="{'pl-2': expertPopup}"></span>
+            <span class="text-xs" v-html="currentName" :key="currentName" ></span>
           </div>
-        </div>
     <ion-buttons slot="end">
-      <ion-button v-if="expertPopup" @click="toggleExpertPopup('close')" color="danger" mode="ios"  class="animate-fade-left" expand="full">Cerrar <v-icon name="io-close" class="ml-2 animate-fade-left animate-delay-[55ms] " /></ion-button>
+      <ion-button v-if="expertPopup" @click="toggleExpertPopup('close')" color="danger" mode="ios"  class="animate-fade-left" expand="full">Cerrar <v-icon name="io-close" class=" animate-fade-left animate-delay-[55ms] " /></ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -61,7 +60,7 @@
       <p class="leading-relaxed text-gray-600">
         Nuestros profesionales están comprometidos con brindarte un servicio a medida, respondiendo a tus dudas y ayudándote a lograr tus objetivos de manera rápida y eficiente.
       </p>
-      <ion-button router-link="/contact"  router-direction="back"  class="inline-block px-8 py-3 font-medium text-white bg-blue-600 rounded-lg shadow transition duration-300 hover:bg-blue-700">
+      <ion-button router-link="/contact"  router-direction="forward"  class="inline-block px-8 py-3 font-medium text-white transition duration-300 hover:bg-blue-700">
         Contáctanos
       </ion-button>
     </div>
@@ -493,7 +492,7 @@ const getExpertSelection = (expert:string) => {
 
 const expertPopup = ref(false);
 
-const toggleExpertPopup = (action: 'open' | 'close') => (action) === 'open' ? expertPopup.value = true : expertPopup.value = false;
+const toggleExpertPopup = (action: 'open' | 'close') => action === 'open' ? expertPopup.value = true : expertPopup.value = false;
 
 const mockExperts = ref([]);
 const mockExpertsCollection = collection(db, 'MockExperts');
@@ -502,9 +501,13 @@ const gettingMockExperts = async (expert:string) => {
   const q = query(mockExpertsCollection, where('specialty', '==', expert));
   try {
     const querySnapshot = await getDocs(q);
+    if(querySnapshot.empty){
+      notyf.error('No se encontraron expertos');
+      toggleExpertPopup('close');
+      return;
+    }
     querySnapshot.forEach((doc) => {
       console.log(doc.data().specialty);
-      
       mockExperts.value.push({
         id: doc.id,
         ...doc.data()
@@ -512,6 +515,7 @@ const gettingMockExperts = async (expert:string) => {
     });
   } catch (error) {
       notyf.error(`Error al obtener los expertos ${error}`);
+      toggleExpertPopup('close');
   }
 }
 

@@ -2,10 +2,8 @@
     <ion-page>
         <ion-header>
             <ion-toolbar>
-                <div class="flex justify-between px-5 w-full">
                     <ion-title class="text-center text-blue-600">Agenda</ion-title>
-            <span v-html="currentName" :key="currentName"></span>
-          </div>
+            <span class="text-xs" v-html="currentName" :key="currentName"></span>
             </ion-toolbar>
         </ion-header>
         <ion-content class="">

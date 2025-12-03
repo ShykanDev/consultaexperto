@@ -1,29 +1,40 @@
 <template>
+  <ion-content>
 
-    <div class="relative w-full bg-white ion-padding">
+  <div class="relative w-full bg-[#F6F8F7] ion-padding">
 
-    <section v-if="loading" class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90"> <!--Loader dots spinner (when user is logging in)-->
+    <section v-if="loading"
+      class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
+      <!--Loader dots spinner (when user is logging in)-->
       <LoaderMultipleDots />-
     </section>
 
-    <!--Section to see what is the user selection (when user clicks on the experts list )-->
-    <section class="fixed w-full">
-
-    </section>
-
-
-    <aside v-if="userSelection" class="p-2 text-sky-600 rounded-xl border border-sky-600 shadow-md">
-      <h4>Inicie sesión para consultar un experto <span class="font-bold text-white bg-sky-600 rounded">{{ userSelection
-          }}</span></h4>
-    </aside>
-
-    <div class="px-4 py-8 mx-auto max-w-8xl md:px-8">
+    <div class="px-1 py-1 mx-auto max-w-8xl md:px-2">
       <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
-        <div class="order-2 space-y-6 md:order-1">
+        <div class="order-2 space-y-3 md:order-1">
           <h2
-            class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-sky-600 md:text-4xl">
+            class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-500 font-manrope">
             Su plataforma para consultar un experto:
           </h2>
+
+          <aside class="grid grid-cols-3 p-2 text-green-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
+            <div class="grid col-span-2 items-center p-2">
+              <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
+                  class="font-bold text-green-600">{{ experts[currentExpert].name
+                  }}</span>
+              </h4>
+              <div class="flex flex-col justify-around items-center p-1 text-sm font-medium text-white bg-green-600 rounded-2xl opacity-90 text-md font-poppins">
+                <p>¡Primera consulta gratis! </p>
+                <div class="flex gap-2">
+                  <v-icon name="md-supportagent-outlined" scale="1" />
+                  <v-icon name="bi-gift-fill" scale="1" />
+                </div>
+              </div>
+            </div>
+            <div  class="flex justify-center items-center">
+              <img :src="experts[currentExpert].img" class="w-40 rounded-3xl"  :alt="experts[currentExpert].name">
+            </div>
+          </aside>
 
           <div class="flex relative gap-2 justify-center items-center mt-6">
             <h3
@@ -33,138 +44,189 @@
                     class="animate-fade" :key="currentExpert" :name="experts[currentExpert].icon" scale="1.5" /></span>
               </div>
             </h3>
-            <div class="flex justify-center rounded-xl bg-sky-700/25 w-dvw">
-              <ion-accordion-group class="w-full" expand="inset">
-                <ion-accordion value="first" class="w-full">
-                  <ion-item slot="header" class="rounded">
-                    <ion-label>Ver todos los expertos</ion-label>
-                  </ion-item>
-                  <div class="rounded-2xl ion-padding" slot="content">
-                    <ul class="rounded-2xl">
-                      <!--Adding a emerald bg to the li that matches the current expert-->
-                      <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
-                        class="p-1 mb-1 rounded-md animate-fade hover:cursor-pointer" :class="{
-
-                          'bg-blue-700 text-white p-1 rounded-lg': expert.name == experts[currentExpert].name,
-
-                          'bg-sky-500/25': expert.name != experts[currentExpert].name,
-
-                          'bg-emerald-500/55 text-blue-600 font-black text-base italic': expert.name == userSelection
-                        }">{{
-            (expert.name.includes('en')) ? expert.name.replace(/en/, '') : expert.name}}</li>
-                    </ul>
-                  </div>
-                </ion-accordion>
-
-              </ion-accordion-group>
-            </div>
+      
 
           </div>
         </div>
+
       </div>
     </div>
 
 
 
 
-    <div class="flex flex-col justify-center items-center">
-      <h1 class="font-sans text-2xl">Bienvenido</h1>
-      <p class="text-slate-800 font-quicksand">Inicie sesión para continuar</p>
-    </div>
 
     <!-- Secciones nuevas agregadas al final -->
-    <div class="expert-info">
-
-      <p class="professional-text font"> <v-icon name="oi-tasklist" /> Gestionaremos sus consultas y le proporcionaremos
+    <div class="text-sm text-white bg-sky-500 rounded-2xl font-poppins ion-padding">
+      <p class="font-semibold font-manrope"> <v-icon name="oi-tasklist" scale="1.3" /> Gestionaremos sus consultas y le
+        proporcionaremos
         un experto calificado acorde a sus necesidades específicas.</p>
     </div>
 
     <div class="flex justify-center">
 
     </div>
-    <!-- Versión más sutil de la consulta gratis -->
-    <div class="flex justify-center">
 
-      <p class="p-2 font-medium text-emerald-800 rounded-2xl bg-emerald-400/45">¿Primera vez aquí? Pruebe nuestra
-        <strong>consulta inicial sin costo</strong> (15 minutos)</p>
+
+    <div class="flex flex-col justify-center mb-2 items-left font-manrope">
+      <h1 class="text-2xl font-semibold">Bienvenido</h1>
     </div>
+
+
 
     <ion-list class="form-container">
       <!-- Email Input -->
-      <ion-item class="input-item font-quicksand">
-        <ion-icon :icon="mail" slot="start" class="text-sky-700 input-icon"></ion-icon>
-        <ion-input v-model="email" label="Correo electrónico" label-placement="floating"
-          placeholder="tucorreo@example.com" type="email" class="custom-input"></ion-input>
-      </ion-item>
+         <ion-input label-placement="start" v-model="email" type="email" class="input"  fill="outline" placeholder="email@domain.com">
+        <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary" aria-hidden="true"></ion-icon>  
 
-      <!-- Password Input -->
-      <ion-item class="input-item">
-        <ion-icon :icon="lockClosed" slot="start" class="input-icon"></ion-icon>
-        <ion-input @keyup.enter="login"  v-model="password" label="Contraseña" label-placement="floating" placeholder="••••••••"
-          :type="showPassword ? 'text' : 'password'" class="custom-input"></ion-input>
-        <ion-button @click="showPassword = !showPassword" fill="clear" slot="end" class="password-toggle">
-          <ion-icon :icon="showPassword ? eyeOff : eye"></ion-icon>
-        </ion-button>
-      </ion-item>
+      </ion-input>
+   <ion-input label-placement="start" v-model="password"  type="password"  fill="outline" placeholder="Contraseña" class="mt-4 input">
+        <ion-icon slot="start" :icon="lockClosed" size="large" class="custom" color="primary" aria-hidden="true"></ion-icon>
+
+      </ion-input>
     </ion-list>
+
+    
+
 
     <!-- Action Buttons -->
     <div class="actions">
-      <ion-button expand="block" @click="login" class="login-button">
+      <ion-button expand="block" @click="login" class="login">
         Iniciar Sesión
       </ion-button>
 
-      <ion-button id="present-alert" fill="outline" size="small" color="secondary">Olvidé mi contraseña</ion-button>
+      <ion-button id="present-alert" fill="outline" size="small" class="button-login" >Olvidé mi contraseña</ion-button>
       <ion-alert mode="ios" trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
         :inputs="alertInputs"></ion-alert>
 
+            <div
+      class="flex gap-4 items-center p-2 mt-8 text-white bg-gradient-to-r from-[#50C878] via-[#4CD47C] to-[#4ADF7F] rounded-3xl shadow-md from-emerald shadow-emerald/30">
+      <div class="flex gap-2 justify-center items-center w-full">
+        <v-icon name="la-medal-solid" scale="2.5" />
+        <div >
+          <h3 class="font-bold">¡Su primera consulta es gratis!</h3>
+          <p class="font-medium opacity-90 text-md font-manrope">Hable con un experto hoy mismo sin costo.</p>
+        </div>
+      </div>
     </div>
 
+    </div>
 
+      <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out" :class="{ 'bg-gradient-to-r from-green-600 to-emerald-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
+              <div class="w-full">
+                <div class="w-full">
+                  <!-- Header del acordeón -->
+                  <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
+                    <span class="text-xl font-medium font-poppins" :class="{ 'text-white': isAccordionOpen, 'text-slate-700': !isAccordionOpen }">Ver todos los expertos</span>
+                    <v-icon name="hi-solid-chevron-down" scale="1.5" class="transition-transform duration-300 ease-in-out" :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
+                  </div>
+
+                  <!-- Contenido del acordeón -->
+                  <div v-show="isAccordionOpen" class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
+                    <ul>
+                      <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
+                        class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-green-600 hover:text-white animate-fade-down ion-padding"
+                        :class="{
+                          'bg-emerald-600 text-white': expert.name === experts[currentExpert].name,
+                          'bg-green-500/25': expert.name !== experts[currentExpert].name,
+                          'bg-emerald-800 text-white font-black italic': expert.name === userSelection
+                        }"
+                        :style="{
+                          'animation-delay': `${index * 50}ms`
+                        }">
+                        {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
 
 
   </div>
 
+
+  </ion-content>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import {
+import Abogado from '@/assets/img/Abogado.jpeg';
+import Arquitecto from '@/assets/img/arquitecto.jpeg';
+import Chef from '@/assets/img/ChefFin.jpeg';
+import Contador from '@/assets/img/Contador.jpeg';
+import Gestor from '@/assets/img/Gestor.jpeg';
+import Ingeniero from '@/assets/img/Ingeniero.jpeg';
+import Maestro from '@/assets/img/Maestro.jpeg';
+import Marketing from '@/assets/img/Marketing.jpeg';
+import Medico from '@/assets/img/Medico.jpeg';
+import Peritaje from '@/assets/img/Peritaje.jpeg';
+import Psicologo from '@/assets/img/Psicologo.jpeg' ;
+import Publicidad from '@/assets/img/Publicidad.jpeg';
+import Traductor from '@/assets/img/Traductor.jpeg';
+import WebDesigner from '@/assets/img/webDev.jpeg';
+
+
+
+
+
+
+
+
+
+
+
+import{
   IonItem,
   IonInput,
   IonButton,
   IonList,
   IonIcon,
   IonAccordion, IonAccordionGroup, IonLabel,
-  IonAlert
-  
+  IonAlert,
+  IonContent  
 } from '@ionic/vue';
 import {
   mail,
   lockClosed,
   eye,
-  eyeOff
+  eyeOff,
+  mailSharp,
+  mailOutline
 } from 'ionicons/icons';
 import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { authStore } from '@/store/auth';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
 import clientStore from '@/store/client';
-import { onIonViewDidEnter,
+import {
+  onIonViewDidEnter,
   onIonViewWillLeave,
-  onIonViewDidLeave } from '@ionic/vue';
-import {Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
-const notyf = new Notyf({
-  position:{
-    x:'center',
-    y:'top'
-  },
-  duration: 3000,
-  dismissible: true,
-  ripple: true,
-});
+  onIonViewDidLeave
+} from '@ionic/vue';
+import { toastController } from '@ionic/vue';
+
+const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
+    const toast = await toastController.create({
+      message: message,
+      duration: 1500,
+      position: position,
+      color: color,
+      swipeGesture:'vertical',
+      translucent: true,
+      buttons: [
+        {
+          text: 'cerrar',
+          role: 'cancel',
+        }
+      ]
+    });
+
+    await toast.present();
+  };
+
+
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
@@ -179,15 +241,15 @@ const verifyIsExpert = async (email: string) => {
   const qGetExpertMatch = query(collectionEmailsExperts, where('email', '==', email));
   const docSnapshot = await getDocs(qGetExpertMatch);
   try {
-   if(docSnapshot.empty){
-    console.log('No se encontro un experto con este correo, el usuario es cliente');
-    return false;
-   }
-   docSnapshot.forEach((doc) => {
-    console.log('Se encontro un experto con este correo, el usuario es experto');
-    console.log(doc.id, ' => ', doc.data());
-   });
-   return true;
+    if (docSnapshot.empty) {
+      console.log('No se encontro un experto con este correo, el usuario es cliente');
+      return false;
+    }
+    docSnapshot.forEach((doc) => {
+      console.log('Se encontro un experto con este correo, el usuario es experto');
+      console.log(doc.id, ' => ', doc.data());
+    });
+    return true;
   } catch (error) {
     console.log(error);
     return false;
@@ -202,7 +264,7 @@ const login = async () => {
       setLoading(false);
       return;
     }
-    if (user && user.user.email && user.user.uid ) {
+    if (user && user.user.email && user.user.uid) {
       const isExpert = await verifyIsExpert(user.user.email);
       if (isExpert) {
         authStore().setIsAuth(true);
@@ -210,46 +272,54 @@ const login = async () => {
         authStore().setUserName(user.user.displayName || '');
         authStore().setUserEmail(user.user.email);
         authStore().setIsExpert(true);
+        presentToast('top', `Bienvenido ${user.user.displayName}`, 'success');
         router.push('/expert');
       }
       if (!isExpert) {
         authStore().setIsAuth(true);
         //User is not expert, so we push to the expert list view and set the user name and uid in the store
-      //  authStore().setUserName(user.user.displayName);
+        //  authStore().setUserName(user.user.displayName);
         authStore().setUserUid(user.user.uid);
         clientStore().setClientUid(user.user.uid);
         authStore().setUserName(user.user.displayName || 'Usuario');
         authStore().setUserEmail(user.user.email);
         authStore().setIsClient(true);
+        presentToast('top', `Bienvenido ${user.user.displayName}`, 'success');
         router.push('/tabs/experts-list');
       }
     }
     setLoading(false);
   } catch (error) {
     console.log(error)
-    notyf.error(`Error al iniciar sesión, intente de nuevo: ${error}`);
+    presentToast('top', 'Error al iniciar sesión, intente de nuevo', 'danger');
     setLoading(false);
-    }
-    finally{
-      setLoading(false);
-    }
+  }
+  finally {
+    setLoading(false);
+  }
 }
 
+const isAccordionOpen = ref(false);
+
+const toggleAccordion = () => {
+  isAccordionOpen.value = !isAccordionOpen.value;
+};
+
 const experts = ref([
-  { name: "Abogado", icon: "fa-balance-scale" },
-  { name: "Médico", icon: "fa-user-md" },
-  { name: "Contador", icon: "fa-calculator" },
-  { name: "Arquitecto", icon: "fa-building" },
-  { name: "en Servicios Web", icon: "fa-laptop-code" },
-  { name: "en Publicidad", icon: "fa-bullhorn" },
-  { name: "Traductor", icon: "fa-language" },
-  { name: "en Peritaje", icon: "fa-search" },
-  { name: "en Ingeniería en Computación", icon: "fa-cog" },
-  { name: "en Gestoría en Trámites", icon: "fa-file-alt" },
-  { name: "en Marketing", icon: "fa-chart-line" },
-  { name: "Psicólogo/a", icon: "fa-user-graduate" },
-  { name: "Maestro", icon: "fa-chalkboard-teacher" },
-  { name: "Chef", icon: "fa-utensils" }
+  { name: "Abogado", icon: "fa-balance-scale", img: Abogado },
+  { name: "Médico", icon: "fa-user-md", img: Medico },
+  { name: "Contador", icon: "fa-calculator", img: Contador },
+  { name: "Arquitecto", icon: "fa-building", img: Arquitecto },
+  { name: "en Servicios Web", icon: "fa-laptop-code", img: WebDesigner },
+  { name: "en Publicidad", icon: "fa-bullhorn", img: Publicidad },
+  { name: "Traductor", icon: "fa-language", img: Traductor },
+  { name: "en Peritaje", icon: "fa-search", img: Peritaje },
+  { name: "en Ingeniería en Computación", icon: "fa-cog", img: Ingeniero },
+  { name: "en Gestoría en Trámites", icon: "fa-file-alt", img: Gestor },
+  { name: "en Marketing", icon: "fa-chart-line", img: Marketing },
+  { name: "Psicólogo/a", icon: "fa-user-graduate", img: Psicologo },
+  { name: "Maestro", icon: "fa-chalkboard-teacher", img: Maestro },
+  { name: "Chef", icon: "fa-utensils", img: Chef }
 ]);
 
 
@@ -296,9 +366,11 @@ const alertButtons = [
         console.log(data[0]);
 
         await sendPasswordResetEmail(auth, data[0])
+        presentToast('top', 'Correo de restablecimiento de contraseña enviado', 'success');
         console.log('Correo de restablecimiento de contraseña enviado');
       } catch (error) {
         console.log('Error al enviar correo de restablecimiento de contraseña', error);
+        presentToast('top', 'Error al enviar correo de restablecimiento de contraseña', 'danger');
       }
     }
   }
@@ -317,57 +389,57 @@ const alertInputs = [
 
 
 const loading = ref(false);
-const setLoading = (value: boolean) =>  loading.value = value;
+const setLoading = (value: boolean) => loading.value = value;
 
 
 //Animation for brand name
-  
-  const names = [
-    ['consulta', 'gratis', 'en', 'linea', '.com'],
-    ['consulta', 'experto', '.com'],
-    ['consulta', 'especializada', '.com']
-  ];
-  
-  const currentName = ref<string[]>(names[0]);
-  let timeoutId: ReturnType<typeof setTimeout> | null = null;
-  
-  const startAnimation = () => {
-    const changeName = () => {
-      timeoutId = setTimeout(() => {
-        const currentIndex = names.findIndex(name => 
-          JSON.stringify(name) === JSON.stringify(currentName.value)
-        );
-        const nextIndex = (currentIndex + 1) % names.length;
-        currentName.value = names[nextIndex];
-        changeName(); // Siguiente iteración
-      }, 2000);
-    };
-    
-    // Iniciar la animación
-    changeName();
+
+const names = [
+  ['consulta', 'gratis', 'en', 'linea', '.com'],
+  ['consulta', 'experto', '.com'],
+  ['consulta', 'especializada', '.com']
+];
+
+const currentName = ref<string[]>(names[0]);
+let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+const startAnimation = () => {
+  const changeName = () => {
+    timeoutId = setTimeout(() => {
+      const currentIndex = names.findIndex(name =>
+        JSON.stringify(name) === JSON.stringify(currentName.value)
+      );
+      const nextIndex = (currentIndex + 1) % names.length;
+      currentName.value = names[nextIndex];
+      changeName(); // Siguiente iteración
+    }, 2000);
   };
-  
-  const stopAnimation = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = null;
-    }
-  };
-  
-  // Cuando la vista está a punto de entrar
-  onIonViewDidEnter(() => {
-    startAnimation();
-  });
-  
-  // Cuando la vista está a punto de salir
-  onIonViewWillLeave(() => {
-    stopAnimation();
-  });
-  
-  // Cuando la vista ya salió
-  onIonViewDidLeave(() => {
-    stopAnimation();
-  });
+
+  // Iniciar la animación
+  changeName();
+};
+
+const stopAnimation = () => {
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+    timeoutId = null;
+  }
+};
+
+// Cuando la vista está a punto de entrar
+onIonViewDidEnter(() => {
+  startAnimation();
+});
+
+// Cuando la vista está a punto de salir
+onIonViewWillLeave(() => {
+  stopAnimation();
+});
+
+// Cuando la vista ya salió
+onIonViewDidLeave(() => {
+  stopAnimation();
+});
 </script>
 
 <style scoped>
@@ -423,9 +495,11 @@ const setLoading = (value: boolean) =>  loading.value = value;
 }
 
 .login-button {
-  --border-radius: 12px;
+  --border-radius: 25px;
+  --padding: 1;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: 50px;
+  
+  height: 60px;
   font-weight: 600;
   margin-bottom: 1rem;
 }
@@ -470,10 +544,11 @@ const setLoading = (value: boolean) =>  loading.value = value;
 }
 
 .expert-info {
-  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  background: rgb(8, 164, 255);
   border-radius: 16px;
   padding: 1.5rem;
   margin: 2rem 0;
+  color: white;
 }
 
 .professional-text {
@@ -533,5 +608,31 @@ ion-accordion.accordion-expanding ion-item[slot='header'],
 ion-accordion.accordion-expanded ion-item[slot='header'] {
   --background: var(--ion-color-primary);
   --color: var(--ion-color-primary-contrast);
+}
+
+ion-content {
+  --background: #F6F8F7 !important;
+}
+
+ion-icon.custom {
+    --background: var(--ion-color-primary);
+    --color:red;
+}
+ion-button.login {
+    --background: rgb(42, 145, 255);
+    --color:white;
+    --border-radius: 25px;
+    --padding: 1;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 60px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+ion-input.input {
+    --border-radius: 25px;
+    --padding: 1;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 60px;
+    font-weight: 600;
 }
 </style>

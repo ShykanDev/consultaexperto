@@ -3,10 +3,10 @@
         <ion-header>
             <ion-toolbar>
                 <ion-title class="font-bold text-blue-700">Contacto</ion-title>
-                <div class="flex">
-            <span v-html="currentName" :key="currentName" :class="{'pl-2': expertPopup}"></span>
+                <div slot="end" class="flex">
+            <span v-html="currentName" :key="currentName" class="text-xs" :class="{'pl-2': expertPopup}"></span>
           </div>
-                <ion-buttons slot="end">
+                <ion-buttons slot="start">
                     <ion-button @click="router.push('/tabs/experts-list')">
                         <v-icon name="md-arrowbackiosnew-round" color="blue"   class="animate-fade-left" /> 
                         <span class="text-base text-blue-700 animate-fade-left animate-delay-100">inicio</span>
@@ -142,7 +142,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
+import { IonButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
 import { reactive, ref } from 'vue';
 import emailjs from '@emailjs/browser';
 import { Notyf } from 'notyf';

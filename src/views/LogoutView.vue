@@ -10,12 +10,9 @@
             </span>
           </article>
           
-          <div class="flex justify-between items-center pr-3 w-full">
-          <ion-title class="text-base font-bold text-blue-500 sm:text-xl font-quicksand">Mi Cuenta</ion-title>
-          <div class="flex">
-            <span v-html="currentName" :key="currentName"></span>
-          </div>
-        </div>
+
+          <ion-title class="text-base font-bold text-blue-500 font-quicksand">Mi Cuenta</ion-title>
+
         </div>
         </ion-toolbar>
       </ion-header>
@@ -24,7 +21,7 @@
         <!-- Sección de perfil -->
         <div class="flex flex-col items-center my-6">
           <div class="flex justify-center items-center mb-4 w-20 h-20 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full shadow-lg">
-            <span class="text-2xl font-bold text-white">{{}}</span>
+            <span class="text-2xl font-bold text-white">{{ authStorePinia().getUserName?.charAt(0).toUpperCase() }}</span>
           </div>
           <h2 class="mb-1 text-xl font-bold text-gray-800">{{ authStorePinia().getUserName }}</h2>
           <p class="text-sm text-gray-500">{{ authStorePinia().getUserEmail }}</p>
@@ -177,13 +174,7 @@ const currentName = ref<string[]>(names[0]);
   
  }
 
- onIonViewDidEnter(() => {
-  if(timeoutId){
-    clearInterval(timeoutId);
-    timeoutId = null;
-  }
-  animateNames();
-})
+
 
 onIonViewDidLeave(() => {
   if(timeoutId){

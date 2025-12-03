@@ -118,7 +118,12 @@ import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
   FaImage,
   FaExclamationTriangle,
   FaCheckCircle,
-  FaFileContract
+  FaFileContract,
+  LaMedalSolid,
+  HiSolidChevronDown,
+  FaUsers,
+  BiGiftFill,
+  MdSupportagentOutlined
 } from "oh-vue-icons/icons";
 addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   FaBalanceScale,
@@ -205,7 +210,12 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   FaImage,
   FaExclamationTriangle,
   FaCheckCircle,
-  FaFileContract
+  FaFileContract,
+  LaMedalSolid,
+  HiSolidChevronDown,
+  FaUsers,
+  BiGiftFill,
+  MdSupportagentOutlined
 );
 
 import { Capacitor } from '@capacitor/core';

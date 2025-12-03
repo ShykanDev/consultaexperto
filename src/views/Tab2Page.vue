@@ -2,23 +2,16 @@
   <ion-page>
     <ion-header >
       <ion-toolbar >
-        <div class="flex justify-between items-center pr-3 w-full">
-          <ion-title class="text-base font-bold text-orange-700 sm:text-xl font-quicksand">Registrarse</ion-title>
-          <div class="flex">
-            <span v-html="currentName" :key="currentName"></span>
+          <ion-title slot="start" class="text-base font-bold text-orange-700 text-start sm:text-xl font-quicksand">Registrarse</ion-title>
+          <div slot="end" class="flex">
+            <span class="text-sm" v-html="currentName" :key="currentName"></span>
           </div>
-        </div>
       </ion-toolbar>
     </ion-header>
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar color="secondary">
-          <ion-title size="large">Registrarse</ion-title>
-        </ion-toolbar>
-      </ion-header>
+
 
       <RegisterComponent></RegisterComponent>
-    </ion-content>
+
   </ion-page>
 </template>
 

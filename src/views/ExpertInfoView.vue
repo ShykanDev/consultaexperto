@@ -6,7 +6,7 @@
     </ion-refresher>
     <ion-header>
       <ion-toolbar>
-        <div class="flex items-center px-2">
+        <div class="flex justify-between items-center px-2">
           <article @click="router.back()"  class="flex items-center cursor-pointer">
             <span class="flex items-center py-1 font-semibold text-sky-600 font-quicksand">
               <v-icon name="md-arrowbackiosnew-round" class="animate-fade-left" /> 
@@ -14,12 +14,11 @@
             </span>
           </article>
           
-          <div class="flex justify-between items-center pr-3 w-full">
-          <ion-title class="text-base font-bold text-blue-500 sm:text-xl font-quicksand">Agendar Cita</ion-title>
-          <div class="flex animate animate-fade animate-delay-[3000ms]">
-            <span v-html="currentName" :key="currentName"></span>
+       
+          <ion-title class="text-base font-bold text-left text-blue-500 sm:text-xl font-quicksand">Agendar Cita</ion-title>
+          <div slot="end" class="flex animate animate-fade animate-delay-[3000ms]">
+            <span class="text-xs" v-html="currentName" :key="currentName"></span>
           </div>
-        </div>
         </div>
       </ion-toolbar>
     </ion-header>

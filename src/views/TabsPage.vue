@@ -35,6 +35,7 @@
 import { authStore } from '@/store/auth';
 import { IonTabBar, IonTabButton, IonTabs, IonLabel, IonPage, IonRouterOutlet } from '@ionic/vue';
 import { powerOutline, idCardOutline } from 'ionicons/icons';
+import { IonIcon, IonContent } from '@ionic/vue';
 
 
 
