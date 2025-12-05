@@ -113,7 +113,32 @@ const routes: Array<RouteRecordRaw> = [
     meta:{
       requiresAuth: false
     }
-  }
+  },
+
+  {
+    path: '/create-expert',
+    component: () => import('@/views/CreateExpert.vue'),
+    meta:{
+      requiresAuth: true
+    }
+  },
+
+  {
+    path: '/expert-preview',
+    component: () => import('@/views/ExpertPreview.vue'),
+    meta:{
+      requiresAuth: true
+    }
+  },
+
+  {
+    path: '/expert-list-admin',
+    component: () => import('@/views/ExpertListAdmin.vue'),
+    meta:{
+      requiresAuth: true
+    }
+  },
+
 ]
 
 const router = createRouter({

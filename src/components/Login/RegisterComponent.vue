@@ -137,6 +137,7 @@
     IonInput,
     IonCheckbox,
     IonButton,
+    useIonRouter,
   } from '@ionic/vue';
 
   import VueDatePicker from '@vuepic/vue-datepicker';
@@ -218,6 +219,7 @@ watch(date, () => {
 //Firebase stuff
 const auth = getAuth()
 const db = getFirestore();
+const router = useIonRouter();
 
 const createUserData = async (user: UserCredential) => {
   if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword || !formData.acceptedTerms) {
@@ -251,7 +253,8 @@ const createUserData = async (user: UserCredential) => {
       freeConsultations: true,
     });
 
-    // 2. Añade subcolección de historial
+
+  /*  // 2. Añade subcolección de historial
     const historyRef = collection(docRef, "HistoryAppointments");
     await addDoc(historyRef, {
       createdAt: Timestamp.now(),
@@ -264,7 +267,8 @@ const createUserData = async (user: UserCredential) => {
       createdAt: Timestamp.now(),
       userId: user.user.uid,
     });
-
+    
+    */
     presentToast('top', "Usuario creado exitosamente", 'success');
 
   } catch (error) {
@@ -295,7 +299,6 @@ const register = async () => {
       displayName: formData.fullName
     })
     sendEmailVerification(user.user)
-    presentToast('top', 'Usuario creado exitosamente, verifique su correo electrónica para activar su cuenta', 'success')
     await createUserData(user)
 
     //Once user has created his account successfully, reset the register fields
@@ -307,6 +310,10 @@ const register = async () => {
     formData.acceptedTerms = false
     showPassword.value = false
     showConfirmPassword.value = false
+    presentToast('top', 'Usuario creado exitosamente, verifique su correo electrónico para activar su cuenta', 'success')
+
+    router.navigate('/tabs/tab1', 'root', 'replace');
+
   } catch (error) {
     console.log(error);
     presentToast('top', `Error al crear usuario, intente de nuevo: ${error}`, 'danger');

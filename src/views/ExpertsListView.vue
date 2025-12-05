@@ -21,6 +21,7 @@
       <h1 class="mb-4 text-4xl font-bold md:text-5xl font-inter">Descubra a Nuestros Expertos</h1>
       <p class="mb-8 text-lg md:text-xl font-inter">Soluciones personalizadas y asesoramiento profesional en diversas áreas</p>
       
+      <button @click="getAllMockExpers" class="px-4 py-2 font-semibold text-emerald-600 bg-white rounded-lg">Cargar Expertos</button>
     </div>
     <div class="flex justify-center rounded-xl bg-sky-700/25 w-dvw">
           <ion-accordion-group class="w-full" expand="inset">
@@ -508,15 +509,26 @@ const gettingMockExperts = async (expert:string) => {
     }
     querySnapshot.forEach((doc) => {
       console.log(doc.data().specialty);
+      const data = doc.data();
       mockExperts.value.push({
         id: doc.id,
-        ...doc.data()
+        ...data
       });
     });
   } catch (error) {
       notyf.error(`Error al obtener los expertos ${error}`);
       toggleExpertPopup('close');
   }
+}
+const getAllMockExpers = ():void => {
+  getDocs(mockExpertsCollection).then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+  }).catch((error) => {
+    console.error("Error getting documents: ", error);
+    notyf.error("Error al cargar los expertos: " + error.message);
+  });
 }
 
 const names = [

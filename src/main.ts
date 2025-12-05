@@ -235,13 +235,13 @@ pinia.use(piniaPluginPersistedstate)
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyC1Lz0ciKRt-JSioyOVnKG4F-DPLVaGxRI",
-  authDomain: "consulta-gratis-en-linea.firebaseapp.com",
-  projectId: "consulta-gratis-en-linea",
-  storageBucket: "consulta-gratis-en-linea.firebasestorage.app",
-  messagingSenderId: "577654296577",
-  appId: "1:577654296577:web:1f925fd2343d97c5acb000",
-  measurementId: "G-CSNSTN8SVM"
+  apiKey: "AIzaSyCaC-rl6w3801e6uyzppr1uM8XEWel4vdg",
+  authDomain: "consulta-experto.firebaseapp.com",
+  projectId: "consulta-experto",
+  storageBucket: "consulta-experto.firebasestorage.app",
+  messagingSenderId: "219532409032",
+  appId: "1:219532409032:web:f85784b3f1e7a825234dfd",
+  measurementId: "G-K0T9YMG4VK"
 };
 
 // Initialize Firebase
