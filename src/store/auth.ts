@@ -8,6 +8,7 @@ export const authStore = defineStore('auth', {
         userEmail: null as string | null,
         isClient: false,
         isExpert: false,
+        isAdmin: false,
     }),
     actions: {
         setUserName(userName: string) {
@@ -28,6 +29,9 @@ export const authStore = defineStore('auth', {
         setIsExpert(isExpert: boolean) {
             this.isExpert = isExpert;
         },
+        setIsAdmin(isAdmin: boolean) {
+            this.isAdmin = isAdmin;
+        },
         setLogout() {
             this.isAuth = false;
             this.userName = null;
@@ -35,6 +39,7 @@ export const authStore = defineStore('auth', {
             this.userEmail = null;
             this.isClient = false;
             this.isExpert = false;
+            this.isAdmin = false;
         }
     },
     getters: {
@@ -44,6 +49,7 @@ export const authStore = defineStore('auth', {
         getUserEmail: (state) => state.userEmail,
         getIsClient: (state) => state.isClient,
         getIsExpert: (state) => state.isExpert,
+        getIsAdmin: (state) => state.isAdmin,
     },
     persist:true
 })

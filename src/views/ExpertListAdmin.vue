@@ -1,34 +1,71 @@
 <template>
   <ion-page>
-    <ion-header class="ion-no-border" >
+    <ion-header class="ion-no-border">
       <ion-toolbar>
-        <ion-title color="primary" class="font-medium tracking-tight font-poppins dark:text-neutral-200">
-          Gestión de Expertos
+        <ion-title color="primary" class="text-sm tracking-tight font-poppins">
+          Expertos
         </ion-title>
         <ion-buttons slot="start">
-          <ion-back-button :icon="chevronBack" default-href="/tabs/tab1" text="Inicio" style="text-transform: none;" >
-
+          <ion-back-button color="primary" :icon="chevronBack" default-href="/tabs/tab1" text="Inicio" style="text-transform: none; " >
           </ion-back-button>
         </ion-buttons>
+        <ion-buttons  slot="end">
+          <ion-button  routerLink="/create-expert" routerDirection="forward" class="create-expert font-poppins" style="text-transform: none; padding-right: 2px;">Crear Experto</ion-button>
+        </ion-buttons>
       </ion-toolbar>
-      <ion-toolbar class="ion-padding">
+      <ion-toolbar class="px-2 py-4 searchbar">
         <ion-text color="medium">
-          <p>Ver  y gestionar expertos registrados</p>
+          <p class="ml-3 font-medium text-left text-blue-500">
+            Ver  y gestionar expertos registrados
+
+          </p>
         </ion-text>
         <ion-searchbar
-          placeholder="Buscar por nombre, especialidad o correo"
-          class="ion-margin-vertical"
-          :debounce="500"
-        ></ion-searchbar>
+          placeholder="Nombre, Especialidad, Correo, etc..."
+          class="ion-margin-vertical custom"
+          :debounce="300"
+          enterkeyhint="search"
+          v-model="searchQuery"
+          @ion-input="searchExpertByName(searchQuery)"
+    ></ion-searchbar>
       </ion-toolbar>
+      
+
     </ion-header>
 
     <ion-content class="ion-padding">
-      <ion-button routerLink="/create-expert" routerDirection="forward">Crear Nuevo Experto</ion-button>
+      <ion-refresher slot="fixed"  @ionRefresh="handleRefresh($event)">
+      <ion-refresher-content refreshing-spinner="circles"></ion-refresher-content>
+      </ion-refresher>
       <div class="flex justify-center items-center w-full">
         <ion-spinner name="lines-sharp-small" v-if="loading"></ion-spinner>
+        <p v-if="experts.length == 0 && !loading" class="font-poppins">No se ha encontrado ningún experto</p>
       </div>
-          <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts"/>
+      
+          <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts" @callOpenModal="openModal"/>
+
+          <ion-modal ref="modale" :is-open="isOpenModal" :backdrop-dismiss="false" :initial-breakpoint="0.50" :breakpoints="[0, 0.25, 0.5, 0.75, 1]">
+            <ion-header>
+              <ion-toolbar>
+                <ion-title color="primary" class="text-sm font-medium tracking-tight font-poppins">
+                  Suspender Experto
+                </ion-title>
+                <ion-buttons slot="end">
+                  <ion-button @click="closeModal" color="danger" style="text-transform: none;">Cancelar</ion-button>
+                </ion-buttons>
+              </ion-toolbar>
+
+            </ion-header>
+      <ion-content class="ion-padding">
+        <ion-text color="medium">
+          <p class="ml-3 font-medium text-left text-blue-500">
+            ¿Está seguro de suspender a <span class="font-bold font-montserrat">{{ expertSelectedData.specialty }}</span> {{expertSelectedData.fullName}}?
+          </p>
+          <ion-input @click="$refs.modale.$el.setCurrentBreakpoint(1)" label="Motivo de suspensión" label-placement="floating" fill="outline" type="text" class="ion-margin-vertical" v-model="suspensionReason" placeholder="Ej: El experto contactó con el usuario sin permiso"></ion-input>
+        </ion-text>
+        <ion-button @click="suspendUser" color="danger" style="text-transform: none;">Suspender</ion-button>
+      </ion-content>
+    </ion-modal>
     </ion-content>
   </ion-page>
 </template>
@@ -48,9 +85,14 @@ import {
   IonBackButton,
   onIonViewDidEnter,
   IonSpinner,
-  IonButton
+  IonButton,
+  IonModal,
+  IonInput,
+  IonRefresher,
+  IonRefresherContent,
+  RefresherCustomEvent,
 } from '@ionic/vue';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
 import {
   chevronBack,
 } from 'ionicons/icons';
@@ -79,14 +121,16 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
 
 
 
-
+const allExperts = ref<IExpert[]>([])
 const experts = ref<IExpert[]>([])
 const db = getFirestore();
 const expertsCollection = collection(db, 'experts');
 const loading = ref(false);
-
+const isOpenModal = ref(false);
+const suspensionReason = ref(''); 
 const getAllExperts = () => {
   experts.value = [];
+  allExperts.value = [];
   loading.value = true;
   
   getDocs(expertsCollection).then(querySnapshot => {
@@ -105,7 +149,7 @@ const getAllExperts = () => {
   };
 
   experts.value.push(expert);
-
+  allExperts.value.push(expert);
   console.log("Expert data:", expert);
 });
 
@@ -117,9 +161,73 @@ const getAllExperts = () => {
   })
 }
 
+const searchExpertByName = (query: string) => {
+  const q = query.toLowerCase()
+
+  experts.value = allExperts.value.filter(expert => {
+    return [
+      expert.fullName,
+      expert.professionalId,
+      expert.email,
+      expert.specialty,
+      expert.suspensionReason
+    ].some(field => field?.toLowerCase().includes(q))
+  })
+}
+
+
 onIonViewDidEnter(()=> {
   getAllExperts()
 })
+
+const searchQuery = ref('');
+
+const expertSelectedData = ref<IExpert>({})
+
+const openModal = (expertData:IExpert) => {
+  expertSelectedData.value = expertData;
+  isOpenModal.value = true;
+}
+const closeModal = () => {
+  suspensionReason.value = '';
+  expertSelectedData.value = {};
+  isOpenModal.value = false;
+}
+
+const suspendUser = () => {
+  if (!suspensionReason.value) {
+    presentToast('top', 'Error: No se proporcionó un motivo de suspensión', 'danger');
+    return;
+  }
+    if (!expertSelectedData.value.docRef) {
+        presentToast('top', 'Error: No se encontró el experto', 'danger');
+        console.log('ERROR: expertSelectedData.value.docRef is undefined');
+        console.log('Current expert:', expertSelectedData.value);
+        return;
+    }
+    
+    updateDoc(expertSelectedData.value.docRef!, {
+        isSuspended: true,
+        suspensionReason: suspensionReason.value
+    })
+    .then(() => {
+        getAllExperts();
+        presentToast('top', 'Experto suspendido exitosamente', 'success');
+        closeModal();
+    })
+    .catch((error) => {
+        console.error('Error suspending expert:', error);
+        presentToast('top', 'Error al suspender al experto', 'danger');
+    });
+}
+
+
+ const handleRefresh = (event: RefresherCustomEvent) => {
+    setTimeout(() => {
+      getAllExperts();
+      event.target.complete();
+    }, 2000);
+  };
 </script>
 
 <style scoped>
@@ -150,11 +258,25 @@ ion-chip {
   --padding-end: 0.75rem;
 }
 ion-content{
-  --background:#f1f1f1;
+  --background:#f4f3f3 !important;
 }
 
-ion-header {
-  --background: #ffffff;
+ion-toolbar.searchbar {
+  --background: #f3f3f3 !important;
+  --color: white !important;
+  --border-radius: 11px !important;
+}
+
+ion-button.create-expert{
+  --background: var(--ion-color-primary);
+  --color:white;
+  --border-radius:11px;
+}
+ion-searchbar.custom{
+  --background: #ffffff ;
+  --color: rgb(0, 64, 183) ;
+  --placeholder-color: #3e6bbf ;
+  --border-radius: 11px !important;
 }
 
 </style>

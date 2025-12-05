@@ -256,48 +256,81 @@ const verifyIsExpert = async (email: string) => {
   }
 }
 
+const isAdminEmail = (email:string) => {
+  return email === "accmac2000@gmail.com";
+};
+
+const handleAdminLogin = ( uid:string, name:string, userEmail:string ) => {
+  authStore().setIsAuth(true);
+  authStore().setUserUid(uid);
+  authStore().setUserName(name);
+  authStore().setUserEmail(userEmail);
+  authStore().setIsAdmin(true);
+
+  presentToast("top", `Bienvenido ${name}`, "success");
+  router.push("/expert-list-admin"); // ruta especial
+};
+
+const handleExpertLogin = ( uid:string, name:string, userEmail:string ) => {
+  authStore().setIsAuth(true);
+  authStore().setUserUid(uid);
+  authStore().setUserName(name);
+  authStore().setUserEmail(userEmail);
+  authStore().setIsExpert(true);
+
+  presentToast("top", `Bienvenido ${name}`, "success");
+  router.push("/expert");
+};
+
+const handleClientLogin = ( uid:string, name:string, userEmail:string ) => {
+  authStore().setIsAuth(true);
+  authStore().setUserUid(uid);
+  clientStore().setClientUid(uid);
+  authStore().setUserName(name);
+  authStore().setUserEmail(userEmail);
+  authStore().setIsClient(true);
+
+  presentToast("top", `Bienvenido ${name}`, "success");
+  router.push("/tabs/experts-list");
+};
+
+
 const login = async () => {
   setLoading(true);
   try {
-    const user = await signInWithEmailAndPassword(auth, email.value, password.value);
-    if (!user) {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+
+    if (!userCredential || !userCredential.user || !userCredential.user.email || !userCredential.user.uid ) {
       setLoading(false);
       return;
     }
-    if (user && user.user.email && user.user.uid) {
-      const isExpert = await verifyIsExpert(user.user.email);
-      if (isExpert) {
-        authStore().setIsAuth(true);
-        authStore().setUserUid(user.user.uid);
-        authStore().setUserName(user.user.displayName || '');
-        authStore().setUserEmail(user.user.email);
-        authStore().setIsExpert(true);
-        presentToast('top', `Bienvenido ${user.user.displayName}`, 'success');
-        router.push('/expert');
-      }
-      if (!isExpert) {
-        authStore().setIsAuth(true);
-        //User is not expert, so we push to the expert list view and set the user name and uid in the store
-        //  authStore().setUserName(user.user.displayName);
-        authStore().setUserUid(user.user.uid);
-        clientStore().setClientUid(user.user.uid);
-        authStore().setUserName(user.user.displayName || 'Usuario');
-        authStore().setUserEmail(user.user.email);
-        authStore().setIsClient(true);
-        presentToast('top', `Bienvenido ${user.user.displayName}`, 'success');
-        router.push('/tabs/experts-list');
-      }
+
+    const { email: userEmail, uid, displayName } = userCredential.user;
+    const name = displayName || "Usuario";
+
+    // 1. Roles especiales
+    if (isAdminEmail(userEmail)) {
+       handleAdminLogin(uid, name, userEmail);
+      return;
     }
-    setLoading(false);
+
+    // 2. Roles dinámicos
+    const isExpert = await verifyIsExpert(userEmail);
+
+    if (isExpert) {
+      handleExpertLogin(uid, name, userEmail);
+    } else {
+      handleClientLogin(uid, name, userEmail);
+    }
+
   } catch (error) {
-    console.log(error)
-    presentToast('top', 'Error al iniciar sesión, intente de nuevo', 'danger');
+    console.error(error);
+    presentToast("top", "Error al iniciar sesión, intente de nuevo", "danger");
+  } finally {
     setLoading(false);
   }
-  finally {
-    setLoading(false);
-  }
-}
+};
+
 
 const isAccordionOpen = ref(false);
 

@@ -3,9 +3,9 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button :default-href="'/expert-list-admin'" :icon="chevronBack" color="primary" text="Volver" style="text-transform: none;" />
+          <ion-back-button class="text-sm" :default-href="'/expert-list-admin'" :icon="chevronBack" color="primary" text="Volver" style="text-transform: none;" />
         </ion-buttons>
-        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{ expertAdminStore.getCurrentExpert?.fullName || 'Juan Perez' }}</ion-title>
+        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}</ion-title>
         <ion-buttons slot="end">
           <ion-button style="width: 4rem;"></ion-button>
         </ion-buttons>
@@ -20,13 +20,15 @@
             <img
             src="https://picsum.photos/200/300"
               alt="Profile picture of Jordan Smith"
-              class="w-24 h-24 ring ring-blue-500 ring-offset-2 ring-offset-white"
+              class="w-24 h-24 ring ring-offset-2 ring-offset-white"
+              :class="{'ring-red-600': expertAdminStore.getCurrentExpert?.isSuspended, 'ring-blue-500': !expertAdminStore.getCurrentExpert?.isSuspended}"
             />
           </ion-avatar>
           <ion-text class="text-center">
             <h1 class="text-2xl font-bold font-manrope">
               {{ expertAdminStore.getCurrentExpert?.fullName || 'Juan Pérez' }}
             </h1>
+            <h3 :class="{'text-red-600 font-poppins font-bold': expertAdminStore.getCurrentExpert?.isSuspended}"> (Suspendido)</h3>
             <p class="mt-1 text-base text-blue-700 font-poppins">
               {{ expertAdminStore.getCurrentExpert?.specialty || 'Specialty' }}
             </p>
@@ -42,34 +44,34 @@
           </ion-card-title>
         </ion-card-header>
         <ion-list lines="none" class="px-4">
-          <ion-item class="py-3.5 border-t border-gray-200 dark:border-gray-700">
+          <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label color="primary">
               <p class="!text-blue-600">Nombre</p>
               <p class="">{{ expertAdminStore.getCurrentExpert?.fullName ?? 'Juan Perez' }} </p>
             </ion-label>
           </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200 dark:border-gray-700">
+          <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label>
               <p class="!text-blue-700 !font-poppins">Email</p>
               <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.email ?? 'correo@usuario.com' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200 dark:border-gray-700">
+          <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label>
               <p class="!text-blue-700 !font-poppins">Especialidad</p>
               <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.specialty ?? 'Médico' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200 dark:border-gray-700">
-            <ion-label>
-              <p class="!text-blue-700 !font-poppins">Suspendido Temporalmente</p>
-              <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.isBanned ? 'El usuario está suspendido temporalmente' : 'El usuario no está suspendido temporalmente' }}</p>
+          <ion-item class="py-3.5 border-t border-gray-200">
+            <ion-label >
+              <p class=" !font-poppins !text-blue-700" >Suspendido </p>
+              <p class="!font-poppins" :class="{ '!text-red-500': expertAdminStore.getCurrentExpert?.isSuspended }">{{ expertAdminStore.getCurrentExpert?.isSuspended ? 'El usuario está suspendido' : 'El usuario no está suspendido temporalmente' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200 dark:border-gray-700">
+          <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label>
-              <p class="!text-blue-700 !font-poppins">Bloqueado</p>
-              <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.isBanned ? 'El usuario está bloqueado' : 'El usuario no está bloqueado' }}</p>
+              <p class="!text-blue-700 !font-poppins">Motivo de la suspension</p>
+              <p class="!font-poppins" :class="{ '!text-red-500': expertAdminStore.getCurrentExpert?.isSuspended }">{{ expertAdminStore.getCurrentExpert?.suspensionReason ?? 'El usuario no tiene un motivo de suspension' }}</p>
             </ion-label>
           </ion-item>
     

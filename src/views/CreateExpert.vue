@@ -4,7 +4,7 @@
       <ion-toolbar>
         <ion-title class="font-nunito" color="primary">Crear Nuevo Experto</ion-title>
         <ion-buttons slot="start">
-         <ion-back-button :icon="chevronBack" default-href="/expert-list-admin" text="Cancelar" style="text-transform: none;" ></ion-back-button>
+         <ion-back-button color="primary" :icon="chevronBack" default-href="/expert-list-admin" text="Cancelar" style="text-transform: none;" ></ion-back-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -173,7 +173,7 @@ import { chevronBack, helpOutline } from 'ionicons/icons';
 import { ref, computed } from 'vue';
 
 import { toastController } from '@ionic/vue';
-import { createUserWithEmailAndPassword, getAuth, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
     const toast = await toastController.create({
       message: message,
@@ -248,6 +248,7 @@ const resetForm = () => {
 
 const db = getFirestore();
 const expertsCollection = collection(db, 'experts');
+const emailsExperts = collection(db, 'EmailsExperts');
 const auth = getAuth();
 
 
@@ -281,15 +282,28 @@ createUserWithEmailAndPassword(auth, form.value.email, '1234567890')
         console.error('Error updating profile: ', error);
         presentToast('top', 'Error al actualizar perfil: ' + error.message, 'danger');
       });
+      sendEmailVerification(user).then(() => {
+        console.log('Email verification sent successfully');
+        presentToast('top', 'Verificación de correo electrónico enviada exitosamente', 'success');
+      }).catch((error) => {
+        console.error('Error sending email verification: ', error);
+        presentToast('top', 'Error al enviar verificación de correo electrónico: ' + error.message, 'danger');
+      });
       form.value.userUid = user.uid;
       // Now create the expert
       addDoc(expertsCollection, form.value).then((res) =>{
         console.log('Expert created with ID:', res.id);
         presentToast('top', 'Experto creado exitosamente', 'success');
         resetForm();
-      }).catch((error) => {
+      })
+      .catch((error) => {
         presentToast('top', 'Error al crear experto: ' + error.message, 'danger');
         console.error('Error creating expert: ', error);
+      });
+      addDoc(emailsExperts, {email: form.value.email})
+      .catch((error) => {
+        presentToast('top', 'Error al crear correo: ' + error.message, 'danger');
+        console.error('Error creating email: ', error);
       });
     })
     .catch((error) => {
