@@ -37,7 +37,7 @@
       </ion-card>
 
       <!-- Contact Information -->
-      <ion-card  style="background-color: #fff;">
+      <ion-card class="ion-no-margin" style="background-color: #fff;">
         <ion-card-header style="background-color: #fafafa">
           <ion-card-title class="px-4 pt-4 pb-2 text-lg font-bold" color="primary">
             Información del experto
