@@ -26,7 +26,7 @@
           @ion-input="searchExpertByName(searchQuery)"
     ></ion-searchbar>
       </ion-toolbar>
-      
+
 
     </ion-header>
 
@@ -38,10 +38,10 @@
         <ion-spinner name="lines-sharp-small" v-if="loading"></ion-spinner>
         <p v-if="experts.length == 0 && !loading" class="font-poppins">No se ha encontrado ningún experto</p>
       </div>
-      
-          <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts" @callOpenModal="openModal"/>
 
-          <ion-modal ref="modale" :is-open="isOpenModal" :backdrop-dismiss="false" :initial-breakpoint="0.50" :breakpoints="[0, 0.25, 0.5, 0.75, 1]">
+          <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts" @callOpenModal="openModal"/>
+<!--4:50 PM Edited dissmis on click backdrop now is mow set to true -->
+          <ion-modal ref="modale" :is-open="isOpenModal" backdrop-dismiss :initial-breakpoint="0.50" :breakpoints="[0, 0.25, 0.5, 0.75, 1]">
             <ion-header mode="ios" class="rounded-header">
               <ion-toolbar class="rounded-header" >
                 <ion-title color="primary" class="text-sm font-medium tracking-tight font-poppins">
