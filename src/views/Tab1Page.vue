@@ -2,8 +2,8 @@
   <ion-page>
     <ion-header class="ion-no-border">
       <ion-toolbar>
-        <ion-title slot="start" class="text-base font-bold text-left text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-900 font-quicksand">
-          Inicio de Sesión
+        <ion-title slot="start" class="text-base font-bold text-left text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-blue-900 font-quicksand">
+          Login
         </ion-title>
         <div slot="end" class="flex items-center">
           <span class="text-xs font-poppins" v-html="currentName" :key="currentName"></span>

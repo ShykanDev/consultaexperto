@@ -6,23 +6,23 @@
                 :src="props.expertData.profilePicture || 'https://picsum.photos/200/300'" alt="Profile picture" />
             <div class="flex-grow">
                 <div class="flex justify-between items-center">
-                    <p class="text-lg font-bold leading-tight text-blue-600 font-poppins dark:text-neutral-100">{{ props.expertData.fullName || ' Nombre del experto'}}
+                    <p class="text-lg font-bold leading-tight text-blue-600 font-poppins">{{ props.expertData.fullName || ' Nombre del experto'}}
                     </p>
                     <p v-if="props.expertData.isSuspended" class="text-sm font-medium leading-tight text-red-700 font-poppins">(Suspendido)</p>
                 </div>
-                <p class="text-sm text-neutral-600 dark:text-neutral-400">{{ props.expertData.specialty ?? 'Especialidad' }}</p>
+                <p class="text-sm text-neutral-600">{{ props.expertData.specialty ?? 'Especialidad' }}</p>
                 <div class="flex gap-1 items-center mt-1">
                     <ion-icon :icon="starSharp" class="text-yellow-400" v-for="(_, index) in 5" :key="index"></ion-icon>
-                    <p class="ml-1 text-xs text-neutral-500 dark:text-neutral-400">{{ props.expertData.rating || 0 }}</p>
+                    <p class="ml-1 text-xs text-neutral-500">{{ props.expertData.rating || 0 }}</p>
                 </div>
                 <p class="text-xs text-gray-500">{{ props.expertData.isBanned ? 'Bloqueado' : 'Activo' }}</p>
             </div>
         </div>
         <div class="flex relative flex-col gap-3 px-4 pb-4">
-            <p class="text-sm leading-relaxed text-neutral-600 dark:text-neutral-300">{{ props.expertData.bio || 'Biografía del experto' }}</p>
+            <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
             <div v-if="props.expertData.isSuspended" class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200">
                 <p class="text-xs font-bold text-red-800 !font-poppins">Motivo de la suspension:</p>
-                <p class="text-sm text-red-800 dark:text-red-200 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas solicitudes.' }}</p>
+                <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas solicitudes.' }}</p>
             </div>
             <div class="grid grid-cols-3 gap-1 p-1 mt-2">
                 <ion-button @click="unsuspendUser" v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">

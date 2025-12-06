@@ -10,16 +10,13 @@
           </ion-back-button>
         </ion-buttons>
         <ion-buttons  slot="end">
-          <ion-button  routerLink="/create-expert" routerDirection="forward" class="create-expert font-poppins" style="text-transform: none; padding-right: 2px;">Crear Experto</ion-button>
+          <ion-button  routerLink="/create-expert" routerDirection="forward" class="!text-sm create-expert font-poppins" style="text-transform: none; padding-right: 2px; font-size: small!important;">Crear Experto</ion-button>
         </ion-buttons>
       </ion-toolbar>
-      <ion-toolbar class="px-2 py-4 searchbar">
-        <ion-text color="medium">
-          <p class="ml-3 font-medium text-left text-blue-500">
-            Ver  y gestionar expertos registrados
-
+      <ion-toolbar class="px-2 py-1 searchbar">
+          <p class="py-1 ml-3 font-medium text-center text-blue-500">
+            Ver  y administrar expertos registrados
           </p>
-        </ion-text>
         <ion-searchbar
           placeholder="Nombre, Especialidad, Correo, etc..."
           class="ion-margin-vertical custom"
@@ -45,14 +42,12 @@
           <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts" @callOpenModal="openModal"/>
 
           <ion-modal ref="modale" :is-open="isOpenModal" :backdrop-dismiss="false" :initial-breakpoint="0.50" :breakpoints="[0, 0.25, 0.5, 0.75, 1]">
-            <ion-header>
-              <ion-toolbar>
+            <ion-header mode="ios" class="rounded-header">
+              <ion-toolbar class="rounded-header" >
                 <ion-title color="primary" class="text-sm font-medium tracking-tight font-poppins">
                   Suspender Experto
                 </ion-title>
-                <ion-buttons slot="end">
-                  <ion-button @click="closeModal" color="danger" style="text-transform: none;">Cancelar</ion-button>
-                </ion-buttons>
+
               </ion-toolbar>
 
             </ion-header>
@@ -61,9 +56,12 @@
           <p class="ml-3 font-medium text-left text-blue-500">
             ¿Está seguro de suspender a <span class="font-bold font-montserrat">{{ expertSelectedData.specialty }}</span> {{expertSelectedData.fullName}}?
           </p>
-          <ion-input @click="$refs.modale.$el.setCurrentBreakpoint(1)" label="Motivo de suspensión" label-placement="floating" fill="outline" type="text" class="ion-margin-vertical" v-model="suspensionReason" placeholder="Ej: El experto contactó con el usuario sin permiso"></ion-input>
+          <ion-textarea @click="$refs.modale.$el.setCurrentBreakpoint(1)" auto-grow  class="ion-margin-vertical suspension-reason" v-model="suspensionReason" placeholder="Ej: El experto contactó con el usuario sin permiso"></ion-textarea>
         </ion-text>
-        <ion-button @click="suspendUser" color="danger" style="text-transform: none;">Suspender</ion-button>
+        <div class="flex justify-around">
+          <ion-button @click="suspendUser" button-type="button" class="w-full" mode="ios" color="danger" style="text-transform: none;">Suspender</ion-button>
+          <ion-button @click="closeModal" button-type="button" class="w-full" mode="ios" color="light" style="text-transform: none;">Cancelar</ion-button>
+        </div>
       </ion-content>
     </ion-modal>
     </ion-content>
@@ -86,8 +84,8 @@ import {
   onIonViewDidEnter,
   IonSpinner,
   IonButton,
-  IonModal,
-  IonInput,
+  IonModal, 
+  IonTextarea,
   IonRefresher,
   IonRefresherContent,
   RefresherCustomEvent,
@@ -262,7 +260,7 @@ ion-content{
 }
 
 ion-toolbar.searchbar {
-  --background: #f3f3f3 !important;
+  --background: #fbfbfb !important;
   --color: white !important;
   --border-radius: 11px !important;
 }
@@ -278,5 +276,13 @@ ion-searchbar.custom{
   --placeholder-color: #3e6bbf ;
   --border-radius: 11px !important;
 }
-
+ion-modal{
+  --border-radius: 19px !important;
+}
+ion-textarea.suspension-reason{
+  --background: #fdfdfd ;
+  --color: rgb(0, 64, 183) ;
+  --placeholder-color: #3e6bbf ;
+  --border-radius: 11px !important;
+}
 </style>

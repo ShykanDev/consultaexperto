@@ -153,17 +153,6 @@ ion-chip {
 }
 
 
-ion-toolbar {
-  --background: rgba(var(--ion-color-content-light-rgb), 0.8);
-  --border-color: rgba(var(--ion-color-gray-rgb), 0.8);
-  backdrop-filter: blur(8px);
-}
-
-
-ion-footer ion-toolbar {
-  --background: rgba(var(--ion-color-content-light-rgb), 0.8);
-  --border-color: rgba(var(--ion-color-gray-rgb), 0.8);
-}
 
 
 ion-content{

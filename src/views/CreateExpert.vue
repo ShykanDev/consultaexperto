@@ -12,11 +12,11 @@
       <div class="space-y-8">
         <!-- Basic Information Section -->
         <ion-card>
-          <ion-card-header>
+          <ion-card-header  class="expert-info" >
             <ion-card-title class="font-poppins" color="primary">Información del nuevo experto</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
-            <div class="flex flex-col space-y-4">
+          <ion-card-content >
+            <div class="flex flex-col py-3 space-y-4">
               <ion-input
                 label="Nombre completo"
                 label-placement="floating"
@@ -315,7 +315,7 @@ createUserWithEmailAndPassword(auth, form.value.email, '1234567890')
 
 <style scoped>
 ion-content {
-  --background: #f2f2f7;
+  --background: #dadada;
 }
 /* Estilos personalizados para imitar el diseño iOS */
 ion-input, ion-textarea {
@@ -350,5 +350,7 @@ ion-card {
   text-transform: none;
   letter-spacing: normal;
 }
-
+ion-card-header.expert-info {
+  --background: #f0f0f0 !important;
+}
 </style>

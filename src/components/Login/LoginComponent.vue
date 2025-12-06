@@ -13,17 +13,17 @@
       <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
         <div class="order-2 space-y-3 md:order-1">
           <h2
-            class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-500 font-manrope">
+            class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
             Su plataforma para consultar un experto:
           </h2>
 
-          <aside class="grid grid-cols-3 p-2 text-green-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
+          <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
             <div class="grid col-span-2 items-center p-2">
               <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
-                  class="font-bold text-green-600">{{ experts[currentExpert].name
+                  class="font-bold text-blue-600">{{ experts[currentExpert].name
                   }}</span>
               </h4>
-              <div class="flex flex-col justify-around items-center p-1 text-sm font-medium text-white bg-green-600 rounded-2xl opacity-90 text-md font-poppins">
+              <div class="flex flex-col justify-around items-center p-1 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-2xl opacity-90 text-md font-poppins">
                 <p>¡Primera consulta gratis! </p>
                 <div class="flex gap-2">
                   <v-icon name="md-supportagent-outlined" scale="1" />
@@ -32,21 +32,42 @@
               </div>
             </div>
             <div  class="flex justify-center items-center">
-              <img :src="experts[currentExpert].img" class="w-40 rounded-3xl"  :alt="experts[currentExpert].name">
+              <img :src="experts[currentExpert].img" class="w-40 rounded-3xl ring-2 ring-blue-500 ring-offset-2"  :alt="experts[currentExpert].name">
             </div>
           </aside>
 
-          <div class="flex relative gap-2 justify-center items-center mt-6">
-            <h3
-              class="hidden px-6 py-4 text-xl font-semibold text-white bg-gradient-to-r rounded-xl shadow-lg backdrop-blur-sm transition-all duration-300 animate-fade-in from-sky-600/90 to-blue-600/90 font-quicksand md:text-2xl">
-              <div class="flex gap-3 items-center">
-                <span class="animate-fade" :key="currentExpert">{{ experts[currentExpert].name }} <v-icon color="white"
-                    class="animate-fade" :key="currentExpert" :name="experts[currentExpert].icon" scale="1.5" /></span>
-              </div>
-            </h3>
-      
+          
+      <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out" :class="{ 'bg-gradient-to-r from-blue-600 to-blue-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
+              <div class="w-full">
+                <div class="w-full">
+                  <!-- Header del acordeón -->
+                  <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
+                    <span class="font-medium text-md font-poppins" :class="{ 'text-white': isAccordionOpen, 'text-blue-600': !isAccordionOpen }">{{ isAccordionOpen ? 'Listado de expertos' : 'Ver todos los expertos' }}</span>
+                    <v-icon name="hi-solid-chevron-down" scale="1.5" class="transition-transform duration-300 ease-in-out" :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
+                  </div>
 
-          </div>
+                  <!-- Contenido del acordeón -->
+                  <div v-show="isAccordionOpen" class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
+                    <ul>
+                      <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
+                        class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-blue-600 hover:text-white animate-fade-down ion-padding"
+                        :class="{
+                          'bg-blue-600 text-white': expert.name === experts[currentExpert].name,
+                          'bg-blue-500/25': expert.name !== experts[currentExpert].name,
+                          'bg-blue-800 text-white font-black italic': expert.name === userSelection,
+                        }"
+                        :style="{
+                          'animation-delay': `${index * 50}ms`
+                        }">
+                        {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
         </div>
 
       </div>
@@ -56,12 +77,6 @@
 
 
 
-    <!-- Secciones nuevas agregadas al final -->
-    <div class="text-sm text-white bg-sky-500 rounded-2xl font-poppins ion-padding">
-      <p class="font-semibold font-manrope"> <v-icon name="oi-tasklist" scale="1.3" /> Gestionaremos sus consultas y le
-        proporcionaremos
-        un experto calificado acorde a sus necesidades específicas.</p>
-    </div>
 
     <div class="flex justify-center">
 
@@ -69,14 +84,14 @@
 
 
     <div class="flex flex-col justify-center mb-2 items-left font-manrope">
-      <h1 class="text-2xl font-semibold">Bienvenido</h1>
+      <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
     </div>
 
 
 
     <ion-list class="form-container">
       <!-- Email Input -->
-         <ion-input label-placement="start" v-model="email" type="email" class="input"  fill="outline" placeholder="email@domain.com">
+         <ion-input label-placement="start" v-model="email"  type="email" class="input"  fill="outline" placeholder="email@domain.com">
         <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary" aria-hidden="true"></ion-icon>  
 
       </ion-input>
@@ -95,52 +110,13 @@
         Iniciar Sesión
       </ion-button>
 
-      <ion-button id="present-alert" fill="outline" size="small" class="button-login" >Olvidé mi contraseña</ion-button>
-      <ion-alert mode="ios" trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
+      <ion-button id="present-alert" fill="outline" shape="round" size="small" class="button-login" >Olvidé mi contraseña</ion-button>
+      <ion-alert  trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
         :inputs="alertInputs"></ion-alert>
 
-            <div
-      class="flex gap-4 items-center p-2 mt-8 text-white bg-gradient-to-r from-[#50C878] via-[#4CD47C] to-[#4ADF7F] rounded-3xl shadow-md from-emerald shadow-emerald/30">
-      <div class="flex gap-2 justify-center items-center w-full">
-        <v-icon name="la-medal-solid" scale="2.5" />
-        <div >
-          <h3 class="font-bold">¡Su primera consulta es gratis!</h3>
-          <p class="font-medium opacity-90 text-md font-manrope">Hable con un experto hoy mismo sin costo.</p>
-        </div>
-      </div>
-    </div>
+         
 
     </div>
-
-      <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out" :class="{ 'bg-gradient-to-r from-green-600 to-emerald-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
-              <div class="w-full">
-                <div class="w-full">
-                  <!-- Header del acordeón -->
-                  <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
-                    <span class="text-xl font-medium font-poppins" :class="{ 'text-white': isAccordionOpen, 'text-slate-700': !isAccordionOpen }">Ver todos los expertos</span>
-                    <v-icon name="hi-solid-chevron-down" scale="1.5" class="transition-transform duration-300 ease-in-out" :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
-                  </div>
-
-                  <!-- Contenido del acordeón -->
-                  <div v-show="isAccordionOpen" class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
-                    <ul>
-                      <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
-                        class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-green-600 hover:text-white animate-fade-down ion-padding"
-                        :class="{
-                          'bg-emerald-600 text-white': expert.name === experts[currentExpert].name,
-                          'bg-green-500/25': expert.name !== experts[currentExpert].name,
-                          'bg-emerald-800 text-white font-black italic': expert.name === userSelection
-                        }"
-                        :style="{
-                          'animation-delay': `${index * 50}ms`
-                        }">
-                        {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
 
 
   </div>
@@ -296,6 +272,11 @@ const handleClientLogin = ( uid:string, name:string, userEmail:string ) => {
 
 
 const login = async () => {
+
+  if (!email.value || !password.value) {
+    presentToast("top", "Por favor, ingrese su correo y contraseña", "danger");
+    return;
+  }
   setLoading(true);
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
@@ -652,9 +633,9 @@ ion-icon.custom {
     --color:red;
 }
 ion-button.login {
-    --background: rgb(42, 145, 255);
+    --background: rgb(0, 75, 156);
     --color:white;
-    --border-radius: 25px;
+    --border-radius: 20px;
     --padding: 1;
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     height: 60px;
