@@ -1,3 +1,4 @@
+import { DocumentReference } from 'firebase/firestore'
 import { defineStore } from 'pinia'
 
 const systemStore = defineStore('system', {
@@ -5,7 +6,7 @@ const systemStore = defineStore('system', {
     userEmail: '',
     firebaseData: {},
     showModalResetPassword: false,
-    selectedExpertUid: null as string | null,
+    selectedExpertUid: '',
   }),
   actions: {
     setUserEmail(userEmail: string) {
@@ -17,7 +18,7 @@ const systemStore = defineStore('system', {
     setToggleShowModalResetPassword() {
       this.showModalResetPassword = !this.showModalResetPassword
     },
-    setSelectedExpertUid(selectedExpertUid: string | null) {
+    setSelectedExpertUid(selectedExpertUid: string) {
       this.selectedExpertUid = selectedExpertUid
     },
   },

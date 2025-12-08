@@ -1,61 +1,62 @@
 <template>
- <ion-page>
-  <ion-content>
-    <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
-      <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-    <ion-header>
-      <ion-toolbar>
-        <div class="flex justify-between items-center px-2">
-          <article @click="router.back()"  class="flex items-center cursor-pointer">
-            <span class="flex items-center py-1 font-semibold text-sky-600 font-quicksand">
-              <v-icon name="md-arrowbackiosnew-round" class="animate-fade-left" /> 
-              <span class="text-base animate-fade-left animate-delay-100">atras</span>
-            </span>
-          </article>
-          
-       
-          <ion-title class="text-base font-bold text-left text-blue-500 sm:text-xl font-quicksand">Agendar Cita</ion-title>
-          <div slot="end" class="flex animate animate-fade animate-delay-[3000ms]">
-            <span class="text-xs" v-html="currentName" :key="currentName"></span>
+  <ion-page>
+    <ion-content>
+      <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+      <ion-header>
+        <ion-toolbar>
+          <div class="flex justify-between items-center px-2">
+            <article @click="router.back()" class="flex items-center cursor-pointer">
+              <span class="flex items-center py-1 font-semibold text-sky-600 font-quicksand">
+                <v-icon name="md-arrowbackiosnew-round" class="animate-fade-left" />
+                <span class="text-base animate-fade-left animate-delay-100">atras</span>
+              </span>
+            </article>
+
+
+            <ion-title class="text-base font-bold text-left text-blue-500 sm:text-xl font-quicksand">Agendar
+              Cita</ion-title>
+            <div slot="end" class="flex animate animate-fade animate-delay-[3000ms]">
+              <span class="text-xs" v-html="currentName" :key="currentName"></span>
+            </div>
           </div>
-        </div>
-      </ion-toolbar>
-    </ion-header>
-    <section v-if="isLoading" class="flex fixed right-0 bottom-0 left-0 top-14 z-50 justify-center items-center bg-black/45"> <!-- Loader -->
-      <LoaderBlue  />
-    </section>
-    <section>
-    </section>
+        </ion-toolbar>
+      </ion-header>
+      <section v-if="isLoading"
+        class="flex fixed right-0 bottom-0 left-0 top-14 z-50 justify-center items-center bg-black/45"> <!-- Loader -->
+        <LoaderBlue />
+      </section>
+      <section>
+      </section>
       <!-- Sección principal mejorada -->
 
-<!--Section about expert-->
- <!-- Sección superior con foto y datos principales -->
- <InfoUserLoader v-if="isLoadingExpertInfo" />
+      <!--Section about expert-->
+      <!-- Sección superior con foto y datos principales -->
+      <InfoUserLoader v-if="isLoadingExpertInfo" />
       <section v-else class="relative px-4 pt-14 pb-20 text-white bg-gradient-to-r from-blue-600 to-sky-700">
         <div class="mx-auto max-w-6xl ion-padding">
           <div class="flex flex-col items-center md:flex-row md:items-end">
             <div class="relative -mt-16 md:mr-8">
-              <img 
-                :src="data.imgUrl" 
-                alt="Foto de perfil" 
-                class="object-cover w-32 h-32 rounded-full border-4 shadow-xl md:w-40 md:h-40 border-white/30"
-              >
-              <div v-if="data.isBanned || data.isSuspended" class="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+              <img :src="data.imgUrl" alt="Foto de perfil"
+                class="object-cover w-32 h-32 rounded-full border-4 shadow-xl md:w-40 md:h-40 border-white/30">
+              <div v-if="data.isBanned || data.isSuspended"
+                class="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
                 <span class="flex items-center px-4 py-1 text-sm font-bold text-white bg-red-500 rounded-full">
                   <v-icon name="ri-shield-user-fill" class="mr-1" />
                   {{ data.isBanned ? 'BANEADO' : 'SUSPENDIDO' }}
                 </span>
               </div>
             </div>
-            
+
             <div class="mt-4 text-center md:mt-0 md:text-left">
               <div class="text-3xl font-bold animate-fade-up animate-delay-100">
                 {{ data.name }}
               </div>
               <p class="mb-2 text-xl text-blue-200 animate-fade-up animate-delay-300">{{ data.specialty }}</p>
-              
-              <div class="flex justify-center items-center space-x-4 md:justify-start animate-fade-up animate-delay-500">
+
+              <div
+                class="flex justify-center items-center space-x-4 md:justify-start animate-fade-up animate-delay-500">
                 <div class="flex items-center">
                   <v-icon name="io-star" class="mr-1 text-yellow-400" />
                   <span class="font-bold">{{ data.rating }}</span>
@@ -75,48 +76,48 @@
       </section>
       <!-- Contenido principal -->
       <div v-else class="px-2 mx-auto -mt-6 max-w-6xl ion-padding">
-  <div class="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-3">
-    <!-- Columna izquierda - Información básica -->
-    <div class="space-y-3 md:space-y-6">
-      <div class="flex flex-col p-3 bg-white rounded-xl shadow-sm md:p-6">
-        <h2 class="flex items-center mb-2 text-lg font-bold text-gray-800 md:mb-4 md:text-xl">
-          <v-icon name="md-info" class="mr-2 text-indigo-600" />
-          Información básica
-        </h2>
-        <div class="space-y-2 md:space-y-4">
-         
-          <div>
-            <p class="text-xs text-gray-500 md:text-sm">Cédula profesional</p>
-            <p class="text-sm md:font-medium">{{ data.profesionalId }}</p>
+        <div class="grid grid-cols-2 gap-3 md:gap-6 md:grid-cols-3">
+          <!-- Columna izquierda - Información básica -->
+          <div class="space-y-3 md:space-y-6">
+            <div class="flex flex-col p-3 bg-white rounded-xl shadow-sm md:p-6">
+              <h2 class="flex items-center mb-2 text-lg font-bold text-gray-800 md:mb-4 md:text-xl">
+                <v-icon name="md-info" class="mr-2 text-indigo-600" />
+                Información básica
+              </h2>
+              <div class="space-y-2 md:space-y-4">
+
+                <div>
+                  <p class="text-xs text-gray-500 md:text-sm">Cédula profesional</p>
+                  <p class="text-sm md:font-medium">{{ data.profesionalId }}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500 md:text-sm">Miembro desde</p>
+                  <p class="text-sm md:font-medium">{{ data.formattedDate }}</p>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div>
-            <p class="text-xs text-gray-500 md:text-sm">Miembro desde</p>
-            <p class="text-sm md:font-medium">{{ data.formattedDate }}</p>
+
+          <!-- Columna central - Biografía y estadísticas -->
+          <div class="space-y-3 md:space-y-6 md:col-span-2">
+            <div class="p-3 bg-white rounded-xl shadow-sm md:p-6">
+              <h2 class="flex items-center mb-2 text-lg font-bold text-gray-800 md:mb-4 md:text-xl">
+                <v-icon name="bi-person-lines-fill" class="mr-2 text-indigo-600" />
+                Sobre mí
+              </h2>
+              <p class="text-sm text-gray-700 md:leading-relaxed">
+                {{ data.bio }}
+              </p>
+            </div>
+
+
           </div>
         </div>
       </div>
-     
-    </div>
-
-    <!-- Columna central - Biografía y estadísticas -->
-    <div class="space-y-3 md:space-y-6 md:col-span-2">
-      <div class="p-3 bg-white rounded-xl shadow-sm md:p-6">
-        <h2 class="flex items-center mb-2 text-lg font-bold text-gray-800 md:mb-4 md:text-xl">
-          <v-icon name="bi-person-lines-fill" class="mr-2 text-indigo-600" />
-          Sobre mí
-        </h2>
-        <p class="text-sm text-gray-700 md:leading-relaxed">
-          {{ data.bio }}
-        </p>
-      </div>
-
-     
-    </div>
-  </div>
-</div>
 
 
-<!--End section about expert-->
+      <!--End section about expert-->
       <section class="py-2 bg-gradient-to-b from-gray-50 to-white">
         <div class="container px-4 mx-auto max-w-7xl">
           <div class="hidden p-8 bg-white rounded-xl ring-1 ring-gray-100 shadow-lg">
@@ -141,7 +142,7 @@
               </div>
             </div>
             <!-- Estado de disponibilidad mejorado -->
-        
+
 
             <!-- Sección de citas existentes -->
             <section v-if="clientStore().getClientUid && userAppointmentsFb.length > 0"
@@ -155,11 +156,11 @@
                     {{ userAppointmentsFb[0].month }} {{ userAppointmentsFb[0].year }}
                   </h3>
                 </div>
-               
+
               </div>
             </section>
           </div>
-          
+
           <!-- Selector de horarios mejorado -->
           <section v-if="availableTimeData && availableTimeData.length > 0"
             class="px-3 py-1 mt-3 bg-white rounded-xl ring-1 ring-gray-100 shadow-lg">
@@ -168,42 +169,33 @@
               Seleccione su horario preferido
             </h3>
             <!-- <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-7"> -->
-              <div class="flex overflow-auto gap-2 justify-between">
-  <div 
-    v-for="(weekDay, index) in weekDays" 
-    :key="index" 
-    class="animate-fade-up"
-    :style="{ animationDelay: `${index * 400}ms` }"
-  >
-  <DateSquare 
-  v-if="availableTimeData[0]?.days"
-  @hour-selected="(hour) => getUserSelection(weekDay.day, hour, index)"
-  :day-info="{
-    day: weekDay.day,
-    dayNumber: weekDay.dateNumber,
-    availableDay: availableTimeData[0]?.days.find(d => d.day === weekDay.day)?.availableDay || false,
-    slots: availableTimeData[0]?.days.find(d => d.day === weekDay.day)?.slots || []
-  }" 
-  :available-for-appointment="availableTimeData[0]?.days.find(d => d.day === weekDay.day)?.availableDay || false" 
-  :selected-day="userDateSelection"
-  :selected-hour="userHourSelection" 
-  :index="index"
-/>
-  </div>
-</div>
+            <div class="flex overflow-auto gap-2 justify-between">
+              <div v-for="(weekDay, index) in weekDays" :key="index" class="animate-fade-up"
+                :style="{ animationDelay: `${index * 400}ms` }">
+                <DateSquare v-if="availableTimeData[0]?.days"
+                  @hour-selected="(hour) => getUserSelection(weekDay.day, hour, index)" :day-info="{
+                    day: weekDay.day,
+                    dayNumber: weekDay.dateNumber,
+                    availableDay: availableTimeData[0]?.days.find(d => d.day === weekDay.day)?.availableDay || false,
+                    slots: availableTimeData[0]?.days.find(d => d.day === weekDay.day)?.slots || []
+                  }"
+                  :available-for-appointment="availableTimeData[0]?.days.find(d => d.day === weekDay.day)?.availableDay || false"
+                  :selected-day="userDateSelection" :selected-hour="userHourSelection" :index="index" />
+              </div>
+            </div>
           </section>
 
           <!-- Confirmación de cita mejorada -->
-          <article 
-            class="mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-xl">
-            <div  v-if="useAppointmentStore().getSelectedHour" class="flex flex-col gap-6 items-center p-8 animate-fade-down animate-delay-300 md:flex-row">
+          <article class="mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-xl">
+            <div v-if="useAppointmentStore().getSelectedHour"
+              class="flex flex-col gap-6 items-center p-8 animate-fade-down animate-delay-300 md:flex-row">
               <div class="flex-1">
                 <h3 class="flex gap-3 items-center text-2xl font-semibold text-white">
                   <v-icon name="bi-calendar" class="text-white" />
                   <span>
                     Confirmación de cita -
                     <span class="font-bold">{{ useAppointmentStore().getFormattedDate }} </span>
-                   <span class="font-mono"> a las {{ useAppointmentStore().getSelectedHour }}hrs</span>
+                    <span class="font-mono"> a las {{ useAppointmentStore().getSelectedHour }}hrs</span>
                   </span>
                 </h3>
                 <p class="mt-2 text-blue-100">
@@ -211,12 +203,12 @@
                 </p>
               </div>
               <button @click="scheduleAppointment"
-        class="flex items-center px-8 py-3 space-x-2 font-semibold text-blue-900 bg-white rounded-xl transition-all hover:bg-blue-50">
-  <v-icon name="bi-send-check" class="text-blue-600" />
-  <span>Confirmar cita</span>
-</button>
+                class="flex items-center px-8 py-3 space-x-2 font-semibold text-blue-900 bg-white rounded-xl transition-all hover:bg-blue-50">
+                <v-icon name="bi-send-check" class="text-blue-600" />
+                <span>Confirmar cita</span>
+              </button>
             </div>
-            
+
           </article>
         </div>
       </section>
@@ -261,26 +253,26 @@
       <section class="py-3 bg-gray-50">
         <div class="container px-4 mx-auto max-w-7xl">
           <div class="grid gap-8 lg:grid-cols-2">
-    
+
 
             <!-- Formulario de contacto mejorado -->
             <div class="hidden p-8 bg-white rounded-xl ring-1 ring-gray-100 shadow-lg">
               <div class="flex gap-3 items-center mb-8">
-           
+
                 <h2 class="text-2xl font-bold text-gray-900">Formulario de contacto</h2>
               </div>
 
               <!-- Sección de adjuntos mejorada -->
               <div class="mb-8">
                 <label class="block mb-4 text-lg font-medium text-gray-700">
-                  
+
                   Adjuntar documentos
                 </label>
                 <div
                   class="relative rounded-xl border-2 border-gray-300 border-dashed transition-colors hover:border-emerald-500">
                   <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <div class="flex flex-col justify-center items-center p-8 text-center">
-             
+
                     <p class="text-gray-500">Arrastra archivos o haz clic para subir</p>
                     <p class="mt-2 text-sm text-gray-400">Formatos soportados: PDF, JPG, PNG (hasta 5MB)</p>
                   </div>
@@ -323,11 +315,11 @@ import 'notyf/notyf.min.css'; // for React, Vue and Svelte
 // Create an instance of Notyf
 const notyf = new Notyf({
   duration: 3000,
-  dismissible:true,
-  ripple:true,
-  position:{
-    x:'center',
-    y:'top'
+  dismissible: true,
+  ripple: true,
+  position: {
+    x: 'center',
+    y: 'top'
   }
 });
 
@@ -397,11 +389,12 @@ const availableTimeData = ref<any>()
 const db = getFirestore()
 const collectionDates = collection(db, `Dates`)
 
-const collectionMockExperts = collection(db, `MockExperts/${sysStore.getSelectedExpertUid}/Schedule`) //V2 This will get as param the UID of the expert based on the click that user did when clicking on the expert (in the ExpertsListView)
 //TODO:Add Interface to it
 
 const isLoading = ref(true)
 
+
+const collectionMockExperts = collection(db, `experts/${sysStore.getSelectedExpertUid}/schedule`) //V2 This will get as param the UID of the expert based on the click that user did when clicking on the expert (in the ExpertsListView) 
 
 //Function to get the dates from Firebase
 const getDates = async () => {
@@ -409,36 +402,16 @@ const getDates = async () => {
   availableTimeData.value = [];
   try {
     const querySnapshot = await getDocs(collectionMockExperts);
-    const docData = querySnapshot.docs[0]?.data();
-    
-    if (!docData?.days) {
-      console.error('No se encontró la estructura de días');
-      return;
-    }
+    querySnapshot.forEach((doc) => {
+      console.log('Schedule:', doc.data());
 
-    const today = new Date();
-    const currentDay = today.getDay();
-    const daysOfWeek = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    
-    // Reordenar días para que empiece por hoy
-    const reorderedDays = [
-      ...daysOfWeek.slice(currentDay),
-      ...daysOfWeek.slice(0, currentDay)
-    ];
+      availableTimeData.value.push(doc.data());
+    });
 
-    // Actualizar el estado con la estructura de days
-    availableTimeData.value = [{
-      days: docData.days.map(day => ({
-        ...day,
-        // Asegurarse de que los slots estén inicializados
-        slots: day.slots || []
-      }))
-    }];
-
-    console.log('Datos cargados (solo days):', availableTimeData.value);
     getClientAppointments();
-    
-  } catch (error) {
+
+  }
+  catch (error) {
     console.error('Error al obtener fechas:', error);
     notyf.error('Error al cargar el horario');
   } finally {
@@ -515,6 +488,73 @@ addDoc(collectionMockExperts, {
 
     ),
 */
+
+const addNewExpert = () => {
+  addDoc(collectionMockExperts, {
+    availableForAppointment: false,
+    userUid: 'expert_1',
+    weeklySchedule: [
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Lunes',
+          availableHours: ['10:30', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['10:00', '11:00']
+        }
+      },
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Martes',
+          availableHours: ['10:00', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['10:00', '11:00']
+        }
+      },
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Miércoles',
+          availableHours: ['10:00', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['14:30', '12:00']
+        }
+      },
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Jueves',
+          availableHours: ['10:00', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['10:30', '11:00']
+        }
+      },
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Viernes',
+          availableHours: ['10:00', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['10:30', '11:00']
+        }
+      },
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Sábado',
+          availableHours: ['10:00', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['10:30', '11:00']
+        }
+      },
+      {
+        dayInfo: {
+          isDayAvailable: false,
+          day: 'Domingo',
+          availableHours: ['10:00', '11:00', '12:00', '13:00', '14:30', '15:00', '16:00', '17:00'],
+          hoursTaken: ['10:00', '11:00']
+        }
+      }
+    ],
+
+  }
+  )
+}
 const addNewDate = async () => {
   try {
     addDoc(collectionMockExperts, {
@@ -586,10 +626,10 @@ const getClientAppointments = async () => {
         //(doc.data());
       });
       //(userAppointmentsFb.value);
-      
+
       if (userAppointmentsFb.value.some((appointment: IFutureAppointment) => appointment.userId === authStore().getUserUid)) {
         //('User has scheduled an appointment, userUid: ', authStore().getUserUid);
-     
+
       } else {
         //('User has not scheduled an appointment, userUid: ', authStore().getUserUid);
       }
@@ -621,7 +661,7 @@ const addFutureAppointment = async () => {
       await addDoc(clientCollectionFutureAppointments, FutureAppointment);
     }
     //('Future appointment added successfully');
-    
+
   } catch (error) {
     //(error);
   }
@@ -629,23 +669,23 @@ const addFutureAppointment = async () => {
 
 
 //Schedule appointment to the expert collection and call addFutureAppointment to add the appointment to the client collection (if user has an appointment scheduled with this expert, do not allow to schedule another one)
-const addAppointmentToClient = async() => {
+const addAppointmentToClient = async () => {
   try {
- //Get the user subcollection that'll match the uid from pinia
- const customId = doc(db, `users/${authStore().getUserUid}/FutureAppointments/${sysStore.getSelectedExpertUid}`)
- await setDoc(customId, {
-   hour: useAppointmentStore().selectedHour,
-   day: useAppointmentStore().dayName,
-   formattedDate: useAppointmentStore().formattedDate,
-   expertUid: sysStore.getSelectedExpertUid,
-   userId: authStore().getUserUid,
-   createdAt: Timestamp.now(),
-   expertName: data.name,
-   specialty: data.specialty,
-   professionalId: data.profesionalId,
-   appointmentLink:''
- })
- //('Cita agregada exitosamente');
+    //Get the user subcollection that'll match the uid from pinia
+    const customId = doc(db, `users/${authStore().getUserUid}/FutureAppointments/${sysStore.getSelectedExpertUid}`)
+    await setDoc(customId, {
+      hour: useAppointmentStore().selectedHour,
+      day: useAppointmentStore().dayName,
+      formattedDate: useAppointmentStore().formattedDate,
+      expertUid: sysStore.getSelectedExpertUid,
+      userId: authStore().getUserUid,
+      createdAt: Timestamp.now(),
+      expertName: data.name,
+      specialty: data.specialty,
+      professionalId: data.profesionalId,
+      appointmentLink: ''
+    })
+    //('Cita agregada exitosamente');
   } catch (error) {
     //(error);
   }
@@ -653,12 +693,12 @@ const addAppointmentToClient = async() => {
 
 
 //Getting the dates and returning the hours taken that matches with the user uid
-const getIsUserScheduled =  async () => {
+const getIsUserScheduled = async () => {
   try {
     console.log('Verificando si el usuario ya tiene cita...');
     const currentUserId = authStore().getUserUid;
     console.log('ID del usuario actual:', currentUserId);
-    
+
     // Aseguramos que los datos estén cargados
     if (!availableTimeData.value || availableTimeData.value.length === 0) {
       console.log('Cargando fechas...');
@@ -666,9 +706,9 @@ const getIsUserScheduled =  async () => {
     }
 
     // Verificamos si el usuario ya tiene una cita programada
-    const hasAppointment = availableTimeData.value.some((week: any) => 
-      week.days.some((day: any) => 
-        day.slots.some((slot: any) => 
+    const hasAppointment = availableTimeData.value.some((week: any) =>
+      week.days.some((day: any) =>
+        day.slots.some((slot: any) =>
           slot.takenBy === currentUserId
         )
       )
@@ -702,11 +742,11 @@ const scheduleAppointment = async () => {
   }
 
   isLoading.value = true;
-  
+
   try {
     // Primero obtenemos las fechas
     await getDates();
-    
+
     // Verificamos si el usuario ya tiene una cita programada
     const hasExistingAppointment = await getIsUserScheduled();
     if (hasExistingAppointment) {
@@ -714,8 +754,8 @@ const scheduleAppointment = async () => {
       isLoading.value = false;
       return;
     }
-   
-    
+
+
     // Resto del código para programar la cita
     console.log('Programando cita para:', {
       day: appointmentStore.dayName,
@@ -725,50 +765,50 @@ const scheduleAppointment = async () => {
 
     // 1. Get the reference to the selected expert's document
     const expertRef = doc(db, 'MockExperts', sysStore.getSelectedExpertUid);
-    
+
     // 2. Get the expert's 'Schedule' collection
     const scheduleRef = collection(expertRef, 'Schedule');
-    
+
     // 3. Query the documents in the collection, ignoring the one with the same UID as the expert
     const q = query(scheduleRef, where('userUid', '!=', 'testing'));
     const querySnapshot = await getDocs(q);
-    
+
     // Check if no documents were found
     if (querySnapshot.empty) {
       console.error('No se encontró el horario del experto');
       notyf.error('No se encontró el horario del experto');
-      isLoading.value = false; 
+      isLoading.value = false;
       return;
     }
 
     // 4. Get the reference and data of the first found document
     const docRef = querySnapshot.docs[0].ref;
     const docData = querySnapshot.docs[0].data();
-    
+
     // 5. Create a copy of the days array to manipulate it without affecting the original directly
     const updatedDays = [...docData.days];
-    
+
     // 6. Find the index of the selected day within the array
-    const dayIndex = updatedDays.findIndex(day => 
+    const dayIndex = updatedDays.findIndex(day =>
       day.day.toLowerCase() === appointmentStore.dayName.toLowerCase()
     );
-    
+
     // 7. If the day was found
     if (dayIndex !== -1) {
       // 8. Update the slots of the found day by marking the selected hour as taken
       updatedDays[dayIndex] = {
         ...updatedDays[dayIndex],
-        slots: updatedDays[dayIndex].slots.map(slot => 
+        slots: updatedDays[dayIndex].slots.map(slot =>
           slot.hour === appointmentStore.selectedHour
-            ? { ...slot, takenBy: client.getClientUid, isConfirmed:false } // Mark the slot as taken
+            ? { ...slot, takenBy: client.getClientUid, isConfirmed: false } // Mark the slot as taken
             : slot
         )
       };
-      
+
       // 9. Save the changes in Firestore
       await updateDoc(docRef, { days: updatedDays });
       console.log('Horario actualizado exitosamente');
-      
+
       // 10. Optional: Reset values and refresh data
       addAppointmentToClient(); // Add the appointment to the client
       appointmentStore.setAppointment('', '', ''); // Clear the current selection
@@ -780,13 +820,13 @@ const scheduleAppointment = async () => {
       // If the day was not found in the document
       console.error('Día no encontrado en el horario');
       notyf.error('Día no encontrado en el horario');
-      isLoading.value = false; 
+      isLoading.value = false;
     }
   } catch (error) {
     // Error handling for updating the document
     console.error('Error al actualizar el horario en Firebase:', error);
     notyf.error(`Error al actualizar el horario en Firebase: ${error}`);
-    isLoading.value = false; 
+    isLoading.value = false;
   } finally {
     // End the loading state
     isLoading.value = false;
@@ -843,7 +883,7 @@ const getSchedulesFromAllExperts = async () => {
   try {
     // 1. Obtener todos los expertos
     const expertsSnapshot = await getDocs(collection(db, 'MockExperts'));
-    
+
     // 2. Para cada experto, obtener su Schedule
     const schedulesPromises = expertsSnapshot.docs.map(async (expertDoc) => {
       const scheduleSnapshot = await getDocs(collection(db, `MockExperts/${expertDoc.id}/Schedule`));
@@ -871,13 +911,13 @@ const getWeekDays = () => {
   const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   const today = new Date();
   const currentDay = today.getDay(); // 0 (Domingo) a 6 (Sábado)
-  
+
   // Reordenar el array para que empiece por el día actual
   const reorderedDays = [
     ...days.slice(currentDay),
     ...days.slice(0, currentDay)
   ];
-  
+
   // Crear array de los próximos 7 días
   return reorderedDays.map((day, index) => {
     const date = new Date(today);
@@ -899,104 +939,104 @@ const handleHourSelected = (hour: string, day: string) => {
   //('Hora seleccionada en el padre:', { hour, day });
   userDateSelection.value = day;
   userHourSelection.value = hour;
-  
+
   // Aquí puedes agregar cualquier lógica adicional que necesites
   // como actualizar el estado de la cita, mostrar un resumen, etc.
 };
 
 
-import { reactive } from 'vue';  
+import { reactive } from 'vue';
 
 import InfoUserLoader from '@/animations/InfoUserLoader.vue';
 import ContentLoader from '@/animations/ContentLoader.vue';
 import router from '@/router';
 const isLoadingExpertInfo = ref(true);
 const data = reactive({
-    name: '',
-    specialty: '',
-    rating: 0,
-    totalRatings: 0,
-    bio: '',
-    experienceYears: 0,
-    completedSessions: 0,
-    profesionalId: '',
-    email: '',
-    isBanned: false,
-    isSuspended: false,
-    suspensionReason: '',
-    formattedDate: '',
-    imgUrl: ''
+  name: '',
+  specialty: '',
+  rating: 0,
+  totalRatings: 0,
+  bio: '',
+  experienceYears: 0,
+  completedSessions: 0,
+  profesionalId: '',
+  email: '',
+  isBanned: false,
+  isSuspended: false,
+  suspensionReason: '',
+  formattedDate: '',
+  imgUrl: ''
 })
 //Firebase stuff
 
 const expertMockCollection = collection(db, 'MockExperts');
 const expertData = ref();
 const getExpertData = async () => {
-    try {
-        const qGetExpertMatch = query(expertMockCollection, where('userUid', '==', sysStore.getSelectedExpertUid));
+  try {
+    const qGetExpertMatch = query(expertMockCollection, where('userUid', '==', sysStore.getSelectedExpertUid));
 
-        const expertMockSnapshot = await getDocs(qGetExpertMatch);
-        if(expertMockSnapshot.empty){
-            //('No se encontró experto en la vista ExpertInfoView');
-            return;
-        }
-        //('Se encontro experto en la vista ExpertInfoView');
-        //(expertMockSnapshot.docs[0].data());
-        
-        expertData.value = expertMockSnapshot.docs[0].data();
-        data.name = expertData.value.name;
-        data.specialty = expertData.value.specialty;
-        data.rating = expertData.value.rating;
-        data.totalRatings = expertData.value.totalRatings;
-        data.bio = expertData.value.bio;
-        data.experienceYears = expertData.value.experienceYears;
-        data.completedSessions = expertData.value.completedSessions;
-        data.profesionalId = expertData.value.profesionalId;
-        data.email = expertData.value.email;
-        data.isBanned = expertData.value.isBanned;
-        data.isSuspended = expertData.value.isSuspended;
-        data.suspensionReason = expertData.value.suspensionReason;
-        data.formattedDate = expertData.value.createdAt.toDate().toLocaleDateString();
-        data.imgUrl = expertData.value.imgUrl;
-        isLoadingExpertInfo.value = false;
-        } catch (error) {
-        //(error);
-    } finally {
-        isLoadingExpertInfo.value = false;
+    const expertMockSnapshot = await getDocs(qGetExpertMatch);
+    if (expertMockSnapshot.empty) {
+      //('No se encontró experto en la vista ExpertInfoView');
+      return;
     }
+    //('Se encontro experto en la vista ExpertInfoView');
+    //(expertMockSnapshot.docs[0].data());
+
+    expertData.value = expertMockSnapshot.docs[0].data();
+    data.name = expertData.value.name;
+    data.specialty = expertData.value.specialty;
+    data.rating = expertData.value.rating;
+    data.totalRatings = expertData.value.totalRatings;
+    data.bio = expertData.value.bio;
+    data.experienceYears = expertData.value.experienceYears;
+    data.completedSessions = expertData.value.completedSessions;
+    data.profesionalId = expertData.value.profesionalId;
+    data.email = expertData.value.email;
+    data.isBanned = expertData.value.isBanned;
+    data.isSuspended = expertData.value.isSuspended;
+    data.suspensionReason = expertData.value.suspensionReason;
+    data.formattedDate = expertData.value.createdAt.toDate().toLocaleDateString();
+    data.imgUrl = expertData.value.imgUrl;
+    isLoadingExpertInfo.value = false;
+  } catch (error) {
+    //(error);
+  } finally {
+    isLoadingExpertInfo.value = false;
+  }
 }
 
 onMounted(() => {
-    //('Selected expert uid:', sysStore.getSelectedExpertUid);
-    
-  })
+  //('Selected expert uid:', sysStore.getSelectedExpertUid);
+
+})
 //En la cita deberá haber un banner donde diga que sta prohibido compartir datos de contacto con el experto (no se permite compartir datos de contacto con el experto) (LOGO)
 // Con fines de calidad en el servicio, la  llamada será grabada y podrá ser reproducida por el experto en caso de que el cliente no cumpla con el servicio contratado.
 //Banner en el top permanente con el nombre de la empresa/app 
- 
+
 const handleRefresh = (event: CustomEvent) => {
-        setTimeout(() => {
-          // Any calls to load data go here
-          availableTimeData.value = [];
-          data.formattedDate = '';
-          data.experienceYears = 0;
-          data.completedSessions = 0;
-          data.profesionalId = '';
-          data.email = '';
-          data.isBanned = false;
-          data.isSuspended = false;
-          data.suspensionReason = '';
-          data.imgUrl = '';
-          isLoadingExpertInfo.value = true;
-          
-          if(event.target){
-            event.target.complete();
-          }
-          getDates();
-          getExpertData();
-          
-        }, 200);
-      }
+  setTimeout(() => {
+    // Any calls to load data go here
+    availableTimeData.value = [];
+    data.formattedDate = '';
+    data.experienceYears = 0;
+    data.completedSessions = 0;
+    data.profesionalId = '';
+    data.email = '';
+    data.isBanned = false;
+    data.isSuspended = false;
+    data.suspensionReason = '';
+    data.imgUrl = '';
+    isLoadingExpertInfo.value = true;
+
+    if (event.target) {
+      event.target.complete();
+    }
+    getDates();
+    getExpertData();
+
+  }, 200);
+}
 //All the unmounted values
 /**
  * onMounted(() => {
@@ -1057,20 +1097,20 @@ const names = [
 
 let timeoutId: NodeJS.Timeout | null = null;
 const currentName = ref<string[]>(names[0]);
- const animateNames = () => {
+const animateNames = () => {
   timeoutId = setInterval(() => {
     const randomIndex = Math.floor(Math.random() * names.length);
     currentName.value = names[randomIndex];
   }, 2000);
-  
- }
 
- onIonViewDidEnter(() => {
+}
+
+onIonViewDidEnter(() => {
   animateNames();
 })
 
 onIonViewDidLeave(() => {
-  if(timeoutId){
+  if (timeoutId) {
     clearInterval(timeoutId);
     timeoutId = null;
   }

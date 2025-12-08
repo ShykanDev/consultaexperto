@@ -33,7 +33,8 @@ import '@vuepic/vue-datepicker/dist/main.css'
 /* @import '@ionic/vue/css/palettes/dark.class.css'; */
 /*import '@ionic/vue/css/palettes/dark.system.css';*/
 
-/* Theme variables */
+/* Theme variables 
+*/
 import './theme/variables.css';
 
 import { OhVueIcon, addIcons } from "oh-vue-icons";

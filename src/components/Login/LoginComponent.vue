@@ -1,53 +1,62 @@
 <template>
   <ion-content>
 
-  <div class="relative w-full bg-[#F6F8F7] ion-padding">
+    <div class="relative w-full bg-[#F6F8F7] ion-padding">
 
-    <section v-if="loading"
-      class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
-      <!--Loader dots spinner (when user is logging in)-->
-      <LoaderMultipleDots />-
-    </section>
+      <section v-if="loading"
+        class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
+        <!--Loader dots spinner (when user is logging in)-->
+        <LoaderMultipleDots />-
+      </section>
 
-    <div class="px-1 py-1 mx-auto max-w-8xl md:px-2">
-      <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
-        <div class="order-2 space-y-3 md:order-1">
-          <h2
-            class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
-            Su plataforma para consultar un experto:
-          </h2>
+      <div class="px-1 py-1 mx-auto max-w-8xl md:px-2">
+        <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
+          <div class="order-2 space-y-3 md:order-1">
+            <h2
+              class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
+              Su plataforma para consultar un experto:
+            </h2>
 
-          <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
-            <div class="grid col-span-2 items-center p-2">
-              <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
-                  class="font-bold text-blue-600">{{ experts[currentExpert].name
-                  }}</span>
-              </h4>
-              <div class="flex flex-col justify-around items-center p-1 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-2xl opacity-90 text-md font-poppins">
-                <p>¡Primera consulta gratis! </p>
-                <div class="flex gap-2">
-                  <v-icon name="md-supportagent-outlined" scale="1" />
-                  <v-icon name="bi-gift-fill" scale="1" />
+            <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
+              <div class="grid col-span-2 items-center p-2">
+                <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
+                    class="font-bold text-blue-600">{{ experts[currentExpert].name
+                    }}</span>
+                </h4>
+                <div
+                  class="flex flex-col justify-around items-center p-1 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-2xl opacity-90 text-md font-poppins">
+                  <p>¡Primera consulta gratis! </p>
+                  <div class="flex gap-2">
+                    <v-icon name="md-supportagent-outlined" scale="1" />
+                    <v-icon name="bi-gift-fill" scale="1" />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div  class="flex justify-center items-center">
-              <img :src="experts[currentExpert].img" class="w-40 rounded-3xl ring-2 ring-blue-500 ring-offset-2"  :alt="experts[currentExpert].name">
-            </div>
-          </aside>
+              <div class="flex justify-center items-center min-h-28">
+                <img :src="experts[currentExpert].img"
+                  class="w-40 rounded-3xl ring-2 ring-blue-500 ring-offset-2 animate-fade"
+                  :key="experts[currentExpert].name" :alt="experts[currentExpert].name">
+              </div>
+            </aside>
 
-          
-      <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out" :class="{ 'bg-gradient-to-r from-blue-600 to-blue-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
+
+            <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out"
+              :class="{ 'bg-gradient-to-r from-blue-600 to-blue-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
               <div class="w-full">
                 <div class="w-full">
                   <!-- Header del acordeón -->
                   <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
-                    <span class="font-medium text-md font-poppins" :class="{ 'text-white': isAccordionOpen, 'text-blue-600': !isAccordionOpen }">{{ isAccordionOpen ? 'Listado de expertos' : 'Ver todos los expertos' }}</span>
-                    <v-icon name="hi-solid-chevron-down" scale="1.5" class="transition-transform duration-300 ease-in-out" :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
+                    <span class="font-medium text-md font-poppins"
+                      :class="{ 'text-white': isAccordionOpen, 'text-blue-600': !isAccordionOpen }">{{ isAccordionOpen ?
+                        'Listado de expertos' : 'Ver todos los expertos' }}</span>
+                    <v-icon name="hi-solid-chevron-down" scale="1.5"
+                      class="transition-transform duration-300 ease-in-out"
+                      :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
                   </div>
 
                   <!-- Contenido del acordeón -->
-                  <div v-show="isAccordionOpen" class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
+                  <div v-show="isAccordionOpen"
+                    class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
                     <ul>
                       <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
                         class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-blue-600 hover:text-white animate-fade-down ion-padding"
@@ -55,8 +64,7 @@
                           'bg-blue-600 text-white': expert.name === experts[currentExpert].name,
                           'bg-blue-500/25': expert.name !== experts[currentExpert].name,
                           'bg-blue-800 text-white font-black italic': expert.name === userSelection,
-                        }"
-                        :style="{
+                        }" :style="{
                           'animation-delay': `${index * 50}ms`
                         }">
                         {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
@@ -68,58 +76,63 @@
             </div>
 
 
+          </div>
+
         </div>
+      </div>
+
+
+
+
+
+
+      <div class="flex justify-center">
 
       </div>
-    </div>
+
+
+      <div class="flex flex-col justify-center mb-2 items-left font-manrope">
+        <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
+      </div>
+
+
+
+      <ion-list class="form-container">
+        <!-- Email Input -->
+        <ion-input label-placement="start" v-model="email" type="email" class="input" fill="outline"
+          placeholder="email@domain.com">
+          <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary"
+            aria-hidden="true"></ion-icon>
+
+        </ion-input>
+        <ion-input label-placement="start" v-model="password" type="password" fill="outline" placeholder="Contraseña"
+          class="mt-4 input">
+          <ion-icon slot="start" :icon="lockClosed" size="large" class="custom" color="primary"
+            aria-hidden="true"></ion-icon>
+
+        </ion-input>
+      </ion-list>
 
 
 
 
+      <!-- Action Buttons -->
+      <div class="actions">
+        <ion-button expand="block" @click="login" class="login">
+          Iniciar Sesión
+        </ion-button>
+
+        <ion-button id="present-alert" fill="outline" shape="round" size="small" class="button-login">Olvidé mi
+          contraseña</ion-button>
+        <ion-alert trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
+          :inputs="alertInputs"></ion-alert>
 
 
-    <div class="flex justify-center">
 
-    </div>
+      </div>
 
-
-    <div class="flex flex-col justify-center mb-2 items-left font-manrope">
-      <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
-    </div>
-
-
-
-    <ion-list class="form-container">
-      <!-- Email Input -->
-         <ion-input label-placement="start" v-model="email"  type="email" class="input"  fill="outline" placeholder="email@domain.com">
-        <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary" aria-hidden="true"></ion-icon>  
-
-      </ion-input>
-   <ion-input label-placement="start" v-model="password"  type="password"  fill="outline" placeholder="Contraseña" class="mt-4 input">
-        <ion-icon slot="start" :icon="lockClosed" size="large" class="custom" color="primary" aria-hidden="true"></ion-icon>
-
-      </ion-input>
-    </ion-list>
-
-    
-
-
-    <!-- Action Buttons -->
-    <div class="actions">
-      <ion-button expand="block" @click="login" class="login">
-        Iniciar Sesión
-      </ion-button>
-
-      <ion-button id="present-alert" fill="outline" shape="round" size="small" class="button-login" >Olvidé mi contraseña</ion-button>
-      <ion-alert  trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
-        :inputs="alertInputs"></ion-alert>
-
-         
 
     </div>
-
-
-  </div>
 
 
   </ion-content>
@@ -138,7 +151,7 @@ import Maestro from '@/assets/img/Maestro.jpeg';
 import Marketing from '@/assets/img/Marketing.jpeg';
 import Medico from '@/assets/img/Medico.jpeg';
 import Peritaje from '@/assets/img/Peritaje.jpeg';
-import Psicologo from '@/assets/img/Psicologo.jpeg' ;
+import Psicologo from '@/assets/img/Psicologo.jpeg';
 import Publicidad from '@/assets/img/Publicidad.jpeg';
 import Traductor from '@/assets/img/Traductor.jpeg';
 import WebDesigner from '@/assets/img/webDev.jpeg';
@@ -153,7 +166,7 @@ import WebDesigner from '@/assets/img/webDev.jpeg';
 
 
 
-import{
+import {
   IonItem,
   IonInput,
   IonButton,
@@ -161,7 +174,7 @@ import{
   IonIcon,
   IonAccordion, IonAccordionGroup, IonLabel,
   IonAlert,
-  IonContent  
+  IonContent
 } from '@ionic/vue';
 import {
   mail,
@@ -171,7 +184,7 @@ import {
   mailSharp,
   mailOutline
 } from 'ionicons/icons';
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, User } from 'firebase/auth';
 import { authStore } from '@/store/auth';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
@@ -184,23 +197,23 @@ import {
 import { toastController } from '@ionic/vue';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-    const toast = await toastController.create({
-      message: message,
-      duration: 1500,
-      position: position,
-      color: color,
-      swipeGesture:'vertical',
-      translucent: true,
-      buttons: [
-        {
-          text: 'cerrar',
-          role: 'cancel',
-        }
-      ]
-    });
+  const toast = await toastController.create({
+    message: message,
+    duration: 1500,
+    position: position,
+    color: color,
+    swipeGesture: 'vertical',
+    translucent: true,
+    buttons: [
+      {
+        text: 'cerrar',
+        role: 'cancel',
+      }
+    ]
+  });
 
-    await toast.present();
-  };
+  await toast.present();
+};
 
 
 const email = ref('');
@@ -232,11 +245,32 @@ const verifyIsExpert = async (email: string) => {
   }
 }
 
-const isAdminEmail = (email:string) => {
-  return email === "accmac2000@gmail.com";
+
+const adminEmailsCollection = collection(db, 'AdminEmails');
+const isAdminEmail = async (email: string) => {
+  try {
+    const qGetAdminMatch = query(adminEmailsCollection, where('email', '==', email));
+    const snapshot = await getDocs(qGetAdminMatch);
+    if (snapshot.empty) {
+      console.log('There are not results for the current email');
+      return false;
+    }
+    // Since we queried by email, existence implies it matches.
+    // However, keeping the logging logic but simplifying the return.
+    snapshot.docs.forEach(doc => {
+      console.log(doc.data());
+      if (doc.data().email === email) {
+        console.log(`El correo ${email} es de un administrador`);
+      }
+    });
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
 
-const handleAdminLogin = ( uid:string, name:string, userEmail:string ) => {
+const handleAdminLogin = (uid: string, name: string, userEmail: string) => {
   authStore().setIsAuth(true);
   authStore().setUserUid(uid);
   authStore().setUserName(name);
@@ -247,7 +281,7 @@ const handleAdminLogin = ( uid:string, name:string, userEmail:string ) => {
   router.push("/expert-list-admin"); // ruta especial
 };
 
-const handleExpertLogin = ( uid:string, name:string, userEmail:string ) => {
+const handleExpertLogin = (uid: string, name: string, userEmail: string) => {
   authStore().setIsAuth(true);
   authStore().setUserUid(uid);
   authStore().setUserName(name);
@@ -258,7 +292,7 @@ const handleExpertLogin = ( uid:string, name:string, userEmail:string ) => {
   router.push("/expert");
 };
 
-const handleClientLogin = ( uid:string, name:string, userEmail:string ) => {
+const handleClientLogin = (uid: string, name: string, userEmail: string) => {
   authStore().setIsAuth(true);
   authStore().setUserUid(uid);
   clientStore().setClientUid(uid);
@@ -281,7 +315,7 @@ const login = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
 
-    if (!userCredential || !userCredential.user || !userCredential.user.email || !userCredential.user.uid ) {
+    if (!userCredential || !userCredential.user || !userCredential.user.email || !userCredential.user.uid) {
       setLoading(false);
       return;
     }
@@ -290,8 +324,8 @@ const login = async () => {
     const name = displayName || "Usuario";
 
     // 1. Roles especiales
-    if (isAdminEmail(userEmail)) {
-       handleAdminLogin(uid, name, userEmail);
+    if (await isAdminEmail(userEmail)) {
+      handleAdminLogin(uid, name, userEmail);
       return;
     }
 
@@ -347,9 +381,8 @@ onMounted(() => {
         currentExpert.value = 0;
       }
 
-    }, 2000);
+    }, 4000);
   }
-
 });
 
 //Is user selecting an expert (boolean)
@@ -426,7 +459,7 @@ const startAnimation = () => {
       const nextIndex = (currentIndex + 1) % names.length;
       currentName.value = names[nextIndex];
       changeName(); // Siguiente iteración
-    }, 2000);
+    }, 5000);
   };
 
   // Iniciar la animación
@@ -512,7 +545,7 @@ onIonViewDidLeave(() => {
   --border-radius: 25px;
   --padding: 1;
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  
+
   height: 60px;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -629,24 +662,26 @@ ion-content {
 }
 
 ion-icon.custom {
-    --background: var(--ion-color-primary);
-    --color:red;
+  --background: var(--ion-color-primary);
+  --color: red;
 }
+
 ion-button.login {
-    --background: rgb(0, 75, 156);
-    --color:white;
-    --border-radius: 20px;
-    --padding: 1;
-    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: 60px;
-    font-weight: 600;
-    margin-bottom: 1rem;
+  --background: rgb(0, 75, 156);
+  --color: white;
+  --border-radius: 20px;
+  --padding: 1;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 60px;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
+
 ion-input.input {
-    --border-radius: 25px;
-    --padding: 1;
-    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    height: 60px;
-    font-weight: 600;
+  --border-radius: 25px;
+  --padding: 1;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 60px;
+  font-weight: 600;
 }
 </style>

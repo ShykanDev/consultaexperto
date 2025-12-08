@@ -1,242 +1,254 @@
 <template>
-<ion-page>
+  <ion-page>
 
-<ion-header>
-  <ion-toolbar>
+    <ion-header>
+      <ion-toolbar>
 
-          <ion-title v-if="!expertPopup" class="text-sm font-bold text-right text-green-700 font-quicksand">Listado de Expertos</ion-title>
-          <div class="flex">
-            <span class="text-xs" v-html="currentName" :key="currentName" ></span>
-          </div>
-    <ion-buttons slot="end">
-      <ion-button v-if="expertPopup" @click="toggleExpertPopup('close')" color="danger" mode="ios"  class="animate-fade-left" expand="full">Cerrar <v-icon name="io-close" class=" animate-fade-left animate-delay-[55ms] " /></ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+        <ion-title v-if="!expertPopup" class="text-sm font-bold text-right text-green-700 font-quicksand">Listado de
+          Expertos</ion-title>
+        <div class="flex">
+          <span class="text-xs" v-html="currentName" :key="currentName"></span>
+        </div>
+        <ion-buttons slot="end">
+          <ion-button v-if="expertPopup" @click="toggleExpertPopup('close')" color="danger" mode="ios"
+            class="animate-fade-left" expand="full">Cerrar <v-icon name="io-close"
+              class=" animate-fade-left animate-delay-[55ms] " /></ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
 
-<ion-content class="animate-fade-up animate-duration-100">
-  <!-- Hero Section -->
-  <section class="py-16 text-white bg-gradient-to-r from-emerald-500 to-teal-700">
-    <div class="container px-6 mx-auto text-center">
-      <h1 class="mb-4 text-4xl font-bold md:text-5xl font-inter">Descubra a Nuestros Expertos</h1>
-      <p class="mb-8 text-lg md:text-xl font-inter">Soluciones personalizadas y asesoramiento profesional en diversas áreas</p>
-      
-      <button @click="getAllMockExpers" class="px-4 py-2 font-semibold text-emerald-600 bg-white rounded-lg">Cargar Expertos</button>
-    </div>
-    <div class="flex justify-center rounded-xl bg-sky-700/25 w-dvw">
+    <ion-content class="animate-fade-up animate-duration-100">
+      <!-- Hero Section -->
+      <section class="py-16 text-white bg-gradient-to-r from-emerald-500 to-teal-700">
+        <div class="container px-6 mx-auto text-center">
+          <h1 class="mb-4 text-4xl font-bold md:text-5xl font-inter">Descubra a Nuestros Expertos</h1>
+          <p class="mb-8 text-lg md:text-xl font-inter">Soluciones personalizadas y asesoramiento profesional en
+            diversas áreas</p>
+
+          <button @click="getAllMockExpers" class="px-4 py-2 font-semibold text-emerald-600 bg-white rounded-lg">Cargar
+            Expertos</button>
+        </div>
+        <div class="flex justify-center rounded-xl bg-sky-700/25 w-dvw">
           <ion-accordion-group class="w-full" expand="inset">
-    <ion-accordion value="first" class="w-full" >
-      <ion-item slot="header" class="rounded">
-        <ion-label class="font-bold text-center text-blue-700 font-quicksand" color="primary">Ver Categorías</ion-label>
-      </ion-item>
-      <div class="rounded-2xl ion-padding" slot="content">
-        <ul class="rounded-2xl">
-          <li 
-            v-for="(expert, index) in experts" 
-            :key="index"  
-            class="p-3 mb-2 text-center rounded-md transition-colors bg-sky-500/25 animate-fade hover:bg-sky-600 hover:cursor-pointer"
-           @click="getExpertSelection(expert.name)"
-          >
-            <div class="p-1 my-1 text-base font-semibold text-sky-600 bg-white rounded-lg opacity-90">{{ expert.specialty }}</div>
-          </li>
-        </ul>
-      </div>
-      
-    </ion-accordion>
-   
-  </ion-accordion-group>
+            <ion-accordion value="first" class="w-full">
+              <ion-item slot="header" class="rounded">
+                <ion-label class="font-bold text-center text-blue-700 font-quicksand" color="primary">Ver
+                  Categorías</ion-label>
+              </ion-item>
+              <div class="rounded-2xl ion-padding" slot="content">
+                <ul class="rounded-2xl">
+                  <li v-for="(expert, index) in experts" :key="index"
+                    class="p-3 mb-2 text-center rounded-md transition-colors bg-sky-500/25 animate-fade hover:bg-sky-600 hover:cursor-pointer"
+                    @click="getExpertSelection(expert.name)">
+                    <div class="p-1 my-1 text-base font-semibold text-sky-600 bg-white rounded-lg opacity-90">{{
+                      expert.specialty }}</div>
+                  </li>
+                </ul>
+              </div>
+
+            </ion-accordion>
+
+          </ion-accordion-group>
         </div>
-        
-  </section>
+
+      </section>
 
 
 
-  <!-- Video & Sobre Nosotros -->
-  <section class="px-4 py-12">
-  <div class="flex flex-col gap-8 items-center mx-auto max-w-6xl md:flex-row">
-    <div class="space-y-6 md:w-1/2">
-      <h2 class="p-3 text-3xl font-bold text-white bg-gradient-to-r from-sky-600 to-blue-600 rounded-xl">
-        ¿Por qué elegir a nuestros expertos?
-      </h2>
-      <p class="leading-relaxed text-gray-600">
-        Nuestros profesionales están comprometidos con brindarte un servicio a medida, respondiendo a tus dudas y ayudándote a lograr tus objetivos de manera rápida y eficiente.
-      </p>
-      <ion-button router-link="/contact"  router-direction="forward"  class="inline-block px-8 py-3 font-medium text-white transition duration-300 hover:bg-blue-700">
-        Contáctanos
-      </ion-button>
-    </div>
-    <div class="md:w-1/2">
-      <img src="../assets/img/expertChoose.jpg" alt="Expertos en acción" class="object-cover w-full h-auto rounded-xl shadow-xl">
-    </div>
-  </div>
-</section>
-
-<!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
-<section v-if="expertPopup" @click.self="toggleExpertPopup('close')" class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
-  
-  <!-- loader dots spinner -->
-  <div v-if="mockExperts.length === 0" class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
-    <article 
-  v-for="(e,i) in 4" 
-  :key="i" 
-  class="animate-fade-right animate-duration-300"
-  :style="`animation-delay: ${i * 100}ms`"
->
-  <LoaderDots />
-</article>
-   </div>
-   
-  <div v-if="mockExperts.length > 0" @click.stop class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
-    <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expertName="expert.name" :expertImage="expert.image" :expertSummary="expert.bio" :expertSpecialty="expert.specialty" :expertRating="expert.rating" :expert-image="expert.imgUrl" :expertUid="expert.userUid"/>
-  </div>
- </section>
-
- <!-- Expertos Más Consultados -->
- <section id="expertos" class="py-16 bg-white">
-    <div class="container px-6 mx-auto">
-      <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Expertos Más Consultados</h2>
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        <!-- Card 1 -->
-        <div class="overflow-hidden bg-gray-50 rounded-xl shadow-md transition duration-300 hover:shadow-xl">
-          <img src="../assets/img/exportImg.jpg" alt="Importación y Exportación" class="object-cover w-full h-48">
-          <div class="p-6">
-            <h3 class="mb-3 text-2xl font-semibold text-emerald-600 font-inter">Importación y Exportación</h3>
-            <p class="mb-4 text-gray-600 font-inter">
-              Facilitamos el intercambio de bienes y servicios a nivel internacional con normativas seguras.
+      <!-- Video & Sobre Nosotros -->
+      <section class="px-4 py-12">
+        <div class="flex flex-col gap-8 items-center mx-auto max-w-6xl md:flex-row">
+          <div class="space-y-6 md:w-1/2">
+            <h2 class="p-3 text-3xl font-bold text-white bg-gradient-to-r from-sky-600 to-blue-600 rounded-xl">
+              ¿Por qué elegir a nuestros expertos?
+            </h2>
+            <p class="leading-relaxed text-gray-600">
+              Nuestros profesionales están comprometidos con brindarte un servicio a medida, respondiendo a tus dudas y
+              ayudándote a lograr tus objetivos de manera rápida y eficiente.
             </p>
-            <button @click="getExpertSelection('Importación y Exportación')" class="px-4 py-2 font-medium text-white bg-emerald-600 rounded bg-emerald-4hover:00 font-inter">
-              Consultar
-            </button>
+            <ion-button router-link="/contact" router-direction="forward"
+              class="inline-block px-8 py-3 font-medium text-white transition duration-300 hover:bg-blue-700">
+              Contáctanos
+            </ion-button>
+          </div>
+          <div class="md:w-1/2">
+            <img src="../assets/img/expertChoose.jpg" alt="Expertos en acción"
+              class="object-cover w-full h-auto rounded-xl shadow-xl">
           </div>
         </div>
-        <!-- Card 2 -->
-        <div class="overflow-hidden bg-gray-50 rounded-xl shadow-md transition duration-300 hover:shadow-xl">
-          <img src="../assets/img/categoria-2.jpg" alt="Asesorías Legales" class="object-cover w-full h-48">
-          <div class="p-6">
-            <h3 class="mb-3 text-2xl font-semibold text-emerald-600 font-inter">Asesorías Legales</h3>
-            <p class="mb-4 text-gray-600 font-inter">
-              Abogados expertos para ofrecer asesoría y representación en procesos judiciales y administrativos.
-            </p>
-            <button @click="getExpertSelection('Asesorías Legales')" class="px-4 py-2 font-medium text-white bg-emerald-600 rounded bg-emerald-4hover:00 font-inter">
-              Consultar
-            </button>
+      </section>
+
+      <!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
+      <section v-if="expertPopup" @click.self="toggleExpertPopup('close')"
+        class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
+
+        <!-- loader dots spinner -->
+        <div v-if="mockExperts.length === 0"
+          class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
+          <article v-for="(e, i) in 4" :key="i" class="animate-fade-right animate-duration-300"
+            :style="`animation-delay: ${i * 100}ms`">
+            <LoaderDots />
+          </article>
+        </div>
+
+        <div v-if="mockExperts.length > 0" @click.stop
+          class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
+          <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expertName="expert.name"
+            :expertImage="expert.image" :expertSummary="expert.bio" :expertSpecialty="expert.specialty"
+            :expertRating="expert.rating" :expert-image="expert.imgUrl" :expertUid="expert.userUid" :doc-ref="expert.docRef"/>
+        </div>
+      </section>
+
+      <!-- Expertos Más Consultados -->
+      <section id="expertos" class="py-16 bg-white">
+        <div class="container px-6 mx-auto">
+          <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Expertos Más Consultados</h2>
+          <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Card 1 -->
+            <div class="overflow-hidden bg-gray-50 rounded-xl shadow-md transition duration-300 hover:shadow-xl">
+              <img src="../assets/img/exportImg.jpg" alt="Importación y Exportación" class="object-cover w-full h-48">
+              <div class="p-6">
+                <h3 class="mb-3 text-2xl font-semibold text-emerald-600 font-inter">Importación y Exportación</h3>
+                <p class="mb-4 text-gray-600 font-inter">
+                  Facilitamos el intercambio de bienes y servicios a nivel internacional con normativas seguras.
+                </p>
+                <button @click="getExpertSelection('Importación y Exportación')"
+                  class="px-4 py-2 font-medium text-white bg-emerald-600 rounded bg-emerald-4hover:00 font-inter">
+                  Consultar
+                </button>
+              </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="overflow-hidden bg-gray-50 rounded-xl shadow-md transition duration-300 hover:shadow-xl">
+              <img src="../assets/img/categoria-2.jpg" alt="Asesorías Legales" class="object-cover w-full h-48">
+              <div class="p-6">
+                <h3 class="mb-3 text-2xl font-semibold text-emerald-600 font-inter">Asesorías Legales</h3>
+                <p class="mb-4 text-gray-600 font-inter">
+                  Abogados expertos para ofrecer asesoría y representación en procesos judiciales y administrativos.
+                </p>
+                <button @click="getExpertSelection('Asesorías Legales')"
+                  class="px-4 py-2 font-medium text-white bg-emerald-600 rounded bg-emerald-4hover:00 font-inter">
+                  Consultar
+                </button>
+              </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="overflow-hidden bg-gray-50 rounded-xl shadow-md transition duration-300 hover:shadow-xl">
+              <img src="../assets/img/categoria-3.jpg" alt="Médico" class="object-cover w-full h-48">
+              <div class="p-6">
+                <h3 class="mb-3 text-2xl font-semibold text-emerald-600 font-inter">Médico</h3>
+                <p class="mb-4 text-gray-600 font-inter">
+                  Profesionales de la salud comprometidos en atender tus necesidades médicas de forma personalizada.
+                </p>
+                <button @click="getExpertSelection('Médico')"
+                  class="px-4 py-2 font-medium text-white bg-emerald-600 rounded bg-emerald-4hover:00 font-inter">
+                  Consultar
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- Card 3 -->
-        <div class="overflow-hidden bg-gray-50 rounded-xl shadow-md transition duration-300 hover:shadow-xl">
-          <img src="../assets/img/categoria-3.jpg" alt="Médico" class="object-cover w-full h-48">
-          <div class="p-6">
-            <h3 class="mb-3 text-2xl font-semibold text-emerald-600 font-inter">Médico</h3>
-            <p class="mb-4 text-gray-600 font-inter">
-              Profesionales de la salud comprometidos en atender tus necesidades médicas de forma personalizada.
-            </p>
-            <button @click="getExpertSelection('Médico')" class="px-4 py-2 font-medium text-white bg-emerald-600 rounded bg-emerald-4hover:00 font-inter">
-              Consultar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
 
 
-  <!-- Áreas de Especialización -->
-  <section class="py-16 bg-gray-100">
-    <div class="container px-6 mx-auto">
-      <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Áreas de Especialización</h2>
+      <!-- Áreas de Especialización -->
       <section class="py-16 bg-gray-100">
-    <div class="container px-6 mx-auto">
-      <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
-        <SpecializationCard
-          v-for="(specialization, index) in specializations"
-          :key="index"
-          :title="specialization.title"
-          :description="specialization.description"
-          :image="specialization.image"
-          @click="getExpertSelection(specialization.title)"
-        />
-      </div>
-    </div>
-  </section>
-    </div>
-  </section>
-
-  <!-- Call To Action -->
-  <section id="contacto" class="py-16 text-white bg-gradient-to-r from-green-600 to-emerald-700">
-    <div class="container px-6 mx-auto text-center">
-      <h2 class="mb-4 text-3xl font-bold font-inter">¿Listo para empezar?</h2>
-      <p class="mb-8 text-lg font-inter">
-        Conéctese ahora y encuentre el experto que necesita, de manera rápida y eficiente.
-      </p>
-      <button class="px-8 py-3 font-medium text-emerald-600 bg-white rounded-full shadow-lg transition duration-300 hover:bg-gray-100 font-inter">
-        Empezar Contacto
-      </button>
-    </div>
-  </section>
-
-  <!-- Testimoniales -->
-  <section class="py-16 bg-gray-50">
-    <div class="container px-6 mx-auto">
-      <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Testimoniales</h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div class="p-6 bg-white rounded-2xl shadow-md">
-          <p class="mb-4 italic text-gray-600 font-inter">
-            <i class="fas fa-quote-left"></i> La ayuda que recibí fue rápida, eficiente y totalmente adaptada a mis necesidades. <i class="fas fa-quote-right"></i>
-          </p>
-          <p class="font-semibold text-right text-gray-700 font-inter">Jorge Ahumada, Estudiante</p>
+        <div class="container px-6 mx-auto">
+          <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Áreas de Especialización</h2>
+          <section class="py-16 bg-gray-100">
+            <div class="container px-6 mx-auto">
+              <div class="grid grid-cols-1 gap-12 md:grid-cols-2">
+                <SpecializationCard v-for="(specialization, index) in specializations" :key="index"
+                  :title="specialization.title" :description="specialization.description" :image="specialization.image"
+                  @click="getExpertSelection(specialization.title)" />
+              </div>
+            </div>
+          </section>
         </div>
-        <div class="p-6 bg-white rounded-2xl shadow-md">
-          <p class="mb-4 italic text-gray-600 font-inter">
-            <i class="fas fa-quote-left"></i> Gracias a la asesoría en comercio exterior pude impulsar mi negocio de forma notable. <i class="fas fa-quote-right"></i>
-          </p>
-          <p class="font-semibold text-right text-gray-700 font-inter">Carlos Montiel, Empresario</p>
-        </div>
-        <div class="p-6 bg-white rounded-2xl shadow-md">
-          <p class="mb-4 italic text-gray-600 font-inter">
-            <i class="fas fa-quote-left"></i> La prueba de 15 minutos me ayudó a decidir rápidamente y con total confianza. <i class="fas fa-quote-right"></i>
-          </p>
-          <p class="font-semibold text-right text-gray-700 font-inter">Vanessa Cervantes, RRHH</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- Publicidad -->
-  <section class="py-16">
-    <div class="container px-6 mx-auto">
-      <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Publicidad</h2>
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <fieldset class="p-6 rounded-2xl border">
-          <legend class="mb-4 text-2xl font-bold text-emerald-600 font-inter">miexpareja.net</legend>
-          <p class="mb-4 text-gray-600 font-inter">
-            Descubre cómo las experiencias del pasado pueden ayudarte a conocer mejor a esa persona especial.
+      <!-- Call To Action -->
+      <section id="contacto" class="py-16 text-white bg-gradient-to-r from-green-600 to-emerald-700">
+        <div class="container px-6 mx-auto text-center">
+          <h2 class="mb-4 text-3xl font-bold font-inter">¿Listo para empezar?</h2>
+          <p class="mb-8 text-lg font-inter">
+            Conéctese ahora y encuentre el experto que necesita, de manera rápida y eficiente.
           </p>
-          <button class="px-4 py-2 font-medium text-white bg-emerald-400 rounded-lg hover:bg-emerald-600 font-inter">
-            Ir al sitio
+          <button
+            class="px-8 py-3 font-medium text-emerald-600 bg-white rounded-full shadow-lg transition duration-300 hover:bg-gray-100 font-inter">
+            Empezar Contacto
           </button>
-        </fieldset>
-        <fieldset class="p-6 rounded-2xl border">
-          <legend class="mb-4 text-2xl font-bold text-emerald-600 font-inter">miarrendatario.com</legend>
-          <p class="mb-4 text-gray-600 font-inter">
-            Encuentra la propiedad perfecta conociendo de antemano a inquilinos y dueños.
-          </p>
-          <button class="px-4 py-2 font-medium text-white bg-emerald-400 rounded-lg hover:bg-emerald-600 font-inter">
-            Ir al sitio
-          </button>
-        </fieldset>
+        </div>
+      </section>
+
+      <!-- Testimoniales -->
+      <section class="py-16 bg-gray-50">
+        <div class="container px-6 mx-auto">
+          <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Testimoniales</h2>
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div class="p-6 bg-white rounded-2xl shadow-md">
+              <p class="mb-4 italic text-gray-600 font-inter">
+                <i class="fas fa-quote-left"></i> La ayuda que recibí fue rápida, eficiente y totalmente adaptada a mis
+                necesidades. <i class="fas fa-quote-right"></i>
+              </p>
+              <p class="font-semibold text-right text-gray-700 font-inter">Jorge Ahumada, Estudiante</p>
+            </div>
+            <div class="p-6 bg-white rounded-2xl shadow-md">
+              <p class="mb-4 italic text-gray-600 font-inter">
+                <i class="fas fa-quote-left"></i> Gracias a la asesoría en comercio exterior pude impulsar mi negocio de
+                forma notable. <i class="fas fa-quote-right"></i>
+              </p>
+              <p class="font-semibold text-right text-gray-700 font-inter">Carlos Montiel, Empresario</p>
+            </div>
+            <div class="p-6 bg-white rounded-2xl shadow-md">
+              <p class="mb-4 italic text-gray-600 font-inter">
+                <i class="fas fa-quote-left"></i> La prueba de 15 minutos me ayudó a decidir rápidamente y con total
+                confianza. <i class="fas fa-quote-right"></i>
+              </p>
+              <p class="font-semibold text-right text-gray-700 font-inter">Vanessa Cervantes, RRHH</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Publicidad -->
+      <section class="py-16">
+        <div class="container px-6 mx-auto">
+          <h2 class="mb-12 text-3xl font-bold text-center text-emerald-600 font-inter">Publicidad</h2>
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <fieldset class="p-6 rounded-2xl border">
+              <legend class="mb-4 text-2xl font-bold text-emerald-600 font-inter">miexpareja.net</legend>
+              <p class="mb-4 text-gray-600 font-inter">
+                Descubre cómo las experiencias del pasado pueden ayudarte a conocer mejor a esa persona especial.
+              </p>
+              <button
+                class="px-4 py-2 font-medium text-white bg-emerald-400 rounded-lg hover:bg-emerald-600 font-inter">
+                Ir al sitio
+              </button>
+            </fieldset>
+            <fieldset class="p-6 rounded-2xl border">
+              <legend class="mb-4 text-2xl font-bold text-emerald-600 font-inter">miarrendatario.com</legend>
+              <p class="mb-4 text-gray-600 font-inter">
+                Encuentra la propiedad perfecta conociendo de antemano a inquilinos y dueños.
+              </p>
+              <button
+                class="px-4 py-2 font-medium text-white bg-emerald-400 rounded-lg hover:bg-emerald-600 font-inter">
+                Ir al sitio
+              </button>
+            </fieldset>
+          </div>
+        </div>
+      </section>
+
+      <div class="container flex flex-col gap-3 items-center px-6 py-12 mx-auto text-white">
+        <p class="mb-4 font-inter">Página certificada con seguridad SSL</p>
+        <img src="../assets/img/SSL-certificado.png" alt="Certificado SSL" class="mx-auto w-32">
+
       </div>
-    </div>
-  </section>
+    </ion-content>
 
-  <div class="container flex flex-col gap-3 items-center px-6 py-12 mx-auto text-white">
-    <p class="mb-4 font-inter">Página certificada con seguridad SSL</p>
-    <img src="../assets/img/SSL-certificado.png" alt="Certificado SSL" class="mx-auto w-32">
-
-  </div>
-</ion-content>
-
-</ion-page>
+  </ion-page>
 
 </template>
 
@@ -245,7 +257,7 @@ import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
 import SpecializationCard from '@/components/ExpertList/SpecializationCard.vue';
 import { userStore } from '@/store/user';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonAccordionGroup, IonAccordion, IonItem, IonLabel, onIonViewDidLeave, onIonViewDidEnter } from '@ionic/vue';
-import { collection, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
 import { onMounted, ref } from 'vue';
 
 
@@ -253,8 +265,8 @@ const db = getFirestore();
 const usersCollection = collection(db, 'users');
 
 const setUserStore = (name: string, category: string, id: string) => {
- //due to pinia store is still not available this function is not implemented and only console.log is used
- console.log(name, category, id);
+  //due to pinia store is still not available this function is not implemented and only console.log is used
+  console.log(name, category, id);
 };
 
 import { IonButtons } from '@ionic/vue';
@@ -486,23 +498,61 @@ const experts = ref([
   }
 ]);
 
-const getExpertSelection = (expert:string) => {
+const getExpertSelection = (expert: string) => {
   toggleExpertPopup('open');
   gettingMockExperts(expert);
-} 
+}
 
 const expertPopup = ref(false);
+
+function generateDefaultSchedule() {
+  const days = ["monday", "tuesday", "wednesday", "thursday", "friday"];
+
+  // 10am a 5pm (10,11,12,13,14,15,16,17)
+  const start = 10;
+  const end = 17;
+
+  const slots = [];
+  for (let h = start; h <= end; h++) {
+    const hour = h.toString().padStart(2, "0") + ":00";
+    slots.push({
+      time: hour,
+      isAvailable: true,
+      takenBy: null,
+      takenAt: null
+    });
+  }
+
+  // Objeto por día
+  const schedule = {};
+  days.forEach(day => {
+    schedule[day] = {
+      slots: JSON.parse(JSON.stringify(slots)) // copia independiente
+    };
+  });
+
+  return schedule;
+}
+
+
+const curentExpertCollection = collection(db, 'experts/2iCGWel7KUBYd9V3izG8/schedule');
+const setDefaultSchedule = () => {
+  addDoc(curentExpertCollection, {
+    schedule: generateDefaultSchedule()
+  });
+}
+
 
 const toggleExpertPopup = (action: 'open' | 'close') => action === 'open' ? expertPopup.value = true : expertPopup.value = false;
 
 const mockExperts = ref([]);
-const mockExpertsCollection = collection(db, 'MockExperts');
-const gettingMockExperts = async (expert:string) => {
-  mockExperts.value = []; 
-  const q = query(mockExpertsCollection, where('specialty', '==', expert));
+const expertsCollection = collection(db, 'experts');
+const gettingMockExperts = async (expert: string) => {
+  mockExperts.value = [];
+  const q = query(expertsCollection, where('specialty', '==', expert));
   try {
     const querySnapshot = await getDocs(q);
-    if(querySnapshot.empty){
+    if (querySnapshot.empty) {
       notyf.error('No se encontraron expertos');
       toggleExpertPopup('close');
       return;
@@ -510,18 +560,22 @@ const gettingMockExperts = async (expert:string) => {
     querySnapshot.forEach((doc) => {
       console.log(doc.data().specialty);
       const data = doc.data();
+      const docRef = doc.ref.id;
+      console.log(docRef);
+      
       mockExperts.value.push({
         id: doc.id,
+        docRef: doc.ref.id,
         ...data
       });
     });
   } catch (error) {
-      notyf.error(`Error al obtener los expertos ${error}`);
-      toggleExpertPopup('close');
+    notyf.error(`Error al obtener los expertos ${error}`);
+    toggleExpertPopup('close');
   }
 }
-const getAllMockExpers = ():void => {
-  getDocs(mockExpertsCollection).then((querySnapshot) => {
+const getAllMockExpers = (): void => {
+  getDocs(expertsCollection).then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
       console.log(doc.id, " => ", doc.data());
     });
@@ -553,16 +607,16 @@ const names = [
 
 let timeoutId: NodeJS.Timeout | null = null;
 const currentName = ref<string[]>(names[0]);
- const animateNames = () => {
+const animateNames = () => {
   timeoutId = setInterval(() => {
     const randomIndex = Math.floor(Math.random() * names.length);
     currentName.value = names[randomIndex];
   }, 2000);
-  
- }
 
- onIonViewDidEnter(() => {
-  if(timeoutId){
+}
+
+onIonViewDidEnter(() => {
+  if (timeoutId) {
     clearInterval(timeoutId);
     timeoutId = null;
   }
@@ -570,16 +624,14 @@ const currentName = ref<string[]>(names[0]);
 })
 
 onIonViewDidLeave(() => {
-  if(timeoutId){
+  if (timeoutId) {
     clearInterval(timeoutId);
     timeoutId = null;
   }
-  
+
   toggleExpertPopup('close');
   console.log('User has left the page');
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
