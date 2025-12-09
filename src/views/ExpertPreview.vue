@@ -95,27 +95,31 @@
      <!-- Professional Bio -->
 <ion-card-content>
   <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-    Horarios del experto
+    Horarios del experto con Uid
   </h2>
   <div class="ion-margin-vertical">
     <ion-toggle v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Habilitar Cambios</ion-toggle>
   </div>
-  <article class="grid grid-cols-2 gap-2">
-    <div v-for="(slots, dayName) in expertAdminStore.getCurrentExpert.schedule" :key="dayName" class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
-      <span class="text-center text-blue-500">
-        {{ dayName }}
-      </span>
-      <div
-        v-for="(slot, slotIndex) in slots"
-        :key="slotIndex"
-        class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-        :class="{ 'bg-white text-slate-800': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
-        @click="toggleValue ? getDateSelected(dayName, slot.time) : null"
-      >
-        {{ slot.time }}
-      </div>
-    </div>
-  </article>
+      <article
+  v-for="(slots, dayName) in schedule"
+  :key="dayName"
+  class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
+  
+  <span class="text-center text-blue-500">
+    {{ dayName }}
+  </span>
+
+  <div
+    v-for="(slot, slotIndex) in slots"
+    :key="slotIndex"
+    class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+    :class="{ 'bg-white text-black': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
+    @click="getDateSelected(dayName, slot.time)"
+  >
+    {{ slot.time }}
+  </div>
+</article>
+  <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">Guardar Cambios</ion-button>
 </ion-card-content>
 
    
@@ -149,12 +153,33 @@ import {
   IonBackButton,
   onIonViewDidLeave,
   IonToggle,
-  onIonViewDidEnter
+  onIonViewDidEnter,
+  useIonRouter
 
 } from '@ionic/vue';
-import { chevronBack } from 'ionicons/icons';
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { chevronBack, toggle } from 'ionicons/icons';
 import { ref } from 'vue';
+import { toastController } from '@ionic/vue';
 
+const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 1500,
+    position: position,
+    color: color,
+    swipeGesture: 'vertical',
+    translucent: true,
+    buttons: [
+      {
+        text: 'cerrar',
+        role: 'cancel',
+      }
+    ]
+  });
+
+  await toast.present();
+};
 
 const expertAdminStore = useExpertAdminStore();
 
@@ -164,18 +189,43 @@ onIonViewDidLeave(()=> {
   expertAdminStore.resetCurrentExpert();
 })
 
+const schedule = expertAdminStore.getCurrentExpert.schedule;
 
 const getDateSelected = (dayName: string, timeSelected: string) => {
-  const expert = expertAdminStore.getCurrentExpert;
-  if (!expert?.schedule) return;
-
-  const slots = expert.schedule[dayName]; // ✅ Obtener los slots del día
-  if (!slots) return;
-
-  const slot = slots.find(slot => slot.time === timeSelected); // ✅ Buscar el slot por tiempo
-  if (slot) {
-    slot.isAvailable = !slot.isAvailable;
+    if(!toggleValue.value){
+      presentToast('top', 'Debe habilitar el boton de cambios para editar los horarios', 'warning');
+      return;
   }
+  const slot = schedule[dayName].find(s => s.time === timeSelected);
+  if (slot) slot.isAvailable = !slot.isAvailable;
+};
+
+const db = getFirestore();
+const routerIon = useIonRouter();
+const updateSubcollectionSchedule = async () => {
+
+  
+  if(!toggleValue.value){
+      presentToast('top', 'Debe habilitar el boton de cambios para poder editar los datos', 'danger');
+      return;
+  }
+
+  const expertPath = doc(db, `experts/${expertAdminStore.getCurrentExpert.docId}`);
+  try {
+      await updateDoc(expertPath, {
+        schedule: schedule
+      }); 
+      presentToast('top', 'Se ha actualizado el horario con exito', 'success');
+
+      setTimeout(() => {
+        routerIon.back();
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+      presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
+    }
+    
+
 };
 
 

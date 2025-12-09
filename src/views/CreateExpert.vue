@@ -44,22 +44,26 @@
             </div>
             <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
               Horarios del experto</h2>
-            <section class="grid grid-cols-2 gap-4 items-center p-1 font-poppins">
-              <article v-for="(day, index) in schedule" :key="index"
-                class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
-                <span class="text-center text-blue-500">
-                  {{ day.day }}
-                </span>
-                <div v-for="(slot, slotIndex) in day.slots" :key="slotIndex"
-                  class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-                  :class="{ 'bg-white text-slate-800': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
-                  @click="getDateSelected(day, slot.time)">
-                  {{ slot.time }}
-                </div>
+          <article
+  v-for="(slots, dayName) in schedule"
+  :key="dayName"
+  class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
+  
+  <span class="text-center text-blue-500">
+    {{ dayName }}
+  </span>
 
+  <div
+    v-for="(slot, slotIndex) in slots"
+    :key="slotIndex"
+    class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+    :class="{ 'bg-white text-black': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
+    @click="getDateSelected(dayName, slot.time)"
+  >
+    {{ slot.time }}
+  </div>
+</article>
 
-              </article>
-            </section>
           </ion-card-content>
         </ion-card>
 
@@ -218,24 +222,16 @@ const auth = getAuth();
 
 
 
-const setSubcollectionSchedule = async (expertDocId:string) => {
-  const expertPath = doc(db, `experts/${expertDocId}`)
-  try {
-    // Convertir el arreglo de días a un objeto
-    const scheduleAsObject = schedule.value.reduce((acc, day) => {
-      acc[day.day] = day.slots;
-      return acc;
-    }, {} as Record<string, any>);
+const setSubcollectionSchedule = async (expertDocId: string) => {
+  const expertPath = doc(db, `experts/${expertDocId}`);
 
-    // Agregar el horario como un solo documento
-    await updateDoc(expertPath, {
-      schedule: scheduleAsObject
-    });
-    console.log("Horario guardado en un solo documento con éxito");
-  } catch (error) {
-    console.error("Error al guardar el horario:", error);
-  }
+  await updateDoc(expertPath, {
+    schedule: schedule.value
+  });
+
+  console.log("Horario guardado con éxito");
 };
+
 
 
 
@@ -307,109 +303,88 @@ const createExpert = () => {
 };
 
 
-const schedule = ref<Ischedule[]>([
-  {
-    day: "Lunes",
-    slots: [
-      { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" },
-    ]
-  },
-  {
-    day: "Martes",
-    slots: [
+const schedule = ref<Ischedule>({
+  Lunes: [
+    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
+  ],
+  Martes: [ 
+     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
+   ],
+  Miercoles: [ 
+     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
+   ],
+  Jueves: [ 
+     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
+   ],
+  Viernes: [ 
+     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
+   ],
+  Sábado: [ 
+     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
+    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
+   ],
+});
 
-      { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-
-    ]
-  },
-  {
-    day: "Miercoles",
-    slots: [
-      { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-
-    ]
-  },
-  {
-    day: "Jueves",
-    slots: [
-      { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" },
-    ]
-  },
-  {
-    day: "Viernes",
-    slots: [
-      { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" },
-    ]
-  },
-  {
-    day: "Sábado",
-    slots: [
-      { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-      { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-    ]
-  }
-]);
 //9 => 6 L=>S
 
-const getDateSelected = (dayInfo: Ischedule, timeSelected: string) => {
-  const slot = dayInfo.slots.find(slot => slot.time === timeSelected);
-  if (slot) {
-    slot.isAvailable = !slot.isAvailable; // Alterna el estado
-  }
+const getDateSelected = (dayName: string, timeSelected: string) => {
+  const slot = schedule.value[dayName].find(s => s.time === timeSelected);
+  if (slot) slot.isAvailable = !slot.isAvailable;
 };
+
 
 
 
