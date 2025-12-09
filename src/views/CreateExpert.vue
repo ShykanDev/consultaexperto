@@ -52,7 +52,7 @@
                 </span>
                 <div v-for="(slot, slotIndex) in day.slots" :key="slotIndex"
                   class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-                  :class="{ 'bg-white text-slate-900': slot.isAvailable, 'bg-[#2C7CEE] rounded-md': !slot.isAvailable }"
+                  :class="{ 'bg-white text-slate-800': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
                   @click="getDateSelected(day, slot.time)">
                   {{ slot.time }}
                 </div>
@@ -132,7 +132,7 @@ import {
   IonNote,
   IonIcon,
 } from '@ionic/vue';
-import { addDoc, collection, getFirestore, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { chevronBack, helpOutline } from 'ionicons/icons';
 import { ref, computed } from 'vue';
 
@@ -218,8 +218,8 @@ const auth = getAuth();
 
 
 
-const setSubcollectionSchedule = async (expertUid: string) => {
-  const expertScheduleCollection = collection(db, `experts/${expertUid}/schedule`);
+const setSubcollectionSchedule = async (expertDocId:string) => {
+  const expertPath = doc(db, `experts/${expertDocId}`)
   try {
     // Convertir el arreglo de días a un objeto
     const scheduleAsObject = schedule.value.reduce((acc, day) => {
@@ -228,7 +228,7 @@ const setSubcollectionSchedule = async (expertUid: string) => {
     }, {} as Record<string, any>);
 
     // Agregar el horario como un solo documento
-    await addDoc(expertScheduleCollection, {
+    await updateDoc(expertPath, {
       schedule: scheduleAsObject
     });
     console.log("Horario guardado en un solo documento con éxito");

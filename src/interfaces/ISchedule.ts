@@ -1,11 +1,21 @@
-import { Timestamp } from "firebase/firestore"
-interface slots {
-    isAvailable:boolean;
-    takenAt:Timestamp | null;
-    takenBy:string | null;
-    time:string;
+import { Timestamp } from "firebase/firestore";
+
+// interfaces/Ischedule.ts
+export interface Slot {
+  isAvailable: boolean;
+  takenAt: Timestamp | null;
+  takenBy: string | null;
+  time: string;
 }
-export interface Ischedule {
-    day:string;
-    slots:Array<slots>,
+
+export interface IExpertSchedule {
+  schedule: {
+    Lunes?: Slot[];
+    Martes?: Slot[];
+    Miercoles?: Slot[];
+    Jueves?: Slot[];
+    Viernes?: Slot[];
+    Sabado?: Slot[];
+    Domingo?: Slot[];
+  };
 }
