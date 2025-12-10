@@ -23,10 +23,10 @@
 
               <ion-input label="Correo electrónico" label-placement="floating" type="email"
                 placeholder="ejemplo@dominio.com" v-model="form.email" fill="outline" class="font-poppins"></ion-input>
-              <ion-input label="Especialidad" label-placement="floating"
-                placeholder="Ingrese especialidad, Ej: Médico, Abogado, Ingeniero, Arquitecto etc"
-                v-model="form.specialty" fill="outline" class="font-poppins"></ion-input>
 
+      <ion-select v-model="form.specialty" label="Especialidad del experto" class="text-black bg-white rounded-md"  label-placement="floating">
+        <ion-select-option  v-for="(e,index) in experts" :key="index" :value="e.name">{{ e.name }}</ion-select-option>
+      </ion-select>
               <ion-input label="URL de imagen" label-placement="floating" type="url"
                 placeholder="https://ejemplo.com/imagen.png" v-model="form.imgUrl" fill="outline"
                 class="font-poppins"></ion-input>
@@ -56,8 +56,8 @@
   <div
     v-for="(slot, slotIndex) in slots"
     :key="slotIndex"
-    class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-    :class="{ 'bg-white text-black': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
+    class="py-3 mb-2 text-lg font-medium text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+    :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
     @click="getDateSelected(dayName, slot.time)"
   >
     {{ slot.time }}
@@ -125,9 +125,9 @@ import {
   IonCardTitle,
   IonCardContent,
   IonBackButton,
-  IonList,
+  IonSelect,
   IonItem,
-  IonLabel,
+  IonSelectOption,
   IonInput,
   IonTextarea,
   IonButton,
@@ -142,7 +142,8 @@ import { ref, computed } from 'vue';
 
 import { toastController } from '@ionic/vue';
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
-import { Ischedule } from '@/interfaces/Ischedule';
+import { IExpertSchedule } from '@/interfaces/Ischedule';
+
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
     message: message,
@@ -162,6 +163,22 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
   await toast.present();
 };
 
+const experts = ref([
+  { name: "Abogado", icon: "fa-balance-scale"},
+  { name: "Médico", icon: "fa-user-md"},
+  { name: "Contador", icon: "fa-calculator"},
+  { name: "Arquitecto", icon: "fa-building"},
+  { name: "Servicios Web", icon: "fa-laptop-code"},
+  { name: "Publicidad", icon: "fa-bullhorn"},
+  { name: "Traductor", icon: "fa-language"},
+  { name: "Peritaje", icon: "fa-search"},
+  { name: "Ingeniería en Computación", icon: "fa-cog"},
+  { name: "Gestoría en Trámites", icon: "fa-file-alt"},
+  { name: "Marketing", icon: "fa-chart-line"},
+  { name: "Psicólogo/a", icon: "fa-user-graduate"},
+  { name: "Maestro", icon: "fa-chalkboard-teacher"},
+  { name: "Chef", icon: "fa-utensils"}
+]);
 
 const form = ref({
   userUid: '',
@@ -205,9 +222,9 @@ const resetForm = () => {
     experienceYears: null,
     professionalId: '',
     bio: '',
-    rating: 4.9,
-    totalRatings: 120,
-    completedSessions: 350,
+    rating: 5,
+    totalRatings: 0,
+    completedSessions: 0,
     isSuspended: false,
     isBanned: false,
     suspensionReason: '',

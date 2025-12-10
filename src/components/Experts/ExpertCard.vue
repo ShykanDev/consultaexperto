@@ -18,6 +18,14 @@
                 <p class="text-xs text-gray-500">{{ props.expertData.isBanned ? 'Bloqueado' : 'Activo' }}</p>
             </div>
         </div>
+
+             <ion-alert
+    trigger="unsuspend-alert"
+    header="¿Está seguro de desbloquear a este experto?"
+    message="Al desbloquear a este experto, podrá volver a atender nuevas solicitudes."
+    :buttons="alertButtons"
+   
+  ></ion-alert>
         <div class="flex relative flex-col gap-3 px-4 pb-4">
             <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
             <div v-if="props.expertData.isSuspended" class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200">
@@ -25,11 +33,12 @@
                 <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas solicitudes.' }}</p>
             </div>
             <div class="grid grid-cols-3 gap-1 p-1 mt-2">
-                <ion-button @click="unsuspendUser" v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">
+                <ion-button id="unsuspend-alert"  v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">
                     <ion-icon slot="start" :icon="checkmarkCircleSharp"></ion-icon>
                     <span class="text-sm font-medium">Desbloquear</span>
                 </ion-button>
-                <ion-button  v-else @click="toggleModal" class="col-span-2 block-user"  style="text-transform: none;">
+            
+                <ion-button v-else @click="toggleModal" class="col-span-2 block-user"  style="text-transform: none;">
                     <ion-icon slot="start" :icon="alertCircleSharp"></ion-icon>
                     <span class="text-sm font-medium">Suspender</span>
                 </ion-button>
@@ -45,7 +54,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonButton, IonIcon, useIonRouter } from '@ionic/vue';
+import { IonButton, IonIcon, useIonRouter, IonAlert } from '@ionic/vue';
 import { alertCircleSharp, checkmarkCircleSharp, eyeSharp, starSharp, toggle } from 'ionicons/icons';
 import { IExpert } from '@/interfaces/IExpert';
 import { useExpertAdminStore } from '@/stores/expertAdmin';
@@ -72,6 +81,19 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
     await toast.present();
   };
 const expertAdminStore = useExpertAdminStore();
+
+const alertButtons = [
+  {
+    text: 'Cancelar',
+    role: 'cancel'
+  },
+  {
+    text: 'Desbloquear',
+    handler: () => {
+      unsuspendUser();
+    }
+  }
+];
 
 const router = useIonRouter();
 const goToProfile = () => {

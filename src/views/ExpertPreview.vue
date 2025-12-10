@@ -63,6 +63,12 @@
             </ion-label>
           </ion-item>
           <ion-item class="py-3.5 border-t border-gray-200">
+            <ion-label>
+              <p class="!text-blue-700 !font-poppins">Cédula profesional</p>
+              <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.professionalId ?? 'No se proporcionó cédula profesional' }}</p>
+            </ion-label>
+          </ion-item>
+          <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label >
               <p class=" !font-poppins !text-blue-700" >Suspendido </p>
               <p class="!font-poppins" :class="{ '!text-red-500': expertAdminStore.getCurrentExpert?.isSuspended }">{{ expertAdminStore.getCurrentExpert?.isSuspended ? 'El usuario está suspendido' : 'El usuario no está suspendido temporalmente' }}</p>
@@ -95,10 +101,11 @@
      <!-- Professional Bio -->
 <ion-card-content>
   <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-    Horarios del experto con Uid
+    Horarios del experto {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
   </h2>
-  <div class="ion-margin-vertical">
-    <ion-toggle v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Habilitar Cambios</ion-toggle>
+  <div class="flex sticky top-0 z-10 flex-col gap-0 p-1 bg-white rounded-xl ring-1 ring-offset-1 shadow-md backdrop-blur-sm transition-all duration-300 ease-in-out bg-white/70 ion-margin-vertical font-poppins" :class="{'ring-[#0054E9]': toggleValue, 'ring-gray-200': !toggleValue}">
+    <ion-toggle class="text-blue-600"  v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
+    <span class="text-xs text-center text-gray-500">{{ toggleValue ? 'Ahora puede editar el horario' : 'No podrá actualizar el horario hasta activarlos' }}</span>
   </div>
       <article
   v-for="(slots, dayName) in schedule"
@@ -112,14 +119,19 @@
   <div
     v-for="(slot, slotIndex) in slots"
     :key="slotIndex"
-    class="mb-2 font-medium text-center text-white rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-    :class="{ 'bg-white text-black': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
+    class="mb-2 py-[3px] font-semibold text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+    :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
     @click="getDateSelected(dayName, slot.time)"
   >
     {{ slot.time }}
   </div>
 </article>
-  <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">Guardar Cambios</ion-button>
+  <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">{{ 
+  !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
+    
+    }}
+    <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
+  </ion-button>
 </ion-card-content>
 
    
@@ -138,7 +150,7 @@ import {
   IonToolbar,
   IonButtons,
   IonButton,
-  IonIcon,
+  IonSpinner,
   IonLabel,
   IonTitle,
   IonContent,
@@ -182,7 +194,7 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
 };
 
 const expertAdminStore = useExpertAdminStore();
-
+const savingChanges = ref(false);
 
 
 onIonViewDidLeave(()=> {
@@ -191,7 +203,7 @@ onIonViewDidLeave(()=> {
 
 const schedule = expertAdminStore.getCurrentExpert.schedule;
 
-const getDateSelected = (dayName: string, timeSelected: string) => {
+const getDateSelected = (dayName: number, timeSelected: string) => {
     if(!toggleValue.value){
       presentToast('top', 'Debe habilitar el boton de cambios para editar los horarios', 'warning');
       return;
@@ -210,6 +222,7 @@ const updateSubcollectionSchedule = async () => {
       return;
   }
 
+  savingChanges.value = true;
   const expertPath = doc(db, `experts/${expertAdminStore.getCurrentExpert.docId}`);
   try {
       await updateDoc(expertPath, {
@@ -220,9 +233,12 @@ const updateSubcollectionSchedule = async () => {
       setTimeout(() => {
         routerIon.back();
       }, 1500);
+      savingChanges.value = false;
+
     } catch (error) {
       console.log(error);
       presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
+      savingChanges.value = false;
     }
     
 

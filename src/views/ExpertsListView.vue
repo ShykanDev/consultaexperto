@@ -93,9 +93,7 @@
 
         <div v-if="mockExperts.length > 0" @click.stop
           class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
-          <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expertName="expert.name"
-            :expertImage="expert.image" :expertSummary="expert.bio" :expertSpecialty="expert.specialty"
-            :expertRating="expert.rating" :expert-image="expert.imgUrl" :expertUid="expert.userUid" :doc-ref="expert.docRef"/>
+          <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert"/>
         </div>
       </section>
 
@@ -287,6 +285,7 @@ import chefImg from '../assets/img/chef.jpg';
 import LoaderDots from '@/animations/LoaderDots.vue';
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
+import { IExpert } from '@/interfaces/IExpert';
 
 const notyf = new Notyf({
   position: {
@@ -545,7 +544,7 @@ const setDefaultSchedule = () => {
 
 const toggleExpertPopup = (action: 'open' | 'close') => action === 'open' ? expertPopup.value = true : expertPopup.value = false;
 
-const mockExperts = ref([]);
+const mockExperts = ref<IExpert[]>([]);
 const expertsCollection = collection(db, 'experts');
 const gettingMockExperts = async (expert: string) => {
   mockExperts.value = [];
@@ -558,16 +557,10 @@ const gettingMockExperts = async (expert: string) => {
       return;
     }
     querySnapshot.forEach((doc) => {
-      console.log(doc.data().specialty);
-      const data = doc.data();
-      const docRef = doc.ref.id;
-      console.log(docRef);
-      
-      mockExperts.value.push({
-        id: doc.id,
-        docRef: doc.ref.id,
-        ...data
-      });
+      const data = doc.data() as IExpert;
+      data.docId = doc.id;
+      data.docRef = doc.ref;
+      mockExperts.value.push(data);
     });
   } catch (error) {
     notyf.error(`Error al obtener los expertos ${error}`);

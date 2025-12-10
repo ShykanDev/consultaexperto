@@ -1,5 +1,5 @@
 import { DocumentReference } from "firebase/firestore";
-import { Ischedule } from "./Ischedule";
+import { IExpertSchedule } from "./Ischedule";
 
 export interface IExpert {
     userUid?: string;
@@ -27,6 +27,6 @@ export interface IExpert {
     docId?: string;
     docRef?: DocumentReference;
 
-    schedule: Ischedule
+    schedule: IExpertSchedule
 }
 
