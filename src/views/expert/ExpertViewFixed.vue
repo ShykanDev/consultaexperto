@@ -161,7 +161,7 @@ import {
 } from '@ionic/vue';
 import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
 import { IExpertSchedule } from '@/interfaces/Ischedule';
@@ -198,8 +198,26 @@ onIonViewDidLeave(() => {
   expertUiStore.resetCurrentExpert();
 })
 
-const schedule = expertUiStore.getCurrentExpert.schedule;
+const daysOrdered = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
 
+const schedule = computed(() => {
+  const originalSchedule = expertUiStore.getCurrentExpert.schedule;
+  const orderedDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
+  const orderedSchedule: Record<string, any> = {};
+
+  orderedDays.forEach(day => {
+    if (originalSchedule?.[day]) {
+      orderedSchedule[day] = originalSchedule[day];
+    }
+  });
+
+  return orderedSchedule;
+});
+
+onIonViewDidEnter(() => {
+  console.log(schedule);
+  
+})
 const router = useIonRouter()
 
 const authStoreGlobal = authStore()
@@ -272,9 +290,8 @@ const toggleValue = ref(false);
 
 onIonViewDidEnter(() => {
   console.clear();
-  console.log(expertUiStore.getCurrentExpert.schedule);
-
-
+  
+  
   const currentSchedule = expertUiStore.getCurrentExpert.schedule;
 
 
