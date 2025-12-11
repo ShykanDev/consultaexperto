@@ -87,49 +87,49 @@
 
 
 
-<form @submit.prevent="login">
+      <form @submit.prevent="login">
 
-      <div class="flex flex-col justify-center mb-2 items-left font-manrope">
-        <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
-      </div>
-
-
-
-      <ion-list class="form-container">
-        <!-- Email Input -->
-        <ion-input label-placement="start" v-model="email" type="email" class="input" fill="outline"
-          placeholder="email@domain.com">
-          <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary"
-            aria-hidden="true"></ion-icon>
-
-        </ion-input>
-        <ion-input label-placement="start" v-model="password" type="password" fill="outline" placeholder="Contraseña"
-          class="mt-4 input">
-          <ion-icon slot="start" :icon="lockClosed" size="large" class="custom" color="primary"
-            aria-hidden="true"></ion-icon>
-
-        </ion-input>
-      </ion-list>
+        <div class="flex flex-col justify-center mb-2 items-left font-manrope">
+          <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
+        </div>
 
 
 
+        <ion-list class="form-container">
+          <!-- Email Input -->
+          <ion-input label-placement="start" v-model="email" type="email" class="input" fill="outline"
+            placeholder="email@domain.com">
+            <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary"
+              aria-hidden="true"></ion-icon>
 
-      <!-- Action Buttons -->
-      <div class="actions">
-        <ion-button expand="block" @click="login" class="login">
-          Iniciar Sesión
-        </ion-button>
+          </ion-input>
+          <ion-input label-placement="start" v-model="password" type="password" fill="outline" placeholder="Contraseña"
+            class="mt-4 input">
+            <ion-icon slot="start" :icon="lockClosed" size="large" class="custom" color="primary"
+              aria-hidden="true"></ion-icon>
 
-        <ion-button id="present-alert" fill="outline" shape="round" size="small" class="button-login">Olvidé mi
-          contraseña</ion-button>
-        <ion-alert trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
-          :inputs="alertInputs"></ion-alert>
+          </ion-input>
+        </ion-list>
 
 
 
-      </div>
 
-</form>
+        <!-- Action Buttons -->
+        <div class="actions">
+          <ion-button expand="block" @click="login" class="login">
+            Iniciar Sesión
+          </ion-button>
+
+          <ion-button id="present-alert" fill="outline" shape="round" size="small" class="button-login">Olvidé mi
+            contraseña</ion-button>
+          <ion-alert trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
+            :inputs="alertInputs"></ion-alert>
+
+
+
+        </div>
+
+      </form>
 
     </div>
 

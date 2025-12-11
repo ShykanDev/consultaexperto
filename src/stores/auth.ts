@@ -1,17 +1,64 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-const authStore = defineStore('auth', {
-  state: () => ({
-    isAuth: false,
-  }),
-  actions: {
-    setIsAuth(isAuth: boolean) {
-      this.isAuth = isAuth
+export const authStore = defineStore('auth', {
+    state: () => ({
+        isAuth: false,
+        userName: null as string | null,
+        userUid: null as string | null,
+        userEmail: null as string | null,
+        isClient: false,
+        isExpert: false,
+        isAdmin: false,
+    }),
+    actions: {
+        setUserName(userName: string) {
+            this.userName = userName;
+        },
+        setUserUid(userUid: string) {
+            this.userUid = userUid;
+        },
+        setIsAuth(isAuth: boolean) {
+            this.isAuth = isAuth;
+        },
+        setUserEmail(userEmail: string) {
+            this.userEmail = userEmail;
+        },
+        setIsClient(isClient: boolean) {
+            this.isClient = isClient;
+        },
+        setIsExpert(isExpert: boolean) {
+            this.isExpert = isExpert;
+        },
+        setIsAdmin(isAdmin: boolean) {
+            this.isAdmin = isAdmin;
+        },
+        setLogout() {
+            this.isAuth = false;
+            this.userName = null;
+            this.userUid = null;
+            this.userEmail = null;
+            this.isClient = false;
+            this.isExpert = false;
+            this.isAdmin = false;
+        },
+        resetAuth() {
+            this.isAuth = false;
+            this.userName = null;
+            this.userUid = null;
+            this.userEmail = null;
+            this.isClient = false;
+            this.isExpert = false;
+            this.isAdmin = false;
+        }
     },
-  },
-  getters: {
-    getIsAuth: (state) => state.isAuth,
-  },
+    getters: {
+        getUserName: (state) => state.userName,
+        getUserUid: (state) => state.userUid,
+        getIsAuth: (state) => state.isAuth,
+        getUserEmail: (state) => state.userEmail,
+        getIsClient: (state) => state.isClient,
+        getIsExpert: (state) => state.isExpert,
+        getIsAdmin: (state) => state.isAdmin,
+    },
+    persist:true
 })
-
-export default authStore

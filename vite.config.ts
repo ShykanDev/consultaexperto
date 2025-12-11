@@ -8,7 +8,13 @@ import VueDevTools from "vite-plugin-vue-devtools";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), legacy(), VueDevTools()],
+  plugins: [
+    vue(),
+    legacy(),
+    VueDevTools({
+      launchEditor: "agy",
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

@@ -3,9 +3,11 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button class="text-sm" :default-href="'/expert-list-admin'" :icon="chevronBack" color="primary" text="Volver" style="text-transform: none;" />
+          <ion-back-button class="text-sm" :default-href="'/expert-list-admin'" :icon="chevronBack" color="primary"
+            text="Volver" style="text-transform: none;" />
         </ion-buttons>
-        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}</ion-title>
+        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{
+          expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}</ion-title>
         <ion-buttons slot="end">
           <ion-button style="width: 4rem;"></ion-button>
         </ion-buttons>
@@ -15,20 +17,19 @@
     <ion-content class="ion-padding">
       <!-- Profile Header -->
       <ion-card class="ion-no-margin" style="background-color: #fff;">
-        <ion-card-content class="flex flex-col items-center p-6"> 
+        <ion-card-content class="flex flex-col items-center p-6">
           <ion-avatar class="mb-4 w-24 h-24">
-            <img
-            src="https://picsum.photos/200/300"
-              alt="Profile picture of Jordan Smith"
+            <img src="https://picsum.photos/200/300" alt="Profile picture of Jordan Smith"
               class="w-24 h-24 ring ring-offset-2 ring-offset-white"
-              :class="{'ring-red-600': expertUiStore.getCurrentExpert?.isSuspended, 'ring-blue-500': !expertUiStore.getCurrentExpert?.isSuspended}"
-            />
+              :class="{ 'ring-red-600': expertUiStore.getCurrentExpert?.isSuspended, 'ring-blue-500': !expertUiStore.getCurrentExpert?.isSuspended }" />
           </ion-avatar>
           <ion-text class="text-center">
             <h1 class="text-2xl font-bold font-manrope">
               {{ expertUiStore.getCurrentExpert?.fullName || 'Juan Pérez' }}
             </h1>
-            <h3 v-if="expertUiStore.getCurrentExpert.isSuspended" :class="{'text-red-600 font-poppins font-bold': expertUiStore.getCurrentExpert?.isSuspended}"> (Suspendido)</h3>
+            <h3 v-if="expertUiStore.getCurrentExpert.isSuspended"
+              :class="{ 'text-red-600 font-poppins font-bold': expertUiStore.getCurrentExpert?.isSuspended }">
+              (Suspendido)</h3>
             <p class="mt-1 text-base text-blue-700 font-poppins">
               {{ expertUiStore.getCurrentExpert?.specialty || 'Specialty' }}
             </p>
@@ -62,8 +63,8 @@
               <p class="!font-poppins">{{ expertUiStore.getCurrentExpert?.professionalId ?? 'No se proporcionó cédula profesional' }}</p>
             </ion-label>
           </ion-item>
- 
-    
+
+
         </ion-list>
       </ion-card>
 
@@ -81,45 +82,51 @@
         </ion-card-content>
       </ion-card>
 
-     <!-- Professional Bio -->
-<ion-card-content>
-  <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-    Horarios del experto {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
-  </h2>
-<h5 class="text-center text-gray-500">Estos son los horarios disponibles para citas</h5>
+      <!-- Professional Bio -->
+      <ion-card-content>
+        <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
+          Horarios del experto {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
+        </h2>
+        <h5 class="text-center text-gray-500">Estos son los horarios disponibles para citas</h5>
 
-      <article
-  v-for="(slots, dayName) in schedule"
-  :key="dayName"
-  class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
-  
-  <span class="text-center text-blue-500">
-    {{ dayName }}
-  </span>
+        <article v-for="(slots, dayName) in schedule" :key="dayName"
+          class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
 
-  <div
-    v-for="(slot, slotIndex) in slots as IExpertSchedule['schedule'][keyof IExpertSchedule['schedule']]"
-    :key="slotIndex"
-    class="mb-2 py-[3px] font-semibold text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-    :class="{ 
-      '!bg-blue-500 text-white': slot.takenBy != null,
-      'bg-white ring-1 ring-offset-1 ring-offset-blue-500 ring-blue-500 text-slate-700': !slot.isAvailable,//Slots enabled by administator 
-      'bg-slate-100 rounded-md text-slate-500': slot.isAvailable,//Slots disabled by administrator
-     }"
-    @click="getDateSelected(dayName, slot.time)"
-  >
-    {{ slot.time }} {{ slot.takenBy }}
-  </div>
-</article>
-  <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">{{ 
-  !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
-    
-    }}
-    <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
-  </ion-button>
-</ion-card-content>
+          <span class="text-center text-blue-500">
+            {{ dayName }}
+          </span>
 
-   
+          <div v-for="(slot, slotIndex) in slots as IExpertSchedule['schedule'][keyof IExpertSchedule['schedule']]"
+            :key="slotIndex"
+            class="mb-2 py-[3px] font-semibold text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+            :class="{
+              '!bg-blue-500 text-white': slot.takenBy != null,
+              'bg-white ring-1 ring-offset-1 ring-offset-blue-500 ring-blue-500 text-slate-700': !slot.isAvailable,//Slots enabled by administator 
+              'bg-slate-100 rounded-md text-slate-500': slot.isAvailable,//Slots disabled by administrator
+            }" @click="getDateSelected(dayName, slot.time)">
+            {{ slot.time }} 
+            <small class="!text-[7px] " :class="{'text-slate-500': !slot.isAvailable && slot.takenBy != authStore().getUserUid, 'text-red-500': slot.isAvailable && slot.takenBy != authStore().getUserUid}"  v-if="slot.isAvailable">
+             (No disponible)
+            </small>
+            <span class="!text-sm" v-if="slot.takenBy != null && slot.takenBy != authStore().getUserUid">
+              Agendado por otra persona
+            </span>
+            <span class="!text-sm" v-if="slot.takenBy == authStore().getUserUid">
+              Agendado por usted
+            </span>
+
+          </div>
+        </article>
+        <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block"
+          @click="updateSubcollectionSchedule()">{{
+            !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
+
+          }}
+          <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
+        </ion-button>
+      </ion-card-content>
+
+
     </ion-content>
 
 
@@ -128,7 +135,6 @@
 
 <script setup lang="ts">
 
-import { useexpertUiStore } from '@/stores/expertAdmin';
 import {
   IonPage,
   IonHeader,
@@ -149,7 +155,6 @@ import {
   IonItem,
   IonBackButton,
   onIonViewDidLeave,
-  IonToggle,
   onIonViewDidEnter,
   useIonRouter
 
@@ -160,9 +165,9 @@ import { ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
 import { IExpertSchedule } from '@/interfaces/Ischedule';
-import systemStore from '@/stores/system';
-import { authStore as globalAuthStore } from '@/store/auth';
-import authStore from '@/stores/auth';
+import { authStore } from '@/store/auth';
+
+
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
@@ -189,7 +194,7 @@ const expertUiStore = useExpertUiStore()
 const savingChanges = ref(false);
 
 
-onIonViewDidLeave(()=> {
+onIonViewDidLeave(() => {
   expertUiStore.resetCurrentExpert();
 })
 
@@ -197,9 +202,9 @@ const schedule = expertUiStore.getCurrentExpert.schedule;
 
 const router = useIonRouter()
 
+const authStoreGlobal = authStore()
 const isUserLoggedIn = () => {
-  const authStorePinia = authStore();
-  if (!authStorePinia.isAuth) {
+  if (!authStoreGlobal.getIsAuth) {
     router.navigate('/tabs/tab1', 'back', 'replace');
     return false;
   }
@@ -207,19 +212,28 @@ const isUserLoggedIn = () => {
 };
 
 
+const slotTakenAt = ref(null);
+
 const getDateSelected = (dayName: number, timeSelected: string) => {
-   /* if(!toggleValue.value){
-      presentToast('top', 'Debe habilitar el boton de cambios para editar los horarios', 'warning');
-      return;
-  }*/
- if (!isUserLoggedIn()) {
+   if(userHasSlotsTaken.value){
+     presentToast('top', 'No puede agendar horarios si ya tiene citas agendadas', 'warning');
+     return;
+ }
+  if (!isUserLoggedIn()) {
     return;
   }
 
   const slot = schedule[dayName].find((s: any) => s.time === timeSelected);
+  //Verify if slot taken is already taken if is taken but takenAt is null means that the slot is not taken in firebase yet so it can be diselected or selected again
+  console.log(`Slot before selection: ${JSON.stringify(slot)}`);
+  
   if (slot && !slot.isAvailable) {
+    if (slot.takenBy !== null && slot.takenAt !== null) {
+      presentToast('top', 'El horario seleccionado ya esta tomado', 'warning');
+    return;
+  }
     slot.takenBy = slot.takenBy ? null : authStore().getUserUid;
-    slot.takenAt = slot.takenAt ? null : Timestamp.now();
+    slot.takenAt = slot.takenAt ? null : slotTakenAt.value;
     console.log('Slot seleccionado:', slot);
   }
 };
@@ -228,37 +242,48 @@ const db = getFirestore();
 const routerIon = useIonRouter();
 const updateSubcollectionSchedule = async () => {
 
-  
-  if(!toggleValue.value){
-      presentToast('top', 'Debe habilitar el boton de cambios para poder editar los datos', 'danger');
-      return;
+
+  if (!toggleValue.value) {
+    presentToast('top', 'Debe habilitar el boton de cambios para poder editar los datos', 'danger');
+    return;
   }
 
   savingChanges.value = true;
   const expertPath = doc(db, `experts/${expertUiStore.getCurrentExpert.docId}`);
   try {
-      await updateDoc(expertPath, {
-        schedule: schedule
-      }); 
-      presentToast('top', 'Se ha actualizado el horario con exito', 'success');
-      setTimeout(() => {
-        routerIon.back();
-      }, 1500);
-      savingChanges.value = false;
-    } catch (error) {
-      console.log(error);
-      presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
-      savingChanges.value = false;
-    }
+    await updateDoc(expertPath, {
+      schedule: schedule
+    });
+    presentToast('top', 'Se ha actualizado el horario con exito', 'success');
+    setTimeout(() => {
+      routerIon.back();
+    }, 1500);
+    savingChanges.value = false;
+  } catch (error) {
+    console.log(error);
+    presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
+    savingChanges.value = false;
+  }
 };
 
 
-
+const userHasSlotsTaken = ref(false);
 const toggleValue = ref(false);
 
-onIonViewDidEnter(()=> {
+onIonViewDidEnter(() => {
+  console.clear();
   console.log(expertUiStore.getCurrentExpert.schedule);
+
+
+  const currentSchedule = expertUiStore.getCurrentExpert.schedule;
+
+
+const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);
+
+userHasSlotsTaken.value = isSlotTakenByCurrentUser();
 })
+
+
 
 </script>
 
@@ -281,8 +306,7 @@ ion-chip {
 
 
 
-ion-content{
+ion-content {
   --background: #eeeeee;
 }
-
 </style>
