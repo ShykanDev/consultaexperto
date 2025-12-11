@@ -86,10 +86,8 @@
 
 
 
-      <div class="flex justify-center">
 
-      </div>
-
+<form @submit.prevent="login">
 
       <div class="flex flex-col justify-center mb-2 items-left font-manrope">
         <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
@@ -131,6 +129,7 @@
 
       </div>
 
+</form>
 
     </div>
 
@@ -476,6 +475,8 @@ const stopAnimation = () => {
 // Cuando la vista está a punto de entrar
 onIonViewDidEnter(() => {
   startAnimation();
+
+
 });
 
 // Cuando la vista está a punto de salir

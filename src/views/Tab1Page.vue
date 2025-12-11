@@ -21,6 +21,8 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonIcon, IonContent  } from '
 import LoginComponent from '@/components/Login/LoginComponent.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 import { onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
+import { getAuth } from 'firebase/auth';
+import { authStore } from '@/store/auth';
 
 const names = [
   '<span class="animate-fade-down animate-duration-300 animate-delay-100">consulta</span>' +
@@ -50,6 +52,11 @@ const animateNames = () => {
 
 onIonViewDidEnter(() => {
   animateNames();
+      const authStorePinia = authStore();
+      logout()
+     authStorePinia.resetAuth();
+      
+  
 });
 
 onIonViewDidLeave(() => {
@@ -64,6 +71,13 @@ onUnmounted(() => {
     clearInterval(timeoutId);
   }
 });
+
+const auth = getAuth()
+const logout = async () => {
+  await auth.signOut();
+};
+
+
 </script>
 
 <style scoped>

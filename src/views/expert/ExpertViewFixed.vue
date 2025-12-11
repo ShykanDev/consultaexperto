@@ -52,12 +52,6 @@
           </ion-item>
           <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label>
-              <p class="!text-blue-700 !font-poppins">Email</p>
-              <p class="!font-poppins">{{ expertUiStore.getCurrentExpert?.email ?? 'correo@usuario.com' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label>
               <p class="!text-blue-700 !font-poppins">Especialidad</p>
               <p class="!font-poppins">{{ expertUiStore.getCurrentExpert?.specialty ?? 'Médico' }}</p>
             </ion-label>
@@ -68,18 +62,7 @@
               <p class="!font-poppins">{{ expertUiStore.getCurrentExpert?.professionalId ?? 'No se proporcionó cédula profesional' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label >
-              <p class=" !font-poppins !text-blue-700" >Suspendido </p>
-              <p class="!font-poppins" :class="{ '!text-red-500': expertUiStore.getCurrentExpert?.isSuspended }">{{ expertUiStore.getCurrentExpert?.isSuspended ? 'El usuario está suspendido' : 'El usuario no está suspendido temporalmente' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label>
-              <p class="!text-blue-700 !font-poppins">Motivo de la suspension</p>
-              <p class="!font-poppins" :class="{ '!text-red-500': expertUiStore.getCurrentExpert?.isSuspended }">{{ expertUiStore.getCurrentExpert?.suspensionReason ?? 'El usuario no tiene un motivo de suspension' }}</p>
-            </ion-label>
-          </ion-item>
+ 
     
         </ion-list>
       </ion-card>
@@ -103,10 +86,8 @@
   <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
     Horarios del experto {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
   </h2>
-  <div class="flex sticky top-0 z-10 flex-col gap-0 p-1 bg-white rounded-xl ring-1 ring-offset-1 shadow-md backdrop-blur-sm transition-all duration-300 ease-in-out bg-white/70 ion-margin-vertical font-poppins" :class="{'ring-[#0054E9]': toggleValue, 'ring-gray-200': !toggleValue}">
-    <ion-toggle class="text-blue-600"  v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
-    <span class="text-xs text-center text-gray-500">{{ toggleValue ? 'Ahora puede editar el horario' : 'No podrá actualizar el horario hasta activarlos' }}</span>
-  </div>
+<h5 class="text-center text-gray-500">Estos son los horarios disponibles para citas</h5>
+
       <article
   v-for="(slots, dayName) in schedule"
   :key="dayName"
@@ -117,13 +98,17 @@
   </span>
 
   <div
-    v-for="(slot, slotIndex) in slots"
+    v-for="(slot, slotIndex) in slots as IExpertSchedule['schedule'][keyof IExpertSchedule['schedule']]"
     :key="slotIndex"
     class="mb-2 py-[3px] font-semibold text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-    :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
+    :class="{ 
+      '!bg-blue-500 text-white': slot.takenBy != null,
+      'bg-white ring-1 ring-offset-1 ring-offset-blue-500 ring-blue-500 text-slate-700': !slot.isAvailable,//Slots enabled by administator 
+      'bg-slate-100 rounded-md text-slate-500': slot.isAvailable,//Slots disabled by administrator
+     }"
     @click="getDateSelected(dayName, slot.time)"
   >
-    {{ slot.time }}
+    {{ slot.time }} {{ slot.takenBy }}
   </div>
 </article>
   <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">{{ 
@@ -169,11 +154,15 @@ import {
   useIonRouter
 
 } from '@ionic/vue';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
 import { ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
+import { IExpertSchedule } from '@/interfaces/Ischedule';
+import systemStore from '@/stores/system';
+import { authStore as globalAuthStore } from '@/store/auth';
+import authStore from '@/stores/auth';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
@@ -206,13 +195,33 @@ onIonViewDidLeave(()=> {
 
 const schedule = expertUiStore.getCurrentExpert.schedule;
 
+const router = useIonRouter()
+
+const isUserLoggedIn = () => {
+  const authStorePinia = authStore();
+  if (!authStorePinia.isAuth) {
+    router.navigate('/tabs/tab1', 'back', 'replace');
+    return false;
+  }
+  return true;
+};
+
+
 const getDateSelected = (dayName: number, timeSelected: string) => {
-    if(!toggleValue.value){
+   /* if(!toggleValue.value){
       presentToast('top', 'Debe habilitar el boton de cambios para editar los horarios', 'warning');
       return;
+  }*/
+ if (!isUserLoggedIn()) {
+    return;
   }
-  const slot = schedule[dayName].find(s => s.time === timeSelected);
-  if (slot) slot.isAvailable = !slot.isAvailable;
+
+  const slot = schedule[dayName].find((s: any) => s.time === timeSelected);
+  if (slot && !slot.isAvailable) {
+    slot.takenBy = slot.takenBy ? null : authStore().getUserUid;
+    slot.takenAt = slot.takenAt ? null : Timestamp.now();
+    console.log('Slot seleccionado:', slot);
+  }
 };
 
 const db = getFirestore();
@@ -232,20 +241,17 @@ const updateSubcollectionSchedule = async () => {
         schedule: schedule
       }); 
       presentToast('top', 'Se ha actualizado el horario con exito', 'success');
-
       setTimeout(() => {
         routerIon.back();
       }, 1500);
       savingChanges.value = false;
-
     } catch (error) {
       console.log(error);
       presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
       savingChanges.value = false;
     }
-    
-
 };
+
 
 
 const toggleValue = ref(false);

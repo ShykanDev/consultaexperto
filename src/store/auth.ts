@@ -40,6 +40,15 @@ export const authStore = defineStore('auth', {
             this.isClient = false;
             this.isExpert = false;
             this.isAdmin = false;
+        },
+        resetAuth() {
+            this.isAuth = false;
+            this.userName = null;
+            this.userUid = null;
+            this.userEmail = null;
+            this.isClient = false;
+            this.isExpert = false;
+            this.isAdmin = false;
         }
     },
     getters: {
