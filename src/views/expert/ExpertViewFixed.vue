@@ -83,15 +83,16 @@
       </ion-card>
 
       <!-- Professional Bio -->
-      <ion-card-content>
-        <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-          Horarios del experto {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
-        </h2>
-        <h5 class="text-center text-gray-500">Estos son los horarios disponibles para citas</h5>
-
-        <article v-for="(slots, dayName) in schedule" :key="dayName"
-          class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
-
+      <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
+        Horarios del experto {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
+      </h2>
+      <h6 class="text-center  text-gray-500 font-poppins">Estos son los horarios disponibles para citas</h6>
+<ion-card-content class="flex w-full overflow-x-scroll  gap-4 p-4 ">
+  <article
+    v-for="(slots, dayName) in schedule"
+    :key="dayName"
+    class="flex-shrink-0 w-48 md:w-52 rounded-2xl ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] bg-white p-2  hover:ring-blue-500 animate-fade-left animate-delay-1000"
+  >
           <span class="text-center text-blue-500">
             {{ dayName }}
           </span>
@@ -108,23 +109,23 @@
             <small class="!text-[7px] " :class="{'text-slate-500': !slot.isAvailable && slot.takenBy != authStore().getUserUid, 'text-red-500': slot.isAvailable && slot.takenBy != authStore().getUserUid}"  v-if="slot.isAvailable">
              (No disponible)
             </small>
-            <span class="!text-sm" v-if="slot.takenBy != null && slot.takenBy != authStore().getUserUid">
-              Agendado por otra persona
+            <span class="!text-[10px]" v-if="slot.takenBy != null && slot.takenBy != authStore().getUserUid">
+              Ocupado
             </span>
-            <span class="!text-sm" v-if="slot.takenBy == authStore().getUserUid">
+            <p class="!text-[10px]" v-if="slot.takenBy == authStore().getUserUid">
               Agendado por usted
-            </span>
+            </p>
 
           </div>
         </article>
-        <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block"
-          @click="updateSubcollectionSchedule()">{{
-            !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
-
-          }}
-          <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
-        </ion-button>
       </ion-card-content>
+      <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block"
+        @click="updateSubcollectionSchedule()">{{
+          !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
+
+        }}
+        <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
+      </ion-button>
 
 
     </ion-content>
@@ -241,19 +242,22 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
     return;
   }
 
-  const slot = schedule[dayName].find((s: any) => s.time === timeSelected);
+  const slot = schedule.value[dayName].find((s: any) => s.time === timeSelected);
   //Verify if slot taken is already taken if is taken but takenAt is null means that the slot is not taken in firebase yet so it can be diselected or selected again
-  console.log(`Slot before selection: ${JSON.stringify(slot)}`);
-  
-  if (slot && !slot.isAvailable) {
-    if (slot.takenBy !== null && slot.takenAt !== null) {
+  console.log(slot);
+  if(slot){
+    if(slot.takenBy != null){ // If slot is taken by another user
       presentToast('top', 'El horario seleccionado ya esta tomado', 'warning');
-    return;
-  }
-    slot.takenBy = slot.takenBy ? null : authStore().getUserUid;
-    slot.takenAt = slot.takenAt ? null : slotTakenAt.value;
-    console.log('Slot seleccionado:', slot);
-  }
+      return;
+    }
+    if(slot.takenBy == authStore().getUserUid){ // If slot is taken by current user
+      presentToast('top', 'El horario seleccionado ya esta tomado por usted', 'warning');
+      return;
+    }
+    slot.takenBy = slot.takenBy == null ? authStore().getUserUid : null;
+    slot.takenAt = Timestamp.now();
+  }  
+
 };
 
 const db = getFirestore();
