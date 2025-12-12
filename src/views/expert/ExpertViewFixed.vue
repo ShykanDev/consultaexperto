@@ -3,7 +3,7 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button class="text-sm" :default-href="'/expert-list-admin'" :icon="chevronBack" color="primary"
+          <ion-back-button class="text-sm" :default-href="'/tabs/expert-list'" :icon="chevronBack" color="primary"
             text="Volver" style="text-transform: none;" />
         </ion-buttons>
         <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{
@@ -83,9 +83,9 @@
       </ion-card>
 
       <!-- Professional Bio -->
-      <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-        Horarios del experto {{ expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
-      </h2>
+      <h6 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
+        Horarios del experto 
+      </h6>
       <h6 class="text-center  text-gray-500 font-poppins">Estos son los horarios disponibles para citas</h6>
 <ion-card-content class="flex w-full overflow-x-scroll  gap-4 p-4 ">
   <article
@@ -99,16 +99,15 @@
 
           <div v-for="(slot, slotIndex) in slots as IExpertSchedule['schedule'][keyof IExpertSchedule['schedule']]"
             :key="slotIndex"
-            class="mb-2 py-[3px] font-semibold text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+            class="mb-2 py-[9px] font-semibold text-center rounded-lg ring-1 ring-gray-200 cursor-pointer font-poppins"
             :class="{
-              '!bg-blue-500 text-white': slot.takenBy != null,
-              'bg-white ring-1 ring-offset-1 ring-offset-blue-500 ring-blue-500 text-slate-700': !slot.isAvailable,//Slots enabled by administator 
-              'bg-slate-100 rounded-md text-slate-500': slot.isAvailable,//Slots disabled by administrator
+              '!bg-green-50 !text-green-600': slot.takenBy != null && slot.takenBy == authStore().getUserUid,
+              '!bg-yellow-50 !text-yellow-600': slot.takenBy != null && slot.takenBy != authStore().getUserUid,
+              'bg-blue-500 ring-1 ring-offset-1 ring-offset-blue-500 ring-blue-500 text-white': !slot.isAvailable && slot.takenBy == null,//Slots enabled by administator 
+              'bg-slate-300 line-through rounded-md text-slate-500': slot.isAvailable,//Slots disabled by administrator
             }" @click="getDateSelected(dayName, slot.time)">
             {{ slot.time }} 
-            <small class="!text-[7px] " :class="{'text-slate-500': !slot.isAvailable && slot.takenBy != authStore().getUserUid, 'text-red-500': slot.isAvailable && slot.takenBy != authStore().getUserUid}"  v-if="slot.isAvailable">
-             (No disponible)
-            </small>
+            <span v-if="!slot.isAvailable && slot.takenBy == null" class="!text-[10px]">Disponible</span>
             <span class="!text-[10px]" v-if="slot.takenBy != null && slot.takenBy != authStore().getUserUid">
               Ocupado
             </span>
@@ -119,7 +118,7 @@
           </div>
         </article>
       </ion-card-content>
-      <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block"
+      <ion-button class="ion-margin-vertical" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
         @click="updateSubcollectionSchedule()">{{
           !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
 
@@ -162,7 +161,7 @@ import {
 } from '@ionic/vue';
 import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
-import { computed, ref } from 'vue';
+import { computed, ref, Slot } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
 import { IExpertSchedule } from '@/interfaces/Ischedule';
@@ -215,10 +214,6 @@ const schedule = computed(() => {
   return orderedSchedule;
 });
 
-onIonViewDidEnter(() => {
-  console.log(schedule);
-  
-})
 const router = useIonRouter()
 
 const authStoreGlobal = authStore()
@@ -230,8 +225,13 @@ const isUserLoggedIn = () => {
   return true;
 };
 
-
+const slotSelected = ref();
 const slotTakenAt = ref(null);
+const isAnSlotAlreadyTaken = () => Object.values(schedule.value).flat(1).find(s => s.takenBy == authStore().getUserUid && !s.takenAt);
+
+
+
+
 
 const getDateSelected = (dayName: number, timeSelected: string) => {
    if(userHasSlotsTaken.value){
@@ -242,52 +242,66 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
     return;
   }
 
-  const slot = schedule.value[dayName].find((s: any) => s.time === timeSelected);
-  //Verify if slot taken is already taken if is taken but takenAt is null means that the slot is not taken in firebase yet so it can be diselected or selected again
-  console.log(slot);
-  if(slot){
-    if(slot.takenBy != null){ // If slot is taken by another user
-      presentToast('top', 'El horario seleccionado ya esta tomado', 'warning');
-      return;
-    }
-    if(slot.takenBy == authStore().getUserUid){ // If slot is taken by current user
-      presentToast('top', 'El horario seleccionado ya esta tomado por usted', 'warning');
-      return;
-    }
-    slot.takenBy = slot.takenBy == null ? authStore().getUserUid : null;
-    slot.takenAt = Timestamp.now();
-  }  
+  slotSelected.value = schedule.value[dayName].find((s: any) => s.time === timeSelected);
 
+  
+  //Verify if slot taken is already taken if is taken but takenAt is null means that the slot is not taken in firebase yet so it can be diselected or selected again
+  console.log(slotSelected.value);
+  if(slotSelected.value){
+    if(slotSelected.value.isAvailable){
+      presentToast('top', `El horario de las ${slotSelected.value.time} no esta disponible`, 'warning');
+      return;
+    }
+    if(slotSelected.value.takenBy != null && slotSelected.value.takenBy != authStore().getUserUid){ // If slot is taken by another user and different from current user
+      presentToast('top', `El horario de las ${slotSelected.value.time} ya esta tomado por otro usuario`, 'warning');
+      return;
+    }
+    if(slotSelected.value.takenBy == authStore().getUserUid && slotSelected.value.takenAt != null){ // If slot is taken by current user but takenAt is not null means that the slot is taken in firebase so it cannot be diselected or selected again
+      presentToast('top', `El horario de las ${slotSelected.value.time} ya esta tomado por usted en la base de datos`, 'warning');
+      return;
+    }
+    if(isAnSlotAlreadyTaken()){
+      isAnSlotAlreadyTaken().takenBy = null;
+    }
+    slotSelected.value.takenBy = slotSelected.value.takenBy == null ? authStore().getUserUid : null;
+    slotSelected.value.takenAt = slotTakenAt.value;
+  }  
 };
 
 const db = getFirestore();
 const routerIon = useIonRouter();
 const updateSubcollectionSchedule = async () => {
 
-
-  if (!toggleValue.value) {
-    presentToast('top', 'Debe habilitar el boton de cambios para poder editar los datos', 'danger');
-    return;
-  }
+if(!schedule.value){
+  presentToast('top', 'No se ha seleccionado ningun horario', 'warning');
+  return;
+}
+if(userHasSlotsTaken.value){
+  presentToast('top', 'No puede agendar horarios si ya tiene citas agendadas', 'danger');
+  return;
+}
 
   savingChanges.value = true;
   const expertPath = doc(db, `experts/${expertUiStore.getCurrentExpert.docId}`);
   try {
+    console.log(schedule.value);
+    slotSelected.value.takenAt = Timestamp.now();
     await updateDoc(expertPath, {
-      schedule: schedule
+      schedule: schedule.value
     });
     presentToast('top', 'Se ha actualizado el horario con exito', 'success');
     setTimeout(() => {
       routerIon.back();
     }, 1500);
     savingChanges.value = false;
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
     presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
     savingChanges.value = false;
   }
 };
 
+//vrify if user has an slot already taken (before firebase update) if so then later use this function to deny the user to select another slot
 
 const userHasSlotsTaken = ref(false);
 const toggleValue = ref(false);
@@ -295,11 +309,11 @@ const toggleValue = ref(false);
 onIonViewDidEnter(() => {
   console.clear();
   
+  const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);
   
   const currentSchedule = expertUiStore.getCurrentExpert.schedule;
 
 
-const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);
 
 userHasSlotsTaken.value = isSlotTakenByCurrentUser();
 })

@@ -39,7 +39,7 @@
                 <ul class="rounded-2xl">
                   <li v-for="(expert, index) in experts" :key="index"
                     class="p-3 mb-2 text-center rounded-md transition-colors bg-sky-500/25 animate-fade hover:bg-sky-600 hover:cursor-pointer"
-                    @click="getExpertSelection(expert.name)">
+                    @click="getExpertSelection(expert.name)" >
                     <div class="p-1 my-1 text-base font-semibold text-sky-600 bg-white rounded-lg opacity-90">{{
                       expert.specialty }}</div>
                   </li>
