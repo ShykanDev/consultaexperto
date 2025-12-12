@@ -69,6 +69,13 @@ const routes: Array<RouteRecordRaw> = [
           requiresAuth: true
         }
       },  
+      {
+        path: 'expert-list-modern',
+        component: () => import('@/views/ExpertListModern.vue'),
+        meta:{
+          requiresAuth: false
+        }
+      },
     ],
     
   },
