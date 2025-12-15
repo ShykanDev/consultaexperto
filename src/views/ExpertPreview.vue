@@ -220,9 +220,16 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
       presentToast('top', 'Debe habilitar el boton de cambios para editar los horarios', 'warning');
       return;
   }
-  const slot = schedule[dayName].find(s => s.time === timeSelected);
+  // Add a check to ensure schedule[dayName] is not undefined before trying to call find
+  if (!schedule.value || !schedule.value[dayName]) {
+    console.error(`Schedule or schedule for day ${dayName} is undefined.`);
+    // Optionally, handle this case by returning or throwing an error
+    return;
+  }
+  const slot = schedule.value[dayName].find(s => s.time === timeSelected);
   if (slot) slot.isAvailable = !slot.isAvailable;
 };
+
 
 const db = getFirestore();
 const routerIon = useIonRouter();
@@ -238,7 +245,7 @@ const updateSubcollectionSchedule = async () => {
   const expertPath = doc(db, `experts/${expertAdminStore.getCurrentExpert.docId}`);
   try {
       await updateDoc(expertPath, {
-        schedule: schedule
+        schedule: schedule.value
       }); 
       presentToast('top', 'Se ha actualizado el horario con exito', 'success');
 

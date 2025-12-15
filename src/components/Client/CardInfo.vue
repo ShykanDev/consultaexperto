@@ -1,5 +1,18 @@
 <template>
     <div class="p-6 w-full max-w-full bg-white rounded-3xl border border-gray-200 shadow-lg">
+      <article class="w-full bg-red-700">
+        <div class="w-full bg-blue-700">
+          <span>icon</span>
+        </div>
+        <div class="w-full bg-green-700">
+          <span>data</span>
+          <span>data</span>
+          <span>data</span>
+        </div>
+        <div class="w-full bg-yellow-700">
+          <span>icon</span>
+        </div>
+      </article>
       <!-- Título de la cita -->
       <div class="mb-6 text-center">
         <div class="inline-flex justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full">
@@ -7,10 +20,10 @@
         </div>
         <h3 class="mb-1 text-lg font-semibold text-gray-800">Cita agendada</h3>
         <p class="font-medium text-gray-600">
-          Para el <span class="text-blue-600">{{ props.data.expertSchedule.time }}</span>
+          Para el <span class="text-blue-600">{{ formattedDay }}</span>
         </p>
         <p class="font-medium text-gray-600">
-          A las <span class="text-blue-600">{{ props.data.expertSchedule.time }}</span>
+          A las <span class="text-blue-600">{{ formattedTime }}</span>
         </p>
       </div>
       
@@ -18,12 +31,12 @@
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="bi-calendar2-minus" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Día:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ props.data.createdAt }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ formattedDate }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="bi-alarm" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Hora:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ props.data.createdAt }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ formattedTime }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-user-md" class="mr-2 text-blue-600" />
@@ -33,12 +46,12 @@
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-briefcase-medical" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Especialidad:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ props.data.specialty }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.expertSpecialty }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-id-card" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Cédula profesional:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ props.data.professionalId }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.expertProfessionalId }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-link" class="mr-2 text-blue-600" />
@@ -74,12 +87,67 @@
   
   <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
+import { computed } from 'vue';
 
 const props = defineProps({
   data:{
     type:Object as () => ISchedule,
     required:true,
-
   } 
 })
-  </script>
+
+const getDayIndex = (dayName: string): number => {
+  const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+  const normalizedDay = dayName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return days.findIndex(d => normalizedDay.includes(d));
+}
+
+const calculatedAppointmentDate = computed(() => {
+  if (!props.data?.createdAt) return null;
+
+  const createdAtDate = new Date(props.data.createdAt.seconds * 1000);
+  // Reset time to start of day for accurate day calculation
+  const currentDayIndex = createdAtDate.getDay();
+  
+  // Handle DayName property (supporting both DayName and dayName just in case)
+  const targetDayName = props.data.DayName || (props.data as any).dayName || '';
+  const targetDayIndex = getDayIndex(targetDayName);
+
+  if (targetDayIndex === -1) return createdAtDate;
+
+  let daysUntil = targetDayIndex - currentDayIndex;
+  
+  // If the day is today or in the past, add 7 days to get the next occurrence
+  // Unless it's today and the time hasn't passed? 
+  // For simplicity and typical booking flows:
+  // If I book for "Monday" on a "Tuesday", it's next Monday (daysUntil = 1 - 2 = -1 => +7 = 6 days)
+  // If I book for "Monday" on a "Monday", usually it's next week unless specifically today.
+  // Assuming strict forward booking:
+  if (daysUntil <= 0) {
+    daysUntil += 7;
+  }
+
+  const futureDate = new Date(createdAtDate);
+  futureDate.setDate(createdAtDate.getDate() + daysUntil);
+  
+  return futureDate;
+});
+
+const formattedDate = computed(() => {
+  if (!calculatedAppointmentDate.value) return 'Fecha no disponible';
+  return calculatedAppointmentDate.value.toLocaleDateString('es-MX', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+});
+
+const formattedTime = computed(() => {
+    return props.data.expertSchedule.time;
+})
+
+const formattedDay = computed(() => {
+    return calculatedAppointmentDate.value?.toLocaleDateString('es-MX', { weekday: 'long' }) || props.data.DayName;
+})
+</script>

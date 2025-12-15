@@ -2,15 +2,16 @@ import { Timestamp } from "firebase/firestore";
 import { Slot } from "../Ischedule";
 
 export interface ISchedule {
-  DocId: string;
-  createdAt: Timestamp;
-  expertName: string;
-  expertUid: string;
-  userName: string;
-  userUid: string;
-  isAvailable: boolean;
-  takenAt: Timestamp | null;
-  takenBy: string | null;
-  expertSchedule: Slot;
-  isFinished: boolean;
+ docId?: string;
+createdAt: Timestamp;
+DayName: string;
+expertName: string;
+expertSchedule: Slot;
+expertSpecialty: string;
+expertUid: string;
+expertProfessionalId: string;
+userName: string;
+userUid: string;
+appointmentLink: string;
+isFinished: boolean;
 }

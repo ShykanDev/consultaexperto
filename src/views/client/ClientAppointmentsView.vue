@@ -11,7 +11,7 @@
    
  
   
-      <ion-segment>
+      <ion-segment class="p-1">
           <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
             <ion-refresher-content></ion-refresher-content>
           </ion-refresher>
@@ -26,14 +26,14 @@
         <ion-segment-content id="Proximas">
         
           <div class="bg-gray-100 text-center ion-padding">
-            <h2 class="font-poppins text-2xl ion-no-margin font-semibold text-slate-600">Próximas citas</h2> 
+            <h2 class="font-poppins text-2xl ion-no-margin my font-semibold text-slate-600">Próximas citas</h2> 
           </div>
-          <div v-if="userAppointments.length === 0" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => appointment.isFinished)" class="flex justify-center items-center h-full">
             No tienes citas futuras
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo :data="appointment" />
+              <CardInfo v-if="!appointment.isFinished" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
@@ -41,12 +41,12 @@
           <div class="bg-gray-100 text-center ion-padding">
             <h2 class="font-poppins text-2xl ion-no-margin font-semibold text-slate-600">Citas pasadas </h2> 
           </div>
-          <div v-if="userAppointments.length === 0" class="flex justify-center items-center h-full">
-            No tienes citas pasadas
+          <div v-if="userAppointments.every(appointment => !appointment.isFinished)" class="flex justify-center items-center h-full">
+            No tiene citas pasadas
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo :data="appointment" />
+              <CardInfo v-if="appointment.isFinished" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>

@@ -3,7 +3,7 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button class="text-sm" :default-href="'/tabs/expert-list'" :icon="chevronBack" color="primary"
+          <ion-back-button class="text-sm" :default-href="'/tabs/experts-list'" :icon="chevronBack" color="primary"
             text="Volver" style="text-transform: none;" />
         </ion-buttons>
         <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{
@@ -289,6 +289,8 @@ if(userHasSlotsTaken.value){
   try {
     console.log(schedule.value);
     slotSelected.value.takenAt = Timestamp.now();
+    //find the day name of the slot selected
+    const dayName = Object.keys(schedule.value).find(key => schedule.value[key].includes(slotSelected.value));
     await updateDoc(expertPath, {
       schedule: schedule.value
     });
@@ -298,6 +300,11 @@ if(userHasSlotsTaken.value){
       expertUid: expertUiStore.getCurrentExpert.userUid,
       expertName: expertUiStore.getCurrentExpert.fullName,
       expertSchedule: slotSelected.value,
+      expertSpecialty: expertUiStore.getCurrentExpert.specialty,
+      expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
+      appointmentLink: '',
+      isFinished: false,
+      dayName: dayName,
       createdAt: Timestamp.now(),
     })
     presentToast('top', 'Se ha agendado su cita con exito', 'success');
