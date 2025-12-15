@@ -28,6 +28,7 @@
                                     personalizadas y asesoramiento profesional en diversos campos.</h2>
                             </div>
                             <button
+                            @click="uploadDefaultExpertServices"
                                 class="relative z-10 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-base font-bold shadow-md active:scale-95 duration-100">
                                 <span class="truncate">Cargar Expertos</span>
                             </button>
@@ -491,9 +492,10 @@
 </template>
 
 <script lang="ts" setup>
+import { authStore } from '@/store/auth';
 import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle } from '@ionic/vue';
+import { addDoc, arrayUnion, collection, doc, getFirestore, updateDoc,  } from 'firebase/firestore';
 import {
-    menuOutline,
     checkmarkCircleOutline,
     lockClosedOutline,
     sparklesOutline,
@@ -507,16 +509,115 @@ import {
     schoolOutline,
     terminalOutline,
     folderOpenOutline,
-    megaphoneOutline,
     hammerOutline,
     happyOutline,
     easelOutline,
     restaurantOutline,
-    star,
-    starHalf
-} from 'ionicons/icons';
+    star} from 'ionicons/icons';
+
+
+const expertServices = {
+  services: [
+    {
+      name: "Import and Export",
+      description: "We help you manage procedures and regulations for the international exchange of goods and services, ensuring your operations are secure and compliant with all regulations.",
+      consult: true
+    },
+    {
+      name: "Legal Advice",
+      description: "Our expert lawyers provide advice and representation in judicial and administrative processes. Whether to resolve conflicts, draft contracts, or protect your rights, we are here to help you.",
+      consult: true
+    },
+    {
+      name: "Medical Consultation",
+      description: "Health professionals committed to addressing your medical needs in a personalized way. From general check-ups to treatment follow-ups, your well-being is our priority.",
+      consult: true
+    },
+    {
+      name: "Accounting and Finance",
+      description: "Our accountants manage your finances with precision, recording and analyzing every transaction to provide you with clear and reliable reports. This way, you can make informed and strategic financial decisions.",
+      consult: true
+    },
+    {
+      name: "Architecture and Design",
+      description: "Experts in space design and planning that combine functionality and aesthetics. We create innovative and personalized environments tailored to your needs, from initial concepts to construction supervision.",
+      consult: true
+    },
+    {
+      name: "Web and Digital Development",
+      description: "We develop custom digital solutions: websites, mobile apps, and e-commerce strategies. Everything is designed to enhance your online presence and optimize the user experience.",
+      consult: true
+    },
+    {
+      name: "Advertising and Branding",
+      description: "We create innovative advertising campaigns, combining creativity and market analysis to position your brand. We attract your target audience and increase your visibility across various media and platforms.",
+      consult: true
+    },
+    {
+      name: "Translation and Interpretation",
+      description: "Multilingual communication specialists offering precise and culturally sensitive translations and interpretations. We facilitate effective communication in multiple languages for businesses, legal documents, and multimedia content.",
+      consult: true
+    },
+    {
+      name: "Technical Appraisal",
+      description: "We conduct detailed and objective evaluations in various areas, providing rigorous expert reports. These are essential for legal processes, insurance, and technical decision-making.",
+      consult: true
+    },
+    {
+      name: "Computer Engineering",
+      description: "We develop advanced IT systems and solutions, from software and hardware to networks and security. We drive innovation and efficiency in industrial and commercial sectors.",
+      consult: true
+    },
+    {
+      name: "Procedure Management",
+      description: "We help you manage and optimize administrative and legal procedures. We navigate bureaucratic processes so that everything is in order, efficiently and without complications.",
+      consult: true
+    },
+    {
+      name: "Marketing Strategies",
+      description: "We design comprehensive marketing plans to connect with your audience. We use digital and traditional tools to increase engagement, retain customers, and improve your brand positioning in the market.",
+      consult: true
+    },
+    {
+      name: "Psychology and Well-being",
+      description: "We offer psychological counseling and therapy to help you manage emotional and behavioral challenges. We promote your mental health and well-being through personalized techniques and strategies.",
+      consult: true
+    },
+    {
+      name: "Academic Advising",
+      description: "Educators dedicated to resolving your academic doubts and improving your learning skills. We support you in achieving your educational goals with effective and personalized pedagogical methods.",
+      consult: true
+    },
+    {
+      name: "Culinary Advice",
+      description: "Expert chefs offering advanced culinary techniques and advice. We resolve your cooking doubts, improve your skills, and help you create delicious dishes with high-quality ingredients and methods.",
+      consult: true
+    }
+  ],
+  totalServices: 15
+};
+
+
+const db = getFirestore();
+const expertServicesRef = doc(db, `expertServices/vgRrLzaLI5Yut4TssaNI`);
+const uploadDefaultExpertServices = () => {
+   updateDoc(expertServicesRef, {
+        [`main.${authStore().getUserUid+'1'}`] : 
+        arrayUnion({
+            name:'Alex',
+            comment:'This asdasd',
+            })
+    
+    }).then(() => {
+        console.log('Default expert services uploaded');
+    }).catch((error) => {
+        console.error('Error uploading default expert services: ', error);
+    })
+}
+
+
 </script>
 
 <style scoped>
 /* Scoped styles if needed, currently mainly using Tailwind */
-</style>
+</style>addDoc

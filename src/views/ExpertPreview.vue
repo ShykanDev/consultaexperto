@@ -171,7 +171,7 @@ import {
 } from '@ionic/vue';
 import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { chevronBack, toggle } from 'ionicons/icons';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
@@ -201,7 +201,19 @@ onIonViewDidLeave(()=> {
   expertAdminStore.resetCurrentExpert();
 })
 
-const schedule = expertAdminStore.getCurrentExpert.schedule;
+const schedule = computed(() => {
+  const originalSchedule = expertAdminStore.getCurrentExpert?.schedule;
+  const orderedDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
+  const orderedSchedule: Record<string, any> = {};
+
+  orderedDays.forEach(day => {
+    if (originalSchedule?.[day]) {
+      orderedSchedule[day] = originalSchedule[day];
+    }
+  });
+
+  return orderedSchedule;
+});
 
 const getDateSelected = (dayName: number, timeSelected: string) => {
     if(!toggleValue.value){

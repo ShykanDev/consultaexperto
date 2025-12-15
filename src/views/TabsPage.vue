@@ -13,12 +13,12 @@
           <ion-label>Registrarse</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button v-if="!authStore().getIsAuth" tab="tab3" href="/tabs/expert-list-modern">
+        <ion-tab-button v-if="authStore().getIsAuth" tab="tab3" href="/tabs/expert-list-modern">
           <v-icon name="md-listalt-round" />
-          <ion-label>Ver Expertos</ion-label>
+          <ion-label>Ver Expertos M</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button v-if="authStore().getIsAuth" tab="tab3" href="/tabs/experts-list">
+        <ion-tab-button v-if="authStore().getIsAuth" tab="tab4" href="/tabs/experts-list">
           <v-icon name="md-listalt-round" />
           <ion-label>Ver Expertos</ion-label>
         </ion-tab-button>

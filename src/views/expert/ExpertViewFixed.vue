@@ -159,7 +159,7 @@ import {
   useIonRouter
 
 } from '@ionic/vue';
-import { doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
 import { computed, ref, Slot } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -270,6 +270,9 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
 
 const db = getFirestore();
 const routerIon = useIonRouter();
+const userScheduleCollection = collection(db, 'users/'+authStore().getUserUid+'/schedule');
+
+
 const updateSubcollectionSchedule = async () => {
 
 if(!schedule.value){
@@ -289,14 +292,22 @@ if(userHasSlotsTaken.value){
     await updateDoc(expertPath, {
       schedule: schedule.value
     });
-    presentToast('top', 'Se ha actualizado el horario con exito', 'success');
+    await addDoc(userScheduleCollection, {
+      userName: authStore().getUserName,
+      userUid: authStore().getUserUid,
+      expertUid: expertUiStore.getCurrentExpert.userUid,
+      expertName: expertUiStore.getCurrentExpert.fullName,
+      expertSchedule: slotSelected.value,
+      createdAt: Timestamp.now(),
+    })
+    presentToast('top', 'Se ha agendado su cita con exito', 'success');
     setTimeout(() => {
       routerIon.back();
     }, 1500);
     savingChanges.value = false;
   } catch (error) { 
     console.log(error);
-    presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
+    presentToast('top', 'Hubo un error al agendar la cita', 'danger');
     savingChanges.value = false;
   }
 };

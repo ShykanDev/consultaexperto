@@ -7,11 +7,10 @@
         </div>
         <h3 class="mb-1 text-lg font-semibold text-gray-800">Cita agendada</h3>
         <p class="font-medium text-gray-600">
-          Para el <span class="text-blue-600">{{ day }} {{ formattedDate }}</span>
+          Para el <span class="text-blue-600">{{ props.data.expertSchedule.time }}</span>
         </p>
         <p class="font-medium text-gray-600">
-          A las <span class="text-blue-600">{{ hour }}</span> con 
-          <span class="text-blue-600">{{ expertName }}</span>
+          A las <span class="text-blue-600">{{ props.data.expertSchedule.time }}</span>
         </p>
       </div>
       
@@ -19,32 +18,32 @@
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="bi-calendar2-minus" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Día:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ day + ' ' + formattedDate }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.createdAt }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="bi-alarm" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Hora:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ hour }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.createdAt }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-user-md" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Nombre:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ expertName }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.expertName }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-briefcase-medical" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Especialidad:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ specialty }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.specialty }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-id-card" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Cédula profesional:</span>
-          <span class="ml-1 font-bold text-blue-600">{{ professionalId }}</span>
+          <span class="ml-1 font-bold text-blue-600">{{ props.data.professionalId }}</span>
         </div>
         <div class="flex items-center p-3 bg-blue-50 rounded-xl">
           <v-icon name="fa-link" class="mr-2 text-blue-600" />
           <span class="font-medium text-gray-700">Enlace de la cita:</span>
-          <span class="ml-1 italic font-mediums text-slate-500">{{ (appointmentLink !== '') ? appointmentLink : 'El enlace de la cita estará generado una vez el administrador lo asigne' }}</span>
+          <span class="ml-1 italic font-mediums text-slate-500">{{ (props.data.appointmentLink !== '') ? props.data.appointmentLink : 'El enlace de la cita estará generado una vez el administrador lo asigne' }}</span>
         </div>
       </div>
 
@@ -54,7 +53,7 @@
             <p class="text-sm text-gray-600">
               <span class="font-medium">Registrado el:</span>
               <span class="ml-1 font-semibold text-blue-600">
-                {{ new Date(createdAt.seconds * 1000).toLocaleDateString('es-MX', { 
+                {{ new Date(props.data.createdAt.seconds * 1000).toLocaleDateString('es-MX', { 
                   year: 'numeric', 
                   month: 'long', 
                   day: 'numeric',
@@ -74,19 +73,13 @@
   </template>
   
   <script lang="ts" setup>
-  defineProps<{
-    createdAt: {
-      seconds: number;
-      nanoseconds: number;
-    };
-    formattedDate: string;
-    userId: string;
-    expertUid: string;
-    day: string;
-    hour: string;
-    expertName: string;
-    specialty: string;
-    professionalId: string;
-    appointmentLink: string | null;
-  }>();
+import { ISchedule } from '@/interfaces/user/ISchedule';
+
+const props = defineProps({
+  data:{
+    type:Object as () => ISchedule,
+    required:true,
+
+  } 
+})
   </script>

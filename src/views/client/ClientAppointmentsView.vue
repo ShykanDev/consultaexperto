@@ -1,123 +1,99 @@
 <template>
-    <ion-page>
-        <ion-header>
-            <ion-toolbar>
-                    <ion-title class="text-center text-blue-600">Agenda</ion-title>
-            <span class="text-xs" v-html="currentName" :key="currentName"></span>
-            </ion-toolbar>
-        </ion-header>
-        <ion-content class="">
-            <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
-                <ion-refresher-content></ion-refresher-content>
-            </ion-refresher>
-            <div v-if="userAppointments.length === 0" class="flex justify-center items-center h-full">
-                No tienes citas futuras
+  <ion-page>
+    <!--Header-->
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <ion-title class="text-center text-blue-600">Agenda</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <!--Content-->
+   
+ 
+  
+      <ion-segment>
+          <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
+            <ion-refresher-content></ion-refresher-content>
+          </ion-refresher>
+        <ion-segment-button value="Proximas" content-id="Proximas">
+          <ion-label>Próximas</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="Pasadas" content-id="Pasadas">
+          <ion-label>Pasadas</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      <ion-segment-view>
+        <ion-segment-content id="Proximas">
+        
+          <div class="bg-gray-100 text-center ion-padding">
+            <h2 class="font-poppins text-2xl ion-no-margin font-semibold text-slate-600">Próximas citas</h2> 
+          </div>
+          <div v-if="userAppointments.length === 0" class="flex justify-center items-center h-full">
+            No tienes citas futuras
+          </div>
+          <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
+            <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
+              <CardInfo :data="appointment" />
             </div>
-            <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
-                <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-                    <CardInfo :createdAt="appointment.createdAt" :formattedDate="appointment.formattedDate" :userId="appointment.userId" :expertUid="appointment.expertUid" :day="appointment.day" :hour="appointment.hour" :expertName="appointment.expertName" :specialty="appointment.specialty" :professionalId="appointment.professionalId" :appointmentLink="appointment.appointmentLink" />
-                </div>
+          </div>
+        </ion-segment-content>
+        <ion-segment-content id="Pasadas">
+          <div class="bg-gray-100 text-center ion-padding">
+            <h2 class="font-poppins text-2xl ion-no-margin font-semibold text-slate-600">Citas pasadas </h2> 
+          </div>
+          <div v-if="userAppointments.length === 0" class="flex justify-center items-center h-full">
+            No tienes citas pasadas
+          </div>
+          <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
+            <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
+              <CardInfo :data="appointment" />
             </div>
-        </ion-content>
-    </ion-page>
-</template> 
+          </div>
+        </ion-segment-content>
+        <ion-segment-content id="third">Third</ion-segment-content>
+      </ion-segment-view>
+
+  </ion-page>
+</template>
 
 <script lang="ts" setup>
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonRefresherContent, onIonViewDidLeave } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonRefresherContent, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonLabel } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { ref } from 'vue';
 import { authStore as authStoreInstance } from '@/store/auth';
 import CardInfo from '@/components/Client/CardInfo.vue';
+import { ISchedule } from '@/interfaces/user/ISchedule';
 
 const handleRefresh = (event: any) => {
-    getUserAppointments();
-    event.target.complete();    
+  getUserAppointments();
+  event.target.complete();
 }
 
-const authStore = authStoreInstance();
+const authStore = authStoreInstance(); authStore
 
-const userAppointments = ref<Appointment[]>([]);
+const userAppointments = ref<ISchedule[]>([]);
 const db = getFirestore();
-const q = query(collection(db, `users/${authStoreInstance().getUserUid}/FutureAppointments`), where('userId', '==', authStoreInstance().getUserUid));
+const q = query(collection(db, `users/${authStoreInstance().getUserUid}/schedule`), where('userUid', '==', authStoreInstance().getUserUid));
 const getUserAppointments = async () => {
-    try {
-        const querySnapshot = await getDocs(q);
-        if(querySnapshot.empty){
-            return;
-        }   
-        userAppointments.value = querySnapshot.docs.map((doc) => doc.data() as Appointment).filter((appointment) => appointment.expertName !== null);
-    } catch (error) {
-        console.log(error);
+  try {
+    const querySnapshot = await getDocs(q);
+    if(querySnapshot.empty){
+      userAppointments.value = [];
+      console.log('No hay citas futuras');
+      return;
     }
+    userAppointments.value = querySnapshot.docs.map((doc) => doc.data() as ISchedule).filter((appointment) => appointment.expertName !== null);
+    console.log(userAppointments.value);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 onIonViewDidEnter(() => {
-   getUserAppointments();
+  getUserAppointments();
 })
 
-interface Appointment {
-    createdAt: {
-        seconds: number;
-        nanoseconds: number;
-    },
-    formattedDate: string,
-    userId: string,
-    expertUid: string,
-    day: string,
-    hour: string,
-    expertName: string,
-    specialty: string,
-    professionalId: string,
-    appointmentLink: string
-}
-
-const names = [
-  [
-    '<span class="animate-fade-down animate-duration-300 animate-delay-100">consulta</span>' +
-    '<span class="text-cyan-700 animate-fade animate-duration-300 animate-delay-200">gratis</span>' +
-    '<span class="animate-fade animate-duration-300 animate-delay-300">en</span>' +
-    '<span class="animate-fade animate-duration-300 animate-delay-500">linea</span>' +
-    '<span class="text-cyan-500 animate-fade animate-duration-300 animate-delay-500">.com</span>'
-  ],
-  [
-    '<span class="animate-fade animate-duration-300 animate-delay-100">consulta</span>' +
-    '<span class="text-cyan-700 animate-fade animate-duration-300 animate-delay-200">experto</span>' +
-    '<span class="text-cyan-500 animate-fade animate-duration-300 animate-delay-300">.com</span>'
-  ],
-  [
-    '<span class="animate-fade-down animate-delay-100">consulta</span>' +
-    '<span class="text-cyan-700 animate-fade animate-delay-200">especializada</span>' +
-    '<span class="text-cyan-500 animate-fade animate-delay-300">.com</span>'
-  ]
-];
-
-let timeoutId: NodeJS.Timeout | null = null;
-const currentName = ref<string[]>(names[0]);
- const animateNames = () => {
-  timeoutId = setInterval(() => {
-    const randomIndex = Math.floor(Math.random() * names.length);
-    currentName.value = names[randomIndex];
-  }, 2000);
-  
- }
-
- onIonViewDidEnter(() => {
-  if(timeoutId){
-    clearInterval(timeoutId);
-    timeoutId = null;
-  }
-  animateNames();
-})
-
-onIonViewDidLeave(() => {
-  if(timeoutId){
-    clearInterval(timeoutId);
-    timeoutId = null;
-  }
-})
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
