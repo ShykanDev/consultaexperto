@@ -28,7 +28,6 @@
                                     personalizadas y asesoramiento profesional en diversos campos.</h2>
                             </div>
                             <button
-                            @click="uploadDefaultExpertServices"
                                 class="relative z-10 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-base font-bold shadow-md active:scale-95 duration-100">
                                 <span class="truncate">Cargar Expertos</span>
                             </button>
@@ -148,7 +147,7 @@
                                     <h4 class="font-bold text-lg truncate text-slate-900">Importación y Exportación</h4>
                                     <p class="text-xs text-slate-500 truncate">Logística y Aduanas</p>
                                 </div>
-                                <button
+                                <button @click="getExpertSelection('Importación y Exportación')"
                                     class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow-sm transition-colors">Consultar</button>
                             </div>
                             <div
@@ -160,7 +159,7 @@
                                     <h4 class="font-bold text-lg truncate text-slate-900">Asesoramiento Legal</h4>
                                     <p class="text-xs text-slate-500 truncate">Derecho Civil & Corporativo</p>
                                 </div>
-                                <button
+                                <button @click="getExpertSelection('Asesorías Legales')"
                                     class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow-sm transition-colors">Consultar</button>
                             </div>
                             <div
@@ -172,7 +171,7 @@
                                     <h4 class="font-bold text-lg truncate text-slate-900">Medicina</h4>
                                     <p class="text-xs text-slate-500 truncate">Consulta Especializada</p>
                                 </div>
-                                <button
+                                <button @click="getExpertSelection('Médico')"
                                     class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded-lg shadow-sm transition-colors">Consultar</button>
                             </div>
                         </div>
@@ -193,7 +192,7 @@
                                     <p class="text-indigo-200 text-xs">Asesoramiento de relaciones & más.</p>
                                 </div>
                                 <a class="bg-white text-indigo-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-50 transition-colors whitespace-nowrap"
-                                    href="#">Ver sitio</a>
+                                    href="https://miexpareja.net">Ver sitio</a>
                             </div>
                         </div>
                     </section>
@@ -213,7 +212,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Contador</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Contador')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -226,7 +225,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Arquitecto</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Arquitecto')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -239,7 +238,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Servicios Web</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Servicios Web')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -252,7 +251,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Publicidad</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Publicidad')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -265,7 +264,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Traductor</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Tráducotor')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -278,7 +277,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Experto</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Peritaje')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -291,7 +290,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Ingeniero en Sistemas</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Ingeniería en Computación')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -304,7 +303,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Marketing</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Marketing')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -318,7 +317,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Abogado</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Abogado')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -331,7 +330,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Psicólogo/a</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Psicólogo/a')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -344,7 +343,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Profesor/a</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Maestro')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -357,7 +356,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Chef</h4>
-                                    <button
+                                    <button @click="getExpertSelection('Chef')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
@@ -379,7 +378,7 @@
                                     <p class="text-emerald-200 text-xs">Arrende o contrate expertos.</p>
                                 </div>
                                 <a class="bg-white text-emerald-900 px-4 py-2 rounded-lg text-sm font-bold hover:bg-emerald-50 transition-colors whitespace-nowrap"
-                                    href="#">Ir al sitio web</a>
+                                    href="https://miarrendatario.com">Ir al sitio web</a>
                             </div>
                         </div>
                     </section>
@@ -485,6 +484,25 @@
                         </div>
                     </footer>
                 </article>
+
+                  <!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
+                  <section v-if="expertPopup" @click.self="toggleExpertPopup('close')"
+                    class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
+            
+                    <!-- loader dots spinner -->
+                    <div v-if="mockExperts.length === 0"
+                      class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
+                      <article v-for="(e, i) in 4" :key="i" class="animate-fade-right animate-duration-300"
+                        :style="`animation-delay: ${i * 100}ms`">
+                        <LoaderDots />
+                      </article>
+                    </div>
+            
+                    <div v-if="mockExperts.length > 0" @click.stop
+                      class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
+                      <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert"/>
+                    </div>
+                  </section>
             </section>
         </ion-content>
     </ion-page>
@@ -492,9 +510,14 @@
 </template>
 
 <script lang="ts" setup>
-import { authStore } from '@/store/auth';
 import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle } from '@ionic/vue';
-import { addDoc, arrayUnion, collection, doc, getFirestore, updateDoc,  } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { ref } from 'vue';
+import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
+import LoaderDots from '@/animations/LoaderDots.vue';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+import { IExpert } from '@/interfaces/IExpert';
 import {
     checkmarkCircleOutline,
     lockClosedOutline,
@@ -516,103 +539,51 @@ import {
     star} from 'ionicons/icons';
 
 
-const expertServices = {
-  services: [
-    {
-      name: "Import and Export",
-      description: "We help you manage procedures and regulations for the international exchange of goods and services, ensuring your operations are secure and compliant with all regulations.",
-      consult: true
-    },
-    {
-      name: "Legal Advice",
-      description: "Our expert lawyers provide advice and representation in judicial and administrative processes. Whether to resolve conflicts, draft contracts, or protect your rights, we are here to help you.",
-      consult: true
-    },
-    {
-      name: "Medical Consultation",
-      description: "Health professionals committed to addressing your medical needs in a personalized way. From general check-ups to treatment follow-ups, your well-being is our priority.",
-      consult: true
-    },
-    {
-      name: "Accounting and Finance",
-      description: "Our accountants manage your finances with precision, recording and analyzing every transaction to provide you with clear and reliable reports. This way, you can make informed and strategic financial decisions.",
-      consult: true
-    },
-    {
-      name: "Architecture and Design",
-      description: "Experts in space design and planning that combine functionality and aesthetics. We create innovative and personalized environments tailored to your needs, from initial concepts to construction supervision.",
-      consult: true
-    },
-    {
-      name: "Web and Digital Development",
-      description: "We develop custom digital solutions: websites, mobile apps, and e-commerce strategies. Everything is designed to enhance your online presence and optimize the user experience.",
-      consult: true
-    },
-    {
-      name: "Advertising and Branding",
-      description: "We create innovative advertising campaigns, combining creativity and market analysis to position your brand. We attract your target audience and increase your visibility across various media and platforms.",
-      consult: true
-    },
-    {
-      name: "Translation and Interpretation",
-      description: "Multilingual communication specialists offering precise and culturally sensitive translations and interpretations. We facilitate effective communication in multiple languages for businesses, legal documents, and multimedia content.",
-      consult: true
-    },
-    {
-      name: "Technical Appraisal",
-      description: "We conduct detailed and objective evaluations in various areas, providing rigorous expert reports. These are essential for legal processes, insurance, and technical decision-making.",
-      consult: true
-    },
-    {
-      name: "Computer Engineering",
-      description: "We develop advanced IT systems and solutions, from software and hardware to networks and security. We drive innovation and efficiency in industrial and commercial sectors.",
-      consult: true
-    },
-    {
-      name: "Procedure Management",
-      description: "We help you manage and optimize administrative and legal procedures. We navigate bureaucratic processes so that everything is in order, efficiently and without complications.",
-      consult: true
-    },
-    {
-      name: "Marketing Strategies",
-      description: "We design comprehensive marketing plans to connect with your audience. We use digital and traditional tools to increase engagement, retain customers, and improve your brand positioning in the market.",
-      consult: true
-    },
-    {
-      name: "Psychology and Well-being",
-      description: "We offer psychological counseling and therapy to help you manage emotional and behavioral challenges. We promote your mental health and well-being through personalized techniques and strategies.",
-      consult: true
-    },
-    {
-      name: "Academic Advising",
-      description: "Educators dedicated to resolving your academic doubts and improving your learning skills. We support you in achieving your educational goals with effective and personalized pedagogical methods.",
-      consult: true
-    },
-    {
-      name: "Culinary Advice",
-      description: "Expert chefs offering advanced culinary techniques and advice. We resolve your cooking doubts, improve your skills, and help you create delicious dishes with high-quality ingredients and methods.",
-      consult: true
-    }
-  ],
-  totalServices: 15
-};
 
+const notyf = new Notyf({
+  position: {
+    x: 'center',
+    y: 'top'
+  },
+  duration: 3000,
+  dismissible: true,
+  ripple: true,
+})
 
 const db = getFirestore();
-const expertServicesRef = doc(db, `expertServices/vgRrLzaLI5Yut4TssaNI`);
-const uploadDefaultExpertServices = () => {
-   updateDoc(expertServicesRef, {
-        [`main.${authStore().getUserUid+'1'}`] : 
-        arrayUnion({
-            name:'Alex',
-            comment:'This asdasd',
-            })
-    
-    }).then(() => {
-        console.log('Default expert services uploaded');
-    }).catch((error) => {
-        console.error('Error uploading default expert services: ', error);
-    })
+const expertsCollection = collection(db, 'experts');
+const expertPopup = ref(false);
+const mockExperts = ref<IExpert[]>([]);
+
+
+const toggleExpertPopup = (action: 'open' | 'close') => action === 'open' ? expertPopup.value = true : expertPopup.value = false;
+
+const gettingMockExperts = async (expert: string) => {
+  mockExperts.value = [];
+  // Note: Assuming 'specialty' field exists in experts collection. Verify field name if issues arise.
+  const q = query(expertsCollection, where('specialty', '==', expert));
+  try {
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      notyf.error('No se encontraron expertos');
+      toggleExpertPopup('close');
+      return;
+    }
+    querySnapshot.forEach((doc) => {
+      const data = doc.data() as IExpert;
+      data.docId = doc.id;
+      // data.docRef = doc.ref; // Optional if needed
+      mockExperts.value.push(data);
+    });
+  } catch (error) {
+    notyf.error(`Error al obtener los expertos ${error}`);
+    toggleExpertPopup('close');
+  }
+}
+
+const getExpertSelection = (expert: string) => {
+  toggleExpertPopup('open');
+  gettingMockExperts(expert);
 }
 
 
@@ -620,4 +591,4 @@ const uploadDefaultExpertServices = () => {
 
 <style scoped>
 /* Scoped styles if needed, currently mainly using Tailwind */
-</style>addDoc
+</style>
