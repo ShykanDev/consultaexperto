@@ -7,8 +7,8 @@
               <ion-icon :icon="personOutline" class="text-2xl text-white"></ion-icon>
             </div>
             <div class="flex flex-col flex-1 justify-center">
-              <p class="text-base font-medium leading-normal text-gray-900">{{ userFutureAppointment.userName }} ?? 'Nombre del usuario'</p>
-              <p class="text-sm font-normal leading-normal text-gray-500">{{ userFutureAppointment.proffession }} ?? 'Profesion del usuario'</p>
+              <p class="text-base font-medium leading-normal text-gray-900">{{ userFutureAppointment.isAvailable }} ?? 'Nombre del usuario'</p>
+              <p class="text-sm font-normal leading-normal text-gray-500">{{ userFutureAppointment.takenAt}} ?? 'Profesion del usuario'</p>
             </div>
             <div class="flex justify-center items-center size-7 shrink-0">
               <ion-icon :icon="ellipsisVerticalOutline"></ion-icon>
@@ -17,7 +17,7 @@
           <div class="flex justify-between items-center pt-3 border-t border-gray-100">
             <div class="flex gap-2 items-center">
               <ion-icon :icon="calendarSharp"></ion-icon>
-              <p class="text-sm font-normal text-gray-600"> {{ userFutureAppointment.day }} {{ userFutureAppointment.month }} {{ userFutureAppointment.year }} at {{ userFutureAppointment.hour }}</p>
+              <p class="text-sm font-normal text-gray-600"> {{props.userFutureAppointment}}</p>
             </div>
             <div class="px-2 py-1 bg-green-100 rounded-full">
               <p class="text-xs font-medium text-green-700">{{ userFutureAppointment. status }}</p>
@@ -28,6 +28,8 @@
 
 <script lang="ts" setup>
 import { IFutureAppointment } from '@/interfaces/IFutureAppointment';
+import { Slot } from '@/interfaces/Ischedule';
+import { ISchedule } from '@/interfaces/user/ISchedule';
 import {
   IonIcon,
 
@@ -38,10 +40,15 @@ import { calendarSharp, checkmarkCircle, ellipsisVerticalOutline, personOutline 
 
 const props  = defineProps({
     userFutureAppointment: {
-        type: Object as () => IFutureAppointment,
+        type: Object as () => Slot,
         required: true
     }
 })
+
+
+const appointmentsTaken = () => {
+  
+}
 </script>
 
 <style scoped>

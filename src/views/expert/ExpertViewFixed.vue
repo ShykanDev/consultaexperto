@@ -271,6 +271,7 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
 const db = getFirestore();
 const routerIon = useIonRouter();
 const userScheduleCollection = collection(db, 'users/'+authStore().getUserUid+'/schedule');
+const expertScheduleCollection = collection(db, 'experts/'+expertUiStore.getCurrentExpert.userUid+'/schedule');
 
 
 const updateSubcollectionSchedule = async () => {
@@ -307,6 +308,21 @@ if(userHasSlotsTaken.value){
       dayName: dayName,
       createdAt: Timestamp.now(),
     })
+    //todo: create a copy of the schedule and update the schedule in the expert collection
+    await addDoc(expertScheduleCollection, {
+      userName: authStore().getUserName,
+      userUid: authStore().getUserUid,
+      expertUid: expertUiStore.getCurrentExpert.userUid,
+      expertName: expertUiStore.getCurrentExpert.fullName,
+      expertSchedule: slotSelected.value,
+      expertSpecialty: expertUiStore.getCurrentExpert.specialty,
+      expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
+      appointmentLink: '',
+      isFinished: false,
+      dayName: dayName,
+      createdAt: Timestamp.now(),
+    })
+
     presentToast('top', 'Se ha agendado su cita con exito', 'success');
     setTimeout(() => {
       routerIon.back();

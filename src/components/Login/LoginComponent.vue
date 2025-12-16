@@ -87,46 +87,74 @@
 
 
 
-      <form @submit.prevent="login">
+      <form @submit.prevent="login" class="mt-8 space-y-6">
 
-        <div class="flex flex-col justify-center mb-2 items-left font-manrope">
-          <h1 class="text-2xl font-medium text-blue-500 font-poppins">Bienvenido</h1>
+        <div class="flex flex-col space-y-2 text-left">
+          <h1 class="text-3xl font-bold text-slate-800 font-manrope">Bienvenido</h1>
+          <p class="text-sm text-slate-500 font-medium">Ingresa tus credenciales para continuar</p>
         </div>
 
-
-
-        <ion-list class="form-container">
+        <div class="space-y-5">
           <!-- Email Input -->
-          <ion-input label-placement="start" v-model="email" type="email" class="input" fill="outline"
-            placeholder="email@domain.com">
-            <ion-icon slot="start" :icon="mailOutline" class="custom" size="large" color="primary"
-              aria-hidden="true"></ion-icon>
+           <div class="relative group">
+            <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
+              <ion-icon slot="start" :icon="mailOutline" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
+              <ion-input 
+                v-model="email" 
+                type="email" 
+                placeholder="tu@correo.com"
+                class="font-medium text-slate-700 h-14"
+                --padding-start="10px"
+              ></ion-input>
+            </ion-item>
+           </div>
 
-          </ion-input>
-          <ion-input label-placement="start" v-model="password" type="password" fill="outline" placeholder="Contraseña"
-            class="mt-4 input">
-            <ion-icon slot="start" :icon="lockClosed" size="large" class="custom" color="primary"
-              aria-hidden="true"></ion-icon>
-
-          </ion-input>
-        </ion-list>
-
-
-
+          <!-- Password Input -->
+          <div class="relative group">
+            <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
+              <ion-icon slot="start" :icon="lockClosed" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
+              <ion-input 
+                v-model="password" 
+                type="password" 
+                placeholder="************"
+                class="font-medium text-slate-700 h-14"
+                --padding-start="10px"
+              ></ion-input>
+              <ion-button 
+                fill="clear" 
+                slot="end" 
+                @click="showPassword = !showPassword"
+                class="text-gray-400 hover:text-gray-600"
+              >
+                <ion-icon slot="icon-only" :icon="showPassword ? eye : eyeOff"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </div>
+        </div>
 
         <!-- Action Buttons -->
-        <div class="actions">
-          <ion-button expand="block" @click="login" class="login">
+        <div class="space-y-4 pt-2">
+          <ion-button 
+            expand="block" 
+            @click="login" 
+            class="h-14 font-bold rounded-2xl shadow-lg shadow-blue-500/30 text-white"
+            style="--background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); --border-radius: 16px; text-transform: none; letter-spacing: 0.5px;"
+          >
             Iniciar Sesión
           </ion-button>
 
-          <ion-button id="present-alert" fill="outline" shape="round" size="small" class="button-login">Olvidé mi
-            contraseña</ion-button>
-          <ion-alert trigger="present-alert" header="Introduzca su correo" :buttons="alertButtons"
-            :inputs="alertInputs"></ion-alert>
-
-
-
+          <div class="flex justify-center">
+            <button 
+              type="button"
+              id="present-alert" 
+              class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
+            >
+              ¿Olvidó su contraseña?
+            </button>
+          </div>
+          
+            <ion-alert trigger="present-alert" header="Recuperar contraseña" sub-header="Ingresa tu correo para recibir instrucciones" :buttons="alertButtons"
+            :inputs="alertInputs" class="custom-alert"></ion-alert>
         </div>
 
       </form>
@@ -169,21 +197,17 @@ import {
   IonItem,
   IonInput,
   IonButton,
-  IonList,
   IonIcon,
-  IonAccordion, IonAccordionGroup, IonLabel,
   IonAlert,
   IonContent
 } from '@ionic/vue';
 import {
-  mail,
   lockClosed,
   eye,
   eyeOff,
-  mailSharp,
   mailOutline
 } from 'ionicons/icons';
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, User } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { authStore } from '@/store/auth';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
@@ -407,7 +431,7 @@ const alertButtons = [
   },
   {
     text: 'Aceptar',
-    handler: async (data) => {
+    handler: async (data: any) => {
       try {
         console.log(data[0]);
 

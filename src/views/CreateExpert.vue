@@ -136,7 +136,7 @@ import {
   IonNote,
   IonIcon,
 } from '@ionic/vue';
-import { addDoc, collection, doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
 import { chevronBack, helpOutline } from 'ionicons/icons';
 import { ref, computed } from 'vue';
 
@@ -291,11 +291,11 @@ const createExpert = () => {
       });
       form.value.userUid = user.uid;
       // Now create the expert
-      addDoc(expertsCollection, form.value).then((res) => {
-        console.log('Expert created with ID:', res.id);
+      const docRef = doc(db, `experts/${user.uid}`);
+      setDoc(docRef, form.value).then((res) => {
+        console.log('Expert created with ID:', docRef.id);
         presentToast('top', 'Experto creado exitosamente', 'success');
-       
-        setSubcollectionSchedule(res.id).then(ok => {
+        setSubcollectionSchedule(docRef.id).then(ok => {
           console.log(`subcollection successfully created ${ok}`);
         }).catch(error => {
           console.log(error)
@@ -320,7 +320,7 @@ const createExpert = () => {
 };
 
 
-const schedule = ref<Ischedule>({
+const schedule = ref({
   Lunes: [
     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
