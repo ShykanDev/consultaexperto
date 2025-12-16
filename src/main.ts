@@ -124,7 +124,24 @@ import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
   HiSolidChevronDown,
   FaUsers,
   BiGiftFill,
-  MdSupportagentOutlined
+  MdSupportagentOutlined,
+  FaChevronRight,
+  FaTruckMoving,//Import export
+  GiStethoscope,//Medico
+  BiCalculatorFill,//Contador
+  MdArchitectureSharp,//Arquitecto
+  MdWeb,//Web services
+  FaNewspaper,//Publicidad
+  HiSolidTranslate,//Traductor
+  MdComputerTwotone,//Programador
+  RiNewspaperFill,//
+  GiMugShot,//Marketing
+  RiPsychotherapyFill,//Psicólogo
+  GiTeacher,//Profesor
+  GiChefToque,//Chef
+  GiSherlockHolmes,
+  FaChevronLeft,
+  CoLink
 } from "oh-vue-icons/icons";
 addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   FaBalanceScale,
@@ -216,7 +233,25 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   HiSolidChevronDown,
   FaUsers,
   BiGiftFill,
-  MdSupportagentOutlined
+  MdSupportagentOutlined,
+  FaChevronRight,
+  FaTruckMoving,
+  FaBalanceScale,
+  GiStethoscope,
+  BiCalculatorFill,
+  MdArchitectureSharp,
+  MdWeb,
+  FaNewspaper,
+  HiSolidTranslate,
+  GiSherlockHolmes,
+  MdComputerTwotone,
+  RiNewspaperFill,
+  GiMugShot,
+  RiPsychotherapyFill,
+  GiTeacher,
+  GiChefToque,
+  FaChevronLeft,
+  CoLink
 );
 
 import { Capacitor } from '@capacitor/core';
