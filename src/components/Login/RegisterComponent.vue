@@ -1,134 +1,118 @@
 <template>
-    <ion-content class="w-full bg-gradient-to-br from-indigo-50 to-blue-50 ion-padding">
-      <form @submit.prevent="register" class="mx-auto space-y-6 max-w-2xl">
-        <!-- Título -->
-        <div class="mb-8 text-center">
-          <h1 class="mb-2 text-3xl font-bold text-orange-700">Unase a nosotros</h1>
-          <p class="text-gray-500">Crea tu cuenta en segundos</p>
-        </div>
-        
-        <!-- Nombre Completo -->
-        <div class="form-group">
-          <label class="form-label">Nombre completo</label>
-          <ion-input
-          v-model="formData.fullName"
-          type="text"
-            placeholder="Ej. María González"
-            class="!pl-11 form-input"
-          >
-            <v-icon name="ri-user-2-fill" class="absolute left-3 top-1/2 text-xl text-gray-400 -translate-y-1/2" />
-          </ion-input>
-        </div>
-        
-        <!-- Email -->
-        <div class="form-group">
-          <label class="form-label">Correo electrónico</label>
-          <ion-input
-          v-model="formData.email"
-          type="email"
-            placeholder="tucorreo@example.com"
-            class="!pl-11 form-input"
-          >
-          <v-icon name="md-email" class="absolute left-3 top-1/2 text-xl text-gray-400 -translate-y-1/2" />
-          </ion-input>
-          <div v-if="errors.email" class="form-error">
-            <v-icon name="ri-alert-fill" class="mr-2 text-red-500" />
-            {{ errors.email }}
-          </div>
-        </div>
-        
-        <!-- Contraseña -->
-        <div class="form-group">
-          <label class="form-label">Contraseña</label>
-          <div class="flex justify-center items-center">
-            <ion-input
-            v-model="formData.password"
-            :type="showPassword ? 'text' : 'password'"
-            placeholder="••••••••"
-            class="pr-11 form-input"
-            >
-            <v-icon name="md-password-round" class="text-xl text-gray-400" />
-          </ion-input>
-        </div>
-      </div>
+  <ion-content color="light">
+    <div class="flex flex-col justify-center min-h-full max-w-md mx-auto pb-10">
       
-        <!-- Confirmar Contraseña -->
-        <div class="form-group">
-          <label class="form-label">Confirmar Contraseña</label>
-          <ion-input
-            v-model="formData.confirmPassword"
-            :type="showConfirmPassword ? 'text' : 'password'"
-            placeholder="••••••••"
-            class="pr-11 form-input"
-          >
-            <button
-              type="button"
-              @click="showConfirmPassword = !showConfirmPassword"
-              class="absolute right-3 top-1/2 text-gray-400 -translate-y-1/2 hover:text-indigo-600"
-            >
-              <v-icon name="md-password-round" class="text-xl" />
-            </button>
-          </ion-input>
-          <div v-if="errors.password" class="form-error">
-            <v-icon name="ri-alert-fill" class="mr-2 text-red-500" />
-            {{ errors.password }}
+      <div class="mt-10 mb-8 text-center px-4">
+        <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Crear Cuenta</h1>
+        <p class="mt-2 text-gray-500">Únete a nuestra comunidad de expertos</p>
+      </div>
+
+      <form @submit.prevent="register" class="w-full">
+        
+        <ion-list :inset="true" mode="ios" class="mb-6">
+          
+          <!-- Nombre Completo -->
+          <ion-item>
+            <ion-icon slot="start" :icon="personOutline" class="text-gray-400"></ion-icon>
+            <ion-input
+              v-model="formData.fullName"
+              label="Nombre completo"
+              label-placement="stacked"
+              placeholder="Ej. María González"
+              type="text"
+            ></ion-input>
+          </ion-item>
+
+          <!-- Email -->
+          <ion-item>
+            <ion-icon slot="start" :icon="mailOutline" class="text-gray-400"></ion-icon>
+            <ion-input
+              v-model="formData.email"
+              label="Correo electrónico"
+              label-placement="stacked"
+              placeholder="nombre@ejemplo.com"
+              type="email"
+            ></ion-input>
+          </ion-item>
+          
+          <div v-if="errors.email" class="bg-red-50 px-4 py-2 text-xs text-red-500 border-t border-red-100">
+             <ion-icon :icon="alertCircle" class="align-middle mr-1 text-base"></ion-icon> {{ errors.email }}
           </div>
-        </div>
-  
 
-        <VueDatePicker v-model="date" auto-apply partial-flow :enable-time-picker="false"
-        :flow="['year', 'month', 'calendar']" />
+          <!-- Contraseña -->
+          <ion-item>
+            <ion-icon slot="start" :icon="lockClosedOutline" class="text-gray-400"></ion-icon>
+            <ion-input
+              v-model="formData.password"
+              label="Contraseña"
+              label-placement="stacked"
+              placeholder="••••••••"
+              :type="showPassword ? 'text' : 'password'"
+            ></ion-input>
+            <ion-button slot="end" fill="clear" @click="showPassword = !showPassword" class="m-0">
+               <ion-icon slot="icon-only" :icon="showPassword ? eyeOutline : eyeOffOutline" class="text-gray-400"></ion-icon>
+            </ion-button>
+          </ion-item>
 
-        <p v-if="isMinor" class="mt-2 text-red-500">
-          <v-icon name="ri-alert-fill" class="mr-2 text-red-500" />
-          Debe ser mayor de edad para registrarse
-        </p>
+          <!-- Confirmar Contraseña -->
+          <ion-item lines="none">
+            <ion-icon slot="start" :icon="lockClosedOutline" class="text-gray-400"></ion-icon>
+            <ion-input
+              v-model="formData.confirmPassword"
+              label="Confirmar contraseña"
+              label-placement="stacked"
+              placeholder="••••••••"
+              :type="showConfirmPassword ? 'text' : 'password'"
+            ></ion-input>
+             <ion-button slot="end" fill="clear" @click="showConfirmPassword = !showConfirmPassword" class="m-0">
+               <ion-icon slot="icon-only" :icon="showConfirmPassword ? eyeOutline : eyeOffOutline" class="text-gray-400"></ion-icon>
+            </ion-button>
+          </ion-item>
+           <div v-if="errors.password" class="bg-red-50 px-4 py-2 text-xs text-red-500 border-t border-red-100">
+               <ion-icon :icon="alertCircle" class="align-middle mr-1 text-base"></ion-icon> {{ errors.password }}
+             </div>
 
-        <!-- Términos -->
-        <div class="form-group">
-          <label class="flex gap-3 items-start p-3 bg-indigo-50 rounded-lg">
-            <ion-checkbox
-             v-model="formData.acceptedTerms"
-              class="mt-0.5 shrink-0 checkbox-custom"
-            ></ion-checkbox>
-            <span class="text-sm leading-tight text-gray-600">
-              Acepto los 
-              <a href="#" class="font-medium text-indigo-600 hover:underline">términos de servicio</a> 
-              y la 
-              <a href="#" class="font-medium text-indigo-600 hover:underline">política de privacidad</a>
-            </span>
-          </label>
-        </div>
-  
-        <ion-button
-          type="submit"
-          expand="block"
-          class="submit-button group"
-          :disabled="isMinor"
-        >
-          <span class="flex gap-2 items-center">
+        </ion-list>
+
+        <!-- Date Picker Group -->
+        <ion-list :inset="true" mode="ios" class="mb-6">
+           <ion-item lines="none" class="py-1"> 
+             <div class="w-full">
+                 <p class="text-xs text-gray-500 mb-2 font-medium ml-1">Fecha de nacimiento</p>
+                <VueDatePicker v-model="date" auto-apply :enable-time-picker="false" :flow="['year', 'month', 'calendar']" teleport="body"></VueDatePicker>
+             </div>
+          </ion-item>
+           <div v-if="isMinor" class="bg-red-50 px-4 py-2 text-xs text-red-500 border-t border-red-100">
+            <ion-icon :icon="alertCircle" class="align-middle mr-1 text-base"></ion-icon> Debe ser mayor de edad
+          </div>
+        </ion-list>
+
+        <!-- Terms Group -->
+        <ion-list inset="true" mode="ios" class="mb-8">
+          <ion-item lines="none">
+            <ion-checkbox v-model="formData.acceptedTerms" slot="start" justify="start" class="my-auto"></ion-checkbox>
+            <ion-label class="text-sm text-gray-600 ion-text-wrap py-3" style="font-size: 0.9rem;">
+              Acepto los <a href="#" class="text-indigo-600 font-medium no-underline">términos de servicio</a> y la <a href="#" class="text-indigo-600 font-medium no-underline">política de privacidad</a>.
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+
+        <div class="px-6 space-y-4">
+          <ion-button type="submit" expand="block" shape="round" color="primary" class="h-12 text-base font-semibold shadow-sm" :disabled="isMinor">
             Crear cuenta
-            <v-icon name="hi-user-add" class="transition-transform group-hover:translate-x-1" />
-          </span>
-        </ion-button>
-  
-      <!--
-        Creating a button that links to the login page  without iontab-button  
-      -->
-      <ion-button
-        expand="block"
-        class="submit-button group"
-        router-link="/tabs/tab1"
-        color="secondary"
-      >
-      <span class="flex gap-2 items-center">
-          <v-icon name="hi-login" class="transition-transform group-hover:translate-x-1" />
-          Ir al inicio de sesión
-        </span>
-      </ion-button>
+            <ion-icon slot="end" :icon="personAdd"></ion-icon>
+          </ion-button>
+
+           <ion-button router-link="/tabs/tab1" expand="block" fill="clear" color="medium" class="text-sm font-medium">
+            Ya tengo cuenta <ion-icon slot="end" :icon="logIn"></ion-icon>
+          </ion-button>
+        </div>
+
       </form>
-    </ion-content>
-  </template>
+    </div>
+  </ion-content>
+</template>
   
   <script setup lang="ts">
   import { ref, reactive, watch } from 'vue';
@@ -137,13 +121,27 @@
     IonInput,
     IonCheckbox,
     IonButton,
+    IonList,
+    IonItem,
+    IonIcon,
+    IonLabel,
     useIonRouter,
   } from '@ionic/vue';
+  import { 
+    personOutline, 
+    mailOutline, 
+    lockClosedOutline, 
+    alertCircle, 
+    personAdd, 
+    logIn,
+    eyeOutline,
+    eyeOffOutline
+  } from 'ionicons/icons';
 
   import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, UserCredential, updateCurrentUser, updateProfile } from 'firebase/auth';
-import { getFirestore, doc, setDoc, collection, addDoc, Timestamp } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, UserCredential, updateProfile } from 'firebase/auth';
+import { getFirestore, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { toastController } from '@ionic/vue';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
@@ -326,41 +324,5 @@ const register = async () => {
 
   
   <style scoped>
-  .form-group {
-    @apply space-y-2;
-  }
-  
-  .form-label {
-    @apply block text-sm font-medium text-gray-700;
-  }
-  
-  .form-input {
-    --padding-start: 44px;
-    --padding-end: 44px;
-    --border-radius: 10px;
-    --background: white;
-    --border-color: #e2e8f0;
-    --height: 52px;
-    @apply shadow-sm transition-all duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 hover:border-indigo-300;
-  }
-  
-  .form-error {
-    @apply flex items-center text-sm text-red-600 mt-2 px-3 py-2 bg-red-50 rounded-lg;
-  }
-  
-  .checkbox-custom {
-    --size: 20px;
-    --checkbox-background-checked: #4f46e5;
-    --border-color-checked: #4f46e5;
-    --border-radius: 6px;
-  }
-  
-  .submit-button {
-    --background: #b93700;
-    --border-radius: 10px;
-    --box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-    
-  }
+  /* Removed old custom styles in favor of Ionic utilities and Tailwind */
   </style>

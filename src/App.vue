@@ -10,6 +10,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { authStore } from '@/store/auth';
 import {Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
+import { StatusBar, Style } from '@capacitor/status-bar';
 const notyf = new Notyf({
   position:{
     x:'center',
@@ -34,4 +35,8 @@ onIonViewDidEnter(() => {
     }
   });
 });
+onIonViewDidEnter(()=>{
+  const statusBar = StatusBar;
+  statusBar.setStyle({style: Style.Light})
+})
 </script>
