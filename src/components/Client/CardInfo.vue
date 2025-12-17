@@ -96,6 +96,19 @@
           </div>
 
         </article>
+
+        <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--User who appointment-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 bg-blue-100">
+            <v-icon name="fa-user" class="text-2xl text-blue-600" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Agendado por:</p>
+            <p class="font-medium text-gray-600">{{ props.data.userName }}</p>
+          </div>
+
+        </article>
         
 
         <article class="flex items-center gap-2"> <!--Link-->

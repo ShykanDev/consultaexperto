@@ -89,9 +89,7 @@
                             <!-- Card 1 -->
                             <div
                                 class="flex-none w-[280px] snap-center rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex flex-col">
-                                <div class="w-full h-40 bg-slate-200 bg-center bg-cover"
-                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuANAGIq4BEE29i-1k2GaKaeTrt4HM49pAZUBB49cGo9NzX0_HCK1sLQQKY5WHIbtlQq94JpTi8TtEIZ7xNX9HQd-OQ1SnJg0UqhZHa_ANL82Fb9FPSmqOVYV1pEGdabuD7E9pQPO9R9jGnfXdW-cSmMKs11B8O9hvsPdKpPotwDi-PzMr_1mDr2aA-obHgUpzfyRxmYxQTMaKRYoGax7Ir0BzTmTU998pTsA6azllf9iUhu21nhDZFnP4Ak5L8WPXOVHGvE5IZqYBds')">
-                                </div>
+                                <img src="../assets/img/lawyer.webp" alt="">
                                 <div class="p-4 flex flex-col gap-2">
                                     <div class="flex items-center gap-2 text-blue-600">
                                         <ion-icon :icon="briefcaseOutline" class="text-[20px]"></ion-icon>
@@ -104,9 +102,7 @@
                             <!-- Card 2 -->
                             <div
                                 class="flex-none w-[280px] snap-center rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex flex-col">
-                                <div class="w-full h-40 bg-slate-200 bg-center bg-cover"
-                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCcxPvM8gD8KVxur5TLeqlCciLeNoHMt67BWGdeHx0LvnuPgb6uobMmSVP8QRJmbDe2T3noquOEtab0febZP1hRayQMtudaZux7GvsVGxcL1waNJC-RwgVqr6vZABSXP_klqQiFFciQbGbDQc6jAiMQlIcSquGkwrY4xBtGdyT_GvqqoOr3Pfn8yDjb5EUZdLrJDpipqcRff6JMO8-S7kDLfajCqz_c8SlYdqsCqabUgk8XmomutN3idECrhaaeKV3l9i_AbDf5tGBm')">
-                                </div>
+                                <img src="../assets/img/doctorTeal.webp" alt="">
                                 <div class="p-4 flex flex-col gap-2">
                                     <div class="flex items-center gap-2 text-blue-600">
                                         <ion-icon :icon="medkitOutline" class="text-[20px]"></ion-icon>
@@ -119,9 +115,7 @@
                             <!-- Card 3 -->
                             <div
                                 class="flex-none w-[280px] snap-center rounded-xl overflow-hidden bg-white border border-slate-200 shadow-sm flex flex-col">
-                                <div class="w-full h-40 bg-slate-200 bg-center bg-cover"
-                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9EiAr51vf7dAgMKeH9eM_pNWEw66exRNJTLJKh4h7-GMF7v_9ke6AaRlCSA32QjKMamVKdUJytbMgT3aangtTuSYEpsxanzuLlCNi1zwJbsI91CpFIZLkRsWgT7HiLPHvOw-LIciufwpqdh9Slpm59Cls2tbcrxvfaYNsA-Heg-3kGk8jyHRRST0nW-R-JNY8mj8kZqgFytw2wBvFNXneqJyjCrhe7XcfsV5erHC32nlwSXEPCw3jecfmvBG6Bl0XfN77_opWlQv3Hbni4JheW1NIgVE8LC-8bLZA7pJvcevGlnMnLffgVHX7gbwUsl6weHeEC8kq-zsJgF3hdlN2eUcH9DG4cS-3Yc-D7CY5Z_gCvxD6M3s')">
-                                </div>
+                                <img src="../assets/img/constructor.webp" alt="">
                                 <div class="p-4 flex flex-col gap-2">
                                     <div class="flex items-center gap-2 text-blue-600">
                                         <ion-icon :icon="constructOutline" class="text-[20px]"></ion-icon>
@@ -515,8 +509,6 @@ import { collection, getDocs, getFirestore, query, where } from 'firebase/firest
 import { ref } from 'vue';
 import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
 import LoaderDots from '@/animations/LoaderDots.vue';
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
 import { IExpert } from '@/interfaces/IExpert';
 import {
     checkmarkCircleOutline,
@@ -538,17 +530,27 @@ import {
     restaurantOutline,
     star} from 'ionicons/icons';
 
+    import { toastController } from '@ionic/vue';
 
+const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 1500,
+    position: position,
+    color: color,
+    swipeGesture: 'vertical',
+    translucent: true,
+    buttons: [
+      {
+        text: 'cerrar',
+        role: 'cancel',
+      }
+    ]
+  });
 
-const notyf = new Notyf({
-  position: {
-    x: 'center',
-    y: 'top'
-  },
-  duration: 3000,
-  dismissible: true,
-  ripple: true,
-})
+  await toast.present();
+};
+
 
 const db = getFirestore();
 const expertsCollection = collection(db, 'experts');
@@ -565,7 +567,7 @@ const gettingMockExperts = async (expert: string) => {
   try {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) {
-      notyf.error('No se encontraron expertos');
+      presentToast('top', 'No se encontraron expertos','danger');
       toggleExpertPopup('close');
       return;
     }
@@ -576,7 +578,7 @@ const gettingMockExperts = async (expert: string) => {
       mockExperts.value.push(data);
     });
   } catch (error) {
-    notyf.error(`Error al obtener los expertos ${error}`);
+    presentToast('top', `Error al obtener los expertos ${error}`,'danger');
     toggleExpertPopup('close');
   }
 }

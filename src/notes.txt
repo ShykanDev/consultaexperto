@@ -78,3 +78,10 @@ Implementar la sincronización en tiempo real de los cambios de estado
 1. Add a function  to verify if client has an appointment scheduled with the expert selected, if the client has an appointment scheduled with the expert selected, the app should show a message to the user that he can't schedule another appointment with the same expert, if the client doesn't have an appointment scheduled with the expert selected, the app should allow the user to schedule an appointment with the expert selected.
 2. If some slot includes the key takenBy with the client UID, the square will display 'Su cita'
 3. Add UI notification to notify the user when the expert confirms the appointment or an error occurs
+
+//TODO:
+--Add a toggle to switch between show and hide the expert schedule (/expert-preview) [NOT DONE]
+--Add the schedules of the expert and also the feature to edit them (/expert-preview) [NOT DONE]
+
+//TODO:
+--Add statusbar handler to set the color to black

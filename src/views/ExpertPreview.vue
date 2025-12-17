@@ -103,11 +103,20 @@
   <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
     Horarios del experto {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
   </h2>
-  <div class="flex sticky top-0 z-10 flex-col gap-0 p-1 bg-white rounded-xl ring-1 ring-offset-1 shadow-md backdrop-blur-sm transition-all duration-300 ease-in-out bg-white/70 ion-margin-vertical font-poppins" :class="{'ring-[#0054E9]': toggleValue, 'ring-gray-200': !toggleValue}">
-    <ion-toggle class="text-blue-600"  v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
-    <span class="text-xs text-center text-gray-500">{{ toggleValue ? 'Ahora puede editar el horario' : 'No podrá actualizar el horario hasta activarlos' }}</span>
+  <div class="flex flex-col gap-0 p-1 bg-white rounded-xl ring-1 ring-offset-1 shadow-md backdrop-blur-sm transition-all duration-300 ease-in-out bg-white/70 ion-margin-vertical font-poppins" :class="{'ring-[#0054E9]': toggleValue, 'ring-gray-200': !toggleValue}">
+
+    <ion-toggle class="text-blue-600 ion-margin-vertical"  v-model="showSchedule" mode="ios" enable-on-off-labels color="primary">{{ showSchedule ? 'Ocultar' : 'Mostrar' }} horario</ion-toggle>
+
+    <ion-toggle @click="getConsultations" class="text-blue-600 ion-margin-vertical"  v-model="showConsultations" mode="ios" enable-on-off-labels color="primary">{{ showConsultations ? 'Ocultar' : 'Mostrar' }} consultas</ion-toggle>
+
+    <ion-toggle v-if="showSchedule" class="text-blue-600"  v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
+
+    <span v-if="showSchedule" class="text-xs text-center text-gray-500">{{ toggleValue ? 'Ahora puede editar el horario' : 'No podrá actualizar el horario hasta activarlos' }}</span>
   </div>
-      <article
+
+<!-- Schedule Time -->
+  <section v-if="showSchedule" >
+   <article
   v-for="(slots, dayName) in schedule"
   :key="dayName"
   class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
@@ -125,14 +134,29 @@
   >
     {{ slot.time }}
   </div>
-</article>
-  <ion-button class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">{{ 
+   </article>
+  </section>
+
+  <ion-button v-if="showSchedule" class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">{{ 
   !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
     
     }}
     <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
   </ion-button>
+
+  <div v-if="loadingAppointments" class="w-full flex justify-center items-center">
+    <ion-spinner name="lines-sharp-small"></ion-spinner>
+  </div>
+
+  <section v-if="userAppointments && userAppointments.length > 0 && showConsultations">
+
+        <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
+              <CardInfo :data="appointment" />
+            </div>
+  </section>
 </ion-card-content>
+
+
 
    
     </ion-content>
@@ -165,14 +189,16 @@ import {
   IonBackButton,
   onIonViewDidLeave,
   IonToggle,
-  onIonViewDidEnter,
   useIonRouter
 
 } from '@ionic/vue';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
-import { chevronBack, toggle } from 'ionicons/icons';
+import { collection, doc, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
+import { chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
+import CardInfo from '@/components/Client/CardInfo.vue';
+import { ISchedule } from '@/interfaces/user/ISchedule';
+const db = getFirestore();
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
@@ -193,8 +219,49 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
   await toast.present();
 };
 
+
+const showSchedule = ref(false);
+const toggleShowSchedule = () => showSchedule.value = !showSchedule.value;
+
+const showConsultations = ref(false);
+const getConsultations = () => {
+  
+  if(!showConsultations.value){
+    getUserAppointments();
+  }
+
+};
+
 const expertAdminStore = useExpertAdminStore();
 const savingChanges = ref(false);
+
+
+//Get expert appointments
+const userAppointments = ref<ISchedule[]>([]);
+const collectionRef = collection(db, `experts/${expertAdminStore.getCurrentExpert.userUid}/schedule`);
+const loadingAppointments = ref(false);
+
+const getUserAppointments = () => {
+  console.log('Getting appointments');
+  userAppointments.value = [];
+  loadingAppointments.value = true;
+  getDocs(collectionRef)
+    .then((querySnapshot) => {
+      if(querySnapshot.empty){
+        console.log('No appointments found');
+        return;
+      }
+      querySnapshot.forEach((doc) => {
+        userAppointments.value.push(doc.data() as ISchedule);
+      });
+      console.log(userAppointments.value);
+      loadingAppointments.value = false;
+    })
+    .catch((error) => {
+      console.error('Error al obtener las citas:', error);
+      loadingAppointments.value = false;
+    });
+}
 
 
 onIonViewDidLeave(()=> {
@@ -231,7 +298,6 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
 };
 
 
-const db = getFirestore();
 const routerIon = useIonRouter();
 const updateSubcollectionSchedule = async () => {
 
@@ -265,10 +331,6 @@ const updateSubcollectionSchedule = async () => {
 
 
 const toggleValue = ref(false);
-
-onIonViewDidEnter(()=> {
-  console.log(expertAdminStore.getCurrentExpert.schedule);
-})
 
 </script>
 
