@@ -151,7 +151,7 @@
   <section v-if="userAppointments && userAppointments.length > 0 && showConsultations">
 
         <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo :data="appointment" />
+              <ExpertScheduleData :data="appointment" />
             </div>
   </section>
 </ion-card-content>
@@ -196,7 +196,7 @@ import { collection, doc, getDocs, getFirestore, updateDoc } from 'firebase/fire
 import { chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
-import CardInfo from '@/components/Client/CardInfo.vue';
+import ExpertScheduleData from '@/components/Expert/ExpertScheduleData.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 const db = getFirestore();
 

@@ -324,7 +324,7 @@ const handleClientLogin = (uid: string, name: string, userEmail: string) => {
   authStore().setIsClient(true);
 
   presentToast("top", `Bienvenido ${name}`, "success");
-  router.push("/tabs/experts-list");
+  router.push("/tabs/expert-list-modern");
 };
 
 
@@ -346,13 +346,13 @@ const login = async () => {
     const { email: userEmail, uid, displayName } = userCredential.user;
     const name = displayName || "Usuario";
 
-    // 1. Roles especiales
+    // 1. Special roles
     if (await isAdminEmail(userEmail)) {
       handleAdminLogin(uid, name, userEmail);
       return;
     }
 
-    // 2. Roles dinámicos
+    // 2. Dynamic roles
     const isExpert = await verifyIsExpert(userEmail);
 
     if (isExpert) {

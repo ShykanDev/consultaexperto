@@ -1,37 +1,46 @@
 <template>
     <ion-page>
+
+        <ion-header class="ion-no-border text-center">
+            <ion-toolbar>
+                <ion-title color="primary" class="text-center">Expertos</ion-title>
+            </ion-toolbar>
+        </ion-header>
+
         <ion-content>
 
-            <ion-header class="ion-no-border text-center">
-                <ion-toolbar>
-                    <ion-title color="primary" class="text-center">Lista de Expertos</ion-title>
-                </ion-toolbar>
-            </ion-header>
-
-
-            <section class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 font-display w-full">   
+            <section class="bg-slate-50 text-slate-900 antialiased transition-colors duration-200 font-display w-full">
                 <article class=" mx-auto w-full flex flex-col gap-8 pb-12 overflow-x-hidden">
                     <!-- Hero Section -->
                     <section class="px-4 pt-4">
-                        <div class="flex min-h-[420px] flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-xl items-start justify-end px-6 pb-10 shadow-lg relative overflow-hidden group"
-                            style="background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.6) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuDE266GzZNFl_XB2Ll22x-0f-QbqNQTNQu8V-6mskFwaH9gmrhDuRTXnBvkWXlIYYIuDwO8PnzfJj5IBsV9K9rkshoJWLx5q8rKUXrZcgMpT2lAiw5z519Fn6xEUNWKZHsqJkR9fEDXnDyxsHBE6s9rls07suChyaUKxFnjRJvW98V6hG_EyB2g299czSXPtZeTC_bjms7SrTY4sIm5DZHaKzSrFZZtfV1Z0ON2Bgl5wOUbyAunkJj5OkNZld4hqrvUzMrmNmfaqmIT')">
+                        <div
+                            class="relative flex min-h-[420px] flex-col gap-6 rounded-xl items-start justify-end px-6 pb-10 shadow-lg overflow-hidden group">
+                            <!-- Imagen de fondo -->
+                            <img src="../assets/img/mainWallp.webp" alt="Background"
+                                class="absolute inset-0 w-full h-full object-cover" />
+
+                            <!-- Overlay oscuro -->
                             <div
-                                class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent">
+                                class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/50 to-transparent">
                             </div>
+
+                            <!-- Contenido -->
                             <div class="flex flex-col gap-3 text-left relative z-10">
                                 <span
-                                    class="inline-block px-3 py-1 bg-blue-600/90 text-white text-xs font-bold rounded-full w-fit">#1
-                                    Plataforma de Expertos</span>
-                                <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Descubra
-                                    Nuestros Expertos</h1>
-                                <h2 class="text-slate-200 text-base font-medium leading-normal max-w-[90%]">Soluciones
-                                    personalizadas y asesoramiento profesional en diversos campos.</h2>
+                                    class="inline-block px-3 py-1 bg-blue-600/90 text-white text-xs font-bold rounded-full w-fit">
+                                    #1 Plataforma de Expertos
+                                </span>
+
+                                <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+                                    Descubra Nuestros Expertos
+                                </h1>
+
+                                <h2 class="text-slate-200 text-base font-medium leading-normal max-w-[90%]">
+                                    Soluciones personalizadas y asesoramiento profesional en diversos campos.
+                                </h2>
                             </div>
-                            <button
-                                class="relative z-10 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-base font-bold shadow-md active:scale-95 duration-100">
-                                <span class="truncate">Cargar Expertos</span>
-                            </button>
                         </div>
+
                     </section>
 
                     <!-- Why Choose Us -->
@@ -59,7 +68,8 @@
                                     </div>
                                     <div class="flex flex-col gap-1">
                                         <h4 class="text-base font-bold text-slate-900">Plataforma Segura</h4>
-                                        <p class="text-slate-500 text-sm">Las transacciones son seguras y encriptadas.</p>
+                                        <p class="text-slate-500 text-sm">Las transacciones son seguras y encriptadas.
+                                        </p>
                                     </div>
                                 </div>
                                 <div
@@ -70,7 +80,8 @@
                                     </div>
                                     <div class="flex flex-col gap-1">
                                         <h4 class="text-base font-bold text-slate-900">Garantía de Calidad</h4>
-                                        <p class="text-slate-500 text-sm">Garantizamos un asesoramiento de alta calidad.</p>
+                                        <p class="text-slate-500 text-sm">Garantizamos un asesoramiento de alta calidad.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -80,7 +91,8 @@
                     <!-- Experts in Action -->
                     <section class="flex flex-col gap-4">
                         <div class="px-4 flex items-center justify-between">
-                            <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-800">Expertos en Acción
+                            <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-800">Expertos en
+                                Acción
                             </h3>
                             <a class="text-blue-600 text-sm font-bold hover:text-blue-700" href="#">Ver Todo</a>
                         </div>
@@ -96,7 +108,8 @@
                                         <span class="text-xs font-bold uppercase tracking-wider">Negocios</span>
                                     </div>
                                     <h4 class="font-bold text-lg text-slate-900">Estrategia Corporativa</h4>
-                                    <p class="text-sm text-slate-500">Estrategia corporativa con asesoramiento experto.</p>
+                                    <p class="text-sm text-slate-500">Estrategia corporativa con asesoramiento experto.
+                                    </p>
                                 </div>
                             </div>
                             <!-- Card 2 -->
@@ -109,7 +122,8 @@
                                         <span class="text-xs font-bold uppercase tracking-wider">Salud</span>
                                     </div>
                                     <h4 class="font-bold text-lg text-slate-900">Consulta Médica</h4>
-                                    <p class="text-sm text-slate-500">Asesoramiento médico confiable de los mejores médicos.</p>
+                                    <p class="text-sm text-slate-500">Asesoramiento médico confiable de los mejores
+                                        médicos.</p>
                                 </div>
                             </div>
                             <!-- Card 3 -->
@@ -130,7 +144,8 @@
 
                     <!-- Most Consulted -->
                     <section class="px-4">
-                        <h3 class="text-2xl font-bold leading-tight tracking-tight mb-6 text-slate-800">Más Consultados</h3>
+                        <h3 class="text-2xl font-bold leading-tight tracking-tight mb-6 text-slate-800">Más Consultados
+                        </h3>
                         <div class="grid grid-cols-1 gap-4">
                             <div
                                 class="bg-gradient-to-r from-slate-50 to-slate-100 p-4 rounded-xl border border-slate-200 flex items-center gap-4">
@@ -194,7 +209,8 @@
                     <!-- Areas of Specialization Grid -->
                     <section class="px-4">
                         <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-800">Áreas de Especialización</h3>
+                            <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-800">Áreas de
+                                Especialización</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <!-- Accountant -->
@@ -283,7 +299,8 @@
                                     <ion-icon :icon="terminalOutline" class="text-[24px]"></ion-icon>
                                 </div>
                                 <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Ingeniero en Sistemas</h4>
+                                    <h4 class="font-bold text-base leading-tight text-slate-900">Ingeniero en Sistemas
+                                    </h4>
                                     <button @click="getExpertSelection('Ingeniería en Computación')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
@@ -301,7 +318,7 @@
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
-                       
+
                             <!-- Lawyer -->
                             <div
                                 class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
@@ -380,7 +397,8 @@
                     <!-- Testimonials -->
                     <section class="px-4 py-4 bg-blue-50 -mx-4 sm:mx-0 sm:rounded-xl my-4">
                         <div class="px-4 sm:px-0 mb-6 text-center">
-                            <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-900">Que opinan nuestros clientes</h3>
+                            <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-900">Que opinan
+                                nuestros clientes</h3>
                             <p class="text-sm text-slate-600 mt-2">Testimonios de clientes.</p>
                         </div>
                         <div
@@ -390,9 +408,11 @@
                                 class="flex-none w-[300px] snap-center bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                                 <div class="flex items-center gap-1 text-yellow-400 mb-3">
                                     <ion-icon :icon="star" v-for="i in 5" :key="i" class="text-[20px]"></ion-icon>
-                                   
+
                                 </div>
-                                <p class="text-slate-800 text-sm italic mb-4">"Encontré un asesor excelente que me ayudó a resolver un problema complejo. Me dio mucha información valiosa y me dio la confianza para tomar decisiones importantes."</p>
+                                <p class="text-slate-800 text-sm italic mb-4">"Encontré un asesor excelente que me ayudó
+                                    a resolver un problema complejo. Me dio mucha información valiosa y me dio la
+                                    confianza para tomar decisiones importantes."</p>
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-slate-200 bg-cover bg-center"
                                         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCM0O-8rxQqXgI7kaq_y7dKQClgRruuGwSvK1xYOnAI23218s0in5yizwTV7dimYtiMp9tWTKhiw1EFCcmMXfkqs2VVFr3jBrajtMyMYP-DpJii3exJe2btCdIWdmYr15XLsiYc_Ct7LC-qN2btM9a20Y2SWtz0gsnpEtUwpIDmOB89G-dqW9pItfnZk79zMK-Yeyf-1Amr2xs6fXoEWs0cZTq9NTFi69v1XcEbeJ13QG0IJJhKZYbbwniT-JSVIa6KH33pchOzRrFE')">
@@ -409,7 +429,9 @@
                                 <div class="flex items-center gap-1 text-yellow-400 mb-3">
                                     <ion-icon :icon="star" v-for="i in 5" :key="i" class="text-[20px]"></ion-icon>
                                 </div>
-                                <p class="text-slate-800 text-sm italic mb-4">"El asesoramiento legal que me brindaron fue excelente. Me ayudaron a resolver un problema complejo y me dieron la confianza para tomar decisiones importantes."</p>
+                                <p class="text-slate-800 text-sm italic mb-4">"El asesoramiento legal que me brindaron
+                                    fue excelente. Me ayudaron a resolver un problema complejo y me dieron la confianza
+                                    para tomar decisiones importantes."</p>
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full bg-slate-200 bg-cover bg-center"
                                         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBLdaZWNNuk89MZ9pKzLf6xnIbWD4pTZQPyhF1-DXDgNEqfcL7ryj06a3bWD55TkDW6N9WdzJ4iYjyHRRST0nW-R-JNY8mj8kZqgFytw2wBvFNXneqJyjCrhe7XcfsV5erHC32nlwSXEPCw3jecfmvBG6Bl0XfN77_opWlQv3Hbni4JheW1NIgVE8LC-8bLZA7pJvcevGlnMnLffgVHX7gbwUsl6weHeEC8kq-zsJgF3hdlN2eUcH9DG4cS-3Yc-D7CY5Z_gCvxD6M3s')">
@@ -446,10 +468,12 @@
                         <h2 class="text-3xl font-black mb-3 text-slate-900">¿Listo para comenzar?</h2>
                         <p class="text-slate-500 mb-8 max-w-xs mx-auto">Conecta con expertos en todo momento.</p>
                         <div class="flex flex-col gap-3 max-w-xs mx-auto">
-                            <button
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold h-12 rounded-lg shadow-lg active:scale-95 transition-all">Registrarse</button>
-                            <button
-                                class="w-full bg-transparent border-2 border-slate-200 hover:border-blue-600 text-slate-900 font-bold h-12 rounded-lg active:scale-95 transition-all">Contactar</button>
+                            <ion-button
+                                router-link="/tabs/tab2"
+                                >Registrarse</ion-button>
+                            <ion-button
+                                router-link="/tabs/tab1"
+                                >Contactar</ion-button>
                         </div>
                     </section>
 
@@ -457,7 +481,7 @@
                     <footer class="bg-white border-t border-slate-200 pt-10 pb-10 px-6 mt-4">
                         <div class="flex flex-col gap-8 max-w-lg mx-auto">
                             <div class="flex flex-col gap-4">
-                                <h2 class="text-xl font-black text-slate-900">Conoce a nuestros expertos</h2>   
+                                <h2 class="text-xl font-black text-slate-900">Conoce a nuestros expertos</h2>
                                 <p class="text-sm text-slate-500">Conecta con expertos en todo momento.</p>
                             </div>
                             <div class="grid grid-cols-2 gap-8 text-sm">
@@ -473,30 +497,32 @@
                                 </div>
                             </div>
                             <div class="pt-8 border-t border-slate-100 flex flex-col items-center gap-4">
-                                <p class="text-xs text-slate-400 text-center">© 2025 Consulta Experto. Todos los derechos reservados.</p>
+                                <p class="text-xs text-slate-400 text-center">© 2025 Consulta Experto. Todos los
+                                    derechos reservados.</p>
                             </div>
                         </div>
                     </footer>
                 </article>
 
-                  <!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
-                  <section v-if="expertPopup" @click.self="toggleExpertPopup('close')"
+                <!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
+                <section v-if="expertPopup" @click.self="toggleExpertPopup('close')"
                     class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
-            
+
                     <!-- loader dots spinner -->
                     <div v-if="mockExperts.length === 0"
-                      class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
-                      <article v-for="(e, i) in 4" :key="i" class="animate-fade-right animate-duration-300"
-                        :style="`animation-delay: ${i * 100}ms`">
-                        <LoaderDots />
-                      </article>
+                        class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
+                        <article v-for="(e, i) in 4" :key="i" class="animate-fade-right animate-duration-300"
+                            :style="`animation-delay: ${i * 100}ms`">
+                            <LoaderDots />
+                        </article>
                     </div>
-            
+
                     <div v-if="mockExperts.length > 0" @click.stop
-                      class="overflow-auto p-6 w-full bg-white rounded-lg shadow-lg max-h-[80vh] ">
-                      <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert"/>
+                        class="overflow-auto p-6 w-full bg-slate-100 rounded-2xl shadow-lg max-h-[80vh] ">
+                        <PrevInfoComponent @closeCard="toggleExpertPopup('close')"
+                            v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert" />
                     </div>
-                  </section>
+                </section>
             </section>
         </ion-content>
     </ion-page>
@@ -504,7 +530,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle } from '@ionic/vue';
+import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { ref } from 'vue';
 import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
@@ -528,27 +554,28 @@ import {
     happyOutline,
     easelOutline,
     restaurantOutline,
-    star} from 'ionicons/icons';
+    star
+} from 'ionicons/icons';
 
-    import { toastController } from '@ionic/vue';
+import { toastController } from '@ionic/vue';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-  const toast = await toastController.create({
-    message: message,
-    duration: 1500,
-    position: position,
-    color: color,
-    swipeGesture: 'vertical',
-    translucent: true,
-    buttons: [
-      {
-        text: 'cerrar',
-        role: 'cancel',
-      }
-    ]
-  });
+    const toast = await toastController.create({
+        message: message,
+        duration: 1500,
+        position: position,
+        color: color,
+        swipeGesture: 'vertical',
+        translucent: true,
+        buttons: [
+            {
+                text: 'cerrar',
+                role: 'cancel',
+            }
+        ]
+    });
 
-  await toast.present();
+    await toast.present();
 };
 
 
@@ -561,31 +588,31 @@ const mockExperts = ref<IExpert[]>([]);
 const toggleExpertPopup = (action: 'open' | 'close') => action === 'open' ? expertPopup.value = true : expertPopup.value = false;
 
 const gettingMockExperts = async (expert: string) => {
-  mockExperts.value = [];
-  // Note: Assuming 'specialty' field exists in experts collection. Verify field name if issues arise.
-  const q = query(expertsCollection, where('specialty', '==', expert));
-  try {
-    const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-      presentToast('top', 'No se encontraron expertos','danger');
-      toggleExpertPopup('close');
-      return;
+    mockExperts.value = [];
+    // Note: Assuming 'specialty' field exists in experts collection. Verify field name if issues arise.
+    const q = query(expertsCollection, where('specialty', '==', expert));
+    try {
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            presentToast('top', 'No se encontraron expertos', 'danger');
+            toggleExpertPopup('close');
+            return;
+        }
+        querySnapshot.forEach((doc) => {
+            const data = doc.data() as IExpert;
+            data.docId = doc.id;
+            // data.docRef = doc.ref; // Optional if needed
+            mockExperts.value.push(data);
+        });
+    } catch (error) {
+        presentToast('top', `Error al obtener los expertos ${error}`, 'danger');
+        toggleExpertPopup('close');
     }
-    querySnapshot.forEach((doc) => {
-      const data = doc.data() as IExpert;
-      data.docId = doc.id;
-      // data.docRef = doc.ref; // Optional if needed
-      mockExperts.value.push(data);
-    });
-  } catch (error) {
-    presentToast('top', `Error al obtener los expertos ${error}`,'danger');
-    toggleExpertPopup('close');
-  }
 }
 
 const getExpertSelection = (expert: string) => {
-  toggleExpertPopup('open');
-  gettingMockExperts(expert);
+    toggleExpertPopup('open');
+    gettingMockExperts(expert);
 }
 
 

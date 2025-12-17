@@ -15,13 +15,10 @@
 
         <ion-tab-button v-if="authStore().getIsAuth" tab="tab3" href="/tabs/expert-list-modern">
           <v-icon name="md-listalt-round" />
-          <ion-label>Ver Expertos M</ion-label>
-        </ion-tab-button>
-
-        <ion-tab-button v-if="authStore().getIsAuth" tab="tab4" href="/tabs/experts-list">
-          <v-icon name="md-listalt-round" />
           <ion-label>Ver Expertos</ion-label>
         </ion-tab-button>
+
+      
         
         <ion-tab-button v-if="authStore().getIsAuth && authStore().getIsClient" tab="client-appointments" href="/tabs/client-appointments">
           <ion-icon :icon="idCardOutline"></ion-icon>

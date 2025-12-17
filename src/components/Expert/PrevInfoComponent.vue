@@ -1,49 +1,49 @@
 <template>
-  <div class="box-border p-2 m-4 w-[95%] bg-emerald-50 rounded-lg border border-sky-700 shadow-xl sm:w-auto">
-    <div class="flex flex-row flex-wrap items-center p-4 bg-white rounded-lg">
-      <!-- Circular Profile Image -->
-      <div class="mr-4">
-        <img v-if="expertData?.imgUrl !== ''" :src="expertData?.imgUrl" alt="Expert Profile"
-          class="object-cover w-24 h-24 rounded-full" />
-        <v-icon v-else name="la-user-tie-solid" scale="2" />
-      </div>
-
-      <!-- Expert Details -->
-      <div class="flex flex-col">
-        <!-- Expert Name -->
-        <h2 class="pb-2 text-xl font-bold text-gray-800 border-b border-sky-600">{{ expertData?.fullName || 'Experto' }}
-        </h2>
-
-        <!-- Expert Specialty -->
-        <p class="mb-2 text-sm text-gray-600">{{ expertData?.specialty || 'Specialty' }}</p>
-
-        <!-- Brief Description -->
-        <p class="mb-4 text-gray-700">{{ expertData?.bio || 'Sin descripción' }}</p>
-
-        <!-- Rating -->
-        <div class="flex items-center mb-4">
-          <span v-for="star in 5" :key="star" class="text-yellow-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          </span>
-          <span class="ml-2 text-gray-700">{{ expertData?.rating?.toFixed(1) || 0 }}/5</span>
+  <div class="ios-expert-card-container">
+    <div class="ios-expert-card">
+      <!-- Imagen de perfil o icono -->
+      <div class="ios-expert-avatar">
+        <img
+          v-if="expertData?.imgUrl"
+          :src="expertData.imgUrl"
+          alt="Expert Profile"
+          class="ios-expert-avatar-image"
+        />
+        <div v-else class="ios-expert-avatar-placeholder">
+          <v-icon name="la-user-tie-solid" scale="2.2" class="ios-expert-avatar-icon" />
         </div>
       </div>
 
-      <!-- Button to view availability -->
-      <!-- TODO: This should be updated to getExpertSelection function -->
-      <button @click="viewSchedule" class="px-4 py-2 ml-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-700">
-        Ver Disponibilidad
+      <!-- Detalles del experto -->
+      <div class="ios-expert-details">
+        <div class="ios-expert-header">
+          <h2 class="ios-expert-name">
+            {{ expertData?.fullName || 'Experto' }}
+          </h2>
+          <span class="ios-expert-specialty-badge">
+            {{ expertData?.specialty || 'Especialidad' }}
+          </span>
+        </div>
+
+        <p class="ios-expert-bio">
+          {{ expertData?.bio || 'Sin descripción disponible' }}
+        </p>
+
+        <!-- Rating con estrellas -->
+        <div class="w-full my-2">
+          <span class="text-gray-500">Cédula: {{ expertData?.professionalId }}</span>
+        </div>
+      </div>
+
+      <!-- Botón de acción -->
+      <button @click="viewSchedule" class="ios-expert-button ">
+        Ver disponibilidad
       </button>
     </div>
   </div>
 </template>
-
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
-import systemStore from '@/store/system';
 import { IExpert } from '@/interfaces/IExpert';
 import { useExpertUiStore } from '@/stores/expertUi';
 
@@ -64,13 +64,185 @@ const viewSchedule = async () => {
     expertUiStore.resetCurrentExpert();
     expertUiStore.setExpertData(props.expertData);
     router.push('/expert-info-fixed');
-    
+    closeCard();
   } catch (error) {
     console.error('Navigation error:', error);
   }
 };
+
+const emit = defineEmits(['closeCard']);
+const closeCard = () => emit('closeCard');
 </script>
 
 <style scoped>
-/* Add any additional custom styles here */
+/* Contenedor principal */
+.ios-expert-card-container {
+  width: 95%;
+  margin: 1rem auto;
+  padding: 0.5rem;
+  @apply sm:w-auto;
+}
+
+/* Tarjeta con estilo iOS */
+.ios-expert-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ios-expert-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.08),
+    0 4px 6px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* Avatar redondo */
+.ios-expert-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  overflow: hidden;
+  border: 2px solid rgba(0, 123, 255, 0.1);
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-expert-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ios-expert-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007aff;
+}
+
+.ios-expert-avatar-icon {
+  opacity: 0.8;
+}
+
+/* Detalles del experto */
+.ios-expert-details {
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.ios-expert-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ios-expert-name {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #000;
+  @apply font-sfpro-bold;
+}
+
+.ios-expert-specialty-badge {
+  background: #007aff;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.ios-expert-bio {
+  font-size: 0.9rem;
+  color: #6c757d;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  @apply font-sfpro-regular;
+}
+
+/* Rating */
+.ios-expert-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ios-expert-stars {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.ios-expert-star {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #e5e5e5;
+}
+
+.ios-expert-star-filled {
+  color: #ffc107;
+}
+
+.ios-expert-rating-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3c4858;
+}
+
+/* Botón estilo iOS */
+.ios-expert-button {
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin: 0 auto;
+  display: block;
+}
+
+.ios-expert-button:hover {
+  background: #0062cc;
+}
+
+.ios-expert-button:active {
+  background: #0052a3;
+  transform: scale(0.98);
+}
+
+/* Tipografía SF Pro (simulada) */
+@font-face {
+  font-family: 'SF Pro';
+  src: local('San Francisco'), local('SFPro-Regular'), sans-serif;
+}
+
+.font-sfpro-regular {
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+}
+
+.font-sfpro-bold {
+  font-family: 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+}
 </style>
