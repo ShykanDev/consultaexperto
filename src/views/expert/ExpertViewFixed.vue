@@ -118,13 +118,14 @@
           </div>
         </article>
       </ion-card-content>
-      <ion-button class="ion-margin-vertical" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
+      <ion-button v-if="!userHasSlotsTaken" class="ion-margin-vertical" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
         @click="updateSubcollectionSchedule()">{{
           !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
 
         }}
         <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
       </ion-button>
+     
 
 
     </ion-content>
@@ -161,18 +162,20 @@ import {
 } from '@ionic/vue';
 import { addDoc, collection, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
-import { computed, ref, Slot } from 'vue';
+import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
 import { IExpertSchedule } from '@/interfaces/Ischedule';
 import { authStore } from '@/store/auth';
+import emailjs from '@emailjs/browser';
+
 
 
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
     message: message,
-    duration: 1500,
+    duration: 4500,
     position: position,
     color: color,
     swipeGesture: 'vertical',
@@ -322,8 +325,9 @@ if(userHasSlotsTaken.value){
       dayName: dayName,
       createdAt: Timestamp.now(),
     })
+    await sendTestEmail();
 
-    presentToast('top', 'Se ha agendado su cita con exito', 'success');
+    presentToast('top', 'Se ha agendado su cita con exito, se ha enviado un correo con los detalles de la cita', 'success');
     setTimeout(() => {
       routerIon.back();
     }, 1500);
@@ -343,17 +347,50 @@ const toggleValue = ref(false);
 onIonViewDidEnter(() => {
   console.clear();
   
-  const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);
-  
   const currentSchedule = expertUiStore.getCurrentExpert.schedule;
+  const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);
 
+  userHasSlotsTaken.value = isSlotTakenByCurrentUser();
 
-
-userHasSlotsTaken.value = isSlotTakenByCurrentUser();
+  // Inicializar EmailJS
+  emailjs.init({
+    blockHeadless: true,
+    publicKey: '8uRc3wp2ZXACkO_Eb',
+  })
 })
 
+const sendTestEmail = async () => {
+  // Validar que haya un slot seleccionado
+  if (!slotSelected.value) {
+    presentToast('top', 'Debes seleccionar un horario primero', 'warning');
+    return;
+  }
 
+  const dayName = Object.keys(schedule.value).find(key => schedule.value[key].includes(slotSelected.value));
+  
+  // Validar que se encontró el día
+  if (!dayName) {
+    presentToast('top', 'No se pudo determinar el día del horario', 'danger');
+    return;
+  }
 
+  try {
+    emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
+    userName: authStore().getUserName ?? 'Usuario',
+    expertName: expertUiStore.getCurrentExpert.fullName,
+    expertSpecialty: expertUiStore.getCurrentExpert.specialty,
+    expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
+    time: slotSelected.value.time, // ✅ Solo enviar el string del tiempo
+    dayName: dayName,
+    email: authStore().getUserEmail,
+    dateCreated: new Date(Timestamp.now().toDate()).toDateString(),
+  })
+}
+catch (error) {
+  console.log(error);
+  presentToast('top', 'Hubo un error al enviar el correo', 'danger');
+}
+}
 </script>
 
 <style scoped>

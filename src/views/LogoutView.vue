@@ -1,7 +1,7 @@
 <template>
     <ion-page>
-      <ion-header :translucent="true">
-        <ion-toolbar class="flex w-full bg-gradient-to-r from-indigo-500 to-purple-600">
+      <ion-header >
+        <ion-toolbar class="flex w-full ">
           <div class="flex items-center px-2">
           <article @click="router.back()"  class="flex items-center cursor-pointer">
             <span class="flex items-center py-1 font-semibold text-sky-600 font-quicksand">
@@ -98,14 +98,14 @@
   import { signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import { authStore as authStorePinia } from '@/store/auth';
-import { getAuth } from 'firebase/auth';
+import { auth as authFirebase } from '@/main';
   const router = useRouter();
   const authStore = authStorePinia();
   const email = ref('');
   const isLoading = ref(false);
   const errorMessage = ref('');
 
-  const auth = getAuth();
+  const auth = authFirebase;
   const handleLogout = async () => {
     try {
       await signOut(auth);

@@ -141,7 +141,8 @@ import { chevronBack, helpOutline } from 'ionicons/icons';
 import { ref, computed } from 'vue';
 
 import { toastController } from '@ionic/vue';
-import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
+import { auth as authFirebase } from '@/main';
 import { IExpertSchedule } from '@/interfaces/Ischedule';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
@@ -235,7 +236,7 @@ const resetForm = () => {
 const db = getFirestore();
 const expertsCollection = collection(db, 'experts');
 const emailsExperts = collection(db, 'EmailsExperts');
-const auth = getAuth();
+const auth = authFirebase;
 
 
 

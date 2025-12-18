@@ -11,18 +11,23 @@
       </ion-toolbar>
     </ion-header>
 
+    <ion-content :fullscreen="true">
       <LoginComponent />
+    </ion-content>
 
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonIcon, IonContent  } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
 import LoginComponent from '@/components/Login/LoginComponent.vue';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import { onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
 import { getAuth } from 'firebase/auth';
+import { auth as authFirebase } from '@/main';
 import { authStore } from '@/store/auth';
+
+console.log('Tab1Page.vue script is executing...');
 
 const names = [
   '<span class="animate-fade-down animate-duration-300 animate-delay-100">consulta</span>' +
@@ -72,7 +77,7 @@ onUnmounted(() => {
   }
 });
 
-const auth = getAuth()
+const auth = authFirebase;
 const logout = async () => {
   await auth.signOut();
 };

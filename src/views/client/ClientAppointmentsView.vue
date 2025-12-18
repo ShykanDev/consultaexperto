@@ -21,9 +21,6 @@
       </ion-segment>
       <ion-segment-view>
         <ion-segment-content id="Proximas">
-        <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
-            <ion-refresher-content></ion-refresher-content>
-          </ion-refresher>
           <div class="bg-gray-100 text-center ion-padding">
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Próximas citas</p> 
           </div>
@@ -64,10 +61,6 @@ import { authStore as authStoreInstance } from '@/store/auth';
 import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 
-const handleRefresh = (event: any) => {
-  getUserAppointments();
-  event.target.complete();
-}
 
 const authStore = authStoreInstance(); authStore
 

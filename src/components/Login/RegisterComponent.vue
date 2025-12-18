@@ -140,9 +140,10 @@
 
   import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, UserCredential, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, UserCredential, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { toastController } from '@ionic/vue';
+import { auth as authFirebase } from '@/main';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
     const toast = await toastController.create({
@@ -215,7 +216,7 @@ watch(date, () => {
 });
 
 //Firebase stuff
-const auth = getAuth()
+const auth = authFirebase;
 const db = getFirestore();
 const router = useIonRouter();
 

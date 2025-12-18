@@ -21,9 +21,6 @@
       </ion-segment>
       <ion-segment-view>
         <ion-segment-content id="Proximas">
-        <ion-refresher slot="fixed" @ionRefresh="handleRefresh($event)">
-            <ion-refresher-content></ion-refresher-content>
-          </ion-refresher>
           <div class="bg-gray-100 text-center ion-padding">
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Próximas citas</p> 
           </div>

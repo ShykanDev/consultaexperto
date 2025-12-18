@@ -1,168 +1,158 @@
 <template>
-  <ion-content>
+  <div class="relative w-full bg-[#F6F8F7] ion-padding">
 
-    <div class="relative w-full bg-[#F6F8F7] ion-padding">
+    <section v-if="loading"
+      class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
+      <!--Loader dots spinner (when user is logging in)-->
+      <LoaderMultipleDots />-
+    </section>
 
-      <section v-if="loading"
-        class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
-        <!--Loader dots spinner (when user is logging in)-->
-        <LoaderMultipleDots />-
-      </section>
+    <div class="px-1 py-1 mx-auto max-w-8xl md:px-2">
+      <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
+        <div class="order-2 space-y-3 md:order-1">
+          <h2
+            class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
+            Su plataforma para consultar un experto:
+          </h2>
 
-      <div class="px-1 py-1 mx-auto max-w-8xl md:px-2">
-        <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
-          <div class="order-2 space-y-3 md:order-1">
-            <h2
-              class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
-              Su plataforma para consultar un experto:
-            </h2>
-
-            <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
-              <div class="grid col-span-2 items-center p-2">
-                <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
-                    class="font-bold text-blue-600">{{ experts[currentExpert].name
-                    }}</span>
-                </h4>
-                <div
-                  class="flex flex-col justify-around items-center p-1 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-2xl opacity-90 text-md font-poppins">
-                  <p>¡Primera consulta gratis! </p>
-                  <div class="flex gap-2">
-                    <v-icon name="md-supportagent-outlined" scale="1" />
-                    <v-icon name="bi-gift-fill" scale="1" />
-                  </div>
-                </div>
-              </div>
-              <div class="flex justify-center items-center min-h-28">
-                <img :src="experts[currentExpert].img"
-                  class="w-40 rounded-3xl ring-2 ring-blue-500 ring-offset-2 animate-fade"
-                  :key="experts[currentExpert].name" :alt="experts[currentExpert].name">
-              </div>
-            </aside>
-
-
-            <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out"
-              :class="{ 'bg-gradient-to-r from-blue-600 to-blue-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
-              <div class="w-full">
-                <div class="w-full">
-                  <!-- Header del acordeón -->
-                  <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
-                    <span class="font-medium text-md font-poppins"
-                      :class="{ 'text-white': isAccordionOpen, 'text-blue-600': !isAccordionOpen }">{{ isAccordionOpen ?
-                        'Listado de expertos' : 'Ver todos los expertos' }}</span>
-                    <v-icon name="hi-solid-chevron-down" scale="1.5"
-                      class="transition-transform duration-300 ease-in-out"
-                      :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
-                  </div>
-
-                  <!-- Contenido del acordeón -->
-                  <div v-show="isAccordionOpen"
-                    class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
-                    <ul>
-                      <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
-                        class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-blue-600 hover:text-white animate-fade-down ion-padding"
-                        :class="{
-                          'bg-blue-600 text-white': expert.name === experts[currentExpert].name,
-                          'bg-blue-500/25': expert.name !== experts[currentExpert].name,
-                          'bg-blue-800 text-white font-black italic': expert.name === userSelection,
-                        }" :style="{
-                          'animation-delay': `${index * 50}ms`
-                        }">
-                        {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
-                      </li>
-                    </ul>
-                  </div>
+          <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
+            <div class="grid col-span-2 items-center p-2">
+              <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
+                  class="font-bold text-blue-600">{{ experts[currentExpert].name
+                  }}</span>
+              </h4>
+              <div
+                class="flex flex-col justify-around items-center p-1 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-2xl opacity-90 text-md font-poppins">
+                <p>¡Primera consulta gratis! </p>
+                <div class="flex gap-2">
+                  <v-icon name="md-supportagent-outlined" scale="1" />
+                  <v-icon name="bi-gift-fill" scale="1" />
                 </div>
               </div>
             </div>
+            <div class="flex justify-center items-center min-h-28">
+              <img :src="experts[currentExpert].img"
+                class="w-40 rounded-3xl ring-2 ring-blue-500 ring-offset-2 animate-fade"
+                :key="experts[currentExpert].name" :alt="experts[currentExpert].name">
+            </div>
+          </aside>
 
 
+          <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out"
+            :class="{ 'bg-gradient-to-r from-blue-600 to-blue-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
+            <div class="w-full">
+              <div class="w-full">
+                <!-- Header del acordeón -->
+                <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
+                  <span class="font-medium text-md font-poppins"
+                    :class="{ 'text-white': isAccordionOpen, 'text-blue-600': !isAccordionOpen }">{{ isAccordionOpen ?
+                      'Listado de expertos' : 'Ver todos los expertos' }}</span>
+                  <v-icon name="hi-solid-chevron-down" scale="1.5"
+                    class="transition-transform duration-300 ease-in-out"
+                    :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
+                </div>
+
+                <!-- Contenido del acordeón -->
+                <div v-show="isAccordionOpen"
+                  class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
+                  <ul>
+                    <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
+                      class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-blue-600 hover:text-white animate-fade-down ion-padding"
+                      :class="{
+                        'bg-blue-600 text-white': expert.name === experts[currentExpert].name,
+                        'bg-blue-500/25': expert.name !== experts[currentExpert].name,
+                        'bg-blue-800 text-white font-black italic': expert.name === userSelection,
+                      }" :style="{
+                        'animation-delay': `${index * 50}ms`
+                      }">
+                      {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
 
+
         </div>
+
       </div>
-
-
-
-
-
-
-
-      <form @submit.prevent="login" class="mt-8 space-y-6">
-
-        <div class="flex flex-col space-y-2 text-left">
-          <h1 class="text-3xl font-bold text-slate-800 font-manrope">Bienvenido</h1>
-          <p class="text-sm text-slate-500 font-medium">Ingresa tus credenciales para continuar</p>
-        </div>
-
-        <div class="space-y-5">
-          <!-- Email Input -->
-           <div class="relative group">
-            <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
-              <ion-icon slot="start" :icon="mailOutline" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
-              <ion-input 
-                v-model="email" 
-                type="email" 
-                placeholder="tu@correo.com"
-                class="font-medium text-slate-700 h-14"
-                --padding-start="10px"
-              ></ion-input>
-            </ion-item>
-           </div>
-
-          <!-- Password Input -->
-          <div class="relative group">
-            <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
-              <ion-icon slot="start" :icon="lockClosed" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
-              <ion-input 
-                v-model="password" 
-                type="password" 
-                placeholder="************"
-                class="font-medium text-slate-700 h-14"
-                --padding-start="10px"
-              ></ion-input>
-              <ion-button 
-                fill="clear" 
-                slot="end" 
-                @click="showPassword = !showPassword"
-                class="text-gray-400 hover:text-gray-600"
-              >
-                <ion-icon slot="icon-only" :icon="showPassword ? eye : eyeOff"></ion-icon>
-              </ion-button>
-            </ion-item>
-          </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="space-y-4 pt-2">
-          <ion-button 
-            expand="block" 
-            @click="login" 
-            class="h-14 font-bold rounded-2xl shadow-lg shadow-blue-500/30 text-white"
-            style="--background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); --border-radius: 16px; text-transform: none; letter-spacing: 0.5px;"
-          >
-            Iniciar Sesión
-          </ion-button>
-
-          <div class="flex justify-center">
-            <button 
-              type="button"
-              id="present-alert" 
-              class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
-            >
-              ¿Olvidó su contraseña?
-            </button>
-          </div>
-          
-            <ion-alert trigger="present-alert" header="Recuperar contraseña" sub-header="Ingresa tu correo para recibir instrucciones" :buttons="alertButtons"
-            :inputs="alertInputs" class="custom-alert"></ion-alert>
-        </div>
-
-      </form>
-
     </div>
 
 
-  </ion-content>
+
+
+    <form @submit.prevent="login" class="mt-8 space-y-6">
+
+      <div class="flex flex-col space-y-2 text-left">
+        <h1 class="text-3xl font-bold text-slate-800 font-manrope">Bienvenido</h1>
+        <p class="text-sm text-slate-500 font-medium">Ingresa tus credenciales para continuar</p>
+      </div>
+
+      <div class="space-y-5">
+        <!-- Email Input -->
+         <div class="relative group">
+          <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
+            <ion-icon slot="start" :icon="mailOutline" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
+            <ion-input 
+              v-model="email" 
+              type="email" 
+              placeholder="tu@correo.com"
+              class="font-medium text-slate-700 h-14"
+            ></ion-input>
+          </ion-item>
+         </div>
+
+        <!-- Password Input -->
+        <div class="relative group">
+          <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
+            <ion-icon slot="start" :icon="lockClosed" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
+            <ion-input 
+              v-model="password" 
+              type="password" 
+              placeholder="************"
+              class="font-medium text-slate-700 h-14"
+            ></ion-input>
+            <ion-button 
+              fill="clear" 
+              slot="end" 
+              @click="showPassword = !showPassword"
+              class="text-gray-400 hover:text-gray-600"
+            >
+              <ion-icon slot="icon-only" :icon="showPassword ? eye : eyeOff"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-4 pt-2">
+        <ion-button 
+          expand="block" 
+          @click="login" 
+          class="h-14 font-bold rounded-2xl shadow-lg shadow-blue-500/30 text-white"
+          style="--background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); --border-radius: 16px; text-transform: none; letter-spacing: 0.5px;"
+        >
+          Iniciar Sesión
+        </ion-button>
+
+        <div class="flex justify-center">
+          <button 
+            type="button"
+            id="present-alert" 
+            class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
+          >
+            ¿Olvidó su contraseña?
+          </button>
+        </div>
+        
+          <ion-alert trigger="present-alert" header="Recuperar contraseña" sub-header="Ingresa tu correo para recibir instrucciones" :buttons="alertButtons"
+          :inputs="alertInputs" class="custom-alert"></ion-alert>
+      </div>
+
+    </form>
+
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -198,8 +188,7 @@ import {
   IonInput,
   IonButton,
   IonIcon,
-  IonAlert,
-  IonContent
+  IonAlert
 } from '@ionic/vue';
 import {
   lockClosed,
@@ -207,7 +196,8 @@ import {
   eyeOff,
   mailOutline
 } from 'ionicons/icons';
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import {  sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth as authFirebase } from '@/main';
 import { authStore } from '@/store/auth';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
@@ -218,6 +208,8 @@ import {
   onIonViewDidLeave
 } from '@ionic/vue';
 import { toastController } from '@ionic/vue';
+
+console.log('LoginComponent.vue script is executing...');
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
@@ -246,7 +238,7 @@ const showPassword = ref(false);
 //router for ionic to push views 
 const router = useRouter();
 
-const auth = getAuth();
+const auth = authFirebase;
 const db = getFirestore();
 const collectionEmailsExperts = collection(db, 'EmailsExperts');
 const verifyIsExpert = async (email: string) => {
@@ -503,7 +495,7 @@ onIonViewDidEnter(() => {
 
 });
 
-// Cuando la vista está a punto de salir
+// Cuando la vista está a punto de salir 
 onIonViewWillLeave(() => {
   stopAnimation();
 });
@@ -680,10 +672,6 @@ ion-accordion.accordion-expanding ion-item[slot='header'],
 ion-accordion.accordion-expanded ion-item[slot='header'] {
   --background: var(--ion-color-primary);
   --color: var(--ion-color-primary-contrast);
-}
-
-ion-content {
-  --background: #F6F8F7 !important;
 }
 
 ion-icon.custom {

@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
 
-import { IonicVue } from '@ionic/vue';
+import { IonicVue, isPlatform } from '@ionic/vue';
 import './index.css';
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -254,14 +254,12 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   CoLink
 );
 
-import { Capacitor } from '@capacitor/core';
-import { StatusBar, Style } from '@capacitor/status-bar';
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { Auth, getAuth, indexedDBLocalPersistence, initializeAuth, setPersistence } from 'firebase/auth';
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -282,18 +280,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const appFirebase = initializeApp(firebaseConfig);
-const analytics = getAnalytics(appFirebase);
+//const analytics = getAnalytics(appFirebase);
 
-// Configuración de la StatusBar
-const setStatusBar = async () => {
-  if (Capacitor.isNativePlatform()) {
-    await StatusBar.setOverlaysWebView({ overlay: false });
-    await StatusBar.setBackgroundColor({ color: '#1e40af' });
-    await StatusBar.setStyle({ style: Style.Dark });
-  }
-};
+let auth: Auth;
+//Add firestore if fetch data on ios shows an error
+//let db: Firestore;
+if (isPlatform('hybrid')) {
+auth = initializeAuth(appFirebase, { persistence: indexedDBLocalPersistence });
+//db = initializeFirestore(firebaseApp, { localCache: persistentLocalCache() });
+} else {
+auth = getAuth(appFirebase);
+setPersistence(auth, indexedDBLocalPersistence);
+}
+
+
+export {auth};
 //El usuario deberá tener un estado de la cita (confirmada/por confirmar) (Cliente)
 //Para el experto debera confirmar primeramente la cita 
+console.log('Creating Vue app...');
 const app = createApp(App)
   .component("v-icon", OhVueIcon)
   .use(IonicVue)
@@ -301,9 +305,26 @@ const app = createApp(App)
   .use(pinia)
   .component('VueDatePicker', VueDatePicker);
 
-// Asegurarse de que la StatusBar se configure antes de montar la aplicación
-setStatusBar().then(() => {
-  router.isReady().then(() => {
-    app.mount('#app');
-  });
+console.log('Waiting for router to be ready...');
+router.isReady().then(() => {
+  console.log('Router is ready, mounting app...');
+  
+  // Verify the DOM element exists
+  const appElement = document.querySelector('#app');
+  console.log('App element found:', appElement);
+  
+  if (!appElement) {
+    console.error('CRITICAL ERROR: #app element not found in DOM!');
+    return;
+  }
+  
+  try {
+    const mountedApp = app.mount('#app');
+    console.log('App mounted successfully!', mountedApp);
+  } catch (error) {
+    console.error('ERROR mounting app:', error);
+    console.error('Error details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+  }
+}).catch((error) => {
+  console.error('ERROR: Router failed to be ready:', error);
 });

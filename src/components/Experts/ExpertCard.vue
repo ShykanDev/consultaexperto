@@ -19,13 +19,18 @@
             </div>
         </div>
 
-             <ion-alert
+           <!-- <ion-alert
     trigger="unsuspend-alert"
     header="¿Está seguro de desbloquear a este experto?"
     message="Al desbloquear a este experto, podrá volver a atender nuevas solicitudes."
     :buttons="alertButtons"
    
   ></ion-alert>
+<ion-button id="unsuspend-alert">Click Me</ion-button>
+  2. Ensure the trigger property references that ID 
+<ion-alert trigger="unsuspend-alert" header="Are you sure?"></ion-alert>
+  -->
+
         <div class="flex relative flex-col gap-3 px-4 pb-4">
             <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
             <div v-if="props.expertData.isSuspended" class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200">

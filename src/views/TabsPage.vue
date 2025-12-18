@@ -18,7 +18,6 @@
           <ion-label>Ver Expertos</ion-label>
         </ion-tab-button>
 
-      
         
         <ion-tab-button v-if="authStore().getIsAuth && authStore().getIsClient" tab="client-appointments" href="/tabs/client-appointments">
           <ion-icon :icon="idCardOutline"></ion-icon>
@@ -39,8 +38,9 @@
 import { authStore } from '@/store/auth';
 import { IonTabBar, IonTabButton, IonTabs, IonLabel, IonPage, IonRouterOutlet } from '@ionic/vue';
 import { powerOutline, idCardOutline } from 'ionicons/icons';
-import { IonIcon, IonContent } from '@ionic/vue';
+import { IonIcon } from '@ionic/vue';
 
+console.log('TabsPage.vue script is executing...');
 
 
 
