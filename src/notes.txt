@@ -84,4 +84,8 @@ Implementar la sincronización en tiempo real de los cambios de estado
 --Add the schedules of the expert and also the feature to edit them (/expert-preview) [NOT DONE]
 
 //TODO:
---Add statusbar handler to set the color to black
+--Add statusbar handler to set the color to black [NOT DONE]
+--Add the requirement for the phone number when creating a new account [NOT DONE]
+--Updatethe Interface to show the phone number in the profile [NOT DONE]
+--Update the Interface to show the phone number in the appointment details [NOT DONE]
+--Add privacy policy and terms of service [NOT DONE]

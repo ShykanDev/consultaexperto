@@ -11,7 +11,7 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
+    <ion-content class="login">
       <LoginComponent />
     </ion-content>
 
@@ -99,5 +99,8 @@ const logout = async () => {
 .animate-fade-down {
   animation-name: fade;
   transform: translateY(-10px);
+}
+ion-content.login {
+  --background: #fafafa !important;
 }
 </style>

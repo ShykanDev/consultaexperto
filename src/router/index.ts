@@ -152,6 +152,20 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: true
     }
   },
+  {
+    path: '/privacy-policy',
+    component: () => import('@/views/PrivacyPolicy.vue'),
+    meta:{
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/users-list-admin',
+    component: () => import('@/views/admin/UsersList.vue'),
+    meta:{
+      requiresAuth: true
+    }
+  }
 
 ]
 

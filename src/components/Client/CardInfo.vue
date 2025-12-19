@@ -155,7 +155,7 @@
 
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-600">Status de la cita:</p>
-            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'">{{ props.data.isFinished ? 'Finalizada' : 'En curso' }}</p>
+            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'">{{ props.data.isFinished ? 'Finalizada' : 'Por confirmar' }}</p>
           </div>
 
         </article>

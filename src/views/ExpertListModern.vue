@@ -94,7 +94,6 @@
                             <h3 class="text-2xl font-bold leading-tight tracking-tight text-slate-800">Expertos en
                                 Acción
                             </h3>
-                            <a class="text-blue-600 text-sm font-bold hover:text-blue-700" href="#">Ver Todo</a>
                         </div>
                         <div
                             class="flex overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] snap-x snap-mandatory px-4 pb-4 gap-4">

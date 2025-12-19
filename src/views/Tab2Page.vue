@@ -1,8 +1,8 @@
 <template>
   <ion-page>
-    <ion-header >
+    <ion-header  class="ion-no-border">
       <ion-toolbar >
-          <ion-title slot="start" class="text-base font-bold text-orange-700 text-start sm:text-xl font-quicksand">Registrarse</ion-title>
+          <ion-title slot="start" class="text-base font-bold text-blue-500 text-start sm:text-xl font-quicksand">Registrarse</ion-title>
           <div slot="end" class="flex">
             <span class="text-sm" v-html="currentName" :key="currentName"></span>
           </div>
@@ -25,20 +25,20 @@ import { ref } from 'vue';
   const names = [
   [
     '<span class="animate-fade-down animate-duration-300 animate-delay-100">consulta</span>' +
-    '<span class="text-orange-700 animate-fade animate-duration-300 animate-delay-200">gratis</span>' +
+    '<span class="text-blue-700 animate-fade animate-duration-300 animate-delay-200">gratis</span>' +
     '<span class="animate-fade animate-duration-300 animate-delay-300">en</span>' +
     '<span class="animate-fade animate-duration-300 animate-delay-500">linea</span>' +
-    '<span class="text-orange-500 animate-fade animate-duration-300 animate-delay-500">.com</span>'
+    '<span class="text-blue-500 animate-fade animate-duration-300 animate-delay-500">.com</span>'
   ],
   [
     '<span class="animate-fade animate-duration-300 animate-delay-100">consulta</span>' +
-    '<span class="text-orange-700 animate-fade animate-duration-300 animate-delay-200">experto</span>' +
-    '<span class="text-orange-500 animate-fade animate-duration-300 animate-delay-300">.com</span>'
+    '<span class="text-blue-700 animate-fade animate-duration-300 animate-delay-200">experto</span>' +
+    '<span class="text-blue-500 animate-fade animate-duration-300 animate-delay-300">.com</span>'
   ],
   [
     '<span class="animate-fade-down animate-delay-100">consulta</span>' +
-    '<span class="text-orange-700 animate-fade animate-delay-200">especializada</span>' +
-    '<span class="text-orange-500 animate-fade animate-delay-300">.com</span>'
+    '<span class="text-blue-700 animate-fade animate-delay-200">especializada</span>' +
+    '<span class="text-blue-500 animate-fade animate-delay-300">.com</span>'
   ]
 ];
 

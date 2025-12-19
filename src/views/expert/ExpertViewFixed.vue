@@ -3,7 +3,7 @@
     <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button class="text-sm" :default-href="'/tabs/experts-list'" :icon="chevronBack" color="primary"
+          <ion-back-button class="text-sm" :default-href="'/tabs/expert-list-modern'" :icon="chevronBack" color="primary"
             text="Volver" style="text-transform: none;" />
         </ion-buttons>
         <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{
@@ -160,7 +160,7 @@ import {
   useIonRouter
 
 } from '@ionic/vue';
-import { addDoc, collection, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -273,9 +273,19 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
 
 const db = getFirestore();
 const routerIon = useIonRouter();
+const userSelfCollection = doc(db, 'users/'+authStore().getUserUid);
 const userScheduleCollection = collection(db, 'users/'+authStore().getUserUid+'/schedule');
 const expertScheduleCollection = collection(db, 'experts/'+expertUiStore.getCurrentExpert.userUid+'/schedule');
 
+const verifyUserHasFreeConsultations = async () => {
+  const userSelfSnapshot = await getDoc(userSelfCollection);
+  const userSelfData = userSelfSnapshot.data();
+  console.log(`User hasf free consultations: ${userSelfData?.freeConsultations}`);
+  if(userSelfData?.freeConsultations){
+    return true;
+  }
+  return false;
+}
 
 const updateSubcollectionSchedule = async () => {
 

@@ -27,10 +27,10 @@
     ></ion-searchbar>
       </ion-toolbar>
 
-
     </ion-header>
 
     <ion-content class="ion-padding">
+      <ion-button router-link="/users-list-admin" mode="ios" color="primary" >Ver usuarios</ion-button>
       <ion-refresher slot="fixed"  @ionRefresh="handleRefresh($event)">
       <ion-refresher-content refreshing-spinner="circles"></ion-refresher-content>
       </ion-refresher>

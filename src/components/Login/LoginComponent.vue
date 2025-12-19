@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full bg-[#F6F8F7] ion-padding">
+  <div class="relative w-full  ion-padding">
 
     <section v-if="loading"
       class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
@@ -7,12 +7,12 @@
       <LoaderMultipleDots />-
     </section>
 
-    <div class="px-1 py-1 mx-auto max-w-8xl md:px-2">
+    <div class="px-1 py-1 mx-auto  md:px-2">
       <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
         <div class="order-2 space-y-3 md:order-1">
           <h2
             class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
-            Su plataforma para consultar un experto:
+            Agende una cita con un experto verificado
           </h2>
 
           <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
@@ -97,7 +97,7 @@
             <ion-input 
               v-model="email" 
               type="email" 
-              placeholder="tu@correo.com"
+              placeholder="correo@ejemplo.com"
               class="font-medium text-slate-700 h-14"
             ></ion-input>
           </ion-item>
@@ -109,9 +109,9 @@
             <ion-icon slot="start" :icon="lockClosed" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
             <ion-input 
               v-model="password" 
-              type="password" 
               placeholder="************"
               class="font-medium text-slate-700 h-14"
+              :type="showPassword ? 'text' : 'password'"
             ></ion-input>
             <ion-button 
               fill="clear" 
