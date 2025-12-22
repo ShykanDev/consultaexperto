@@ -1,5 +1,5 @@
 <template>
-  <section class="admin-appointment-card">
+  <section class="admin-appointment-card py-1">
     <!-- Vista en tarjeta (resumen) -->
     <article
       v-if="view === 'card'"
@@ -15,14 +15,16 @@
           />
         </div>
         <div class="admin-card-info">
-          <h3 class="admin-title">{{ props.data.expertSpecialty }} · {{ props.data.expertName }}</h3>
+          <h3 class="admin-title">{{ props.data.expertSpecialty }} · {{ props.data.userName }}</h3>
           <div class="admin-meta">
             <span class="admin-date">{{ formattedDate }}</span>
             <span class="admin-time">{{ formattedTime }} hrs</span>
           </div>
         </div>
-        <div class="admin-status" :class="props.data.isFinished ? 'finished' : 'pending'">
-          <span>{{ props.data.isFinished ? 'Finalizada' : 'En curso' }}</span>
+        <div class="admin-status" :class="{finished: props.data.isFinished, cancel: props.data.isCancelled, pending: !props.data.isFinished && !props.data.isCancelled}">
+         <p v-if="!props.data.isFinished && !props.data.isCancelled" class="">En curso</p>
+         <p v-if="props.data.isFinished" class="finished">Finalizada</p>
+         <p v-if="props.data.isCancelled" class="cancel">Cancelada</p>
         </div>
       </div>
       <ion-ripple-effect type="unbounded" class="admin-ripple"></ion-ripple-effect>
@@ -77,9 +79,11 @@
             <p class="admin-grid-value">{{ props.data.expertProfessionalId }}</p>
           </div>
           <div class="admin-grid-item">
-            <v-icon name="fa-check-circle" class="admin-grid-icon" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'" />
+            <v-icon name="fa-check-circle" class="admin-grid-icon" :class="{ '!text-green-600': props.data.isFinished, '!text-red-600': props.data.isCancelled, '!text-yellow-600': !props.data.isFinished && !props.data.isCancelled }" />
             <p class="admin-grid-label">Status:</p>
-            <p class="admin-grid-value" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'">{{ props.data.isFinished ? 'Finalizada' : 'En curso' }}</p>
+            <p v-if="props.data.isFinished" class="admin-grid-value finished text-green-600">Finalizada</p>
+            <p v-if="props.data.isCancelled" class="admin-grid-value cancel !text-red-600">Cancelada</p>
+            <p v-if="!props.data.isFinished && !props.data.isCancelled" class="admin-grid-value pending text-yellow-600">En curso</p>
           </div>
         </div>
       </div>
@@ -91,16 +95,18 @@
 
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
-        <button class="admin-action-button edit">Editar</button>
-        <button class="admin-action-button cancel">Cancelar</button>
-        <button class="admin-action-button complete" v-if="!props.data.isFinished">Marcar como completada</button>
+        <button class="admin-action-button edit" v-if="!props.data.isCancelled" @click="markFunction('notFinish')">Marcar como no finalizada</button>
+        <button class="admin-action-button cancel" v-if="!props.data.isCancelled" @click="markFunction('cancel')">Cancelar</button>
+        <button class="admin-action-button complete" v-if="!props.data.isFinished" @click="markFunction('finish')">Marcar como completada</button>
       </div>
     </div>
   </section>
 </template>
  <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
+import { authStore } from '@/store/auth';
 import { IonRippleEffect } from '@ionic/vue';
+import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
 const experts = ref([
   {
@@ -276,6 +282,64 @@ const view = ref<'card' | 'modal'>('card');
 const toggleView = () => {
     view.value = view.value === 'card' ? 'modal' : 'card';
 }
+
+const db = getFirestore();
+const expertsCollection = collection(db, `experts/${props.data.expertUid}/schedule`);
+const usersCollection = collection(db, `users/${props.data.userUid}/schedule`);
+
+const expertQuery = query(expertsCollection, where('userUid', '==', props.data.userUid));
+const userQuery = query(usersCollection, where('expertUid', '==', props.data.expertUid));
+
+const markFunction = async (mode: 'finish' | 'cancel'| 'notFinish') => {
+  try {
+    const expertSnapshot = await getDocs(expertQuery);
+    const userSnapshot = await getDocs(userQuery);
+
+    if (expertSnapshot.empty) {
+      console.log('No se encontraron documentos para el experto');
+      return;
+    }
+
+    if (userSnapshot.empty) {
+      console.log('No se encontraron documentos para el usuario');
+      return;
+    }
+
+    const expertDoc = expertSnapshot.docs[0];
+    const userDoc = userSnapshot.docs[0];
+
+    console.log('Documentos encontrados para ambos usuarios');
+    console.log('Expert:', expertDoc.id, expertDoc.data());
+    console.log('User:', userDoc.id, userDoc.data());
+
+ switch (mode) {
+  case 'finish':
+    updateDoc(expertDoc.ref, { isFinished: true });
+    updateDoc(userDoc.ref, { isFinished: true });
+    updateDoc(expertDoc.ref, { isCancelled: false });
+    updateDoc(userDoc.ref, { isCancelled: false });
+    break;
+  case 'cancel':
+    updateDoc(expertDoc.ref, { isCancelled: true });
+    updateDoc(userDoc.ref, { isCancelled: true });
+    updateDoc(expertDoc.ref, { isFinished: false });
+    updateDoc(userDoc.ref, { isFinished: false });
+    break;
+  case 'notFinish':
+    updateDoc(expertDoc.ref, { isFinished: false });
+    updateDoc(userDoc.ref, { isFinished: false });
+    updateDoc(expertDoc.ref, { isCancelled: false });
+    updateDoc(userDoc.ref, { isCancelled: false });
+    break;
+}
+
+    console.log('Documentos actualizados');
+
+  } catch (error) {
+    console.error('Error al marcar la consulta como finalizada:', error);
+  }
+};
+
 </script>
 <style scoped>
 /* Estilos para la tarjeta de administrador */
@@ -352,6 +416,10 @@ const toggleView = () => {
 .admin-status.pending {
   background: #fef3c7;
   color: #92400e;
+}
+.admin-status.cancel {
+  background: #fec7c7;
+  color: #920e0e;
 }
 
 /* Estilos para el modal */

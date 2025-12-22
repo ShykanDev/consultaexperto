@@ -121,7 +121,6 @@
       <ion-button v-if="!userHasSlotsTaken" class="ion-margin-vertical" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
         @click="updateSubcollectionSchedule()">{{
           !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
-
         }}
         <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
       </ion-button>
@@ -287,8 +286,31 @@ const verifyUserHasFreeConsultations = async () => {
   return false;
 }
 
-const updateSubcollectionSchedule = async () => {
+const calculateAppointmentDate = (dayName: string) => {
+  const dayMap: { [key: string]: number } = {
+    'Domingo': 0, 'Lunes': 1, 'Martes': 2, 'Miercoles': 3, 'Miércoles': 3, 'Jueves': 4, 'Viernes': 5, 'Sabado': 6, 'Sábado': 6
+  };
+  const targetDay = dayMap[dayName];
+  const now = new Date();
+  const currentDay = now.getDay();
+  let diff = targetDay - currentDay;
 
+  // Si el día seleccionado es hoy (diff === 0), se queda en 0.
+  // Si ya pasó (diff < 0), se suma 7 para la próxima semana.
+  if (diff < 0) {
+    diff += 7;
+  }
+  
+  const appointmentDate = new Date(now);
+  appointmentDate.setDate(now.getDate() + diff);
+  return appointmentDate;
+};
+
+const updateSubcollectionSchedule = async () => {
+if(expertUiStore.getCurrentExpert.isSuspended || expertUiStore.getCurrentExpert.isBanned){
+  presentToast('top', 'No puede agendar horarios con este experto, contacte al administrador si tiene alguna duda', 'danger');
+  return;
+}
 if(!schedule.value){
   presentToast('top', 'No se ha seleccionado ningun horario', 'warning');
   return;
@@ -305,6 +327,10 @@ if(userHasSlotsTaken.value){
     slotSelected.value.takenAt = Timestamp.now();
     //find the day name of the slot selected
     const dayName = Object.keys(schedule.value).find(key => schedule.value[key].includes(slotSelected.value));
+    
+    // Calculate validity based on the logic: if today is the day, use today.
+    const appointmentDate = calculateAppointmentDate(dayName as string);
+
     await updateDoc(expertPath, {
       schedule: schedule.value
     });
@@ -319,6 +345,7 @@ if(userHasSlotsTaken.value){
       appointmentLink: '',
       isFinished: false,
       dayName: dayName,
+      appointmentDate: Timestamp.fromDate(appointmentDate),
       createdAt: Timestamp.now(),
     })
     //todo: create a copy of the schedule and update the schedule in the expert collection
@@ -333,13 +360,14 @@ if(userHasSlotsTaken.value){
       appointmentLink: '',
       isFinished: false,
       dayName: dayName,
+      appointmentDate: Timestamp.fromDate(appointmentDate),
       createdAt: Timestamp.now(),
     })
     await sendTestEmail();
 
     presentToast('top', 'Se ha agendado su cita con exito, se ha enviado un correo con los detalles de la cita', 'success');
     setTimeout(() => {
-      routerIon.back();
+      routerIon.navigate('/tabs/tab1', 'back', 'replace');
     }, 1500);
     savingChanges.value = false;
   } catch (error) { 
@@ -385,6 +413,9 @@ const sendTestEmail = async () => {
   }
 
   try {
+    // Calcular la fecha correcta de la cita
+    const appointmentDate = calculateAppointmentDate(dayName);
+
     emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
     userName: authStore().getUserName ?? 'Usuario',
     expertName: expertUiStore.getCurrentExpert.fullName,
@@ -394,6 +425,7 @@ const sendTestEmail = async () => {
     dayName: dayName,
     email: authStore().getUserEmail,
     dateCreated: new Date(Timestamp.now().toDate()).toDateString(),
+    appointmentDate: appointmentDate.toDateString(), // Fecha calculada de la cita
   })
 }
 catch (error) {

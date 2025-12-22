@@ -44,7 +44,6 @@
               label-placement="stacked"
               placeholder="+52 5512345678"
               type="number"
-              inputmode="numeric"
               helper-text="Recuerde introducir el código de país, ejemplo: +52 para México"
               min="0"
             ></ion-input>

@@ -4,7 +4,7 @@
       <ion-toolbar>
         <ion-title class="font-nunito" color="primary">Crear Nuevo Experto</ion-title>
         <ion-buttons slot="start">
-          <ion-back-button color="primary" :icon="chevronBack" default-href="/expert-list-admin" text="Cancelar"
+          <ion-back-button color="primary" :icon="chevronBack" default-href="/expert-list-admin" text="Atrás"
             style="text-transform: none;"></ion-back-button>
         </ion-buttons>
       </ion-toolbar>

@@ -295,6 +295,10 @@ const getDayIndex = (dayName: string): number => {
 }
 
 const calculatedAppointmentDate = computed(() => {
+  if ((props.data as any).appointmentDate) {
+    return new Date((props.data as any).appointmentDate.seconds * 1000);
+  }
+  
   if (!props.data?.createdAt) return null;
 
   const createdAtDate = new Date(props.data.createdAt.seconds * 1000);
@@ -315,7 +319,7 @@ const calculatedAppointmentDate = computed(() => {
   // If I book for "Monday" on a "Tuesday", it's next Monday (daysUntil = 1 - 2 = -1 => +7 = 6 days)
   // If I book for "Monday" on a "Monday", usually it's next week unless specifically today.
   // Assuming strict forward booking:
-  if (daysUntil <= 0) {
+  if (daysUntil < 0) {
     daysUntil += 7;
   }
 

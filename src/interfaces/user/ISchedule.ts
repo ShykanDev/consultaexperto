@@ -14,4 +14,5 @@ userName: string;
 userUid: string;
 appointmentLink: string;
 isFinished: boolean;
+isCancelled?: boolean;
 }

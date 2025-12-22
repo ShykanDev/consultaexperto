@@ -150,8 +150,8 @@
 
   <section v-if="userAppointments && userAppointments.length > 0 && showConsultations">
 
-        <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <ExpertScheduleData :data="appointment" />
+        <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2 space-y-3 bgred">
+              <ExpertScheduleData :data="appointment"  />
             </div>
   </section>
 </ion-card-content>

@@ -37,6 +37,10 @@
                 <p class="text-xs font-bold text-red-800 !font-poppins">Motivo de la suspension:</p>
                 <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas solicitudes.' }}</p>
             </div>
+            <ion-alert trigger="unsuspend-alert" header="¿Está seguro de desbloquear a este experto?" message="Al desbloquear a este experto, podrá volver a atender nuevas solicitudes." :buttons="alertButtons">
+   
+           
+            </ion-alert>
             <div class="grid grid-cols-3 gap-1 p-1 mt-2">
                 <ion-button id="unsuspend-alert"  v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">
                     <ion-icon slot="start" :icon="checkmarkCircleSharp"></ion-icon>
