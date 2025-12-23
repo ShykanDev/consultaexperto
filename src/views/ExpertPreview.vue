@@ -107,7 +107,7 @@
 
     <ion-toggle class="text-blue-600 ion-margin-vertical"  v-model="showSchedule" mode="ios" enable-on-off-labels color="primary">{{ showSchedule ? 'Ocultar' : 'Mostrar' }} horario</ion-toggle>
 
-    <ion-toggle @click="getConsultations" class="text-blue-600 ion-margin-vertical"  v-model="showConsultations" mode="ios" enable-on-off-labels color="primary">{{ showConsultations ? 'Ocultar' : 'Mostrar' }} consultas</ion-toggle>
+    <ion-toggle  @click="getConsultations" class="text-blue-600 ion-margin-vertical"  v-model="showConsultations" mode="ios" enable-on-off-labels color="primary">{{ showConsultations ? 'Ocultar' : 'Mostrar' }} consultas</ion-toggle>
 
     <ion-toggle v-if="showSchedule" class="text-blue-600"  v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
 
@@ -149,9 +149,11 @@
   </div>
 
   <section v-if="userAppointments && userAppointments.length > 0 && showConsultations">
-
+<div class="w-full flex justify-center items-center">
+  <ion-spinner v-show="loadingAppointments" name="lines-sharp-small"></ion-spinner>
+</div>
         <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2 space-y-3 bgred">
-              <ExpertScheduleData :data="appointment"  />
+              <ExpertScheduleData :data="appointment" @reloadData="getConsultationsEmitCall" />
             </div>
   </section>
 </ion-card-content>
@@ -174,7 +176,6 @@ import {
   IonToolbar,
   IonButtons,
   IonButton,
-  IonSpinner,
   IonLabel,
   IonTitle,
   IonContent,
@@ -227,9 +228,13 @@ const showConsultations = ref(false);
 const getConsultations = () => {
   
   if(!showConsultations.value){
+    userAppointments.value = [];
     getUserAppointments();
   }
 
+};
+const getConsultationsEmitCall = () => {
+  getUserAppointments();
 };
 
 const expertAdminStore = useExpertAdminStore();

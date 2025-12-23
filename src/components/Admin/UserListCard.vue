@@ -49,7 +49,7 @@
             <ion-icon :icon="banOutline"></ion-icon>
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Baneado</span>
+            <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Suspendido</span>
             <span class="text-sm font-semibold text-gray-700">{{ userEdit.isBanned ? 'Sí' : 'No' }}</span>
           </div>
         </div>
@@ -60,7 +60,7 @@
             <ion-icon :icon="banOutline"></ion-icon>
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Motivo de baneo</span>
+            <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Motivo de suspension</span>
             <span class="text-sm font-semibold text-gray-700">{{ userEdit.banReason || 'Sin motivo' }}</span>
           </div>
         </div>
@@ -73,7 +73,7 @@
                class="px-3 py-1 rounded-full text-xs font-bold shadow-sm"
                :class="userEdit.isBanned ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'"
              >
-                {{ userEdit.isBanned ? 'Baneado' : 'Habilitado' }}
+                {{ userEdit.isBanned ? 'Suspendido' : 'Habilitado' }}
              </div>
           </div>
 
@@ -135,16 +135,16 @@
                 class="flex-1 py-1 text-xs font-bold rounded-md transition-all duration-200 z-10"
                 :class="editForm.isBanned ? 'bg-white text-red-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'"
               >
-                Baneado
+                Suspendido
               </button>
               <div v-if="editForm.isBanned" class="flex items-center gap-2 bg-white ion-margin-vertical rounded-md p-2">
                 <ion-icon :icon="banOutline"></ion-icon>
-                <ion-input v-model="editForm.banReason" placeholder="Motivo de baneo"></ion-input>
+                <ion-input v-model="editForm.banReason" placeholder="Motivo de suspension"></ion-input>
               </div>
            </div>
            <p v-if="editForm.isBanned" class="text-[10px] text-red-500 pl-1 mt-1 flex items-center gap-1">
              <ion-icon :icon="alertCircleOutline"></ion-icon>
-             El baneo desactivará las consultas y que el usuario pueda acceder a la app.
+             El suspension desactivará las consultas y que el usuario pueda acceder a la app.
            </p>
         </div>
 
@@ -260,7 +260,7 @@ function saveEdit() {
   console.log('--- ACTUALIZANDO USUARIO ---');
   console.log('ID:', userEdit.userId);
   console.log('Nuevo Teléfono:', userEdit.phone);
-  console.log('Estado:', userEdit.isBanned ? 'BANEADO' : 'HABILITADO');
+  console.log('Estado:', userEdit.isBanned ? 'Suspendido' : 'HABILITADO');
   console.log('Consultas Gratis:', userEdit.freeConsultations);
   console.log('----------------------------');
   saveUser();  

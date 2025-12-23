@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="admin-status" :class="{finished: props.data.isFinished, cancel: props.data.isCancelled, pending: !props.data.isFinished && !props.data.isCancelled}">
-         <p v-if="!props.data.isFinished && !props.data.isCancelled" class="">En curso</p>
+         <p v-if="!props.data.isFinished && !props.data.isCancelled" class="">Pendiente</p>
          <p v-if="props.data.isFinished" class="finished">Finalizada</p>
          <p v-if="props.data.isCancelled" class="cancel">Cancelada</p>
         </div>
@@ -83,7 +83,7 @@
             <p class="admin-grid-label">Status:</p>
             <p v-if="props.data.isFinished" class="admin-grid-value finished text-green-600">Finalizada</p>
             <p v-if="props.data.isCancelled" class="admin-grid-value cancel !text-red-600">Cancelada</p>
-            <p v-if="!props.data.isFinished && !props.data.isCancelled" class="admin-grid-value pending text-yellow-600">En curso</p>
+            <p v-if="!props.data.isFinished && !props.data.isCancelled" class="admin-grid-value pending text-yellow-600">Pendiente</p>
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
         <button class="admin-action-button edit" v-if="!props.data.isCancelled" @click="markFunction('notFinish')">Marcar como no finalizada</button>
-        <button class="admin-action-button cancel" v-if="!props.data.isCancelled" @click="markFunction('cancel')">Cancelar</button>
+        <button class="admin-action-button cancel" v-if="!props.data.isCancelled" @click="markFunction('cancel')">Cancelar Cita</button>
         <button class="admin-action-button complete" v-if="!props.data.isFinished" @click="markFunction('finish')">Marcar como completada</button>
       </div>
     </div>
@@ -104,10 +104,11 @@
 </template>
  <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
-import { authStore } from '@/store/auth';
 import { IonRippleEffect } from '@ionic/vue';
-import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
+import { writeBatch } from 'firebase/firestore';
+
 const experts = ref([
   {
     specialty: "Importación y Exportación",
@@ -290,55 +291,54 @@ const usersCollection = collection(db, `users/${props.data.userUid}/schedule`);
 const expertQuery = query(expertsCollection, where('userUid', '==', props.data.userUid));
 const userQuery = query(usersCollection, where('expertUid', '==', props.data.expertUid));
 
-const markFunction = async (mode: 'finish' | 'cancel'| 'notFinish') => {
+const emit = defineEmits(['reloadData']);
+
+
+const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
   try {
-    const expertSnapshot = await getDocs(expertQuery);
-    const userSnapshot = await getDocs(userQuery);
+    const [expertSnapshot, userSnapshot] = await Promise.all([
+      getDocs(expertQuery),
+      getDocs(userQuery),
+    ]);
 
-    if (expertSnapshot.empty) {
-      console.log('No se encontraron documentos para el experto');
+    if (expertSnapshot.empty || userSnapshot.empty) {
+      console.log('No se encontraron documentos');
       return;
     }
 
-    if (userSnapshot.empty) {
-      console.log('No se encontraron documentos para el usuario');
-      return;
-    }
-
+    // ⚠️ Assumes exactly ONE matching doc per side
     const expertDoc = expertSnapshot.docs[0];
     const userDoc = userSnapshot.docs[0];
 
-    console.log('Documentos encontrados para ambos usuarios');
-    console.log('Expert:', expertDoc.id, expertDoc.data());
-    console.log('User:', userDoc.id, userDoc.data());
+    const batch = writeBatch(db);
 
- switch (mode) {
-  case 'finish':
-    updateDoc(expertDoc.ref, { isFinished: true });
-    updateDoc(userDoc.ref, { isFinished: true });
-    updateDoc(expertDoc.ref, { isCancelled: false });
-    updateDoc(userDoc.ref, { isCancelled: false });
-    break;
-  case 'cancel':
-    updateDoc(expertDoc.ref, { isCancelled: true });
-    updateDoc(userDoc.ref, { isCancelled: true });
-    updateDoc(expertDoc.ref, { isFinished: false });
-    updateDoc(userDoc.ref, { isFinished: false });
-    break;
-  case 'notFinish':
-    updateDoc(expertDoc.ref, { isFinished: false });
-    updateDoc(userDoc.ref, { isFinished: false });
-    updateDoc(expertDoc.ref, { isCancelled: false });
-    updateDoc(userDoc.ref, { isCancelled: false });
-    break;
-}
+    // Default state
+    const updateData = {
+      isFinished: false,
+      isCancelled: false,
+    };
 
-    console.log('Documentos actualizados');
+    if (mode === 'finish') {
+      updateData.isFinished = true;
+    }
+
+    if (mode === 'cancel') {
+      updateData.isCancelled = true;
+    }
+
+    batch.update(expertDoc.ref, updateData);
+    batch.update(userDoc.ref, updateData);
+
+    await batch.commit(); // 🔒 atomic write
+
+    emit('reloadData');
+    console.log('Documentos actualizados correctamente');
 
   } catch (error) {
-    console.error('Error al marcar la consulta como finalizada:', error);
+    console.error('Error al marcar la consulta:', error);
   }
 };
+
 
 </script>
 <style scoped>
@@ -538,17 +538,17 @@ const markFunction = async (mode: 'finish' | 'cancel'| 'notFinish') => {
 }
 
 .admin-action-button.edit {
-  background: #dbeafe;
+  background: #f4f9ff;
   color: #2563eb;
 }
 
 .admin-action-button.cancel {
-  background: #fee2e2;
+  background: #fff1f1;
   color: #dc2626;
 }
 
 .admin-action-button.complete {
-  background: #d1fae5;
+  background: #ebfff5;
   color: #065f46;
 }
 
