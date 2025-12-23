@@ -165,6 +165,13 @@ const routes: Array<RouteRecordRaw> = [
     meta:{
       requiresAuth: true
     }
+  },
+  {
+    path: '/firebase',
+    component: () => import('@/views/tests/FirebaseTest.vue'),
+    meta:{
+      requiresAuth: false
+    }
   }
 
 ]

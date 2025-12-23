@@ -89,3 +89,8 @@ Implementar la sincronización en tiempo real de los cambios de estado
 --Updatethe Interface to show the phone number in the profile [NOT DONE]
 --Update the Interface to show the phone number in the appointment details [NOT DONE]
 --Add privacy policy and terms of service [NOT DONE]
+
+//TODO:
+--Add buttons to both users and experts to cancel the appointment [NOT DONE]
+--When user/expert cancel the appointment, the app should update the appointment status to 'cancelled' and notify the other user/expert [NOT DONE]
+--When user/expert cancel the appointment, the slot taken should be updated to available [NOT DONE]

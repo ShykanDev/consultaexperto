@@ -1,62 +1,56 @@
 <template>
   <section class="">
 
-<article
-  v-if="view === 'card'"
-  class="w-full flex flex-col rounded-2xl shadow-sm bg-white p-4 ion-activatable ripple-parent rounded-rectangle"
-  @click="toggleView" 
-  style="min-height: 120px;"
->
-  <!-- Contenido del artículo -->
-  <div class="flex flex-row items-center justify-between w-full">
-    <!-- Contenedor del icono -->
-    <div
-      class="w-14 h-14 flex items-center justify-center rounded-full mr-3"
-      :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }"
-    >
-      <v-icon
-        :name="getIcon(props.data.expertSpecialty)"
-        scale="1.4"
-        :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }"
-      />
-    </div>
+    <article v-if="view === 'card'"
+      class="w-full flex flex-col rounded-2xl shadow-sm bg-white p-4 ion-activatable ripple-parent rounded-rectangle"
+      @click="toggleView" style="min-height: 120px;">
+      <!-- Contenido del artículo -->
+      <div class="flex flex-row items-center justify-between w-full">
+        <!-- Contenedor del icono -->
+        <div class="w-14 h-14 flex items-center justify-center rounded-full mr-3"
+          :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
+          <v-icon :name="getIcon(props.data.expertSpecialty)" scale="1.4"
+            :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }" />
+        </div>
 
-    <!-- Contenedor del texto -->
-    <div class="flex flex-col text-left flex-1 font-poppins">
-      <span class="font-medium text-gray-950 text-base">
-        {{ props.data.expertSpecialty }}  {{ props.data.expertName }}
-      </span>
-      <span class="text-gray-600 font-quicksand text-sm font-medium">
-        {{ formattedDate }}
-      </span>
-      <span class="text-gray-600 font-quicksand text-sm font-medium">
-        {{ formattedTime }} hrs
-      </span>
+        <!-- Contenedor del texto -->
+        <div class="flex flex-col text-left flex-1 font-poppins">
+          <span class="font-medium text-gray-950 text-base">
+            {{ props.data.expertSpecialty }} {{ props.data.expertName }}
+          </span>
+          <span class="text-gray-600 font-quicksand text-sm font-medium">
+            {{ formattedDate }}
+          </span>
+          <span class="text-gray-600 font-quicksand text-sm font-medium">
+            {{ formattedTime }} hrs
+          </span>
 
-    </div>
+        </div>
 
-    <!-- Botón "Ver cita" -->
-    <div class="flex items-center ml-2">
-        <v-icon name="fa-chevron-right" class="text-blue-600" scale="0.9" />
-    </div>
-  </div>
+        <!-- Botón "Ver cita" -->
+        <div class="flex items-center ml-2">
+          <v-icon name="fa-chevron-right" class="text-blue-600" scale="0.9" />
+        </div>
+      </div>
 
-  <!-- Efecto de ripple -->
-  <ion-ripple-effect type="unbounded" class="custom-ripple"></ion-ripple-effect>
-</article>
+      <!-- Efecto de ripple -->
+      <ion-ripple-effect type="unbounded" class="custom-ripple"></ion-ripple-effect>
+    </article>
 
 
 
-    <div v-else >
+    <div v-else>
       <!-- Título de la cita -->
       <div class="p-6 w-full max-w-full mb-5 bg-white rounded-3xl border border-gray-200 shadow-sm">
         <span @click="toggleView" class="flex items-center gap-2 animate-fade-left">
           <v-icon name="fa-chevron-left" class="text-blue-600" />
-          <button  class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver
+          <button
+            class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver
           </button>
         </span>
         <div class="flex flex-col items-center gap-2">
-          <div class="inline-flex mt-5 justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
+          <div
+            class="inline-flex mt-5 justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
             <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
           </div>
           <h3 class="mb-1 text-lg font-semibold text-gray-800">{{ props.data.expertName }}</h3>
@@ -67,8 +61,9 @@
       </div>
 
       <!-- Date info-->
-       <span class="p-6 w-full max-w-full mb-5 text-lg font-semibold text-gray-600">Datos de la cita</span>
-      <div class="p-6 w-full flex flex-col  space-y-5 mb-5 max-w-full bg-white rounded-3xl border border-gray-200 shadow-lg">
+      <span class="p-6 w-full max-w-full mb-5 text-lg font-semibold text-gray-600">Datos de la cita</span>
+      <div
+        class="p-6 w-full flex flex-col  space-y-5 mb-5 max-w-full bg-white rounded-3xl border border-gray-200 shadow-lg">
 
         <article class="flex items-center gap-2 pb-2 border-b border-b-gray-100"> <!--Icon-->
 
@@ -109,7 +104,7 @@
           </div>
 
         </article>
-        
+
 
         <article class="flex items-center gap-2"> <!--Link-->
 
@@ -119,8 +114,10 @@
 
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-600">Enlace:</p>
-            <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...</p>
-            <a v-else :href="props.data.appointmentLink" class="font-medium text-gray-800">{{ props.data.appointmentLink }}</a>
+            <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...
+            </p>
+            <a v-else :href="props.data.appointmentLink" class="font-medium text-gray-800">{{ props.data.appointmentLink
+              }}</a>
           </div>
 
         </article>
@@ -130,7 +127,7 @@
 
 
       <!-- Date metada-->
-       <span class="p-6 w-full max-w-full mb-5 text-lg font-semibold text-gray-600">Datos del experto</span>
+      <span class="p-6 w-full max-w-full mb-5 text-lg font-semibold text-gray-600">Datos del experto</span>
       <div class="p-6 w-full flex flex-col  space-y-5 max-w-full bg-white rounded-3xl border border-gray-200 shadow-lg">
 
         <article class="flex items-center gap-2 pb-2 border-b border-b-gray-100"> <!--Icon-->
@@ -149,31 +146,47 @@
 
         <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
 
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3" :class="props.data.isFinished ? 'bg-green-50' : 'bg-yellow-50'">
-            <v-icon name="fa-clock" class="text-2xl" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'" />
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : 'bg-yellow-50'">
+            <v-icon name="fa-clock" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'" />
           </div>
 
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-600">Status de la cita:</p>
-            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'">{{ props.data.isFinished ? 'Finalizada' : 'Por confirmar' }}</p>
+            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'">
+              {{ props.data.isFinished ? 'Finalizada' : 'Por confirmar' }}</p>
           </div>
 
         </article>
-      
+
 
 
       </div>
+
       <div class="w-full flex justify-center mt-2 items-center">
-        <span class="text-center font-poppins text-sm  text-gray-500">Creada el {{ props.data.createdAt.toDate().toLocaleString('es-ES', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</span>
+        <ion-button mode="ios" color="danger" style="text-transform: none;" @click="presentAlert">Cancelar Cita</ion-button>
+
+
+        <ion-button @click="cancelAppointment" mode="ios" color="primary" style="text-transform: none;">TEST Cancelar Cita</ion-button>
+      </div>
+      <div class="w-full flex justify-center mt-2 items-center">
+        <span class="text-center font-poppins text-sm  text-gray-500">Creada el {{
+          props.data.createdAt.toDate().toLocaleString('es-ES', {
+            day: '2-digit', month: 'long', year: 'numeric', hour:
+              '2-digit', minute: '2-digit' }) }}</span>
       </div>
     </div>
   </section>
-  </template>
-  
-  <script lang="ts" setup>
+</template>
+
+<script lang="ts" setup>
+import { IExpert } from '@/interfaces/IExpert';
 import { ISchedule } from '@/interfaces/user/ISchedule';
-import { IonRippleEffect } from '@ionic/vue';
-import { computed, ref } from 'vue';
+import { alertController, IonRippleEffect } from '@ionic/vue';
+import { IonButton } from '@ionic/vue';
+import { collection, doc, getDoc, getFirestore, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { computed, ref, Slot } from 'vue';
 const experts = ref([
   {
     specialty: "Importación y Exportación",
@@ -198,73 +211,74 @@ const experts = ref([
     color: { light: "#F0E6FF", strong: "#6600CC" }, // Morado arquitectónico
     icon: "md-architecture-sharp",
     description: "Diseño y planificación de espacios con profesionalismo y creatividad.",
-      },
+  },
   {
     specialty: "Servicios Web",
     color: { light: "#E6F9FF", strong: "#00BFFF" }, // Azul tecnológico
     icon: "md-web",
     description: "Desarrollo de soluciones digitales a medida para potenciar tu presencia online.",
-    },
+  },
   {
     specialty: "Publicidad",
     color: { light: "#FFF0E6", strong: "#FF6600" }, // Naranja publicitario
     icon: "ri-newspaper-fill",
     description: "Estrategias creativas para difundir y potenciar la imagen de tu marca.",
-    },
+  },
   {
     specialty: "Traductores",
     color: { light: "#FFF8E6", strong: "#FFD700" }, // Amarillo lingüístico
     icon: "hi-solid-translate",
     description: "Especialistas en comunicación multilingüe para romper barreras idiomáticas.",
-    },
+  },
   {
     specialty: "Peritaje",
     color: { light: "#F0E6FF", strong: "#800080" }, // Morado técnico
     icon: "gi-sherlock-holmes",
     description: "Evaluaciones técnicas y profesionales con rigor y precisión.",
-    },
+  },
   {
     specialty: "Ingeniería en Computación",
     color: { light: "#E6FFFA", strong: "#00CED1" }, // Turquesa tecnológico
     icon: "md-computer-twotone",
     description: "Innovación tecnológica y desarrollo de sistemas a la vanguardia.",
-    },
+  },
   {
     specialty: "Gestoría en Trámites",
     color: { light: "#E6E6FF", strong: "#4B0082" }, // Índigo administrativo
     icon: "ri-newspaper-fill",
     description: "Optimiza tus gestiones administrativas con asesorías especializadas.",
-    },
+  },
   {
     specialty: "Marketing",
     color: { light: "#FFE6F0", strong: "#FF1493" }, // Rosa marketing
     icon: "ri-marketing-strategy-fill",
     description: "Conecta con tu audiencia a través de estrategias innovadoras y efectivas.",
-    },
+  },
   {
     specialty: "Abogado",
     color: { light: "#F5E6D3", strong: "#8B4513" }, // Café legal
     icon: "fa-balance-scale",
     description: "Conecta con un abogado especializado para recibir asesoría legal directa y resolver tus asuntos jurídicos.",
-    },
+  },
   {
     specialty: "Psicólogo/a",
     color: { light: "#E6E6FF", strong: "#6A5ACD" }, // Lila psicológico
     icon: "ri-psychotherapy-fill",
     description: "Asesoría psicológica para resolver tus dudas y resolver tus problemas.",
-    },
+  },
   {
     specialty: "Maestro",
     color: { light: "#F0FFF0", strong: "#2E8B57" }, // Verde educativo
     icon: "gi-teacher",
     description: "Asesoría educativa para resolver tus dudas y resolver tus problemas.",
-    },
+  },
   {
     specialty: "Chef",
     color: { light: "#FFE6E6", strong: "#FF4500" }, // Rojo culinario
-    icon: "gi-chef-toque",   
+    icon: "gi-chef-toque",
   }
 ]);
+
 
 const getLightBackgroundColor = (specialty: string): string => {
   const expert = experts.value.find((expert) => expert.specialty.toLowerCase().trim() === specialty.toLowerCase().trim());
@@ -281,11 +295,12 @@ const getIcon = (specialty: string): string => {
   return expert ? expert.icon : "";
 };
 
+/**Vue Props */
 const props = defineProps({
-  data:{
-    type:Object as () => ISchedule,
-    required:true,
-  } 
+  data: {
+    type: Object as () => ISchedule,
+    required: true,
+  }
 })
 
 const getDayIndex = (dayName: string): number => {
@@ -298,13 +313,13 @@ const calculatedAppointmentDate = computed(() => {
   if ((props.data as any).appointmentDate) {
     return new Date((props.data as any).appointmentDate.seconds * 1000);
   }
-  
+
   if (!props.data?.createdAt) return null;
 
   const createdAtDate = new Date(props.data.createdAt.seconds * 1000);
   // Reset time to start of day for accurate day calculation
   const currentDayIndex = createdAtDate.getDay();
-  
+
   // Handle DayName property (supporting both DayName and dayName just in case)
   const targetDayName = props.data.DayName || (props.data as any).dayName || '';
   const targetDayIndex = getDayIndex(targetDayName);
@@ -312,7 +327,7 @@ const calculatedAppointmentDate = computed(() => {
   if (targetDayIndex === -1) return createdAtDate;
 
   let daysUntil = targetDayIndex - currentDayIndex;
-  
+
   // If the day is today or in the past, add 7 days to get the next occurrence
   // Unless it's today and the time hasn't passed? 
   // For simplicity and typical booking flows:
@@ -325,7 +340,7 @@ const calculatedAppointmentDate = computed(() => {
 
   const futureDate = new Date(createdAtDate);
   futureDate.setDate(createdAtDate.getDate() + daysUntil);
-  
+
   return futureDate;
 });
 
@@ -340,63 +355,176 @@ const formattedDate = computed(() => {
 });
 
 const formattedTime = computed(() => {
-    return props.data.expertSchedule.time;
+  return props.data.expertSchedule.time;
 })
 
 const formattedDay = computed(() => {
-    return calculatedAppointmentDate.value?.toLocaleDateString('es-MX', { weekday: 'long' }) || props.data.DayName;
+  return calculatedAppointmentDate.value?.toLocaleDateString('es-MX', { weekday: 'long' }) || props.data.DayName;
 })
 
 const view = ref<'card' | 'modal'>('card');
 
 const toggleView = () => {
-    view.value = view.value === 'card' ? 'modal' : 'card';
+  view.value = view.value === 'card' ? 'modal' : 'card';
 }
+
+/***Firebase Values****/ 
+
+const db = getFirestore();
+const userCollection = collection(db, `users/${props.data.userUid}/schedule`);
+const expertCollection = collection(db, `experts/${props.data.expertUid}/schedule`);
+
+/***Alert Values****/ 
+
+interface ISlot {
+  isAvailable:boolean;
+  takenAt: null|Timestamp;
+  takenBy:string|null;
+  time:string;
+}
+
+interface IUserSchedule {
+   Lunes?: ISlot[];
+    Martes?: ISlot[];
+    Miercoles?: ISlot[];
+    Jueves?: ISlot[];
+    Viernes?: ISlot[];
+    Sabado?: ISlot[];
+    Domingo?: ISlot[];
+}
+
+const cancelAppointment = async () => {
+  try {
+    const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
+
+    const snap = await getDoc(expertDocRef);
+
+    if (snap.exists()) {
+      console.log('Expert found!');
+      const expertData = snap.data().schedule as IUserSchedule;      
+      const matchDay = Object.keys(expertData).find(d => d.normalize('NFD').toLowerCase().trim() == formattedDay.value.normalize('NFD').toLowerCase().trim());
+      const expertScheduleSlot = expertData[matchDay as keyof IUserSchedule]
+      const slotMatch = expertScheduleSlot?.find(e => e.takenBy == props.data.userUid); //returns the specifyc slot with matching data
+      if (slotMatch){
+        console.log(`Expert Data Before : ${JSON.stringify(slotMatch)}`);
+        slotMatch.takenBy = null;
+        slotMatch.takenAt = null
+        console.log(`Expert Data After : ${JSON.stringify(slotMatch)}`);
+      } else{
+        console.log('Slot not found, could not edit file');
+      }
+      await updateDoc(expertDocRef, { schedule: expertData });
+      console.log('Expert Data Updated');
+      return true;
+    } else {
+      console.log('Expert not found!' + props.data.expertUid, snap);
+      return false;
+    }
+
+  } catch (error) {
+    console.error('Firestore error:', error);
+    return false;
+  }
+};
+
+const updateAppointmentStatus = async () => {
+  try {
+    const appointmentDocRef = doc(db, `appointments/${props.data.docId}`);
+    
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+
+const alertButtons = [
+  {
+    text: 'Cancel',
+    role: 'cancel',
+    handler: () => {
+      console.log('Cancel clicked');
+    },
+  },
+  {
+    text: 'Ok',
+    handler: () => {
+      console.log('Ok clicked');
+      console.log(reason.value);
+    },
+  },
+];
+
+
+const reason = ref('');
+const presentAlert = () => {
+  alertController
+    .create({
+      header: 'Cancelar Cita',cssClass:'alert-custom',
+      subHeader: '¿Está seguro de cancelar la cita?',
+      message: 'Escriba el motivo de la cancelación',
+      buttons: alertButtons,
+      inputs: [
+        { label: 'Motivo', type: 'text', name: 'reason', placeholder: 'Motivo', value: reason.value },
+      ],
+      
+    })
+    .then((alertEl) => {
+      alertEl.present();
+    });
+};
+
+const logResult = (event: CustomEvent) => {
+  console.log('Alert dismissed with result:', event.detail);
+};
+
 </script>
 
 <style scoped>
-    .wrapper {
-    display: flex;
-    flex-wrap: wrap;
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
 
-    align-items: center;
-    justify-content: space-between;
-    text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
 
-    height: 300px;
-    width: 300px;
+  height: 300px;
+  width: 300px;
 
-    margin: 0 auto;
-  }
+  margin: 0 auto;
+}
 
-  b {
-    width: 100%;
-  }
+b {
+  width: 100%;
+}
 
-  .ripple-parent {
-    position: relative;
-    overflow: hidden;
+.ripple-parent {
+  position: relative;
+  overflow: hidden;
 
-  
-  }
 
-  .rectangle {
-    width: 300px;
-    height: 150px;
-  }
+}
 
-  .rounded-rectangle {
-    width: full;
-    height: auto;
-    border-radius: 20px;
-  }
+.rectangle {
+  width: 300px;
+  height: 150px;
+}
 
-  .circle {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-  }
-  .custom-ripple {
-    color: rgb(0, 124, 220);
-  }
-</style>
+.rounded-rectangle {
+  width: full;
+  height: auto;
+  border-radius: 20px;
+}
+
+.circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+}
+
+.custom-ripple {
+  color: rgb(0, 124, 220);
+}
+
+</style>  

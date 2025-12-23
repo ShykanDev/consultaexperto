@@ -18,4 +18,6 @@ export interface IExpertSchedule {
     Sabado?: Slot[];
     Domingo?: Slot[];
   };
+
+  
 }

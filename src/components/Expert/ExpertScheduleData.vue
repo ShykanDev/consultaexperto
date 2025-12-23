@@ -95,9 +95,9 @@
 
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
-        <button class="admin-action-button edit" v-if="!props.data.isCancelled" @click="markFunction('notFinish')">Marcar como no finalizada</button>
-        <button class="admin-action-button cancel" v-if="!props.data.isCancelled" @click="markFunction('cancel')">Cancelar Cita</button>
-        <button class="admin-action-button complete" v-if="!props.data.isFinished" @click="markFunction('finish')">Marcar como completada</button>
+        <button class="admin-action-button edit !text-xs" v-if="!props.data.isCancelled" @click="markFunction('notFinish')">No finalizada</button>
+        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCancelled" @click="markFunction('cancel')">Cancelar Cita</button>
+        <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished" @click="markFunction('finish')">Finalizar Cita</button>
       </div>
     </div>
   </section>
@@ -529,10 +529,9 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
 
 .admin-action-button {
   flex: 1;
-  padding: 10px;
+  padding: 3px;
   border-radius: 8px;
   border: none;
-  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
 }

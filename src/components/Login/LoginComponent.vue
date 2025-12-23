@@ -316,11 +316,22 @@ const handleClientLogin = (uid: string, name: string, userEmail: string) => {
   authStore().setIsClient(true);
 
   presentToast("top", `Bienvenido ${name}`, "success");
-  router.push("/tabs/expert-list-modern");
+  if(testingFirebaseRules.value){
+    router.push("/firebase"); // route for testing firebase rules
+    return;
+  }
+  router.push("/tabs/expert-list-modern"); // RESTORE AFTER DEBUG
+ //DEBUG ONLY router.push("/firebase"); // route for testing firebase rules
+
 };
 
 
+const testingFirebaseRules = ref(false); //Allows testing firebase rules handling
 const login = async () => {
+  if(testingFirebaseRules.value && email.value == 'test@gmail.com' && password.value == 'test'){
+    handleClientLogin('test', 'test', 'test@gmail.com');
+    return;
+  }
 
   if (!email.value || !password.value) {
     presentToast("top", "Por favor, ingrese su correo y contraseña", "danger");
