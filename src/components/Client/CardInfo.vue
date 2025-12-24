@@ -410,12 +410,12 @@ const cancelAppointment = async () => {
         slotMatch.takenBy = null;
         slotMatch.takenAt = null
         console.log(`Expert Data After : ${JSON.stringify(slotMatch)}`);
+        await updateDoc(expertDocRef, { schedule: expertData });
+      console.log('Expert Data Updated');
+      return true;
       } else{
         console.log('Slot not found, could not edit file');
       }
-      await updateDoc(expertDocRef, { schedule: expertData });
-      console.log('Expert Data Updated');
-      return true;
     } else {
       console.log('Expert not found!' + props.data.expertUid, snap);
       return false;

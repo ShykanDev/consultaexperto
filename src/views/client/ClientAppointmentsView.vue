@@ -68,6 +68,7 @@ const userAppointments = ref<ISchedule[]>([]);
 const db = getFirestore();
 const q = query(collection(db, `users/${authStoreInstance().getUserUid}/schedule`), where('userUid', '==', authStoreInstance().getUserUid));
 const getUserAppointments = async () => {
+  userAppointments.value = [];
   try {
     const querySnapshot = await getDocs(q);
     if(querySnapshot.empty){
@@ -75,7 +76,15 @@ const getUserAppointments = async () => {
       console.log('No hay citas futuras');
       return;
     }
-    userAppointments.value = querySnapshot.docs.map((doc) => doc.data() as ISchedule).filter((appointment) => appointment.expertName !== null);
+    //Change this to a variable and then update it using $variable.docRef = doc.ref;
+    querySnapshot.forEach(doc =>{
+      const userAppointment = doc.data() as ISchedule;
+      userAppointment.docId = doc.id;
+      userAppointment.docRef = doc.ref;
+      userAppointments.value.push(userAppointment)
+    })
+    //Restore 1 const userData = querySnapshot.docs.map((doc) => doc.data() as ISchedule).filter((appointment) => appointment.expertName !== null);
+    //Restore 2  userAppointments.value = userData;
     console.log(userAppointments.value);
   } catch (error) {
     console.log(error);
