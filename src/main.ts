@@ -39,7 +39,7 @@ import './theme/variables.css';
 
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
-
+  MdFreecancellationTwotone,
   FaBalanceScale,
   FaUserMd,
   FaCalculator,
@@ -141,9 +141,11 @@ import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
   GiChefToque,//Chef
   GiSherlockHolmes,
   FaChevronLeft,
-  CoLink
+  CoLink,
+  HiSolidInformationCircle
 } from "oh-vue-icons/icons";
 addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
+  MdFreecancellationTwotone,
   FaBalanceScale,
   FaUserMd,
   FaCalculator,
@@ -251,7 +253,8 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   GiTeacher,
   GiChefToque,
   FaChevronLeft,
-  CoLink
+  CoLink,
+  HiSolidInformationCircle
 );
 
 // Import the functions you need from the SDKs you need

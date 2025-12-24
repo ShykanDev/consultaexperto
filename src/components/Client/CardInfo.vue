@@ -147,28 +147,91 @@
         <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
 
           <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : 'bg-yellow-50'">
-            <v-icon name="fa-clock" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'" />
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="hi-solid-information-circle" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
           </div>
 
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-600">Status de la cita:</p>
-            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : 'text-yellow-600'">
-              {{ props.data.isFinished ? 'Finalizada' : 'Por confirmar' }}</p>
+            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'">
+              {{ props.data.isFinished ? 'Finalizada' : props.data.isCancelled ? 'Cancelada' : 'Reservada' }}</p>
           </div>
+
+          <!--If isCanceled show-->
 
         </article>
 
 
 
+
+        <article v-if="props.data.isCancelled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="md-freecancellation-twotone" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Motivo de cancelación:</p>
+            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
+              {{ props.data.cancelationReason }}
+            </p>
+            
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+        <article v-if="props.data.isCancelled " class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="fa-user" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Cancelado por:</p>
+            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
+              {{ props.data.canceledByName}}
+            </p>
+
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+
+        <article v-if="props.data.isCancelled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="fa-calendar-check" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Fecha de cancelación:</p>
+            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
+              {{ new Date(props.data.canceledAt!.toDate()).toLocaleString('es-ES', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
+            </p>
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+
       </div>
+
+   
 
       <div class="w-full flex justify-center mt-2 items-center">
         <ion-button mode="ios" color="danger" style="text-transform: none;" @click="presentAlert">Cancelar Cita</ion-button>
 
 
-        <ion-button @click="cancelAppointment" mode="ios" color="primary" style="text-transform: none;">TEST Cancelar Cita</ion-button>
+        <ion-button mode="ios" color="primary" style="text-transform: none;">Marcar como finalizada</ion-button>
       </div>
       <div class="w-full flex justify-center mt-2 items-center">
         <span class="text-center font-poppins text-sm  text-gray-500">Creada el {{
@@ -183,6 +246,7 @@
 <script lang="ts" setup>
 import { IExpert } from '@/interfaces/IExpert';
 import { ISchedule } from '@/interfaces/user/ISchedule';
+import { authStore } from '@/store/auth';
 import { alertController, IonRippleEffect } from '@ionic/vue';
 import { IonButton } from '@ionic/vue';
 import { collection, doc, getDoc, getFirestore, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
@@ -394,48 +458,178 @@ interface IUserSchedule {
 }
 
 const cancelAppointment = async () => {
+
+  try {
+
+   //Step 1: Update the expert schedule and clear the user data
+
+    //User Firebase Data
+    const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
+    const snap = await getDoc(expertDocRef);
+
+    //Return if slot doesnt exist
+    if(!snap.exists()){
+      console.log('Could not find the expert document');
+      return false;
+    }
+
+    //Expert Schedule Slot Data
+      const expertData = snap.data().schedule as IUserSchedule;      
+
+    //Matching day from props and fetched data (E.g: Lunes)
+      const matchDay = Object.keys(expertData).find(d => d.normalize('NFD').toLowerCase().trim() == formattedDay.value.normalize('NFD').toLowerCase().trim());
+
+    //Matching expert slot finding it using maching Day 
+      const expertScheduleSlot = expertData[matchDay as keyof IUserSchedule]
+      const slotMatch = expertScheduleSlot?.find(e => e.takenBy == props.data.userUid); //returns the specifyc slot with matching data
+
+      //Return if slot can´t be found 
+      if(!slotMatch){
+        console.log('Expert not found!' + props.data.expertUid, snap);
+        return false;
+      }
+
+      //Updating the slot values to null (canceling the appointment)
+      slotMatch.takenBy = null;
+      slotMatch.takenAt = null
+      //Ready to batch expert data firebase (BatchA1)
+
+      //Step 2: Update the user historyAppointment to set the current appointment data as canceled
+
+      //Return if document doesnt has a docRef
+      if(!props.data.docRef){
+        console.log(`Couldn't find docRef for this document `);
+        return false;
+      }
+
+    //Ready to batch user data (BatchA2)
+
+    //Batching userand expert data
+
+    const batch = writeBatch(db);
+
+    //Batching BatchA1
+    batch.update(expertDocRef, {
+      schedule: expertData
+    })
+
+    //Batching A2
+    batch.update(props.data.docRef, {
+      isCancelled: true,
+      cancelationReason: cancelationReason.value,
+      canceledAt: Timestamp.now(),
+      canceledByUid: authStore().getUserUid || '',
+      canceledByName: authStore().getUserName || ''
+    })
+
+    await batch.commit();
+
+    console.log('Appointment canceled successfully');
+    return true;
+
+
+  } catch (error) {
+    console.error('Error in batch function:', error);
+    return false;
+  }
+};
+
+const cancelationReason = ref('');
+
+const updateUserAppointmentStatus = async () => {
+  try {
+    if (!props.data.docRef) {
+      console.warn("No docRef available for this appointment");
+      return;
+    }
+    // props.data.docRef is already a DocumentReference, so we pass it directly to getDoc
+    await updateDoc(props.data.docRef, {
+      isCancelled: true,
+      cancelationReason: cancelationReason.value,
+      canceledAt: Timestamp.now(),
+      canceledByUid: authStore().getUserUid || '',
+      canceledByName: authStore().getUserName || ''
+    });
+    console.log('Appointment updated');
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+
+const cancelAppointmentV2 = async () => {
   try {
     const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
 
+    // 1️⃣ LEER (fuera del batch)
     const snap = await getDoc(expertDocRef);
-
-    if (snap.exists()) {
-      console.log('Expert found!');
-      const expertData = snap.data().schedule as IUserSchedule;      
-      const matchDay = Object.keys(expertData).find(d => d.normalize('NFD').toLowerCase().trim() == formattedDay.value.normalize('NFD').toLowerCase().trim());
-      const expertScheduleSlot = expertData[matchDay as keyof IUserSchedule]
-      const slotMatch = expertScheduleSlot?.find(e => e.takenBy == props.data.userUid); //returns the specifyc slot with matching data
-      if (slotMatch){
-        console.log(`Expert Data Before : ${JSON.stringify(slotMatch)}`);
-        slotMatch.takenBy = null;
-        slotMatch.takenAt = null
-        console.log(`Expert Data After : ${JSON.stringify(slotMatch)}`);
-        await updateDoc(expertDocRef, { schedule: expertData });
-      console.log('Expert Data Updated');
-      return true;
-      } else{
-        console.log('Slot not found, could not edit file');
-      }
-    } else {
-      console.log('Expert not found!' + props.data.expertUid, snap);
+    if (!snap.exists()) {
+      console.log('Expert not found');
       return false;
     }
+
+    const expertData = snap.data().schedule as IUserSchedule;
+
+    const matchDay = Object.keys(expertData).find(
+      d =>
+        d.normalize('NFD').toLowerCase().trim() ===
+        formattedDay.value.normalize('NFD').toLowerCase().trim()
+    );
+
+    if (!matchDay) {
+      console.log('Day not found');
+      return false;
+    }
+
+    const expertScheduleSlot = expertData[matchDay];
+    const slotMatch = expertScheduleSlot?.find(
+      e => e.takenBy === props.data.userUid
+    );
+
+    if (!slotMatch) {
+      console.log('Slot not found');
+      return false;
+    }
+
+    // 2️⃣ MODIFICAR EN MEMORIA
+    slotMatch.takenBy = null;
+    slotMatch.takenAt = null;
+
+    if (!props.data.docRef) {
+      console.warn('No appointment docRef');
+      return false;
+    }
+
+    // 3️⃣ CREAR BATCH
+    const batch = writeBatch(db);
+
+    // 4️⃣ UPDATE EXPERT
+    batch.update(expertDocRef, {
+      schedule: expertData
+    });
+
+    // 5️⃣ UPDATE APPOINTMENT USER
+    batch.update(props.data.docRef, {
+      isCancelled: true,
+      cancelationReason: cancelationReason.value,
+      canceledAt: Timestamp.now(),
+      canceledByUid: authStore().getUserUid || '',
+      canceledByName: authStore().getUserName || ''
+    });
+
+    // 6️⃣ COMMIT ATÓMICO
+    await batch.commit();
+
+    console.log('Appointment cancelled atomically ✅');
+    return true;
 
   } catch (error) {
     console.error('Firestore error:', error);
     return false;
   }
 };
-
-const updateAppointmentStatus = async () => {
-  try {
-    const appointmentDocRef = doc(db, `appointments/${props.data.docId}`);
-    
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
 
 
 const alertButtons = [
@@ -449,11 +643,10 @@ const alertButtons = [
   {
     text: 'Ok',
     handler: () => {
-      console.log('Ok clicked');
-      console.log(reason.value);
+     cancelAppointment()
     },
   },
-];
+]
 
 
 const reason = ref('');

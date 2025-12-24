@@ -18,18 +18,21 @@
         <ion-segment-button value="Pasadas" content-id="Pasadas">
           <ion-label>Pasadas</ion-label>
         </ion-segment-button>
+        <ion-segment-button value="Canceladas" content-id="Canceladas">
+          <ion-label>Canceladas</ion-label>
+        </ion-segment-button>
       </ion-segment>
       <ion-segment-view>
         <ion-segment-content id="Proximas">
           <div class="bg-gray-100 text-center ion-padding">
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Próximas citas</p> 
           </div>
-          <div v-if="userAppointments.every(appointment => appointment.isFinished)" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCancelled)" class="flex justify-center items-center h-full">
             No tiene citas futuras
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo v-if="!appointment.isFinished" :data="appointment" />
+              <CardInfo v-if="!appointment.isFinished && !appointment.isCancelled" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
@@ -46,7 +49,19 @@
             </div>
           </div>
         </ion-segment-content>
-        <ion-segment-content id="third">Third</ion-segment-content>
+        <ion-segment-content id="Canceladas">
+          <div class="bg-gray-100 text-center ion-padding">
+            <p class="font-poppins text-sm ion-no-margin font-semibold text-slate-600">Citas canceladas </p> 
+          </div>
+          <div v-if="userAppointments.every(appointment => !appointment.isCancelled)" class="flex justify-center items-center h-full">
+            No tiene citas canceladas
+          </div>
+          <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
+            <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
+              <CardInfo v-if="appointment.isCancelled" :data="appointment" />
+            </div>
+          </div>
+        </ion-segment-content>
       </ion-segment-view>
 
   </ion-page>
@@ -80,7 +95,7 @@ const getUserAppointments = async () => {
     querySnapshot.forEach(doc =>{
       const userAppointment = doc.data() as ISchedule;
       userAppointment.docId = doc.id;
-      userAppointment.docRef = doc.ref;
+      userAppointment.docRef = doc.ref.path;
       userAppointments.value.push(userAppointment)
     })
     //Restore 1 const userData = querySnapshot.docs.map((doc) => doc.data() as ISchedule).filter((appointment) => appointment.expertName !== null);
