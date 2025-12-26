@@ -147,15 +147,15 @@
         <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
 
           <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
             <v-icon name="hi-solid-information-circle" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
           </div>
 
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-600">Status de la cita:</p>
-            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCancelled ? 'Cancelada' : 'Reservada' }}</p>
+            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
+              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}</p>
           </div>
 
           <!--If isCanceled show-->
@@ -165,12 +165,12 @@
 
 
 
-        <article v-if="props.data.isCancelled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
 
           <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
             <v-icon name="md-freecancellation-twotone" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
           </div>
 
           <div class="flex justify-between items-center w-full">
@@ -184,12 +184,12 @@
           <!--If isCanceled show-->
 
         </article>
-        <article v-if="props.data.isCancelled " class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+        <article v-if="props.data.isCanceled " class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
 
           <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
             <v-icon name="fa-user" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
           </div>
 
           <div class="flex justify-between items-center w-full">
@@ -204,12 +204,12 @@
 
         </article>
 
-        <article v-if="props.data.isCancelled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
 
           <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCancelled ? 'bg-red-50' : 'bg-yellow-50'">
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
             <v-icon name="fa-calendar-check" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCancelled ? 'text-red-600' : 'text-yellow-600'" />
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
           </div>
 
           <div class="flex justify-between items-center w-full">
@@ -227,7 +227,7 @@
 
    
 
-      <div class="w-full flex justify-center mt-2 items-center">
+      <div v-if="!props.data.isFinished && !props.data.isCanceled" class="w-full flex justify-center mt-2 items-center">
         <ion-button mode="ios" color="danger" style="text-transform: none;" @click="presentAlert">Cancelar Cita</ion-button>
 
 
@@ -526,13 +526,11 @@ const cancelAppointment = async () => {
     })
     
     console.log(`Document doc Ref: ${props.data.docRef}`);
-    
-    //Schedule docRef
-    const expertScheduleDocRef = doc(db, props.data.docRef);
+
 
     //Batching A2
-    batch.update(expertScheduleDocRef, {
-      isCancelled: true,
+    batch.update(doc(db, `schedules/${props.data.docId}`), {
+      isCanceled: true,
       cancelationReason: cancelationReason.value,
       canceledAt: Timestamp.now(),
       canceledByUid: authStore().getUserUid || '',
@@ -555,44 +553,37 @@ const cancelationReason = ref('');
 
 
 
-const alertButtons = [
-  {
-    text: 'Cancel',
-    role: 'cancel',
-    handler: () => {
-      console.log('Cancel clicked');
-    },
-  },
-  {
-    text: 'Ok',
-    handler: async () => {
-      await cancelAppointment()
-    },
-  },
-]
 
+const presentAlert = async () => {
+  const alert = await alertController.create({
+    header: 'Cancelar Cita',
+    message: 'Escriba el motivo de la cancelación',
+    inputs: [
+      {
+        name: 'reason',
+        type: 'text',
+        placeholder: 'Motivo',
+      },
+    ],
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+      },
+      {
+        text: 'Ok',
+        handler: async (data) => {
+          if (!data.reason?.trim()) return false; // no cerrar
+          cancelationReason.value = data.reason.trim();
+          await cancelAppointment();
+        },
+      },
+    ],
+  });
 
-const reason = ref('');
-const presentAlert = () => {
-  alertController
-    .create({
-      header: 'Cancelar Cita',cssClass:'alert-custom',
-      subHeader: '¿Está seguro de cancelar la cita?',
-      message: 'Escriba el motivo de la cancelación',
-      buttons: alertButtons,
-      inputs: [
-        { label: 'Motivo', type: 'text', name: 'reason', placeholder: 'Motivo', value: cancelationReason.value },
-      ],
-      
-    })
-    .then((alertEl) => {
-      alertEl.present();
-    });
+  await alert.present();
 };
 
-const logResult = (event: CustomEvent) => {
-  console.log('Alert dismissed with result:', event.detail);
-};
 
 </script>
 

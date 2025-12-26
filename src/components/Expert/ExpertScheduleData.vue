@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="admin-status" :class="{finished: props.data.isFinished, cancel: props.data.isCanceled, pending: !props.data.isFinished && !props.data.isCanceled}">
-         <p v-if="!props.data.isFinished && !props.data.isCanceled" class="">Pendiente</p>
+         <p v-if="!props.data.isFinished && !props.data.isCanceled" class="">Agendada</p>
          <p v-if="props.data.isFinished" class="finished">Finalizada</p>
          <p v-if="props.data.isCanceled" class="cancel">Cancelada</p>
         </div>
@@ -169,7 +169,7 @@
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
         <button class="admin-action-button edit !text-xs" v-if="!props.data.isCanceled" @click="markFunction('notFinish')">No finalizada</button>
-        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled" @click="markFunction('cancel')">Cancelar Cita</button>
+        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled" @click="presentCancelAlert">Cancelar Cita</button>
         <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished" @click="markFunction('finish')">Finalizar Cita</button>
       </div>
     </div>
@@ -177,10 +177,11 @@
 </template>
  <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
-import { IonRippleEffect } from '@ionic/vue';
+import { IonRippleEffect, alertController } from '@ionic/vue';
 import { collection, doc, getDoc, getDocs, getFirestore, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
 import { writeBatch } from 'firebase/firestore';
+import { authStore } from '@/store/auth';
 
 const experts = ref([
   {
@@ -361,7 +362,7 @@ const db = getFirestore();
 const emit = defineEmits(['reloadData']);
 
 
-const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
+const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish', reason?: string) => {
   try {
  
     const docRef = doc(db, `schedules/${props.data.docId}`)
@@ -377,6 +378,9 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
       isCanceled: false,
       finishedAt: null as Timestamp | null,
       canceledAt: null as Timestamp | null,
+      cancelationReason: '' as string | null,
+      canceledByName: '' as string | null,
+      canceledByUid: '' as string | null,
     };
 
     if (mode === 'finish') {
@@ -387,6 +391,9 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
     if (mode === 'cancel') {
       updateData.isCanceled = true;
       updateData.canceledAt = Timestamp.now();
+      updateData.cancelationReason = reason || 'Cancelada por el administrador';
+      updateData.canceledByName = authStore().getUserName;
+      updateData.canceledByUid = authStore().getUserUid;
     }
 
    await updateDoc(docRef, updateData);
@@ -397,6 +404,40 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
   } catch (error) {
     console.error('Error al marcar la consulta:', error);
   }
+};
+
+const presentCancelAlert = async () => {
+  const alert = await alertController.create({
+    header: 'Cancelar Cita',
+    message: 'Por favor, ingrese el motivo de la cancelación (obligatorio).',
+    inputs: [
+      {
+        name: 'reason',
+        type: 'textarea',
+        placeholder: 'Escriba el motivo aquí...',
+      },
+    ],
+    buttons: [
+      {
+        text: 'Volver',
+        role: 'cancel',
+        cssClass: 'secondary',
+      },
+      {
+        text: 'Confirmar Cancelación',
+        handler: (data) => {
+          if (!data.reason || data.reason.trim() === '') {
+            // Regresa false para mantener la alerta abierta si está vacío
+            return false;
+          }
+          markFunction('cancel', data.reason);
+          return true;
+        },
+      },
+    ],
+  });
+
+  await alert.present();
 };
 
 

@@ -27,12 +27,12 @@
           <div class="bg-gray-100 text-center ion-padding">
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Próximas citas</p> 
           </div>
-          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCancelled)" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCanceled)" class="flex justify-center items-center h-full">
             No tiene citas futuras
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo v-if="!appointment.isFinished && !appointment.isCancelled" :data="appointment" />
+              <CardInfo v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
@@ -53,12 +53,12 @@
           <div class="bg-gray-100 text-center ion-padding">
             <p class="font-poppins text-sm ion-no-margin font-semibold text-slate-600">Citas canceladas </p> 
           </div>
-          <div v-if="userAppointments.every(appointment => !appointment.isCancelled)" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => !appointment.isCanceled)" class="flex justify-center items-center h-full">
             No tiene citas canceladas
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo v-if="appointment.isCancelled" :data="appointment" />
+              <CardInfo v-if="appointment.isCanceled" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
