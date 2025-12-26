@@ -81,7 +81,8 @@ const authStore = authStoreInstance(); authStore
 
 const userAppointments = ref<ISchedule[]>([]);
 const db = getFirestore();
-const q = query(collection(db, `users/${authStoreInstance().getUserUid}/schedule`), where('userUid', '==', authStoreInstance().getUserUid));
+const collectionRef = collection(db, 'schedules');
+const q = query(collectionRef, where('userUid', '==', authStoreInstance().getUserUid));
 const getUserAppointments = async () => {
   userAppointments.value = [];
   try {

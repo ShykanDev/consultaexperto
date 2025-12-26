@@ -273,7 +273,8 @@ const getDateSelected = (dayName: number, timeSelected: string) => {
 const db = getFirestore();
 const routerIon = useIonRouter();
 const userSelfCollection = doc(db, 'users/'+authStore().getUserUid);
-const userScheduleCollection = collection(db, 'users/'+authStore().getUserUid+'/schedule');
+//const userScheduleCollection = collection(db, 'users/'+authStore().getUserUid+'/schedule');//This will be replaced to global schedules
+const schedulesCollection = collection(db, 'schedules');
 const expertScheduleCollection = collection(db, 'experts/'+expertUiStore.getCurrentExpert.userUid+'/schedule');
 
 const verifyUserHasFreeConsultations = async () => {
@@ -334,7 +335,7 @@ if(userHasSlotsTaken.value){
     await updateDoc(expertPath, {
       schedule: schedule.value
     });
-    await addDoc(userScheduleCollection, {
+    await addDoc(schedulesCollection, {
       userName: authStore().getUserName,
       userUid: authStore().getUserUid,
       expertUid: expertUiStore.getCurrentExpert.userUid,
@@ -348,8 +349,8 @@ if(userHasSlotsTaken.value){
       appointmentDate: Timestamp.fromDate(appointmentDate),
       createdAt: Timestamp.now(),
     })
-    //todo: create a copy of the schedule and update the schedule in the expert collection
-    await addDoc(expertScheduleCollection, {
+    // (Outdated because of the new global schedules do not use this) todo: create a copy of the schedule and update the schedule in the expert collection 
+    /*await addDoc(expertScheduleCollection, {
       userName: authStore().getUserName,
       userUid: authStore().getUserUid,
       expertUid: expertUiStore.getCurrentExpert.userUid,
@@ -362,7 +363,8 @@ if(userHasSlotsTaken.value){
       dayName: dayName,
       appointmentDate: Timestamp.fromDate(appointmentDate),
       createdAt: Timestamp.now(),
-    })
+    })*/
+
     await sendTestEmail();
 
     presentToast('top', 'Se ha agendado su cita con exito, se ha enviado un correo con los detalles de la cita', 'success');
@@ -383,7 +385,6 @@ const userHasSlotsTaken = ref(false);
 const toggleValue = ref(false);
 
 onIonViewDidEnter(() => {
-  console.clear();
   
   const currentSchedule = expertUiStore.getCurrentExpert.schedule;
   const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);

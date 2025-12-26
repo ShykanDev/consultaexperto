@@ -152,7 +152,7 @@
 <div class="w-full flex justify-center items-center">
   <ion-spinner v-show="loadingAppointments" name="lines-sharp-small"></ion-spinner>
 </div>
-        <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2 space-y-3 bgred">
+        <div v-for="(appointment, index) in userAppointments" :key="index" class="flex  flex-col gap-5 px-2 space-y-3 bgred">
               <ExpertScheduleData :data="appointment" @reloadData="getConsultationsEmitCall" />
             </div>
   </section>
@@ -193,12 +193,13 @@ import {
   useIonRouter
 
 } from '@ionic/vue';
-import { collection, doc, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
 import { chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import ExpertScheduleData from '@/components/Expert/ExpertScheduleData.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
+import { authStore } from '@/store/auth';
 const db = getFirestore();
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
@@ -243,27 +244,35 @@ const savingChanges = ref(false);
 
 //Get expert appointments
 const userAppointments = ref<ISchedule[]>([]);
-const collectionRef = collection(db, `experts/${expertAdminStore.getCurrentExpert.userUid}/schedule`);
+const collectionRef = collection(db, 'schedules');//Filter by expertUid
+const expertQuery = query(collectionRef, where('expertUid', '==', expertAdminStore.getCurrentExpert.userUid));
 const loadingAppointments = ref(false);
 
 const getUserAppointments = () => {
   console.log('Getting appointments');
+  console.log(authStore().getUserUid);
   userAppointments.value = [];
   loadingAppointments.value = true;
-  getDocs(collectionRef)
+  getDocs(expertQuery)
     .then((querySnapshot) => {
       if(querySnapshot.empty){
         console.log('No appointments found');
         return;
       }
       querySnapshot.forEach((doc) => {
-        userAppointments.value.push(doc.data() as ISchedule);
+        console.log(`DocRef =>: ${JSON.stringify(doc.ref)}`);
+        const data = doc.data();
+        data.docRef = doc.ref;
+        data.docId = doc.id;
+        userAppointments.value.push(data as ISchedule);
       });
       console.log(userAppointments.value);
       loadingAppointments.value = false;
     })
     .catch((error) => {
       console.error('Error al obtener las citas:', error);
+      loadingAppointments.value = false;
+    }).finally(() => {
       loadingAppointments.value = false;
     });
 }

@@ -457,13 +457,21 @@ interface IUserSchedule {
     Domingo?: ISlot[];
 }
 
+const normalizeText = (text: string) =>
+  text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+
+
 const cancelAppointment = async () => {
 
   try {
 
    //Step 1: Update the expert schedule and clear the user data
 
-    //User Firebase Data
+    //Expert Firebase Data
     const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
     const snap = await getDoc(expertDocRef);
 
@@ -475,17 +483,21 @@ const cancelAppointment = async () => {
 
     //Expert Schedule Slot Data
       const expertData = snap.data().schedule as IUserSchedule;      
-
+      console.log(`Expert Data: ${JSON.stringify(expertData)}`);
     //Matching day from props and fetched data (E.g: Lunes)
-      const matchDay = Object.keys(expertData).find(d => d.normalize('NFD').toLowerCase().trim() == formattedDay.value.normalize('NFD').toLowerCase().trim());
-
+      console.log(`Formatted Day: ${normalizeText(formattedDay.value)}`);
+     
+      const matchDay = Object.keys(expertData).find(d => normalizeText(d) == normalizeText(formattedDay.value));
+      console.log(`Match Day: ${matchDay}`);
     //Matching expert slot finding it using maching Day 
       const expertScheduleSlot = expertData[matchDay as keyof IUserSchedule]
+      console.log(`Expert Schedule Slot: ${expertScheduleSlot}`);
       const slotMatch = expertScheduleSlot?.find(e => e.takenBy == props.data.userUid); //returns the specifyc slot with matching data
+      console.log(`Slot Match: ${slotMatch}`);
 
       //Return if slot can´t be found 
       if(!slotMatch){
-        console.log('Expert not found!' + props.data.expertUid, snap);
+        console.log(`Could not find the expert slot for this appointment`);
         return false;
       }
 
@@ -508,13 +520,18 @@ const cancelAppointment = async () => {
 
     const batch = writeBatch(db);
 
-    //Batching BatchA1
+    //Batch Update Expert Global Schedule 
     batch.update(expertDocRef, {
       schedule: expertData
     })
+    
+    console.log(`Document doc Ref: ${props.data.docRef}`);
+    
+    //Schedule docRef
+    const expertScheduleDocRef = doc(db, props.data.docRef);
 
     //Batching A2
-    batch.update(props.data.docRef, {
+    batch.update(expertScheduleDocRef, {
       isCancelled: true,
       cancelationReason: cancelationReason.value,
       canceledAt: Timestamp.now(),
@@ -536,100 +553,6 @@ const cancelAppointment = async () => {
 
 const cancelationReason = ref('');
 
-const updateUserAppointmentStatus = async () => {
-  try {
-    if (!props.data.docRef) {
-      console.warn("No docRef available for this appointment");
-      return;
-    }
-    // props.data.docRef is already a DocumentReference, so we pass it directly to getDoc
-    await updateDoc(props.data.docRef, {
-      isCancelled: true,
-      cancelationReason: cancelationReason.value,
-      canceledAt: Timestamp.now(),
-      canceledByUid: authStore().getUserUid || '',
-      canceledByName: authStore().getUserName || ''
-    });
-    console.log('Appointment updated');
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
-
-const cancelAppointmentV2 = async () => {
-  try {
-    const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
-
-    // 1️⃣ LEER (fuera del batch)
-    const snap = await getDoc(expertDocRef);
-    if (!snap.exists()) {
-      console.log('Expert not found');
-      return false;
-    }
-
-    const expertData = snap.data().schedule as IUserSchedule;
-
-    const matchDay = Object.keys(expertData).find(
-      d =>
-        d.normalize('NFD').toLowerCase().trim() ===
-        formattedDay.value.normalize('NFD').toLowerCase().trim()
-    );
-
-    if (!matchDay) {
-      console.log('Day not found');
-      return false;
-    }
-
-    const expertScheduleSlot = expertData[matchDay];
-    const slotMatch = expertScheduleSlot?.find(
-      e => e.takenBy === props.data.userUid
-    );
-
-    if (!slotMatch) {
-      console.log('Slot not found');
-      return false;
-    }
-
-    // 2️⃣ MODIFICAR EN MEMORIA
-    slotMatch.takenBy = null;
-    slotMatch.takenAt = null;
-
-    if (!props.data.docRef) {
-      console.warn('No appointment docRef');
-      return false;
-    }
-
-    // 3️⃣ CREAR BATCH
-    const batch = writeBatch(db);
-
-    // 4️⃣ UPDATE EXPERT
-    batch.update(expertDocRef, {
-      schedule: expertData
-    });
-
-    // 5️⃣ UPDATE APPOINTMENT USER
-    batch.update(props.data.docRef, {
-      isCancelled: true,
-      cancelationReason: cancelationReason.value,
-      canceledAt: Timestamp.now(),
-      canceledByUid: authStore().getUserUid || '',
-      canceledByName: authStore().getUserName || ''
-    });
-
-    // 6️⃣ COMMIT ATÓMICO
-    await batch.commit();
-
-    console.log('Appointment cancelled atomically ✅');
-    return true;
-
-  } catch (error) {
-    console.error('Firestore error:', error);
-    return false;
-  }
-};
 
 
 const alertButtons = [
@@ -642,8 +565,8 @@ const alertButtons = [
   },
   {
     text: 'Ok',
-    handler: () => {
-     cancelAppointment()
+    handler: async () => {
+      await cancelAppointment()
     },
   },
 ]
@@ -658,7 +581,7 @@ const presentAlert = () => {
       message: 'Escriba el motivo de la cancelación',
       buttons: alertButtons,
       inputs: [
-        { label: 'Motivo', type: 'text', name: 'reason', placeholder: 'Motivo', value: reason.value },
+        { label: 'Motivo', type: 'text', name: 'reason', placeholder: 'Motivo', value: cancelationReason.value },
       ],
       
     })

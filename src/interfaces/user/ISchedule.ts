@@ -3,7 +3,7 @@ import { Slot } from "../Ischedule";
 
 export interface ISchedule {
  docId?: string;
- docRef?: string;
+ docRef: DocumentReference;
 createdAt: Timestamp;
 DayName: string;
 expertName: string;
@@ -15,9 +15,10 @@ userName: string;
 userUid: string;
 appointmentLink: string;
 isFinished: boolean;
-isCancelled?: boolean;
+isCanceled?: boolean;
 cancelationReason?:string;
 canceledAt?:Timestamp;
 canceledByName?:string;
 canceledByUid?:string;
+finishedAt?:Timestamp;
 }

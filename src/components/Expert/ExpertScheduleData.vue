@@ -21,10 +21,10 @@
             <span class="admin-time">{{ formattedTime }} hrs</span>
           </div>
         </div>
-        <div class="admin-status" :class="{finished: props.data.isFinished, cancel: props.data.isCancelled, pending: !props.data.isFinished && !props.data.isCancelled}">
-         <p v-if="!props.data.isFinished && !props.data.isCancelled" class="">Pendiente</p>
+        <div class="admin-status" :class="{finished: props.data.isFinished, cancel: props.data.isCanceled, pending: !props.data.isFinished && !props.data.isCanceled}">
+         <p v-if="!props.data.isFinished && !props.data.isCanceled" class="">Pendiente</p>
          <p v-if="props.data.isFinished" class="finished">Finalizada</p>
-         <p v-if="props.data.isCancelled" class="cancel">Cancelada</p>
+         <p v-if="props.data.isCanceled" class="cancel">Cancelada</p>
         </div>
       </div>
       <ion-ripple-effect type="unbounded" class="admin-ripple"></ion-ripple-effect>
@@ -67,6 +67,7 @@
             <p v-else class="admin-grid-value pending">En proceso...</p>
           </div>
         </div>
+        
       </div>
 
       <!-- Sección de información del experto -->
@@ -78,15 +79,87 @@
             <p class="admin-grid-label">Cédula:</p>
             <p class="admin-grid-value">{{ props.data.expertProfessionalId }}</p>
           </div>
-          <div class="admin-grid-item">
-            <v-icon name="fa-check-circle" class="admin-grid-icon" :class="{ '!text-green-600': props.data.isFinished, '!text-red-600': props.data.isCancelled, '!text-yellow-600': !props.data.isFinished && !props.data.isCancelled }" />
-            <p class="admin-grid-label">Status:</p>
-            <p v-if="props.data.isFinished" class="admin-grid-value finished text-green-600">Finalizada</p>
-            <p v-if="props.data.isCancelled" class="admin-grid-value cancel !text-red-600">Cancelada</p>
-            <p v-if="!props.data.isFinished && !props.data.isCancelled" class="admin-grid-value pending text-yellow-600">Pendiente</p>
-          </div>
+    
         </div>
       </div>
+       <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 "
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="hi-solid-information-circle" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Status de la cita:</p>
+            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
+              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}</p>
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+
+
+
+
+        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="md-freecancellation-twotone" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Motivo de cancelación:</p>
+            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
+              {{ props.data.cancelationReason }}
+            </p>
+            
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+        <article v-if="props.data.isCanceled " class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="fa-user" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Cancelado por:</p>
+            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
+              {{ props.data.canceledByName}}
+            </p>
+
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+
+        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="fa-calendar-check" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Fecha de cancelación:</p>
+            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
+              {{ new Date(props.data.canceledAt!.toDate()).toLocaleString('es-MX', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
+            </p>
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
 
       <!-- Footer con fecha de creación -->
       <div class="admin-modal-footer">
@@ -95,8 +168,8 @@
 
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
-        <button class="admin-action-button edit !text-xs" v-if="!props.data.isCancelled" @click="markFunction('notFinish')">No finalizada</button>
-        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCancelled" @click="markFunction('cancel')">Cancelar Cita</button>
+        <button class="admin-action-button edit !text-xs" v-if="!props.data.isCanceled" @click="markFunction('notFinish')">No finalizada</button>
+        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled" @click="markFunction('cancel')">Cancelar Cita</button>
         <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished" @click="markFunction('finish')">Finalizar Cita</button>
       </div>
     </div>
@@ -105,7 +178,7 @@
  <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { IonRippleEffect } from '@ionic/vue';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
 import { writeBatch } from 'firebase/firestore';
 
@@ -285,51 +358,38 @@ const toggleView = () => {
 }
 
 const db = getFirestore();
-const expertsCollection = collection(db, `experts/${props.data.expertUid}/schedule`);
-const usersCollection = collection(db, `users/${props.data.userUid}/schedule`);
-
-const expertQuery = query(expertsCollection, where('userUid', '==', props.data.userUid));
-const userQuery = query(usersCollection, where('expertUid', '==', props.data.expertUid));
-
 const emit = defineEmits(['reloadData']);
 
 
 const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish') => {
   try {
-    const [expertSnapshot, userSnapshot] = await Promise.all([
-      getDocs(expertQuery),
-      getDocs(userQuery),
-    ]);
+ 
+    const docRef = doc(db, `schedules/${props.data.docId}`)
+    const docSnapshot = await getDoc(docRef)
 
-    if (expertSnapshot.empty || userSnapshot.empty) {
-      console.log('No se encontraron documentos');
-      return;
-    }
-
-    // ⚠️ Assumes exactly ONE matching doc per side
-    const expertDoc = expertSnapshot.docs[0];
-    const userDoc = userSnapshot.docs[0];
-
-    const batch = writeBatch(db);
-
+    if(!docSnapshot.exists()){
+      console.log('No se encontró el documento');
+    } 
+    console.log(JSON.stringify(docSnapshot.data()));
     // Default state
     const updateData = {
       isFinished: false,
-      isCancelled: false,
+      isCanceled: false,
+      finishedAt: null as Timestamp | null,
+      canceledAt: null as Timestamp | null,
     };
 
     if (mode === 'finish') {
       updateData.isFinished = true;
+      updateData.finishedAt = Timestamp.now();
     }
 
     if (mode === 'cancel') {
-      updateData.isCancelled = true;
+      updateData.isCanceled = true;
+      updateData.canceledAt = Timestamp.now();
     }
 
-    batch.update(expertDoc.ref, updateData);
-    batch.update(userDoc.ref, updateData);
-
-    await batch.commit(); // 🔒 atomic write
+   await updateDoc(docRef, updateData);
 
     emit('reloadData');
     console.log('Documentos actualizados correctamente');
