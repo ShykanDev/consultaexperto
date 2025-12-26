@@ -1,231 +1,260 @@
 <template>
-    <ion-page>
-      <ion-header >
-        <ion-toolbar class="flex w-full ">
-          <div class="flex items-center px-2">
-          <article @click="router.back()"  class="flex items-center cursor-pointer">
-            <span class="flex items-center py-1 font-semibold text-sky-600 font-quicksand">
-              <v-icon name="md-arrowbackiosnew-round" class="animate-fade-left" /> 
-              <span class="text-base animate-fade-left animate-delay-100">atras</span>
-            </span>
-          </article>
-          
+  <ion-page>
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button @click="router.back()">
+            <ion-icon :icon="chevronBackOutline" slot="start"></ion-icon>
+            Atrás
+          </ion-button>
+        </ion-buttons>
+        <ion-title class="font-bold">Mi Cuenta</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-          <ion-title class="text-base font-bold text-blue-500 font-quicksand">Mi Cuenta</ion-title>
-
-        </div>
-        </ion-toolbar>
-      </ion-header>
-  
-      <ion-content class="bg-gray-50 ion-padding">
-        <!-- Sección de perfil -->
-        <div class="flex flex-col items-center my-6">
-          <div class="flex justify-center items-center mb-4 w-20 h-20 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full shadow-lg">
-            <span class="text-2xl font-bold text-white">{{ authStorePinia().getUserName?.charAt(0).toUpperCase() }}</span>
-          </div>
-          <h2 class="mb-1 text-xl font-bold text-gray-800">{{ authStorePinia().getUserName }}</h2>
-          <p class="text-sm text-gray-500">{{ authStorePinia().getUserEmail }}</p>
-        </div>
-  
-        <!-- Logout -->
-        <div @click="handleLogout" class="p-4 mb-6 bg-white rounded-xl border border-rose-200 shadow-sm hover:border-rose-500 hover:cursor-pointer active:bg-rose-500 active:text-white active:scale-[.98] transition-all duration-[30ms]">
-          <div class="flex justify-between items-center">
-            <div class="flex items-center">
-              <ion-icon :icon="logOutOutline" class="mr-3 text-xl text-red-500"></ion-icon>
-              <div>
-                <div class="font-medium text-gray-800">Cerrar sesión</div>
-                <p class="mt-1 text-xs text-gray-500">Salir de tu cuenta actual</p>
-              </div>
+    <ion-content color="light">
+      <!-- Perfil Header -->
+      <div class="flex flex-col items-center pt-8 pb-6">
+        <div class="relative w-24 h-24 mb-3">
+          <div class="w-full h-full rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-[2px] shadow-md">
+            <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+              <span v-if="authStorePinia().getUserName" class="text-3xl font-bold text-gray-700">
+                {{ authStorePinia().getUserName?.charAt(0).toUpperCase() }}
+              </span>
+              <ion-icon v-else :icon="personCircleOutline" class="text-6xl text-gray-300"></ion-icon>
             </div>
           </div>
         </div>
-  
-        <!-- Recuperar contraseña -->
-        <div class="p-5 space-y-4 bg-white rounded-xl shadow-sm">
-          <div class="text-center">
-            <div class="flex justify-center items-center mx-auto mb-3 w-12 h-12 bg-indigo-100 rounded-full">
-              <ion-icon :icon="keyOutline" class="text-xl text-indigo-500"></ion-icon>
-            </div>
-            <h2 class="text-lg font-bold text-gray-800">Recuperar contraseña</h2>
-            <p class="mt-1 text-sm text-gray-600">Ingresa tu correo para recibir un enlace</p>
-          </div>
-  
-          <ion-item lines="none" class="bg-gray-50 rounded-lg">
-            <ion-icon :icon="mailOutline" slot="start" class="text-gray-400"></ion-icon>
+        <h2 class="text-xl font-bold text-gray-900">{{ authStorePinia().getUserName || 'Usuario' }}</h2>
+        <p class="text-sm text-gray-500 font-medium">{{ authStorePinia().getUserEmail }}</p>
+      </div>
 
-      <ion-input v-model="email" label="Correo electrónico" label-placement="floating" placeholder="Enter text"></ion-input>
-          </ion-item>
-  
+      <!-- Sección Seguridad -->
+      <ion-list :inset="true" class="rounded-xl overflow-hidden shadow-sm">
+        <ion-list-header>
+          <ion-label class="text-sm font-semibold text-gray-500 uppercase tracking-wider pl-4 mb-1">Seguridad</ion-label>
+        </ion-list-header>
+        
+        <ion-item lines="full">
+          <ion-icon :icon="lockClosedOutline" slot="start" class="text-indigo-500"></ion-icon>
+          <ion-input 
+            v-model="email" 
+            label="Recuperar contraseña" 
+            label-placement="stacked"
+            placeholder="ejemplo@correo.com"
+            type="email"
+            @ionInput="validateEmailInput"
+            @ionBlur="markTouched"
+            class="custom-input"
+          ></ion-input>
+        </ion-item>
+        
+        <div v-if="emailError && isTouched" class="px-5 pt-1 pb-2 text-xs text-red-500 animate-fade-in">
+           {{ emailError }}
+        </div>
+
+        <div class="p-3 bg-white">
           <ion-button 
             expand="block" 
-            shape="round" 
-            color="primary" 
+            color="primary"
+            :disabled="!isValidForm || isLoading"
             @click="handlePasswordReset"
-            class="font-medium"
+            class="h-12 font-semibold shadow-none"
+            style="--border-radius: 10px;"
           >
-            Enviar correo de recuperación
+            <span v-if="!isLoading">Enviar enlace de recuperación</span>
+            <ion-spinner v-else name="crescent"></ion-spinner>
           </ion-button>
         </div>
-      </ion-content>
-    </ion-page>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from 'vue';
-  import { 
-    IonPage, 
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
-    IonContent, 
-    IonButton, 
-    IonInput, 
-    IonItem, 
-    IonLabel,
-    IonIcon,
-    onIonViewDidLeave,
-    onIonViewDidEnter
-    
-  } from '@ionic/vue';
-  import { 
-    logOutOutline, 
-    mailOutline, 
-    keyOutline 
-  } from 'ionicons/icons';
-  
+      </ion-list>
 
- 
-  import { signOut, sendPasswordResetEmail } from 'firebase/auth';
+      <!-- Sección Legal -->
+      <ion-list :inset="true" class="mt-6 rounded-xl overflow-hidden shadow-sm">
+        <ion-list-header>
+          <ion-label class="text-sm font-semibold text-gray-500 uppercase tracking-wider pl-4 mb-1">Legal</ion-label>
+        </ion-list-header>
+
+        <ion-item button :detail="true" @click="openModal('privacy')">
+          <ion-icon :icon="shieldCheckmarkOutline" slot="start" class="text-emerald-500"></ion-icon>
+          <ion-label class="font-medium text-gray-700">Política de Privacidad</ion-label>
+        </ion-item>
+        
+        <ion-item button :detail="true" lines="none" @click="openModal('terms')">
+          <ion-icon :icon="documentTextOutline" slot="start" class="text-blue-500"></ion-icon>
+          <ion-label class="font-medium text-gray-700">Términos y Condiciones</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!-- Sección Cerrar Sesión -->
+      <ion-list :inset="true" class="mt-6 mb-12 rounded-xl overflow-hidden shadow-sm">
+        <ion-item button @click="handleLogout" lines="none" :detail="false">
+          <ion-label color="danger" class="text-center font-semibold text-lg">Cerrar Sesión</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!-- Modal Informativo -->
+      <ion-modal :is-open="isModalOpen" @didDismiss="closeModal" :initial-breakpoint="0.75" :breakpoints="[0, 0.75, 1]">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>{{ modalTitle }}</ion-title>
+            <ion-buttons slot="end">
+              <ion-button @click="closeModal" color="primary" class="font-bold">Listo</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <div class="prose max-w-none px-2 pb-10 text-gray-600 leading-relaxed whitespace-pre-line">
+            {{ modalContent }}
+          </div>
+        </ion-content>
+      </ion-modal>
+
+    </ion-content>
+  </ion-page>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { 
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, 
+  IonButton, IonInput, IonItem, IonIcon, IonList, IonListHeader, 
+  IonLabel, IonButtons, IonSpinner, IonModal
+} from '@ionic/vue';
+import { 
+  chevronBackOutline, personCircleOutline, 
+  lockClosedOutline, shieldCheckmarkOutline, documentTextOutline 
+} from 'ionicons/icons';
+import { signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import { authStore as authStorePinia } from '@/store/auth';
 import { auth as authFirebase } from '@/main';
-  const router = useRouter();
-  const authStore = authStorePinia();
-  const email = ref('');
-  const isLoading = ref(false);
-  const errorMessage = ref('');
 
-  const auth = authFirebase;
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      authStore.setLogout();
-      window.location.reload();
-      router.push('/tabs/tab1');
-    } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      errorMessage.value = 'Ocurrió un error al cerrar sesión';
-    }
-  };
-  
-  const handlePasswordReset = async () => {
-    if (!email.value) {
-      errorMessage.value = 'Por favor ingresa tu correo electrónico';
-      return;
-    }
+const router = useRouter();
+const authStore = authStorePinia();
+const auth = authFirebase;
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      errorMessage.value = 'Por favor ingresa un correo electrónico válido';
-      return;
-    }
+// State
+const email = ref('');
+const isLoading = ref(false);
+const isTouched = ref(false);
+const emailError = ref('');
+const isModalOpen = ref(false);
+const modalTitle = ref('');
+const modalContent = ref('');
 
-    try {
-      isLoading.value = true;
-      errorMessage.value = '';
-      await sendPasswordResetEmail(auth, email.value);
-      // Mostrar mensaje de éxito
-      alert('Se ha enviado un correo para restablecer tu contraseña. Por favor revisa tu bandeja de entrada.');
-      email.value = '';
-    } catch (error) {
-      console.error('Error al enviar correo de recuperación:', error);
-      errorMessage.value = 'Error al enviar el correo de recuperación. Intenta de nuevo más tarde.';
-    } finally {
-      isLoading.value = false;
-    }
-  };
+// Validation logic
+const isValidEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const names = [
-  [
-    '<span class="animate-fade-down animate-duration-300 animate-delay-100">consulta</span>' +
-    '<span class="text-cyan-700 animate-fade animate-duration-300 animate-delay-200">gratis</span>' +
-    '<span class="animate-fade animate-duration-300 animate-delay-300">en</span>' +
-    '<span class="animate-fade animate-duration-300 animate-delay-500">linea</span>' +
-    '<span class="text-cyan-500 animate-fade animate-duration-300 animate-delay-500">.com</span>'
-  ],
-  [
-    '<span class="animate-fade animate-duration-300 animate-delay-100">consulta</span>' +
-    '<span class="text-cyan-700 animate-fade animate-duration-300 animate-delay-200">experto</span>' +
-    '<span class="text-cyan-500 animate-fade animate-duration-300 animate-delay-300">.com</span>'
-  ],
-  [
-    '<span class="animate-fade-down animate-delay-100">consulta</span>' +
-    '<span class="text-cyan-700 animate-fade animate-delay-200">especializada</span>' +
-    '<span class="text-cyan-500 animate-fade animate-delay-300">.com</span>'
-  ]
-];
-
-let timeoutId: NodeJS.Timeout | null = null;
-const currentName = ref<string[]>(names[0]);
- const animateNames = () => {
-  timeoutId = setInterval(() => {
-    const randomIndex = Math.floor(Math.random() * names.length);
-    currentName.value = names[randomIndex];
-  }, 2000);
-  
- }
-
-
-
-onIonViewDidLeave(() => {
-  if(timeoutId){
-    clearInterval(timeoutId);
-    timeoutId = null;
+const validateEmailInput = () => {
+  if (!email.value) {
+    emailError.value = 'El correo es obligatorio';
+  } else if (!isValidEmailRegex.test(email.value)) {
+    emailError.value = 'Ingresa un correo válido';
+  } else {
+    emailError.value = '';
   }
-})
-  </script>
-  
-  <style scoped>
-  /* Estilos específicos para los inputs */
-  :deep(.input-focus) {
-    --highlight-color-focused: #6366f1;
-    --border-color: #e2e8f0;
-    --border-radius: 12px;
-    --padding-start: 8px;
-    --padding-end: 8px;
+};
+
+const markTouched = () => {
+  isTouched.value = true;
+  validateEmailInput();
+};
+
+const isValidForm = computed(() => {
+  return email.value && !emailError.value && isValidEmailRegex.test(email.value);
+});
+
+// Actions
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    authStore.setLogout();
+    window.location.reload();
+    router.push('/tabs/tab1');
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
   }
-  
-  :deep(.input-focus.ion-focused) {
-    --border-color: #a5b4fc;
-    --box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+};
+
+const handlePasswordReset = async () => {
+  if (!isValidForm.value) {
+    isTouched.value = true;
+    validateEmailInput();
+    return;
   }
-  
-  /* Asegurar que el ion-content ocupe todo el espacio */
-  ion-content {
-    --background: #f9fafb;
+
+  try {
+    isLoading.value = true;
+    await sendPasswordResetEmail(auth, email.value);
+    // Usar alerta nativa o toast sería mejor, pero por simplicidad:
+    alert('Se ha enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada.');
+    email.value = '';
+    isTouched.value = false;
+  } catch (error) {
+    console.error('Error al enviar correo:', error);
+    alert('Error enviando el correo. Verifica que la cuenta exista.');
+  } finally {
+    isLoading.value = false;
   }
-  
-  /* Estilos para el ion-item */
-  ion-item {
-    --background: #f8fafc;
-    --border-radius: 12px;
-    --padding-start: 12px;
-    --padding-end: 12px;
-    margin-bottom: 16px;
+};
+
+// Legal Content Management
+const openModal = (type: 'privacy' | 'terms') => {
+  if (type === 'privacy') {
+    modalTitle.value = 'Política de Privacidad';
+    modalContent.value = `
+      **1. Recopilación de Información**
+      Recopilamos información personal que usted nos proporciona voluntariamente...
+      
+      **2. Uso de la Información**
+      Usamos su información para proporcionar y mejorar nuestros servicios...
+      
+      **3. Seguridad**
+      Implementamos medidas de seguridad para proteger sus datos...
+      
+      (Este es un texto de ejemplo. Aquí iría la política real de la empresa.)
+    `;
+  } else {
+    modalTitle.value = 'Términos y Condiciones';
+    modalContent.value = `
+      **1. Aceptación de los Términos**
+      Al descargar o utilizar la aplicación, estos términos se aplicarán automáticamente...
+      
+      **2. Uso de la Aplicación**
+      Usted se compromete a utilizar la aplicación solo para fines legales...
+      
+      **3. Limitación de Responsabilidad**
+      No seremos responsables de daños directos o indirectos...
+      
+      (Este es un texto de ejemplo. Aquí irían los términos reales de la empresa.)
+    `;
   }
-  
-  /* Estilos para el botón de envío */
-  ion-button {
-    --border-radius: 12px;
-    --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --padding-top: 16px;
-    --padding-bottom: 16px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0;
-  }
-  
-  /* Ajustes para el icono dentro del botón */
-  ion-button ion-icon {
-    margin-right: 8px;
-  }
-  </style>
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+</script>
+
+<style scoped>
+ion-list {
+  background: transparent;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+ion-item {
+  --background: #ffffff;
+}
+
+/* iOS Style Animation for Error */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

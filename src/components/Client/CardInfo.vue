@@ -231,7 +231,7 @@
         <ion-button mode="ios" color="danger" style="text-transform: none;" @click="presentAlert">Cancelar Cita</ion-button>
 
 
-        <ion-button mode="ios" color="primary" style="text-transform: none;">Marcar como finalizada</ion-button>
+        <ion-button mode="ios" color="primary" style="text-transform: none;" @click="finaliceAppointment">Marcar como finalizada</ion-button>
       </div>
       <div class="w-full flex justify-center mt-2 items-center">
         <span class="text-center font-poppins text-sm  text-gray-500">Creada el {{
@@ -343,6 +343,7 @@ const experts = ref([
   }
 ]);
 
+const emit = defineEmits(['reload']);
 
 const getLightBackgroundColor = (specialty: string): string => {
   const expert = experts.value.find((expert) => expert.specialty.toLowerCase().trim() === specialty.toLowerCase().trim());
@@ -540,14 +541,26 @@ const cancelAppointment = async () => {
     await batch.commit();
 
     console.log('Appointment canceled successfully');
+    emit('reload');
     return true;
 
 
   } catch (error) {
     console.error('Error in batch function:', error);
+    emit('reload');
     return false;
   }
 };
+
+const finaliceAppointment = async () => {
+    await updateDoc(doc(db, `schedules/${props.data.docId}`), {
+      isFinished: true,
+      finishedAt: Timestamp.now(),
+      finishedByUid: authStore().getUserUid || '',
+      finishedByName: authStore().getUserName || ''
+    })
+    emit('reload');
+}
 
 const cancelationReason = ref('');
 

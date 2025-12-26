@@ -101,8 +101,26 @@ const routes: Array<RouteRecordRaw> = [
   }
 },
   {
-    path:'/expert',
-    component: () => import('@/views/expert/ExpertView.vue'),
+    path: '/expert',
+    component: () => import('@/views/expert/ExpertTabs.vue'),
+    children: [
+      {
+        path: '',
+        redirect: '/expert/appointments',
+      },
+      {
+        path: 'appointments',
+        component: () => import('@/views/expert/ExpertView.vue'),
+      },
+      {
+        path: 'profile',
+        component: () => import('@/views/expert/ExpertProfileView.vue'),
+      },
+      {
+        path: 'logout',
+        component: () => import('@/views/LogoutView.vue'),
+      }
+    ],
     meta:{
       requiresAuth: true
     }

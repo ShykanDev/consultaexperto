@@ -369,7 +369,7 @@ if(userHasSlotsTaken.value){
 
     presentToast('top', 'Se ha agendado su cita con exito, se ha enviado un correo con los detalles de la cita', 'success');
     setTimeout(() => {
-      routerIon.navigate('/tabs/tab1', 'back', 'replace');
+      routerIon.navigate('/tabs/expert-list-modern', 'back', 'replace');
     }, 1500);
     savingChanges.value = false;
   } catch (error) { 

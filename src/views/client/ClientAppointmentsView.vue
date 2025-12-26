@@ -32,7 +32,7 @@
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" />
+              <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
@@ -45,7 +45,7 @@
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo v-if="appointment.isFinished" :data="appointment" />
+              <CardInfo @reload="getUserAppointments()" v-if="appointment.isFinished" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
@@ -58,7 +58,7 @@
           </div>
           <div v-else class="flex flex-col gap-4 py-7 bg-gray-100 ion-padding min-h-dvh">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="flex flex-col gap-5 px-2">
-              <CardInfo v-if="appointment.isCanceled" :data="appointment" />
+              <CardInfo @reload="getUserAppointments()" v-if="appointment.isCanceled" :data="appointment" />
             </div>
           </div>
         </ion-segment-content>
