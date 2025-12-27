@@ -553,13 +553,62 @@ const cancelAppointment = async () => {
 };
 
 const finaliceAppointment = async () => {
-    await updateDoc(doc(db, `schedules/${props.data.docId}`), {
+
+
+  try {
+     const batch = writeBatch(db);
+    //Step 1: Update the expert schedule and clear the user data
+
+    //Expert Firebase Data
+    const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
+    const snap = await getDoc(expertDocRef);
+
+    //Return if slot doesnt exist
+    if(!snap.exists()){
+      console.log('Could not find the expert document');
+      return false;
+    }
+
+    //Expert Schedule Slot Data
+      const expertData = snap.data().schedule as IUserSchedule;      
+      console.log(`Expert Data: ${JSON.stringify(expertData)}`);
+    //Matching day from props and fetched data (E.g: Lunes)
+      console.log(`Formatted Day: ${normalizeText(formattedDay.value)}`);
+     
+      const matchDay = Object.keys(expertData).find(d => normalizeText(d) == normalizeText(formattedDay.value));
+      console.log(`Match Day: ${matchDay}`);
+    //Matching expert slot finding it using maching Day 
+      const expertScheduleSlot = expertData[matchDay as keyof IUserSchedule]
+      console.log(`Expert Schedule Slot: ${expertScheduleSlot}`);
+      const slotMatch = expertScheduleSlot?.find(e => e.takenBy == props.data.userUid); //returns the specifyc slot with matching data
+      console.log(`Slot Match: ${slotMatch}`);
+
+      //Return if slot can´t be found 
+      if(!slotMatch){
+        console.log(`Could not find the expert slot for this appointment`);
+        return false;
+      }
+
+      //Updating the slot values to null (canceling the appointment)
+      slotMatch.takenBy = null;
+      slotMatch.takenAt = null
+      //Ready to batch expert data firebase (BatchA1)
+
+      batch.update(expertDocRef, { schedule: expertData });
+
+      batch.update(doc(db, `schedules/${props.data.docId}`), {
       isFinished: true,
       finishedAt: Timestamp.now(),
       finishedByUid: authStore().getUserUid || '',
       finishedByName: authStore().getUserName || ''
     })
+    
+    await batch.commit();
     emit('reload');
+  } catch (error) {
+    console.error('Error finalizando la cita:', error);
+    emit('reload');
+  }
 }
 
 const cancelationReason = ref('');

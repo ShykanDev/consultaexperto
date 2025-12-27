@@ -12,7 +12,12 @@ export default defineConfig({
     vue(),
     legacy(),
     VueDevTools({
-      launchEditor: path.resolve(__dirname, "./scripts/agy-wrapper.sh"),
+      launchEditor: path.resolve(
+        __dirname,
+        process.platform === "win32"
+          ? "./scripts/agy.cmd"
+          : "./scripts/agy-wrapper.sh"
+      ),
     }),
   ],
   resolve: {
