@@ -417,17 +417,52 @@ const sendTestEmail = async () => {
     // Calcular la fecha correcta de la cita
     const appointmentDate = calculateAppointmentDate(dayName);
 
-    emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
-    userName: authStore().getUserName ?? 'Usuario',
-    expertName: expertUiStore.getCurrentExpert.fullName,
-    expertSpecialty: expertUiStore.getCurrentExpert.specialty,
-    expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
-    time: slotSelected.value.time, // ✅ Solo enviar el string del tiempo
-    dayName: dayName,
-    email: authStore().getUserEmail,
-    dateCreated: new Date(Timestamp.now().toDate()).toDateString(),
-    appointmentDate: appointmentDate.toDateString(), // Fecha calculada de la cita
-  })
+emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
+  // Header
+  headerTitle: 'ConsultaExperto.com',
+  greeting: 'Buen día',
+  userName: authStore().getUserName ?? 'Usuario',
+  headerDescription: 'Detalles de su cita profesional',
+
+  // Section 1 – Información del usuario
+  section1Icon: '👤',
+  section1Title: 'Información del usuario',
+  section1TitleColor: '#007aff',
+  section1Item1Label: 'Nombre:',
+  section1Item1Value: authStore().getUserName ?? 'Usuario',
+  section1Item2Label: 'Servicio:',
+  section1Item2Value: expertUiStore.getCurrentExpert.specialty,
+
+  // Section 2 – Detalles de la cita
+  section2Icon: '📅',
+  section2Title: 'Detalles de la cita',
+  section2TitleColor: '#34c759',
+  section2Subtitle1: 'Fecha y hora',
+  section2Value1: `${dayName} • ${slotSelected.value.time}hrs`,
+  section2Subtitle2: 'Agendado por',
+  section2Value2: authStore().getUserName ?? 'Usuario',
+  section2HighlightLabel: 'Enlace:',
+  section2HighlightText: 'El acceso se habilitará minutos antes de la cita',
+
+  // Section 3 – Datos del experto
+  section3Icon: '🩺',
+  section3Title: 'Datos del experto',
+  section3TitleColor: '#8e8e93',
+  section3Item1Label: 'Cédula',
+  section3Item1Value: expertUiStore.getCurrentExpert.professionalId,
+  section3Item2Label: 'Fecha de creación de la cita',
+  section3Item2Value: new Date(Timestamp.now().toDate()).toLocaleDateString(),
+
+  // Footer
+  footerYear: new Date().getFullYear(),
+  footerLinkUrl: 'https://consultaexperto.com',
+  footerLinkText: 'consultaexperto.com',
+  footerRightsText: 'Todos los derechos reservados.',
+
+  // Email destino (EmailJS lo necesita aunque no esté en el template)
+  email: authStore().getUserEmail,
+});
+
 }
 catch (error) {
   console.log(error);

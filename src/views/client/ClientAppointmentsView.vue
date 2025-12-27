@@ -34,9 +34,9 @@
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Próximas citas</p>  
             <ion-spinner v-show="isLoading" ></ion-spinner>
           </div>
-          <ion-content v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCanceled)" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCanceled)" class="flex justify-center items-center w-full h-full">
             No tiene citas futuras
-          </ion-content>
+          </div>
           <ion-content class="ion-padding" v-else >
             <div v-for="(appointment, index) in userAppointments" :key="index" class="my-2">
               <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" />
@@ -48,9 +48,9 @@
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Citas finalizadas </p> 
             <ion-spinner v-show="isLoading"></ion-spinner>
           </div>
-          <ion-content v-if="userAppointments.every(appointment => !appointment.isFinished)" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => !appointment.isFinished)" class="flex justify-center items-center w-full h-full">
             No tiene citas finalizadas
-          </ion-content>
+          </div>
           <ion-content class="ion-padding " v-else>
             <div v-for="(appointment, index) in userAppointments" :key="index" class="my-2">
               <CardInfo @reload="getUserAppointments()" v-if="appointment.isFinished" :data="appointment" />
@@ -62,9 +62,9 @@
             <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Citas canceladas </p> 
             <ion-spinner v-show="isLoading"></ion-spinner>
           </div>
-          <ion-content v-if="userAppointments.every(appointment => !appointment.isCanceled)" class="flex justify-center items-center h-full">
+          <div v-if="userAppointments.every(appointment => !appointment.isCanceled)" class="flex justify-center items-center w-full h-full">
             No tiene citas canceladas
-          </ion-content>
+          </div>
           <ion-content v-else class="ion-padding ">
             <div v-for="(appointment, index) in userAppointments" :key="index" class="my-2">
               <CardInfo @reload="getUserAppointments()" v-if="appointment.isCanceled" :data="appointment" />

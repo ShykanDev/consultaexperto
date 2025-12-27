@@ -21,7 +21,7 @@
           <span class="text-gray-600 font-quicksand text-sm font-medium">Agendada para el:
             {{ formattedDate }}
           </span>
-          <span class="text-gray-600 font-quicksand text-sm font-medium">
+          <span class="text-gray-600 font-quicksand text-sm font-medium">a las:
             {{ formattedTime }} hrs
           </span>
             <span class="text-gray-500 font-quicksand text-sm font-semibold ">Fecha de creación:
@@ -275,7 +275,9 @@ import { authStore } from '@/store/auth';
 import { alertController, IonRippleEffect } from '@ionic/vue';
 import { IonButton } from '@ionic/vue';
 import { collection, doc, getDoc, getFirestore, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
-import { computed, ref, Slot } from 'vue';
+import { computed, onMounted, ref, Slot } from 'vue';
+import emailjs from '@emailjs/browser';
+
 const experts = ref([
   {
     specialty: "Importación y Exportación",
@@ -469,6 +471,69 @@ const formattedDay = computed(() => {
 
 const view = ref<'card' | 'modal'>('card');
 
+onMounted(() => {
+  // Inicializar EmailJS
+  emailjs.init({
+    blockHeadless: true,
+    publicKey: '8uRc3wp2ZXACkO_Eb',
+  })
+})
+
+
+const sendEmail = async(cancelTime: Timestamp) => {
+  try {
+    const dayName = (props.data as any).DayName || (props.data as any).dayName || formattedDay.value || 'Día desconocido';
+    
+    emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
+      // Header
+      headerTitle: 'ConsultaExperto.com',
+      greeting: 'Se ha cancelado su cita',
+      userName: props.data.userName,
+      headerDescription: 'Confirmación de cancelación de cita',
+
+      // Section 1 – Usuario
+      section1Icon: '👤',
+      section1Title: 'Información del usuario',
+      section1TitleColor: '#007aff',
+      section1Item1Label: 'Nombre:',
+      section1Item1Value: props.data.userName,
+      section1Item2Label: 'Servicio:',
+      section1Item2Value: props.data.expertSpecialty,
+
+      // Section 2 – Detalles de la cita cancelada
+      section2Icon: '📅',
+      section2Title: 'Cita cancelada',
+      section2TitleColor: '#ff3b30',
+      section2Subtitle1: 'Cita programada para',
+      section2Value1: `• ${calculatedAppointmentDate.value?.toLocaleString('es-MX', {dateStyle: 'full'} )} a las ${formattedTime.value}hrs`,
+      section2Subtitle2: 'Cancelada el',
+      section2Value2: cancelTime.toDate().toLocaleString('es-MX', {dateStyle: 'full', timeStyle: 'long'}),
+      section2HighlightLabel: 'Cancelada por:',
+      section2HighlightText: `${authStore().getUserName},  con motivo: ${cancelationReason.value || 'Motivo no proporcionado'}`,
+
+      // Section 3 – Experto
+      section3Icon: '🩺',
+      section3Title: 'Datos del experto',
+      section3TitleColor: '#8e8e93',
+      section3Item1Label: 'Nombre',
+      section3Item1Value: props.data.expertName,
+      section3Item2Label: 'Cédula',
+      section3Item2Value: props.data.expertProfessionalId,
+
+      // Footer
+      footerYear: new Date().getFullYear(),
+      footerLinkUrl: 'https://consultaexperto.com',
+      footerLinkText: 'consultaexperto.com',
+      footerRightsText: 'Todos los derechos reservados.',
+
+      email: authStore().getUserEmail,
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const toggleView = () => {
   view.value = view.value === 'card' ? 'modal' : 'card';
 }
@@ -509,7 +574,7 @@ const normalizeText = (text: string) =>
 const cancelAppointment = async () => {
 
   try {
-
+   const cancellationTime = Timestamp.now();
    //Step 1: Update the expert schedule and clear the user data
 
     //Expert Firebase Data
@@ -573,12 +638,12 @@ const cancelAppointment = async () => {
     batch.update(doc(db, `schedules/${props.data.docId}`), {
       isCanceled: true,
       cancelationReason: cancelationReason.value,
-      canceledAt: Timestamp.now(),
+      canceledAt: cancellationTime,
       canceledByUid: authStore().getUserUid || '',
       canceledByName: authStore().getUserName || ''
     })
-
     await batch.commit();
+    await sendEmail(cancellationTime);
 
     console.log('Appointment canceled successfully');
     emit('reload');
