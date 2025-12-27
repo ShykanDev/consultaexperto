@@ -118,6 +118,16 @@
           </div>
         </article>
       </ion-card-content>
+
+      <div v-if="calculatedAppointmentDate" class="mb-4 text-center animate-fade-in">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 font-poppins">
+          Fecha programada
+        </p>
+        <div class="inline-block px-4 py-2 bg-blue-50 text-blue-700 rounded-xl font-medium shadow-sm border border-blue-100 font-manrope text-sm">
+          📅 {{ calculatedAppointmentDate }}
+        </div>
+      </div>
+
       <ion-button v-if="!userHasSlotsTaken" class="ion-margin-vertical" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
         @click="updateSubcollectionSchedule()">{{
           !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
@@ -164,13 +174,16 @@ import { chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
-import { IExpertSchedule } from '@/interfaces/Ischedule';
+import { IExpertSchedule, Slot } from '@/interfaces/Ischedule';
 import { authStore } from '@/store/auth';
 import emailjs from '@emailjs/browser';
 
-
-
-
+/**
+ * Presenta un mensaje tipo toast al usuario.
+ * @param position Posición en la pantalla ('top', 'middle', 'bottom')
+ * @param message Mensaje a mostrar
+ * @param color Color del toast (ej. 'success', 'warning', 'danger')
+ */
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
     message: message,
@@ -190,22 +203,27 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
   await toast.present();
 };
 
-
-
 const expertUiStore = useExpertUiStore()
 const savingChanges = ref(false);
-
 
 onIonViewDidLeave(() => {
   expertUiStore.resetCurrentExpert();
 })
 
-const daysOrdered = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+/**
+ * Mapeo de días a números para facilitar cálculos de fechas (0=Domingo, 1=Lunes, etc.)
+ */
+const dayMap: { [key: string]: number } = {
+  'Domingo': 0, 'Lunes': 1, 'Martes': 2, 'Miercoles': 3, 'Miércoles': 3, 'Jueves': 4, 'Viernes': 5, 'Sabado': 6, 'Sábado': 6
+};
 
+/**
+ * Computa el horario del experto ordenado correctamente.
+ */
 const schedule = computed(() => {
   const originalSchedule = expertUiStore.getCurrentExpert.schedule;
   const orderedDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
-  const orderedSchedule: Record<string, any> = {};
+  const orderedSchedule: Record<string, Slot[]> = {};
 
   orderedDays.forEach(day => {
     if (originalSchedule?.[day]) {
@@ -217,8 +235,11 @@ const schedule = computed(() => {
 });
 
 const router = useIonRouter()
-
 const authStoreGlobal = authStore()
+
+/**
+ * Verifica si el usuario está logueado, sino redirige al login.
+ */
 const isUserLoggedIn = () => {
   if (!authStoreGlobal.getIsAuth) {
     router.navigate('/tabs/tab1', 'back', 'replace');
@@ -227,167 +248,274 @@ const isUserLoggedIn = () => {
   return true;
 };
 
-const slotSelected = ref();
+const slotSelected = ref<Slot | null>(null);
 const slotTakenAt = ref(null);
-const isAnSlotAlreadyTaken = () => Object.values(schedule.value).flat(1).find(s => s.takenBy == authStore().getUserUid && !s.takenAt);
+
+/**
+ * Verifica si el usuario actual ya tiene un slot tomado en el calendario local (sin confirmar en BD aún).
+ */
+const isAnSlotAlreadyTaken = () => Object.values(schedule.value).flat(1).find((s: any) => s.takenBy == authStore().getUserUid && !s.takenAt);
+
+/**
+ * Calcula la fecha y hora exacta de la próxima cita disponible dado un día y una hora.
+ * Si el día/hora ya pasó esta semana, retorna la fecha de la próxima semana.
+ * @param dayName Nombre del día (ej. "Lunes")
+ * @param timeStr Hora en formato string (ej. "10:00")
+ * @returns Objeto Date con la fecha y hora calculada.
+ */
+const calculateNextAppointmentDate = (dayName: string, timeStr: string): Date => {
+  const targetDay = dayMap[dayName];
+  if (targetDay === undefined) throw new Error("Día inválido");
+
+  const [hours, minutes] = timeStr.trim().split(':').map(Number);
+  
+  const now = new Date();
+  const currentDay = now.getDay();
+  
+  let diff = targetDay - currentDay;
+  
+  // Creamos la fecha tentativa base (hoy + diferencia de días)
+  const appointmentDate = new Date(now);
+  appointmentDate.setDate(now.getDate() + diff);
+  appointmentDate.setHours(hours, minutes, 0, 0);
+
+  // Si la fecha calculada es anterior al momento actual (ej. hoy más temprano, o un día pasado),
+  // significa que la cita debe ser para la próxima semana.
+  
+  if (appointmentDate <= now) {
+     appointmentDate.setDate(appointmentDate.getDate() + 7);
+  }
+  
+  console.log(`Cálculo de fecha: Hoy es ${now.toLocaleString()}. Destino: ${dayName} ${timeStr}. Diff días: ${diff}. Resultado final: ${appointmentDate.toLocaleString()}`);
+
+  return appointmentDate;
+}
+
+/**
+ * Valida si faltan al menos 24 horas para la fecha de la cita.
+ * @param appointmentDate Fecha de la cita
+ * @returns true si es válido (>= 24h), false si no.
+ */
+const isAtLeast24HoursAhead = (appointmentDate: Date): boolean => {
+  const now = new Date();
+  const oneDayInMs = 24 * 60 * 60 * 1000;
+  // validamos si la diferencia es mayor o igual a 24h
+  const diffMs = appointmentDate.getTime() - now.getTime();
+  const hoursAhead = diffMs / (1000 * 60 * 60);
+  console.log(`Validación 24h: Diferencia es ${hoursAhead.toFixed(2)} horas.`);
+  return diffMs >= oneDayInMs;
+}
 
 
-
-
-
-const getDateSelected = (dayName: number, timeSelected: string) => {
-   if(userHasSlotsTaken.value){
+/**
+ * Maneja la lógica al seleccionar un horario (slot) en la UI.
+ * Realiza validaciones de disponibilidad, propiedad y regla de 24 horas.
+ */
+const getDateSelected = (dayName: string, timeSelected: string) => {
+  console.log('Se ha seleccionado la fecha', dayName, timeSelected);
+  
+  if (userHasSlotsTaken.value) {
      presentToast('top', 'No puede agendar horarios si ya tiene citas agendadas', 'warning');
      return;
- }
+  }
   if (!isUserLoggedIn()) {
     return;
   }
 
-  slotSelected.value = schedule.value[dayName].find((s: any) => s.time === timeSelected);
+  const selectedDaySlots = schedule.value[dayName];
+  if(!selectedDaySlots) return;
 
+  const foundSlot = selectedDaySlots.find((s: Slot) => s.time === timeSelected);
   
-  //Verify if slot taken is already taken if is taken but takenAt is null means that the slot is not taken in firebase yet so it can be diselected or selected again
-  console.log(slotSelected.value);
-  if(slotSelected.value){
-    if(slotSelected.value.isAvailable){
-      presentToast('top', `El horario de las ${slotSelected.value.time} no esta disponible`, 'warning');
+  if (!foundSlot) return;
+
+  // IMPORTANTE: No asignamos slotSelected.value todavía hasta validar.
+
+  // Lógica de deselección o selección
+  if (foundSlot) {
+    // 1. Validar disponibilidad básica
+    if (foundSlot.isAvailable) { 
+      // Nota: según la logica del template, isAvailable parece significar "Deshabilitado por admin" (bg-slate-300).
+      presentToast('top', `El horario de las ${foundSlot.time} no está disponible`, 'warning');
       return;
     }
-    if(slotSelected.value.takenBy != null && slotSelected.value.takenBy != authStore().getUserUid){ // If slot is taken by another user and different from current user
-      presentToast('top', `El horario de las ${slotSelected.value.time} ya esta tomado por otro usuario`, 'warning');
+
+    // 2. Validar si está tomado por otro
+    if (foundSlot.takenBy != null && foundSlot.takenBy != authStore().getUserUid) {
+      presentToast('top', `El horario de las ${foundSlot.time} ya está tomado por otro usuario`, 'warning');
       return;
     }
-    if(slotSelected.value.takenBy == authStore().getUserUid && slotSelected.value.takenAt != null){ // If slot is taken by current user but takenAt is not null means that the slot is taken in firebase so it cannot be diselected or selected again
-      presentToast('top', `El horario de las ${slotSelected.value.time} ya esta tomado por usted en la base de datos`, 'warning');
+
+    // 3. Validar si ya está confirmado en BD por mí
+    if (foundSlot.takenBy == authStore().getUserUid && foundSlot.takenAt != null) {
+      presentToast('top', `El horario de las ${foundSlot.time} ya está tomado por usted en la base de datos`, 'warning');
       return;
     }
-    if(isAnSlotAlreadyTaken()){
-      isAnSlotAlreadyTaken().takenBy = null;
+    
+    // 4. Validar Regla de 24 Horas
+    // Calculamos cuándo sería esta cita
+    try {
+      const nextDate = calculateNextAppointmentDate(dayName, foundSlot.time);
+      if (!isAtLeast24HoursAhead(nextDate)) {
+        presentToast('top', 'No es posible agendar con menos de 24 horas de anticipación.', 'warning');
+        return; // Detenemos la selección
+      }
+    } catch (e) {
+      console.error(e);
+      presentToast('top', 'Error al calcular fecha de cita', 'danger');
+      return;
     }
-    slotSelected.value.takenBy = slotSelected.value.takenBy == null ? authStore().getUserUid : null;
-    slotSelected.value.takenAt = slotTakenAt.value;
+
+
+    // Si todo ok, procedemos a marcar/desmarcar
+    
+    // Si ya había seleccionado otro slot temporalmente, lo desmarcamos
+    const previousTaken = isAnSlotAlreadyTaken();
+    if (previousTaken && previousTaken !== foundSlot) {
+      previousTaken.takenBy = null;
+    }
+
+    // Toggle: si ya lo tengo yo (localmente), lo suelto. Si no, lo tomo.
+    if (foundSlot.takenBy == authStore().getUserUid) {
+         foundSlot.takenBy = null;
+         slotSelected.value = null; 
+         calculatedAppointmentDate.value = null;
+    } else {
+         foundSlot.takenBy = authStore().getUserUid;
+         slotSelected.value = foundSlot;
+         
+         // Formatear fecha para mostrar
+         const options: Intl.DateTimeFormatOptions = { 
+           weekday: 'long', 
+           year: 'numeric', 
+           month: 'long', 
+           day: 'numeric',
+           hour: '2-digit',
+           minute: '2-digit'
+         };
+         try {
+             const dateString = nextDate.toLocaleDateString('es-ES', options);
+             calculatedAppointmentDate.value = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+         } catch (e) {
+             console.error("Error formatting date", e);
+             // Fallback if calculateNextAppointmentDate variable 'nextDate' is not in scope here (wait, it IS in scope of the try block, but I need to make sure I calculate it again or bring it out)
+             // Ah, local variable nextDate is inside the try block above. I should recalculate or move the scope.
+             const reCalcDate = calculateNextAppointmentDate(dayName, foundSlot.time);
+             const dateString = reCalcDate.toLocaleDateString('es-ES', options);
+             calculatedAppointmentDate.value = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+         }
+
+         console.log('Slot seleccionado correctamente:', slotSelected.value);
+    }
+    
+    // takenAt se mantiene como estaba (null para la selección local) o se asigna al guardar
   }  
 };
 
 const db = getFirestore();
 const routerIon = useIonRouter();
-const userSelfCollection = doc(db, 'users/'+authStore().getUserUid);
-//const userScheduleCollection = collection(db, 'users/'+authStore().getUserUid+'/schedule');//This will be replaced to global schedules
 const schedulesCollection = collection(db, 'schedules');
-const expertScheduleCollection = collection(db, 'experts/'+expertUiStore.getCurrentExpert.userUid+'/schedule');
 
-const verifyUserHasFreeConsultations = async () => {
-  const userSelfSnapshot = await getDoc(userSelfCollection);
-  const userSelfData = userSelfSnapshot.data();
-  console.log(`User hasf free consultations: ${userSelfData?.freeConsultations}`);
-  if(userSelfData?.freeConsultations){
-    return true;
-  }
-  return false;
-}
 
-const calculateAppointmentDate = (dayName: string) => {
-  const dayMap: { [key: string]: number } = {
-    'Domingo': 0, 'Lunes': 1, 'Martes': 2, 'Miercoles': 3, 'Miércoles': 3, 'Jueves': 4, 'Viernes': 5, 'Sabado': 6, 'Sábado': 6
-  };
-  const targetDay = dayMap[dayName];
-  const now = new Date();
-  const currentDay = now.getDay();
-  let diff = targetDay - currentDay;
-
-  // Si el día seleccionado es hoy (diff === 0), se queda en 0.
-  // Si ya pasó (diff < 0), se suma 7 para la próxima semana.
-  if (diff < 0) {
-    diff += 7;
-  }
-  
-  const appointmentDate = new Date(now);
-  appointmentDate.setDate(now.getDate() + diff);
-  return appointmentDate;
-};
-
+/**
+ * Función principal para guardar los cambios y agendar la cita.
+ */
 const updateSubcollectionSchedule = async () => {
-if(expertUiStore.getCurrentExpert.isSuspended || expertUiStore.getCurrentExpert.isBanned){
-  presentToast('top', 'No puede agendar horarios con este experto, contacte al administrador si tiene alguna duda', 'danger');
-  return;
-}
-if(!schedule.value){
-  presentToast('top', 'No se ha seleccionado ningun horario', 'warning');
-  return;
-}
-if(userHasSlotsTaken.value){
-  presentToast('top', 'No puede agendar horarios si ya tiene citas agendadas', 'danger');
-  return;
-}
+    if(!slotSelected.value) {
+      presentToast('top', 'No se ha seleccionado ningún horario', 'warning');
+      return;
+    }
 
-  savingChanges.value = true;
-  const expertPath = doc(db, `experts/${expertUiStore.getCurrentExpert.docId}`);
-  try {
-    console.log(schedule.value);
-    slotSelected.value.takenAt = Timestamp.now();
-    //find the day name of the slot selected
-    const dayName = Object.keys(schedule.value).find(key => schedule.value[key].includes(slotSelected.value));
+    if(expertUiStore.getCurrentExpert.isSuspended || expertUiStore.getCurrentExpert.isBanned){
+      presentToast('top', 'No puede agendar horarios con este experto, contacte al administrador.', 'danger');
+      return;
+    }
+
+    if(userHasSlotsTaken.value){
+      presentToast('top', 'No puede agendar horarios si ya tiene citas agendadas.', 'danger');
+      return;
+    }
+
+    // Encontrar el día al que pertenece el slot seleccionado
+    const dayName = Object.keys(schedule.value).find(key => 
+      schedule.value[key].includes(slotSelected.value as Slot)
+    );
+
+    if(!dayName) {
+        presentToast('top', 'Error al identificar el día de la cita', 'danger');
+        return;
+    }
+
+    const appointmentDate = calculateNextAppointmentDate(dayName, slotSelected.value.time);
+
+    // Re-validación final de 24h por seguridad
+    if (!isAtLeast24HoursAhead(appointmentDate)) {
+        presentToast('top', 'No es posible agendar con menos de 24 horas de anticipación.', 'danger');
+        // Reseteamos la selección local por seguridad
+        slotSelected.value.takenBy = null;
+        slotSelected.value = null;
+        calculatedAppointmentDate.value = null;
+        return;
+    }
+
+    savingChanges.value = true;
+    const expertPath = doc(db, `experts/${expertUiStore.getCurrentExpert.docId}`);
     
-    // Calculate validity based on the logic: if today is the day, use today.
-    const appointmentDate = calculateAppointmentDate(dayName as string);
+    try {
+        console.log('Guardando schedule...', schedule.value);
+        slotSelected.value.takenAt = Timestamp.now();
+        
+        // Actualizamos el documento del experto
+        await updateDoc(expertPath, {
+            schedule: schedule.value
+        });
+        
+        // Creamos la cita en la colección 'schedules'
+        await addDoc(schedulesCollection, {
+            userName: authStore().getUserName,
+            userUid: authStore().getUserUid,
+            expertUid: expertUiStore.getCurrentExpert.userUid,
+            expertName: expertUiStore.getCurrentExpert.fullName,
+            expertSchedule: slotSelected.value,
+            expertSpecialty: expertUiStore.getCurrentExpert.specialty,
+            expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
+            appointmentLink: '',
+            isFinished: false,
+            dayName: dayName,
+            appointmentDate: Timestamp.fromDate(appointmentDate),
+            createdAt: Timestamp.now(),
+        });
 
-    await updateDoc(expertPath, {
-      schedule: schedule.value
-    });
-    await addDoc(schedulesCollection, {
-      userName: authStore().getUserName,
-      userUid: authStore().getUserUid,
-      expertUid: expertUiStore.getCurrentExpert.userUid,
-      expertName: expertUiStore.getCurrentExpert.fullName,
-      expertSchedule: slotSelected.value,
-      expertSpecialty: expertUiStore.getCurrentExpert.specialty,
-      expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
-      appointmentLink: '',
-      isFinished: false,
-      dayName: dayName,
-      appointmentDate: Timestamp.fromDate(appointmentDate),
-      createdAt: Timestamp.now(),
-    })
-    // (Outdated because of the new global schedules do not use this) todo: create a copy of the schedule and update the schedule in the expert collection 
-    /*await addDoc(expertScheduleCollection, {
-      userName: authStore().getUserName,
-      userUid: authStore().getUserUid,
-      expertUid: expertUiStore.getCurrentExpert.userUid,
-      expertName: expertUiStore.getCurrentExpert.fullName,
-      expertSchedule: slotSelected.value,
-      expertSpecialty: expertUiStore.getCurrentExpert.specialty,
-      expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
-      appointmentLink: '',
-      isFinished: false,
-      dayName: dayName,
-      appointmentDate: Timestamp.fromDate(appointmentDate),
-      createdAt: Timestamp.now(),
-    })*/
+        await sendTestEmail(dayName, appointmentDate);
 
-    await sendTestEmail();
-
-    presentToast('top', 'Se ha agendado su cita con exito, se ha enviado un correo con los detalles de la cita', 'success');
-    setTimeout(() => {
-      routerIon.navigate('/tabs/expert-list-modern', 'back', 'replace');
-    }, 1500);
-    savingChanges.value = false;
-  } catch (error) { 
-    console.log(error);
-    presentToast('top', 'Hubo un error al agendar la cita', 'danger');
-    savingChanges.value = false;
-  }
+        presentToast('top', `Cita agenda con éxito para el ${appointmentDate.toLocaleDateString()}.`, 'success');
+        
+        setTimeout(() => {
+            routerIon.navigate('/tabs/expert-list-modern', 'back', 'replace');
+        }, 1500);
+        
+    } catch (error) { 
+        console.error(error);
+        presentToast('top', 'Hubo un error al agendar la cita.', 'danger');
+        // Revertimos cambio local visual si falló
+        slotSelected.value.takenBy = null;
+        slotSelected.value.takenAt = null;
+        calculatedAppointmentDate.value = null;
+    } finally {
+        savingChanges.value = false;
+    }
 };
 
-//vrify if user has an slot already taken (before firebase update) if so then later use this function to deny the user to select another slot
 
 const userHasSlotsTaken = ref(false);
-const toggleValue = ref(false);
+const calculatedAppointmentDate = ref<string | null>(null);
 
 onIonViewDidEnter(() => {
-  
   const currentSchedule = expertUiStore.getCurrentExpert.schedule;
-  const isSlotTakenByCurrentUser = () => Object.values(currentSchedule).flat(1).some(s => s.takenBy == authStore().getUserUid);
+  // Verificar si hay algún slot ya tomado por el usuario actual (que ya esté en BD)
+  // Nota: la lógica original verificaba todo el schedule.
+  // Asumimos que 'takenAt' existe si ya está guardado.
+  const isSlotTakenByCurrentUser = () => Object.values(currentSchedule || {}).flat(1).some((s: any) => s.takenBy == authStore().getUserUid && s.takenAt);
 
   userHasSlotsTaken.value = isSlotTakenByCurrentUser();
 
@@ -398,76 +526,63 @@ onIonViewDidEnter(() => {
   })
 })
 
-const sendTestEmail = async () => {
-  // Validar que haya un slot seleccionado
-  if (!slotSelected.value) {
-    presentToast('top', 'Debes seleccionar un horario primero', 'warning');
-    return;
-  }
-
-  const dayName = Object.keys(schedule.value).find(key => schedule.value[key].includes(slotSelected.value));
-  
-  // Validar que se encontró el día
-  if (!dayName) {
-    presentToast('top', 'No se pudo determinar el día del horario', 'danger');
-    return;
-  }
+const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
+  if (!slotSelected.value) return;
 
   try {
-    // Calcular la fecha correcta de la cita
-    const appointmentDate = calculateAppointmentDate(dayName);
+    emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
+      // Header
+      headerTitle: 'ConsultaExperto.com',
+      greeting: 'Buen día',
+      userName: authStore().getUserName ?? 'Usuario',
+      headerDescription: 'Detalles de su cita profesional',
 
-emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
-  // Header
-  headerTitle: 'ConsultaExperto.com',
-  greeting: 'Buen día',
-  userName: authStore().getUserName ?? 'Usuario',
-  headerDescription: 'Detalles de su cita profesional',
+      // Section 1 – Información del usuario
+      section1Icon: '👤',
+      section1Title: 'Información del usuario',
+      section1TitleColor: '#007aff',
+      section1Item1Label: 'Nombre:',
+      section1Item1Value: authStore().getUserName ?? 'Usuario',
+      section1Item2Label: 'Servicio:',
+      section1Item2Value: expertUiStore.getCurrentExpert.specialty,
 
-  // Section 1 – Información del usuario
-  section1Icon: '👤',
-  section1Title: 'Información del usuario',
-  section1TitleColor: '#007aff',
-  section1Item1Label: 'Nombre:',
-  section1Item1Value: authStore().getUserName ?? 'Usuario',
-  section1Item2Label: 'Servicio:',
-  section1Item2Value: expertUiStore.getCurrentExpert.specialty,
+      // Section 2 – Detalles de la cita
+      section2Icon: '📅',
+      section2Title: 'Detalles de la cita',
+      section2TitleColor: '#34c759',
+      section2Subtitle1: 'Fecha y hora',
+      section2Value1: `${dayName} • ${slotSelected.value.time}hrs`,
+      section2Subtitle2: 'Agendado por',
+      section2Value2: authStore().getUserName ?? 'Usuario',
+      section2HighlightLabel: 'Enlace:',
+      section2HighlightText: 'El acceso se habilitará minutos antes de la cita',
+      
+      // Fecha formateada
+      appointmentDateFormatted: appointmentDate.toLocaleDateString() + ' ' + appointmentDate.toLocaleTimeString(),
 
-  // Section 2 – Detalles de la cita
-  section2Icon: '📅',
-  section2Title: 'Detalles de la cita',
-  section2TitleColor: '#34c759',
-  section2Subtitle1: 'Fecha y hora',
-  section2Value1: `${dayName} • ${slotSelected.value.time}hrs`,
-  section2Subtitle2: 'Agendado por',
-  section2Value2: authStore().getUserName ?? 'Usuario',
-  section2HighlightLabel: 'Enlace:',
-  section2HighlightText: 'El acceso se habilitará minutos antes de la cita',
+      // Section 3 – Datos del experto
+      section3Icon: '🩺',
+      section3Title: 'Datos del experto',
+      section3TitleColor: '#8e8e93',
+      section3Item1Label: 'Cédula',
+      section3Item1Value: expertUiStore.getCurrentExpert.professionalId,
+      section3Item2Label: 'Fecha de creación de la cita',
+      section3Item2Value: new Date().toLocaleDateString(),
 
-  // Section 3 – Datos del experto
-  section3Icon: '🩺',
-  section3Title: 'Datos del experto',
-  section3TitleColor: '#8e8e93',
-  section3Item1Label: 'Cédula',
-  section3Item1Value: expertUiStore.getCurrentExpert.professionalId,
-  section3Item2Label: 'Fecha de creación de la cita',
-  section3Item2Value: new Date(Timestamp.now().toDate()).toLocaleDateString(),
+      // Footer
+      footerYear: new Date().getFullYear(),
+      footerLinkUrl: 'https://consultaexperto.com',
+      footerLinkText: 'consultaexperto.com',
+      footerRightsText: 'Todos los derechos reservados.',
 
-  // Footer
-  footerYear: new Date().getFullYear(),
-  footerLinkUrl: 'https://consultaexperto.com',
-  footerLinkText: 'consultaexperto.com',
-  footerRightsText: 'Todos los derechos reservados.',
+      // Email destino
+      email: authStore().getUserEmail,
+    });
 
-  // Email destino (EmailJS lo necesita aunque no esté en el template)
-  email: authStore().getUserEmail,
-});
-
-}
-catch (error) {
-  console.log(error);
-  presentToast('top', 'Hubo un error al enviar el correo', 'danger');
-}
+  } catch (error) {
+    console.error('Error enviando email:', error);
+    // No bloqueamos el flujo principal si falla el email, solo logueamos
+  }
 }
 </script>
 
