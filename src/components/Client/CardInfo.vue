@@ -18,13 +18,21 @@
           <span class="font-medium text-gray-950 text-base">
             {{ props.data.expertSpecialty }} {{ props.data.expertName }}
           </span>
-          <span class="text-gray-600 font-quicksand text-sm font-medium">
+          <span class="text-gray-600 font-quicksand text-sm font-medium">Agendada para el:
             {{ formattedDate }}
           </span>
           <span class="text-gray-600 font-quicksand text-sm font-medium">
             {{ formattedTime }} hrs
           </span>
-
+            <span class="text-gray-500 font-quicksand text-sm font-semibold ">Fecha de creación:
+            {{ props.data.createdAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}
+          </span>
+          <span v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished" class="text-emerald-600 font-quicksand text-sm font-semibold ">Fecha de finalización:
+            {{ props.data.finishedAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}
+          </span>
+          <span v-if="props.data.isCanceled" class="  text-red-600 font-quicksand text-sm font-semibold ">Fecha de cancelación:
+            {{ props.data.canceledAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}
+          </span>
         </div>
 
         <!-- Botón "Ver cita" -->
@@ -156,6 +164,23 @@
             <p class="font-medium text-gray-600">Status de la cita:</p>
             <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
               {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}</p>
+          </div>
+
+          <!--If isCanceled show-->
+
+        </article>
+
+        <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
+
+          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
+            <v-icon name="hi-solid-information-circle" class="text-2xl"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+          </div>
+
+          <div class="flex justify-between items-center w-full">
+            <p class="font-medium text-gray-600">Fecha de finalización:</p>
+           <p>{{ props.data.finishedAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}</p>
           </div>
 
           <!--If isCanceled show-->
@@ -346,11 +371,26 @@ const experts = ref([
 const emit = defineEmits(['reload']);
 
 const getLightBackgroundColor = (specialty: string): string => {
+  if(props.data.isCanceled){
+    return "#fff0f0";
+  }
+  if(props.data.isFinished){
+    return "#f0fff0";
+  }
+  if(!props.data.isFinished && !props.data.isCanceled){
+    return "#f0fbff";
+  }    
   const expert = experts.value.find((expert) => expert.specialty.toLowerCase().trim() === specialty.toLowerCase().trim());
   return expert ? expert.color.light : "#E6E6E6";
 };
 
 const getStrongBackgroundColor = (specialty: string): string => {
+  if(props.data.isCanceled){
+    return "#ff8080";
+  }
+  if(props.data.isFinished){
+    return "#1ec960";
+  }
   const expert = experts.value.find((expert) => expert.specialty.toLowerCase().trim() === specialty.toLowerCase().trim());
   return expert ? expert.color.strong : "#E6E6E6";
 };
