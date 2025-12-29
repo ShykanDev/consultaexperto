@@ -81,7 +81,7 @@
             No tiene citas canceladas
           </div>
           <ion-content v-else class="ion-padding">
-            <ion-item>
+            <ion-item >
           <ion-select   label="Ordenar por" label-placement="floating" @ion-change="handleFilter" v-model="orderBy">
             <ion-select-option :value="'Recientes'">Más recientes</ion-select-option>
             <ion-select-option :value="'Antiguas'">Más antiguas</ion-select-option>
@@ -107,7 +107,7 @@ import { authStore as authStoreInstance } from '@/store/auth';
 import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { refresh } from 'ionicons/icons';
-
+import 'animate.css';
 
 const authStore = authStoreInstance(); authStore
 
@@ -243,6 +243,9 @@ ion-segment.finalizadas{
 }
 ion-segment.canceladas{
   background-color: #fffafa;
+}
+ion-item{
+  --border-radius: 1rem;
 }
 
 </style>

@@ -1,7 +1,7 @@
 <template>
 <section class="ios-appointment-section">
   <!-- Vista de tarjeta -->
-  <article v-if="view === 'card'" class="ios-card rounded-3xl shadow-sm bg-white p-4 ripple-parent" @click="toggleView">
+  <article v-if="view === 'card'" class="ios-card rounded-3xl shadow-sm bg-white p-4 ripple-parent animate__animated animate__bounceInLeft animate__faster" @click="toggleView">
     <div class="flex flex-row items-center justify-between w-full">
       <!-- Icono de especialidad -->
       <div class="ios-icon-container" :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
@@ -39,7 +39,7 @@
   </article>
 
   <!-- Vista detallada -->
-  <div class="animate-fade-left" v-else>
+  <div class="animate__animated animate__bounceInRight animate-duration-1000 animate__faster" v-else>
     <!-- Encabezado -->
     <div class="ios-header p-6 w-full max-w-full mb-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
       <span @click="toggleView" class="flex items-center gap-2 animate-fade-left">
