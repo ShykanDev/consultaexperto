@@ -1,271 +1,208 @@
 <template>
-  <section class="">
-
-    <article v-if="view === 'card'"
-      class="w-full flex flex-col rounded-2xl shadow-sm bg-white p-4 ion-activatable ripple-parent rounded-rectangle"
-      @click="toggleView" style="min-height: 120px;">
-      <!-- Contenido del artículo -->
-      <div class="flex flex-row items-center justify-between w-full">
-        <!-- Contenedor del icono -->
-        <div class="w-14 h-14 flex items-center justify-center rounded-full mr-3"
-          :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
-          <v-icon :name="getIcon(props.data.expertSpecialty)" scale="1.4"
-            :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }" />
-        </div>
-
-        <!-- Contenedor del texto -->
-        <div class="flex flex-col text-left flex-1 font-poppins">
-          <span class="font-medium text-gray-950 text-base">
-            {{ props.data.expertSpecialty }} {{ props.data.expertName }}
-          </span>
-          <span class="text-gray-600 font-quicksand text-sm font-medium">Agendada para el:
-            {{ formattedDate }}
-          </span>
-          <span class="text-gray-600 font-quicksand text-sm font-medium">a las:
-            {{ formattedTime }} hrs
-          </span>
-            <span class="text-gray-500 font-quicksand text-sm font-semibold ">Fecha de creación:
-            {{ props.data.createdAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}
-          </span>
-          <span v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished" class="text-emerald-600 font-quicksand text-sm font-semibold ">Fecha de finalización:
-            {{ props.data.finishedAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}
-          </span>
-          <span v-if="props.data.isCanceled" class="  text-red-600 font-quicksand text-sm font-semibold ">Fecha de cancelación:
-            {{ props.data.canceledAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}
-          </span>
-        </div>
-
-        <!-- Botón "Ver cita" -->
-        <div class="flex items-center ml-2">
-          <v-icon name="fa-chevron-right" class="text-blue-600" scale="0.9" />
-        </div>
+<section class="ios-appointment-section">
+  <!-- Vista de tarjeta -->
+  <article v-if="view === 'card'" class="ios-card rounded-3xl shadow-sm bg-white p-4 ripple-parent" @click="toggleView">
+    <div class="flex flex-row items-center justify-between w-full">
+      <!-- Icono de especialidad -->
+      <div class="ios-icon-container" :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
+        <v-icon :name="getIcon(props.data.expertSpecialty)" scale="1.4" :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }" />
       </div>
 
-      <!-- Efecto de ripple -->
-      <ion-ripple-effect type="unbounded" class="custom-ripple"></ion-ripple-effect>
-    </article>
-
-
-
-    <div v-else>
-      <!-- Título de la cita -->
-      <div class="p-6 w-full max-w-full mb-5 bg-white rounded-3xl border border-gray-200 shadow-sm">
-        <span @click="toggleView" class="flex items-center gap-2 animate-fade-left">
-          <v-icon name="fa-chevron-left" class="text-blue-600" />
-          <button
-            class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver
-          </button>
+      <!-- Contenido principal -->
+      <div class="flex flex-col text-left flex-1 font-poppins">
+        <span class="ios-title font-medium text-gray-950 text-base">
+          {{ props.data.expertSpecialty }} con {{ props.data.expertName }}
         </span>
-        <div class="flex flex-col items-center gap-2">
-          <div
-            class="inline-flex mt-5 justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
-            <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
-          </div>
-          <h3 class="mb-1 text-lg font-semibold text-gray-800">{{ props.data.expertName }}</h3>
-          <p class="font-medium text-gray-600">
-            {{ props.data.expertSpecialty }}
-          </p>
-        </div>
+        <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
+          <v-icon name="fa-calendar-alt" class="inline mr-1" scale="0.8" /> Programada para el: {{ formattedDate }}
+        </span>
+        <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
+          <v-icon name="fa-clock" class="inline mr-1" scale="0.8" /> Hora: {{ formattedTime }} hrs
+        </span>
+        <span class="ios-meta text-gray-500 font-quicksand text-xs font-semibold">
+          <v-icon name="fa-info-circle" class="inline mr-1" scale="0.8" /> Creada el: {{ props.data.createdAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
+        </span>
+        <span v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished" class="ios-status text-emerald-600 font-quicksand text-sm font-semibold">
+          <v-icon name="fa-check-circle" class="inline mr-1" scale="0.8" /> Finalizada el: {{ props.data.finishedAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
+        </span>
+        <span v-if="props.data.isCanceled" class="ios-status text-red-600 font-quicksand text-sm font-semibold">
+          <v-icon name="fa-times-circle" class="inline mr-1" scale="0.8" /> Cancelada el: {{ props.data.canceledAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
+        </span>
       </div>
 
-      <!-- Date info-->
-      <span class="p-6 w-full max-w-full mb-5 text-lg font-semibold text-gray-600">Datos de la cita</span>
-      <div
-        class="p-6 w-full flex flex-col  space-y-5 mb-5 max-w-full bg-white rounded-3xl border border-gray-200 shadow-lg">
-
-        <article class="flex items-center gap-2 pb-2 border-b border-b-gray-100"> <!--Icon-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 bg-blue-100">
-            <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Fecha:</p>
-            <p class="font-medium text-center text-sm text-gray-600">{{ formattedDate }}</p>
-          </div>
-
-
-        </article>
-
-        <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 bg-blue-100">
-            <v-icon name="fa-clock" class="text-2xl text-blue-600" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Hora</p>
-            <p class="font-medium text-gray-600">{{ formattedTime }} hrs</p>
-          </div>
-
-        </article>
-
-        <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--User who appointment-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 bg-blue-100">
-            <v-icon name="fa-user" class="text-2xl text-blue-600" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Agendado por:</p>
-            <p class="font-medium text-gray-600">{{ props.data.userName }}</p>
-          </div>
-
-        </article>
-
-
-        <article class="flex items-center gap-2"> <!--Link-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 bg-blue-100">
-            <v-icon name="co-link" class="text-2xl text-blue-600" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Enlace:</p>
-            <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...
-            </p>
-            <a v-else :href="props.data.appointmentLink" class="font-medium text-gray-800">{{ props.data.appointmentLink
-              }}</a>
-          </div>
-
-        </article>
-
-
-      </div>
-
-
-      <!-- Date metada-->
-      <span class="p-6 w-full max-w-full mb-5 text-lg font-semibold text-gray-600">Datos del experto</span>
-      <div class="p-6 w-full flex flex-col  space-y-5 max-w-full bg-white rounded-3xl border border-gray-200 shadow-lg">
-
-        <article class="flex items-center gap-2 pb-2 border-b border-b-gray-100"> <!--Icon-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 bg-blue-100">
-            <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Cédula del experto:</p>
-            <p class="font-medium text-center text-sm text-gray-600">{{ props.data.expertProfessionalId }}</p>
-          </div>
-
-
-        </article>
-
-        <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="hi-solid-information-circle" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Status de la cita:</p>
-            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}</p>
-          </div>
-
-          <!--If isCanceled show-->
-
-        </article>
-
-        <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="hi-solid-information-circle" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Fecha de finalización:</p>
-           <p>{{ props.data.finishedAt?.toDate().toLocaleString('es-MX', {dateStyle:'long', timeStyle:'short'}) }}</p>
-          </div>
-
-          <!--If isCanceled show-->
-
-        </article>
-
-
-
-
-        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="md-freecancellation-twotone" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Motivo de cancelación:</p>
-            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
-              {{ props.data.cancelationReason }}
-            </p>
-            
-          </div>
-
-          <!--If isCanceled show-->
-
-        </article>
-        <article v-if="props.data.isCanceled " class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="fa-user" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Cancelado por:</p>
-            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
-              {{ props.data.canceledByName}}
-            </p>
-
-          </div>
-
-          <!--If isCanceled show-->
-
-        </article>
-
-        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2"> <!--Time-->
-
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="fa-calendar-check" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
-
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Fecha de cancelación:</p>
-            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
-              {{ new Date(props.data.canceledAt!.toDate()).toLocaleString('es-ES', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
-            </p>
-          </div>
-
-          <!--If isCanceled show-->
-
-        </article>
-
-      </div>
-
-   
-
-      <div v-if="!props.data.isFinished && !props.data.isCanceled" class="w-full flex justify-center mt-2 items-center">
-        <ion-button mode="ios" color="danger" style="text-transform: none;" @click="presentAlert">Cancelar Cita</ion-button>
-
-
-        <ion-button mode="ios" color="primary" style="text-transform: none;" @click="finaliceAppointment">Marcar como finalizada</ion-button>
-      </div>
-      <div class="w-full flex justify-center mt-2 items-center">
-        <span class="text-center font-poppins text-sm  text-gray-500">Creada el {{
-          props.data.createdAt.toDate().toLocaleString('es-ES', {
-            day: '2-digit', month: 'long', year: 'numeric', hour:
-              '2-digit', minute: '2-digit' }) }}</span>
+      <!-- Flecha para expandir -->
+      <div class="flex items-center ml-2">
+        <v-icon name="fa-chevron-right" class="text-blue-600" scale="0.9" />
       </div>
     </div>
-  </section>
+    <ion-ripple-effect type="unbounded" class="custom-ripple"></ion-ripple-effect>
+  </article>
+
+  <!-- Vista detallada -->
+  <div class="animate-fade-left" v-else>
+    <!-- Encabezado -->
+    <div class="ios-header p-6 w-full max-w-full mb-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
+      <span @click="toggleView" class="flex items-center gap-2 animate-fade-left">
+        <v-icon name="fa-chevron-left" class="text-blue-600" />
+        <button class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver</button>
+      </span>
+  
+      <div class="flex flex-col items-center gap-2 mt-4">
+        <div class="ios-header-icon inline-flex justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
+          <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
+        </div>
+        <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span class="font-medium text-blue-600">{{ props.data.expertName }}</span></h3>
+        <div class="flex justify-center">
+          <span v-if="props.data.isCanceled" class="text-red-600 font-medium">(Cancelada)</span>
+          <span v-if="props.data.isFinished" class="text-green-500 font-medium">(Finalizada)</span>
+          <span v-if="!props.data.isCanceled && !props.data.isFinished" class="text-blue-600 font-medium">(Programada)</span>
+        </div>
+        <p class="font-medium text-gray-600 font-poppins text-center">
+          Especialidad: <span class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
+        </p>
+        
+      </div>
+    </div>
+
+    <!-- Datos de la cita -->
+    <span class="ios-section-title p-6 w-full max-w-full mb-2 text-lg font-semibold text-gray-700">Detalles de la cita</span>
+    <div class="ios-detail-card p-6 w-full flex flex-col space-y-4 mb-5 max-w-full bg-white rounded-3xl border border-gray-100 shadow-lg">
+      <!-- Fecha -->
+      <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
+          <v-icon name="bi-calendar-event-fill" class="text-xl text-blue-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Cita programada para el día:</p>
+          <p class="font-medium text-blue-600">{{ formattedDate }}</p>
+        </div>
+      </article>
+
+      <!-- Hora -->
+      <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
+          <v-icon name="fa-clock" class="text-xl text-blue-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Hora:</p>
+          <p class="font-medium text-blue-600">{{ formattedTime }} hrs</p>
+        </div>
+      </article>
+
+      <!-- Usuario -->
+      <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
+          <v-icon name="fa-user" class="text-xl text-blue-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Agendado por:</p>
+          <p class="font-medium text-blue-600">{{ props.data.userName }}</p>
+        </div>
+      </article>
+
+      <!-- Enlace -->
+      <article class="ios-detail-item flex items-center gap-3">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
+          <v-icon name="co-link" class="text-xl text-blue-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Enlace:</p>
+          <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...</p>
+          <a v-else :href="props.data.appointmentLink" class="font-medium text-blue-600 break-all">{{ props.data.appointmentLink }}</a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Datos del experto -->
+    <span class="ios-section-title p-6 w-full max-w-full mb-2 text-lg font-semibold text-gray-700">Información del experto</span>
+    <div class="ios-detail-card p-6 w-full flex flex-col space-y-4 max-w-full bg-white rounded-3xl border border-gray-100 shadow-lg">
+      <!-- Cédula -->
+      <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
+          <v-icon name="fa-id-card" class="text-xl text-blue-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Cédula profesional:</p>
+          <p class="font-medium text-gray-800">{{ props.data.expertProfessionalId }}</p>
+        </div>
+      </article>
+
+      <!-- Estado -->
+      <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl" :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
+          <v-icon name="hi-solid-information-circle" class="text-xl" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Estado:</p>
+          <p class="font-medium" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
+            {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}
+          </p>
+        </div>
+      </article>
+
+      <!-- Fecha de finalización -->
+      <article v-if="props.data.isFinished" class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
+          <v-icon name="fa-calendar-check" class="text-xl text-green-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Finalizada el:</p>
+          <p class="font-medium text-green-600">{{ props.data.finishedAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
+        </div>
+      </article>
+
+      <!-- Motivo de cancelación -->
+      <article v-if="props.data.isCanceled" class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
+          <v-icon name="md-freecancellation-twotone" class="text-xl text-red-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Motivo:</p>
+          <p class="font-medium text-red-600">'{{ props.data.cancelationReason }}'
+          </p>
+        </div>
+      </article>
+
+      <!-- Cancelado por -->
+      <article v-if="props.data.isCanceled" class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
+          <v-icon name="fa-user-times" class="text-xl text-red-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Cancelado por:</p>
+          <p class="font-medium text-red-600">{{ props.data.canceledByName }}</p>
+        </div>
+      </article>
+
+      <!-- Fecha de cancelación -->
+      <article v-if="props.data.isCanceled" class="ios-detail-item flex items-center gap-3">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
+          <v-icon name="bi-calendar-x-fill" class="text-xl text-red-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Cancelada el:</p>
+          <p class="font-medium text-red-600">{{ props.data.canceledAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}</p>
+        </div>
+      </article>
+    </div>
+
+     <!-- Fecha de creación -->
+    <div class="w-full flex justify-center mb-8">
+      <span class="text-center font-poppins p-1 text-xs text-gray-500 bg-white rounded-b-2xl  border-b-2 border-x-2 border-slate-100">
+        <v-icon name="fa-info-circle" class="inline mr-1" scale="0.8" /> Cita creada el {{ props.data.createdAt.toDate().toLocaleString('es-ES', { dateStyle:'long', timeStyle:'medium' }) }}
+      </span>
+    </div>
+
+    <!-- Botones de acción -->
+    <div v-if="!props.data.isFinished && !props.data.isCanceled" class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4">
+      <ion-button mode="ios" color="danger" class="ios-button" style="text-transform: none;" @click="presentAlert">Cancelar cita</ion-button>
+      <ion-button mode="ios" color="primary" class="ios-button" style="text-transform: none;" @click="finaliceAppointment">Marcar como finalizada</ion-button>
+    </div>
+
+   
+  </div>
+</section>
+
 </template>
 
 <script lang="ts" setup>
@@ -391,7 +328,7 @@ const getStrongBackgroundColor = (specialty: string): string => {
     return "#ff8080";
   }
   if(props.data.isFinished){
-    return "#1ec960";
+    return "#00966A";
   }
   const expert = experts.value.find((expert) => expert.specialty.toLowerCase().trim() === specialty.toLowerCase().trim());
   return expert ? expert.color.strong : "#E6E6E6";
@@ -755,50 +692,96 @@ const presentAlert = async () => {
 </script>
 
 <style scoped>
-.wrapper {
-  display: flex;
-  flex-wrap: wrap;
-
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-
-  height: 300px;
-  width: 300px;
-
-  margin: 0 auto;
+/* Estilos para iOS */
+.ios-appointment-section {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-b {
-  width: 100%;
+.ios-card {
+  min-height: 130px;
+  transition: all 0.3s ease;
+}
+
+.ios-icon-container {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.ios-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ios-subtitle {
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.ios-meta {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.ios-status {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.ios-header {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ios-header-icon {
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+}
+
+.ios-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.ios-detail-card {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: none;
+}
+
+.ios-detail-item {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.ios-detail-icon {
+  flex-shrink: 0;
+}
+
+.ios-actions {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.ios-button {
+  --border-radius: 12px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+  font-weight: 500;
 }
 
 .ripple-parent {
   position: relative;
   overflow: hidden;
-
-
-}
-
-.rectangle {
-  width: 300px;
-  height: 150px;
-}
-
-.rounded-rectangle {
-  width: full;
-  height: auto;
-  border-radius: 20px;
-}
-
-.circle {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
 }
 
 .custom-ripple {
   color: rgb(0, 124, 220);
 }
-
-</style>  
+</style>

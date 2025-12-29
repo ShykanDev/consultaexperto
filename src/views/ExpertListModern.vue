@@ -212,6 +212,20 @@
                                 Especialización</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
+                            <!-- Medical -->
+                            <div
+                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                                    <ion-icon :icon="calculatorOutline" class="text-[24px]"></ion-icon>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <h4 class="font-bold text-base leading-tight text-slate-900">Médico</h4>
+                                    <button @click="getExpertSelection('Médico')"
+                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
+                                </div>
+                            </div>
+
                             <!-- Accountant -->
                             <div
                                 class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
@@ -273,7 +287,7 @@
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <h4 class="font-bold text-base leading-tight text-slate-900">Traductor</h4>
-                                    <button @click="getExpertSelection('Tráducotor')"
+                                    <button @click="getExpertSelection('Traductor')"
                                         class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
                                 </div>
                             </div>
