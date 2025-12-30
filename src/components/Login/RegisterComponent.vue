@@ -164,7 +164,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import { createUserWithEmailAndPassword, sendEmailVerification, UserCredential, updateProfile } from 'firebase/auth';
 import { getFirestore, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { toastController } from '@ionic/vue';
-import { auth as authFirebase } from '@/main';
+import { auth as authFirebase } from '@/firebase';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
     const toast = await toastController.create({

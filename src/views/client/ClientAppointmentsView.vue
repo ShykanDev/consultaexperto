@@ -17,34 +17,46 @@
    
  
   
-      <ion-segment  :class="segmentCustomClass" class="customSegment p-1 transition-all ease-in-out duration-200"   >
+      <ion-toolbar>
+        <ion-searchbar v-model="searchQuery" placeholder="Experto, especialidad o estado..." animated></ion-searchbar>
+      </ion-toolbar>
+      <ion-toolbar >
+        <div class="flex flex-row justify-between px-2 gap-2">
+            <ion-select aria-label="Listar por" interface="popover" placeholder="Listar por" class="w-full text-xs font-poppins border border-gray-300 rounded-lg"  @ion-change="handleFilter" v-model="sortBy">
+             <ion-select-option :value="'creation'">Fecha de Creación</ion-select-option>
+             <ion-select-option :value="'scheduled'">Fecha Agendada</ion-select-option>
+           </ion-select>
+     
+           <ion-select  aria-label="Ordenar por" interface="popover" placeholder="Ordenar por" class="w-full text-xs font-poppins border border-gray-300 rounded-lg" @ion-change="handleFilter" v-model="orderBy">
+             <ion-select-option :value="'Recientes'">Más recientes</ion-select-option>
+             <ion-select-option :value="'Antiguas'">Más antiguas</ion-select-option>
+           </ion-select>
+        </div>
+      </ion-toolbar>
+  
+  
+      <ion-segment  :class="segmentCustomClass" class="customSegment p-1 py-2 transition-all ease-in-out duration-200 "   >
         <ion-segment-button @click="customSegment($event)" @ionSelect="customSegment($event)" value="Proximas" content-id="Proximas">
           <ion-label style="text-transform: none;">Próximas</ion-label>
         </ion-segment-button>
         <ion-segment-button @click="customSegment($event)" @ionSelect="customSegment($event)" value="Finalizadas" content-id="Finalizadas">
           <ion-label style="text-transform: none;">Finalizadas</ion-label>
         </ion-segment-button>
-        <ion-segment-button @click="customSegment($event)" @ionSelect="customSegment($event)" value="Canceladas" content-id="Canceladas">
+        <ion-segment-button  @click="customSegment($event)" @ionSelect="customSegment($event)" value="Canceladas" content-id="Canceladas">
           <ion-label style="text-transform: none;">Canceladas</ion-label>
         </ion-segment-button>
       </ion-segment>
       <ion-segment-view >
         <ion-segment-content id="Proximas">
           <div class="bg-gray-100 text-center ion-padding flex items-center gap-2 justify-center">
-            <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Próximas citas</p>  
+            <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">{{ proxAppointments.length }} Próximas citas</p>  
             <ion-spinner v-show="isLoading" ></ion-spinner>
           </div>
  
-          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCanceled)" class="flex justify-center items-center w-full h-full bg-white">
-            No tiene citas futuras
+          <div v-if="proxAppointments.length === 0" class="flex justify-center items-center w-full h-full bg-white p-4 text-center text-gray-500 font-poppins">
+            No se encontraron citas próximas
           </div>
           <ion-content class="ion-padding" v-else >
-            <ion-item>
-          <ion-select   label="Ordenar por" label-placement="floating" @ion-change="handleFilter" v-model="orderBy">
-            <ion-select-option :value="'Recientes'">Más recientes</ion-select-option>
-            <ion-select-option :value="'Antiguas'">Más antiguas</ion-select-option>
-          </ion-select>
-          </ion-item>
             <div v-for="(appointment, index) in proxAppointments" :key="index" class="my-2">
               <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" :index="index" />
             </div>
@@ -52,19 +64,13 @@
         </ion-segment-content>
         <ion-segment-content id="Finalizadas">
           <div class="bg-gray-100 text-center ion-padding flex items-center gap-2 justify-center">
-            <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Citas finalizadas </p> 
+            <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">{{ finishedAppointments.length }} Citas finalizadas </p> 
             <ion-spinner v-show="isLoading"></ion-spinner>
           </div>
-          <div v-if="userAppointments.every(appointment => !appointment.isFinished)" class="flex justify-center items-center w-full h-full">
-            No tiene citas finalizadas
+          <div v-if="finishedAppointments.length === 0" class="flex justify-center items-center w-full h-full bg-white p-4 text-center text-gray-500 font-poppins">
+            No se encontraron citas finalizadas
           </div>
           <ion-content class="ion-padding" v-else>
-            <ion-item>
-          <ion-select   label="Ordenar por" label-placement="floating" @ion-change="handleFilter" v-model="orderBy">
-            <ion-select-option :value="'Recientes'">Más recientes</ion-select-option>
-            <ion-select-option :value="'Antiguas'">Más antiguas</ion-select-option>
-          </ion-select>
-          </ion-item>
             <!--Finished Appointments-->
             <div v-for="(appointment, index) in finishedAppointments" :key="index" class="my-2">
               <CardInfo @reload="getUserAppointments()" v-if="appointment.isFinished" :data="appointment" />
@@ -73,20 +79,14 @@
         </ion-segment-content>
         <ion-segment-content id="Canceladas">
           <div class="bg-gray-100 text-center ion-padding flex items-center gap-2 justify-center">
-            <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">Citas canceladas </p> 
+            <p class="font-poppins text-sm ion-no-margin my font-semibold text-slate-600">{{ canceledAppointments.length }} Citas canceladas </p> 
             <ion-spinner v-show="isLoading"></ion-spinner>
           </div>
 
-          <div v-if="userAppointments.every(appointment => !appointment.isCanceled)" class="flex justify-center items-center w-full h-full">
-            No tiene citas canceladas
+          <div v-if="canceledAppointments.length === 0" class="flex justify-center items-center w-full h-full bg-white p-4 text-center text-gray-500 font-poppins">
+            No se encontraron citas canceladas
           </div>
           <ion-content v-else class="ion-padding">
-            <ion-item >
-          <ion-select   label="Ordenar por" label-placement="floating" @ion-change="handleFilter" v-model="orderBy">
-            <ion-select-option :value="'Recientes'">Más recientes</ion-select-option>
-            <ion-select-option :value="'Antiguas'">Más antiguas</ion-select-option>
-          </ion-select>
-          </ion-item>
             <!--Canceled Appointments-->
             <div v-for="(appointment, index) in canceledAppointments" :key="index" class="my-2">
               <CardInfo @reload="getUserAppointments()" :data="appointment" />
@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonHeader, IonToolbar, IonTitle,  IonSpinner, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonItem, onIonViewDidLeave  } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle,  IonSpinner, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, onIonViewDidLeave, IonSearchbar  } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
@@ -108,6 +108,7 @@ import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { refresh } from 'ionicons/icons';
 import 'animate.css';
+import { C } from 'vue-router/dist/router-CWoNjPRp.mjs';
 
 const authStore = authStoreInstance(); authStore
 
@@ -185,57 +186,122 @@ const customSegment = (event: SegmentCustomEvent) => {
 
 const userAppointmentsCopy = computed(() => [...userAppointments.value]);
 
+const searchQuery = ref('');
+const sortBy = ref<'creation' | 'scheduled'>('creation');
 const orderBy = ref<'Recientes'| 'Antiguas'>('Recientes');
-const orderByDirection = ref('desc');
+const handleFilter = () => {
+    // Logic is handled by computed properties
+}
 
+const getDayIndex = (dayName: string): number => {
+  const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+  if (!dayName) return -1;
+  const normalizedDay = dayName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return days.findIndex(d => normalizedDay.includes(d));
+}
 
+const getAppointmentDate = (appointment: ISchedule): Date | null => {
+   if ((appointment as any).appointmentDate) {
+    return new Date((appointment as any).appointmentDate.seconds * 1000);
+  }
 
+  if (!appointment.createdAt) return null;
+
+  const createdAtDate = new Date(appointment.createdAt.seconds * 1000);
+  // Reset time to start of day if we want strictly day comparison, but createdAt includes time.
+  // CardInfo logic uses strict date object for display.
+  
+  const currentDayIndex = createdAtDate.getDay();
+  const targetDayName = appointment.DayName || (appointment as any).dayName || '';
+  const targetDayIndex = getDayIndex(targetDayName);
+
+  if (targetDayIndex === -1) return createdAtDate;
+
+  let daysUntil = targetDayIndex - currentDayIndex;
+  
+  if (daysUntil < 0) {
+    daysUntil += 7;
+  }
+  
+  const futureDate = new Date(createdAtDate);
+  futureDate.setDate(createdAtDate.getDate() + daysUntil);
+  
+  // Try to set time from expertSchedule if available for more precision
+  if (appointment.expertSchedule && appointment.expertSchedule.time) {
+      const [hours, minutes] = appointment.expertSchedule.time.split(':').map(Number);
+      if (!isNaN(hours) && !isNaN(minutes)) {
+          futureDate.setHours(hours, minutes, 0, 0);
+      }
+  }
+
+  return futureDate;
+}
+
+const filterAndSortAppointments = (appointments: ISchedule[]) => {
+  let filtered = [...appointments];
+
+  // Search Filter
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    filtered = filtered.filter(app => {
+        const expertName = (app.expertName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const specialty = (app.expertSpecialty || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        
+        let status = 'programada';
+        if (app.isFinished) status = 'finalizada';
+        if (app.isCanceled) status = 'cancelada'; // This might overlap if I search in 'Canceladas' tabs but user might want to search anyway
+        
+        // Also allow searching by 'proxima' or 'pendiente'
+        const isPending = !app.isFinished && !app.isCanceled;
+        if (isPending && (q.includes('proxima') || q.includes('pendiente'))) return true;
+
+        return expertName.includes(q) || specialty.includes(q) || status.includes(q);
+    });
+  }
+
+  // Sorting
+  filtered.sort((a, b) => {
+      let dateA = 0;
+      let dateB = 0;
+
+      if (sortBy.value === 'creation') {
+          dateA = a.createdAt?.seconds || 0;
+          dateB = b.createdAt?.seconds || 0;
+      } else {
+          // Scheduled Data Sort
+          const dA = getAppointmentDate(a);
+          const dB = getAppointmentDate(b);
+          dateA = dA ? dA.getTime() : 0;
+          dateB = dB ? dB.getTime() : 0;
+      }
+
+      if (orderBy.value === 'Recientes') {
+          return dateB - dateA;
+      } else { // Antiguas
+          return dateA - dateB;
+      }
+  });
+
+  return filtered;
+}
 
 //canceled appintments computed
 const canceledAppointments = computed(()=> {
-  const cAppointments:ISchedule[] = userAppointments.value.filter((e) => e.isCanceled);
-  switch (orderBy.value) {
-    case 'Antiguas':
-     cAppointments.sort((a,b) => (a.canceledAt?.seconds || 0) - (b.canceledAt?.seconds || 0));
-      break;
-    case 'Recientes':
-     cAppointments.sort((a,b) => (b.canceledAt?.seconds || 0) - (a.canceledAt?.seconds || 0));
-      break;
-    }
-    return cAppointments
+  const cAppointments = userAppointments.value.filter((e) => e.isCanceled);
+  return filterAndSortAppointments(cAppointments);
 })
-//canceled appintments computed
+//finished appintments computed
 const finishedAppointments = computed(()=> {
-  const cAppointments:ISchedule[] = userAppointments.value.filter((e) => e.isFinished);
-  switch (orderBy.value) {
-    case 'Antiguas':
-     cAppointments.sort((a,b) => (a.finishedAt?.seconds || 0) - (b.finishedAt?.seconds || 0));
-      break;
-    case 'Recientes':
-     cAppointments.sort((a,b) => (b.finishedAt?.seconds || 0) - (a.finishedAt?.seconds || 0));
-      break;
-    }
-    return cAppointments
+  const cAppointments = userAppointments.value.filter((e) => e.isFinished);
+  return filterAndSortAppointments(cAppointments);
 })
 //prox appintments computed
 const proxAppointments = computed(()=> {
-  const cAppointments:ISchedule[] = userAppointments.value.filter((e) => !e.isFinished && !e.isCanceled);
-  switch (orderBy.value) {
-    case 'Antiguas':
-     cAppointments.sort((a,b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
-      break;
-    case 'Recientes':
-     cAppointments.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-      break;
-    }
-    return cAppointments
+  const cAppointments = userAppointments.value.filter((e) => !e.isFinished && !e.isCanceled);
+  return filterAndSortAppointments(cAppointments);
 })
 
 
-
-const handleFilter = () => {
-  console.log(userAppointmentsCopy.value)
-}
 </script>
 
 <style scoped>

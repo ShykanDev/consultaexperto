@@ -93,7 +93,7 @@
       <span class="text-[13px] font-medium text-slate-600">
         Tiene una cita programada
       </span>
-      <ion-button router-link="tabs/client-appointments" 
+      <ion-button mode="ios"  fill="clear" router-link="tabs/client-appointments" 
         class="ml-auto px-3 py-1 rounded-full bg-white border border-slate-200 
                text-[12px] font-medium text-blue-500 shadow-sm
                active:bg-blue-50 active:scale-95 transition-all duration-150"

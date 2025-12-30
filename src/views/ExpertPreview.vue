@@ -190,7 +190,8 @@ import {
   IonBackButton,
   onIonViewDidLeave,
   IonToggle,
-  useIonRouter
+  useIonRouter,
+  IonSpinner,
 
 } from '@ionic/vue';
 import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
@@ -245,10 +246,11 @@ const savingChanges = ref(false);
 //Get expert appointments
 const userAppointments = ref<ISchedule[]>([]);
 const collectionRef = collection(db, 'schedules');//Filter by expertUid
-const expertQuery = query(collectionRef, where('expertUid', '==', expertAdminStore.getCurrentExpert.userUid));
 const loadingAppointments = ref(false);
 
 const getUserAppointments = () => {
+const expertQuery = query(collectionRef, where('expertUid', '==', expertAdminStore.getCurrentExpert.userUid));
+
   console.log('Getting appointments');
   console.log(authStore().getUserUid);
   userAppointments.value = [];
@@ -279,7 +281,7 @@ const getUserAppointments = () => {
 
 
 onIonViewDidLeave(()=> {
-  expertAdminStore.resetCurrentExpert();
+  //expertAdminStore.resetCurrentExpert();
 })
 
 const schedule = computed(() => {

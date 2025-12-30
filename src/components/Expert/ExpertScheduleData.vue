@@ -63,7 +63,7 @@
           <div class="admin-grid-item">
             <v-icon name="co-link" class="admin-grid-icon" />
             <p class="admin-grid-label">Enlace:</p>
-            <a v-if="props.data.appointmentLink !== 'En proceso...'" :href="props.data.appointmentLink" class="admin-grid-link">{{ props.data.appointmentLink }}</a>
+            <a v-if="props.data.appointmentLink !== 'En proceso...'" target="_blank" :href="props.data.appointmentLink" class="admin-grid-link  break-all">{{ props.data.appointmentLink }}</a>
             <p v-else class="admin-grid-value pending">En proceso...</p>
           </div>
         </div>
@@ -171,6 +171,7 @@
         <button class="admin-action-button edit !text-xs" v-if="!props.data.isCanceled" @click="markFunction('notFinish')">No finalizada</button>
         <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled" @click="presentCancelAlert">Cancelar Cita</button>
         <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished" @click="markFunction('finish')">Finalizar Cita</button>
+        <button class="admin-action-button link !text-xs" v-if="!props.data.isCanceled" @click="presentLinkAlert">Agregar Link</button>
       </div>
     </div>
   </section>
@@ -362,7 +363,7 @@ const db = getFirestore();
 const emit = defineEmits(['reloadData']);
 
 
-const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish', reason?: string) => {
+const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish' | 'link', reason?: string) => {
   try {
  
     const docRef = doc(db, `schedules/${props.data.docId}`)
@@ -381,6 +382,7 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish', reason?: st
       cancelationReason: '' as string | null,
       canceledByName: '' as string | null,
       canceledByUid: '' as string | null,
+      appointmentLink: '' as string,
     };
 
     if (mode === 'finish') {
@@ -394,6 +396,10 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish', reason?: st
       updateData.cancelationReason = reason || 'Cancelada por el administrador';
       updateData.canceledByName = authStore().getUserName;
       updateData.canceledByUid = authStore().getUserUid;
+    }
+
+    if (mode === 'link') {
+      updateData.appointmentLink = reason!;
     }
 
    await updateDoc(docRef, updateData);
@@ -431,6 +437,39 @@ const presentCancelAlert = async () => {
             return false;
           }
           markFunction('cancel', data.reason);
+          return true;
+        },
+      },
+    ],
+  });
+
+  await alert.present();
+};
+const presentLinkAlert = async () => {
+  const alert = await alertController.create({
+    header: 'Agregar Link',
+    message: 'Por favor, ingrese el link de la consulta (obligatorio).',
+    inputs: [
+      {
+        name: 'link',
+        type: 'textarea',
+        placeholder: 'Escriba el link aquí...',
+      },
+    ],
+    buttons: [
+      {
+        text: 'Volver',
+        role: 'cancel',
+        cssClass: 'secondary',
+      },
+      {
+        text: 'Confirmar Link',
+        handler: (data) => {
+          if (!data.link || data.link.trim() === '') {
+            // Regresa false para mantener la alerta abierta si está vacío
+            return false;
+          }
+          markFunction('link', data.link);
           return true;
         },
       },
@@ -606,6 +645,7 @@ const presentCancelAlert = async () => {
 .admin-grid-link {
   color: #2563eb;
   text-decoration: none;
+  
 }
 
 .admin-grid-link:hover {
@@ -652,6 +692,10 @@ const presentCancelAlert = async () => {
   color: #065f46;
 }
 
+.admin-action-button.link {
+  background: #c9ceff;
+  color: #003045;
+}
 .admin-action-button:hover {
   opacity: 0.9;
 }

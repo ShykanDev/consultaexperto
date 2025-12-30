@@ -142,7 +142,7 @@ import { ref, computed } from 'vue';
 
 import { toastController } from '@ionic/vue';
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
-import { auth as authFirebase } from '@/main';
+import { auth as authFirebase } from '@/firebase';
 import { IExpertSchedule } from '@/interfaces/Ischedule';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {

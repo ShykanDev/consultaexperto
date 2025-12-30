@@ -6,7 +6,7 @@
           Expertos
         </ion-title>
         <ion-buttons slot="start">
-          <ion-back-button color="primary" :icon="chevronBack" default-href="/tabs/tab1" text="Inicio" style="text-transform: none; " >
+          <ion-back-button color="primary" :icon="chevronBack" default-href="/tabs/tab1" text="Salir" style="text-transform: none; " >
           </ion-back-button>
         </ion-buttons>
         <ion-buttons  slot="end">

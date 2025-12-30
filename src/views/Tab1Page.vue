@@ -23,8 +23,8 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue
 import LoginComponent from '@/components/Login/LoginComponent.vue';
 import { ref, onUnmounted } from 'vue';
 import { onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
-import { getAuth } from 'firebase/auth';
-import { auth as authFirebase } from '@/main';
+
+import { auth as authFirebase } from '@/firebase';
 import { authStore } from '@/store/auth';
 
 console.log('Tab1Page.vue script is executing...');

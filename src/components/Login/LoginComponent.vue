@@ -197,7 +197,7 @@ import {
   mailOutline
 } from 'ionicons/icons';
 import {  sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth as authFirebase } from '@/main';
+import { auth as authFirebase } from '@/firebase';
 import { authStore } from '@/store/auth';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';

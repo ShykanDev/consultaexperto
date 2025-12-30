@@ -125,9 +125,9 @@ import {
   lockClosedOutline, shieldCheckmarkOutline, documentTextOutline 
 } from 'ionicons/icons';
 import { signOut, sendPasswordResetEmail } from 'firebase/auth';
+import { auth as authFirebase } from '@/firebase';
 import { useRouter } from 'vue-router';
 import { authStore as authStorePinia } from '@/store/auth';
-import { auth as authFirebase } from '@/main';
 
 const router = useRouter();
 const authStore = authStorePinia();

@@ -496,6 +496,9 @@ interface ISlot {
   takenAt: null|Timestamp;
   takenBy:string|null;
   time:string;
+  finalizedAt: null|Timestamp;
+  finalizedBy:string|null;
+  finalizedByName:string|null;
 }
 
 interface IUserSchedule {
