@@ -21,4 +21,6 @@ canceledAt?:Timestamp;
 canceledByName?:string;
 canceledByUid?:string;
 finishedAt?:Timestamp;
+finishedByName?:string;
+finishedByUid?:string;
 }

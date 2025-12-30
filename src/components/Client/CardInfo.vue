@@ -151,6 +151,17 @@
         </div>
       </article>
 
+      <!-- Finalizada por -->
+      <article v-if="props.data.isFinished" class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
+          <v-icon name="fa-user-check" class="text-xl text-green-600" />
+        </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-700">Finalizada por:</p>
+          <p class="font-medium text-green-600">{{ props.data.finishedByName || 'Desconocido' }}</p>
+        </div>
+      </article>
+
       <!-- Motivo de cancelación -->
       <article v-if="props.data.isCanceled" class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
         <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
@@ -652,8 +663,8 @@ const finaliceAppointment = async () => {
       batch.update(doc(db, `schedules/${props.data.docId}`), {
       isFinished: true,
       finishedAt: Timestamp.now(),
-      finishedByUid: authStore().getUserUid || '',
-      finishedByName: authStore().getUserName || ''
+      finishedByUid: authStore().getUserUid || 'UID no disponible',
+      finishedByName: authStore().getUserName || 'Nombre no disponible'
     })
     
     await batch.commit();
