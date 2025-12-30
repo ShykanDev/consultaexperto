@@ -1,7 +1,7 @@
 <template>
 <section class="ios-appointment-section">
   <!-- Vista de tarjeta -->
-  <article v-if="view === 'card'" class="ios-card rounded-3xl shadow-sm bg-white p-4 ripple-parent animate__animated animate__bounceInLeft animate__faster" @click="toggleView">
+  <article v-if="view === 'card'" :class="{'animate__animated animate__bounceInLeft animate__faster': firstLoad && props.index === 0 || !firstLoad}" class="ios-card rounded-3xl shadow-sm  bg-white p-4 ripple-parent " @click="toggleView">
     <div class="flex flex-row items-center justify-between w-full">
       <!-- Icono de especialidad -->
       <div class="ios-icon-container" :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
@@ -339,11 +339,15 @@ const getIcon = (specialty: string): string => {
   return expert ? expert.icon : "";
 };
 
+const firstLoad = ref(true);
 /**Vue Props */
 const props = defineProps({
   data: {
     type: Object as () => ISchedule,
     required: true,
+  },
+  index: {
+    type: Number,
   }
 })
 
@@ -472,6 +476,10 @@ const sendEmail = async(cancelTime: Timestamp) => {
 }
 
 const toggleView = () => {
+  if(firstLoad.value){
+    firstLoad.value = false;
+    return;
+  }
   view.value = view.value === 'card' ? 'modal' : 'card';
 }
 

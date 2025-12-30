@@ -35,7 +35,7 @@
             <ion-spinner v-show="isLoading" ></ion-spinner>
           </div>
  
-          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCanceled)" class="flex justify-center items-center w-full h-full">
+          <div v-if="userAppointments.every(appointment => appointment.isFinished || appointment.isCanceled)" class="flex justify-center items-center w-full h-full bg-white">
             No tiene citas futuras
           </div>
           <ion-content class="ion-padding" v-else >
@@ -46,7 +46,7 @@
           </ion-select>
           </ion-item>
             <div v-for="(appointment, index) in proxAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" />
+              <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" :index="index" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonHeader, IonToolbar, IonTitle,  IonSpinner, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonItem  } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle,  IonSpinner, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonItem, onIonViewDidLeave  } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
@@ -144,7 +144,15 @@ const getUserAppointments = async () => {
 }
 
 onIonViewDidEnter(() => {
-  getUserAppointments();
+  isLoading.value = true;
+  setTimeout(() => {
+    isLoading.value = false;
+    getUserAppointments();
+  }, 700);
+})
+
+onIonViewDidLeave(() => {
+  userAppointments.value = [];
 })
 
 interface SegmentChangeEventDetail {

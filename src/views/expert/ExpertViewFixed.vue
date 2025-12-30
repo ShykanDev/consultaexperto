@@ -87,11 +87,26 @@
         Horarios del experto 
       </h6>
       <h6 class="text-center  text-gray-500 font-poppins">Estos son los horarios disponibles para citas</h6>
+        <div class="w-full max-w-md mx-auto px-4 py-3">
+    <div class="mt-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-2">
+      <ion-icon :icon=calendarClearOutline class="text-[16px] text-blue-500"></ion-icon>
+      <span class="text-[13px] font-medium text-slate-600">
+        Tiene una cita programada
+      </span>
+      <ion-button router-link="tabs/client-appointments" 
+        class="ml-auto px-3 py-1 rounded-full bg-white border border-slate-200 
+               text-[12px] font-medium text-blue-500 shadow-sm
+               active:bg-blue-50 active:scale-95 transition-all duration-150"
+      >
+        Ver más
+      </ion-button>
+    </div>
+  </div>
 <ion-card-content class="flex w-full overflow-x-scroll  gap-4 p-4 ">
   <article
     v-for="(slots, dayName) in schedule"
     :key="dayName"
-    class="flex-shrink-0 w-48 md:w-52 rounded-2xl ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] bg-white p-2  hover:ring-blue-500 animate-fade-left animate-delay-1000"
+    class="flex-shrink-0 w-48 md:w-52 rounded-2xl ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] bg-white p-2  hover:ring-blue-500 "
   >
           <span class="text-center text-blue-500">
             {{ dayName }}
@@ -166,17 +181,18 @@ import {
   IonBackButton,
   onIonViewDidLeave,
   onIonViewDidEnter,
-  useIonRouter
-
+  useIonRouter,
+  IonIcon
 } from '@ionic/vue';
-import { addDoc, collection, doc, getDoc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
-import { chevronBack } from 'ionicons/icons';
+import { addDoc, collection, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import { calendarClearOutline, chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
 import { IExpertSchedule, Slot } from '@/interfaces/Ischedule';
 import { authStore } from '@/store/auth';
 import emailjs from '@emailjs/browser';
+import { ISchedule } from '@/interfaces/user/ISchedule';
 
 /**
  * Presenta un mensaje tipo toast al usuario.
@@ -272,7 +288,7 @@ const calculateNextAppointmentDate = (dayName: string, timeStr: string): Date =>
   const now = new Date();
   const currentDay = now.getDay();
   
-  let diff = targetDay - currentDay;
+  const diff = targetDay - currentDay;
   
   // Creamos la fecha tentativa base (hoy + diferencia de días)
   const appointmentDate = new Date(now);

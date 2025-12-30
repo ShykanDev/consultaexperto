@@ -212,183 +212,13 @@
                                 Especialización</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <!-- Medical -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="calculatorOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Médico</h4>
-                                    <button @click="getExpertSelection('Médico')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-
-                            <!-- Accountant -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="calculatorOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Contador</h4>
-                                    <button @click="getExpertSelection('Contador')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Architect -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="constructOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Arquitecto</h4>
-                                    <button @click="getExpertSelection('Arquitecto')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Web Services -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="globeOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Servicios Web</h4>
-                                    <button @click="getExpertSelection('Servicios Web')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Advertising -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="desktopOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Publicidad</h4>
-                                    <button @click="getExpertSelection('Publicidad')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Translator -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="languageOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Traductor</h4>
-                                    <button @click="getExpertSelection('Traductor')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Expertise -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="schoolOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Experto</h4>
-                                    <button @click="getExpertSelection('Peritaje')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Comp. Eng. -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="terminalOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Ingeniero en Sistemas
-                                    </h4>
-                                    <button @click="getExpertSelection('Ingeniería en Computación')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Management -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="folderOpenOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Marketing</h4>
-                                    <button @click="getExpertSelection('Marketing')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-
-                            <!-- Lawyer -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="hammerOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Abogado</h4>
-                                    <button @click="getExpertSelection('Abogado')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Psychologist -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="happyOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Psicólogo/a</h4>
-                                    <button @click="getExpertSelection('Psicólogo/a')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Teacher -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="easelOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Profesor/a</h4>
-                                    <button @click="getExpertSelection('Maestro')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
-                            <!-- Chef -->
-                            <div
-                                class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
-                                <div
-                                    class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                                    <ion-icon :icon="restaurantOutline" class="text-[24px]"></ion-icon>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <h4 class="font-bold text-base leading-tight text-slate-900">Chef</h4>
-                                    <button @click="getExpertSelection('Chef')"
-                                        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">Consultar</button>
-                                </div>
-                            </div>
+                            <SelectExpertCard v-for="expert in experts" :key="expert.name" :name="expert.name"
+                                :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)" />
                         </div>
                     </section>
 
                     <!-- Advertisement Banner 2 -->
-                    <section class="px-4 py-2">
+                    <section class="px-4 py-2 bg">
                         <div class="rounded-xl overflow-hidden bg-emerald-900 text-white relative shadow-lg">
                             <div class="absolute inset-0 bg-gradient-to-r from-teal-900 to-emerald-900 opacity-90">
                             </div>
@@ -522,16 +352,10 @@
                     class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
 
                     <!-- loader dots spinner -->
-                    <div v-if="mockExperts.length === 0"
-                        class="p-3 flex justify-center flex-col items-center bg-white rounded-3xl min-w-dvw  min-h-[400px]">
-                        <article v-for="(e, i) in 4" :key="i" class="animate-fade-right animate-duration-300"
-                            :style="`animation-delay: ${i * 100}ms`">
-                            <LoaderDots />
-                        </article>
-                    </div>
+                   <ion-spinner v-if="!mockExperts.length" name="dots" color="primary" ></ion-spinner>
 
                     <div v-if="mockExperts.length > 0" @click.stop
-                        class="overflow-auto p-6 w-full bg-slate-100 rounded-2xl shadow-lg max-h-[80vh] ">
+                        class="overflow-auto p-6 w-full animate-fade animate-duration-300 bg-slate-100 rounded-2xl shadow-lg max-h-[80vh] ">
                         <PrevInfoComponent @closeCard="toggleExpertPopup('close')"
                             v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert" />
                     </div>
@@ -543,11 +367,11 @@
 </template>
 
 <script lang="ts" setup>
-import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton } from '@ionic/vue';
+import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonSpinner } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import 'animate.css';
 import { ref } from 'vue';
 import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
-import LoaderDots from '@/animations/LoaderDots.vue';
 import { IExpert } from '@/interfaces/IExpert';
 import {
     checkmarkCircleOutline,
@@ -567,10 +391,43 @@ import {
     happyOutline,
     easelOutline,
     restaurantOutline,
-    star
+    star,
+    glassesOutline,
+    scaleOutline,
+    medicalOutline,
+    personOutline,
+    heartOutline,
+    cashOutline,
+    walletOutline,
+    businessOutline,
+    homeOutline,
+    cubeOutline,
+    codeOutline,
+    laptopOutline,
+    megaphoneOutline,
+    notificationsOutline,
+    textOutline,
+    searchOutline,
+    eyeOutline,
+    settingsOutline,
+    laptop,
+    documentOutline,
+    folderOutline,
+    statsChartOutline,
+    trendingUpOutline,
+    barChartOutline,
+    peopleOutline,
+    bodyOutline,
+    headsetSharp,
+    bookOutline,
+    walkOutline,
+    flameOutline,
+    phoneLandscapeOutline
+
 } from 'ionicons/icons';
 
 import { toastController } from '@ionic/vue';
+import SelectExpertCard from './client/SelectExpertCard.vue';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
     const toast = await toastController.create({
@@ -597,6 +454,79 @@ const expertsCollection = collection(db, 'experts');
 const expertPopup = ref(false);
 const mockExperts = ref<IExpert[]>([]);
 
+// Array de expertos
+const experts = ref([
+  { 
+    name: "Médico", 
+    icon: medicalOutline, 
+    summary: "Si tiene alguna consulta sobre su salud, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Contador", 
+    icon: calculatorOutline, 
+    summary: "Si tiene alguna duda sobre sus finanzas o impuestos, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Arquitecto", 
+    icon: constructOutline, 
+    summary: "Si necesita diseñar o remodelar un espacio, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Servicios Web", 
+    icon: globeOutline, 
+    summary: "Si requiere desarrollo o soporte tecnológico, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Publicidad", 
+    icon: desktopOutline, 
+    summary: "Si desea promocionar su negocio o producto, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Traductor", 
+    icon: languageOutline, 
+    summary: "Si necesita traducir documentos o textos, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Peritaje", 
+    icon: schoolOutline, 
+    summary: "Si requiere una evaluación o dictamen técnico, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Ingeniería en Computación", 
+    icon: terminalOutline, 
+    summary: "Si necesita soluciones tecnológicas especializadas, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Marketing", 
+    icon: folderOpenOutline, 
+    summary: "Si desea impulsar su estrategia comercial, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Abogado", 
+    icon: hammerOutline, 
+    summary: "Si tiene alguna duda legal, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Psicólogo/a", 
+    icon: happyOutline, 
+    summary: "Si necesita orientación psicológica profesional, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Maestro", 
+    icon: easelOutline, 
+    summary: "Si requiere servicios educativos o tutoría, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Chef", 
+    icon: restaurantOutline, 
+    summary: "Si necesita servicios de cocina profesional o consultoría gastronómica, contacte a uno de nuestros expertos." 
+  },
+  { 
+    name: "Gestoría en Trámites", 
+    icon: documentOutline, 
+    summary: "Si necesita ayuda con gestiones administrativas, contacte a uno de nuestros expertos." 
+  }
+]);
 
 const toggleExpertPopup = (action: 'open' | 'close') => action === 'open' ? expertPopup.value = true : expertPopup.value = false;
 
