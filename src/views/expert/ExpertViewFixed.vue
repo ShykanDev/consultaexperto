@@ -88,10 +88,10 @@
       </h6>
       <h6 class="text-center  text-gray-500 font-poppins">Estos son los horarios disponibles para citas</h6>
         <div class="w-full max-w-md mx-auto px-4 py-3">
-    <div class="mt-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-2">
+    <div v-if="userHasSlotsTaken" class="mt-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-2">
       <ion-icon :icon=calendarClearOutline class="text-[16px] text-blue-500"></ion-icon>
       <span class="text-[13px] font-medium text-slate-600">
-        Tiene una cita programada
+        Tiene una cita programada el {{ userAppointmentString }}
       </span>
       <ion-button mode="ios"  fill="clear" router-link="tabs/client-appointments" 
         class="ml-auto px-3 py-1 rounded-full bg-white border border-slate-200 
@@ -242,8 +242,8 @@ const schedule = computed(() => {
   const orderedSchedule: Record<string, Slot[]> = {};
 
   orderedDays.forEach(day => {
-    if (originalSchedule?.[day]) {
-      orderedSchedule[day] = originalSchedule[day];
+    if ((originalSchedule as any)?.[day]) {
+      orderedSchedule[day] = (originalSchedule as any)[day];
     }
   });
 
@@ -370,8 +370,9 @@ const getDateSelected = (dayName: string, timeSelected: string) => {
     
     // 4. Validar Regla de 24 Horas
     // Calculamos cuándo sería esta cita
+    let nextDate: Date;
     try {
-      const nextDate = calculateNextAppointmentDate(dayName, foundSlot.time);
+      nextDate = calculateNextAppointmentDate(dayName, foundSlot.time);
       if (!isAtLeast24HoursAhead(nextDate)) {
         presentToast('top', 'No es posible agendar con menos de 24 horas de anticipación.', 'warning');
         return; // Detenemos la selección
@@ -524,16 +525,26 @@ const updateSubcollectionSchedule = async () => {
 
 
 const userHasSlotsTaken = ref(false);
+const userAppointmentString = ref('');
 const calculatedAppointmentDate = ref<string | null>(null);
 
 onIonViewDidEnter(() => {
   const currentSchedule = expertUiStore.getCurrentExpert.schedule;
   // Verificar si hay algún slot ya tomado por el usuario actual (que ya esté en BD)
-  // Nota: la lógica original verificaba todo el schedule.
-  // Asumimos que 'takenAt' existe si ya está guardado.
-  const isSlotTakenByCurrentUser = () => Object.values(currentSchedule || {}).flat(1).some((s: any) => s.takenBy == authStore().getUserUid && s.takenAt);
-
-  userHasSlotsTaken.value = isSlotTakenByCurrentUser();
+  // Verificar si hay algún slot ya tomado por el usuario actual
+  userHasSlotsTaken.value = false;
+  userAppointmentString.value = '';
+  
+  if (currentSchedule) {
+    for (const [day, slots] of Object.entries(currentSchedule)) {
+       const uSlot = (slots as any[]).find(s => s.takenBy == authStore().getUserUid && s.takenAt);
+       if (uSlot) {
+           userHasSlotsTaken.value = true;
+           userAppointmentString.value = `${day} a las ${uSlot.time}`;
+           break;
+       }
+    }
+  }
 
   // Inicializar EmailJS
   emailjs.init({

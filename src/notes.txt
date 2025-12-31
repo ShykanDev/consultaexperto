@@ -94,3 +94,79 @@ Implementar la sincronización en tiempo real de los cambios de estado
 --Add buttons to both users and experts to cancel the appointment [NOT DONE]
 --When user/expert cancel the appointment, the app should update the appointment status to 'cancelled' and notify the other user/expert [NOT DONE]
 --When user/expert cancel the appointment, the slot taken should be updated to available [NOT DONE]
+
+//TODO:
+# Application Enhancement Roadmap
+
+## Overview
+This document outlines the roadmap for upcoming features and improvements for the **ConsultaExpertoApp**. The focus is on user feedback, administrative support, and appointment management flexibility.
+
+---
+
+## 1. Post-Appointment Rating System
+**Goal:** Gather user feedback immediately after a consultation concludes to ensure quality control.
+
+### Implementation Steps:
+1.  **Trigger Logic:**
+    *   Identify the logic in `ClientAppointmentsView.vue` or `CardInfo.vue` that determines when an appointment is "finished".
+    *   Add a listener or check to detect when a user views a finished appointment that hasn't been rated yet.
+
+2.  **UI Component (Popup):**
+    *   Create a reusable `RatingModal` component (or use an existing generic modal).
+    *   **Fields:**
+        *   Star Rating (1-5).
+        *   Optional text area for comments.
+    *   **Styling:** Match the existing premium/iOS aesthetic using the design system in `index.css`.
+
+3.  **Backend/Firestore:**
+    *   Update the Appointment interface/document to include a `rating` field.
+    *   Create a function to save the rating to the specific appointment document in Firebase.
+    *   (Optional) Update the Expert's aggregate rating in their user profile.
+
+---
+
+## 2. "Contact Admin" / Report Issue Feature
+**Goal:** Provide users with a direct channel to resolve issues with completed appointments.
+
+### Implementation Steps:
+1.  **Target Component:** `src/components/Client/CardInfo.vue`.
+2.  **Condition:**
+    *   Only display this option if the appointment status is `finished` (finalized).
+3.  **UI Implementation:**
+    *   Add a "Report Issue" or "Contact Support" button/link visually distinct from the main actions.
+    *   **Micro-copy:** "Have you encountered an issue with your appointment? Contact us."
+4.  **Action:**
+    *   Implement a `mailto:` link pre-filled with the appointment ID in the subject line (e.g., `mailto:admin@shykan.com?subject=Issue with Appointment ID: 123`).
+
+---
+
+## 3. "Unhappy User" Flow & Expert Blocking
+**Goal:** Allow users to "block" an expert they were unsatisfied with during a free appointment, preventing future matches with that specific expert while allowing them to reschedule.
+
+### Implementation Steps:
+1.  **Data Structure Update (TypeScript Interfaces):**
+    *   Update the User interface (likely in `src/interfaces` or `types`) to include a new optional field:
+        ```typescript
+        expertsBlocked?: {
+            expertEmail: string;
+            expertName: string;
+            expertUid: string;
+            expertSpecialty: string;
+        }[];
+        ```
+
+2.  **Logic & UI:**
+    *   **Trigger:** Likely part of the Rating System (e.g., if rating is low) or a specific "Request Re-schedule" button if the user marks the appointment as "unsatisfactory".
+    *   **Action:**
+        *   Push the current expert's details into the user's `expertsBlocked` array in Firestore.
+        *   (Note: The actual resetting of the `freeAppointments` boolean is handled manually by the admin for now, as per instructions).
+
+3.  **Future Consideration:**
+    *   Ensure the "Find Expert" logic filters out UIDs present in the `expertsBlocked` list.
+
+---
+
+## 4. Admin Workflow (Manual Context)
+*Note: This step requires no code changes but is part of the operational flow.*
+*   **Scenario:** User reports an issue or requests a re-schedule via email (Step 2).
+*   **Admin Action:** Admin verifies the claim and manually toggles the `free_appointment` boolean in Firebase to allow the user to book again.

@@ -5,7 +5,7 @@ export interface IUser {
   name: string;                 // Example: "Alejandro Carbajal"
   email: string;                // Example: "shykandev@gmail.com"
   phone: string;                // Example: "525535752789"
-  userAge: Date;                // Example: new Date("2001-05-05T15:14:00-06:00")
+  userAge: Timestamp;                // Example: new Date("2001-05-05T15:14:00-06:00")
   createdAt: Date;              // Example: new Date("2025-12-19T15:15:34-06:00")
   isBanned: boolean;            // Example: false
   isSuspended: boolean;         // Example: false

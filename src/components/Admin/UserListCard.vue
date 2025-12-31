@@ -196,7 +196,7 @@ import {
 } from 'ionicons/icons';
 import { reactive, ref, watch } from 'vue';
 import { IUser } from '@/interfaces/user/IUser';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, Timestamp,  updateDoc } from 'firebase/firestore';
 
 const props = defineProps({
     user: {
@@ -267,10 +267,11 @@ function saveEdit() {
 }
 
 
-function getAge(dateString: string | Date | undefined) {
+function getAge(dateString: Timestamp| undefined) {
+  console.log(new Date(dateString?.toDate()));
   if (!dateString) return null;
   const today = new Date();
-  const birthDate = new Date(dateString);
+  const birthDate = new Date(dateString.toDate());
   let age = today.getFullYear() - birthDate.getFullYear();
   const m = today.getMonth() - birthDate.getMonth();
   if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {

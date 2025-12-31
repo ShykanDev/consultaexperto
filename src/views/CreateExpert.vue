@@ -9,12 +9,12 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content >
       <div class="space-y-8">
         <!-- Basic Information Section -->
         <ion-card>
           <ion-card-header class="expert-info">
-            <ion-card-title class="font-poppins" color="primary">Información del nuevo experto</ion-card-title>
+            <ion-card-title class="font-nunito text-center font-normal" color="primary">Información del nuevo experto</ion-card-title>
           </ion-card-header>
           <ion-card-content style="background-color: #F5F7F8;">
             <div class="flex flex-col py-3 space-y-4">
@@ -24,9 +24,11 @@
               <ion-input label="Correo electrónico" label-placement="floating" type="email"
                 placeholder="ejemplo@dominio.com" v-model="form.email" fill="outline" class="font-poppins"></ion-input>
 
-      <ion-select v-model="form.specialty" label="Especialidad del experto" class="text-black bg-white rounded-md"  label-placement="floating">
-        <ion-select-option  v-for="(e,index) in experts" :key="index" :value="e.name">{{ e.name }}</ion-select-option>
-      </ion-select>
+              <ion-select v-model="form.specialty" label="Especialidad del experto"
+                class="text-black bg-white rounded-md" label-placement="floating">
+                <ion-select-option v-for="(e, index) in experts" :key="index" :value="e.name">{{ e.name
+                  }}</ion-select-option>
+              </ion-select>
               <ion-input label="URL de imagen" label-placement="floating" type="url"
                 placeholder="https://ejemplo.com/imagen.png" v-model="form.imgUrl" fill="outline"
                 class="font-poppins"></ion-input>
@@ -44,26 +46,22 @@
             </div>
             <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
               Horarios del experto</h2>
-          <article
-  v-for="(slots, dayName) in schedule"
-  :key="dayName"
-  class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
-  
-  <span class="text-center text-blue-500">
-    {{ dayName }}
-  </span>
+            <section class="grid-cols-3 grid justify-center gap-1">
+              <article v-for="(slots, dayName) in schedule" :key="dayName"
+                class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500  col-span-1 ">
 
-  <div
-    v-for="(slot, slotIndex) in slots"
-    :key="slotIndex"
-    class="py-3 mb-2 text-lg font-medium text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-    :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
-    @click="getDateSelected(dayName, slot.time)"
-  >
-    {{ slot.time }}
-  </div>
-</article>
+                <span class="text-center text-blue-500">
+                  {{ dayName }}
+                </span>
 
+                <div v-for="(slot, slotIndex) in slots" :key="slotIndex"
+                  class="py-3 mb-2 text-lg font-medium text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
+                  :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
+                  @click="getDateSelected(dayName, slot.time)">
+                  {{ slot.time }}
+                </div>
+              </article>
+            </section>
           </ion-card-content>
         </ion-card>
 
@@ -165,20 +163,20 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
 };
 
 const experts = ref([
-  { name: "Abogado", icon: "fa-balance-scale"},
-  { name: "Médico", icon: "fa-user-md"},
-  { name: "Contador", icon: "fa-calculator"},
-  { name: "Arquitecto", icon: "fa-building"},
-  { name: "Servicios Web", icon: "fa-laptop-code"},
-  { name: "Publicidad", icon: "fa-bullhorn"},
-  { name: "Traductor", icon: "fa-language"},
-  { name: "Peritaje", icon: "fa-search"},
-  { name: "Ingeniería en Computación", icon: "fa-cog"},
-  { name: "Gestoría en Trámites", icon: "fa-file-alt"},
-  { name: "Marketing", icon: "fa-chart-line"},
-  { name: "Psicólogo/a", icon: "fa-user-graduate"},
-  { name: "Maestro", icon: "fa-chalkboard-teacher"},
-  { name: "Chef", icon: "fa-utensils"}
+  { name: "Abogado", icon: "fa-balance-scale" },
+  { name: "Médico", icon: "fa-user-md" },
+  { name: "Contador", icon: "fa-calculator" },
+  { name: "Arquitecto", icon: "fa-building" },
+  { name: "Servicios Web", icon: "fa-laptop-code" },
+  { name: "Publicidad", icon: "fa-bullhorn" },
+  { name: "Traductor", icon: "fa-language" },
+  { name: "Peritaje", icon: "fa-search" },
+  { name: "Ingeniería en Computación", icon: "fa-cog" },
+  { name: "Gestoría en Trámites", icon: "fa-file-alt" },
+  { name: "Marketing", icon: "fa-chart-line" },
+  { name: "Psicólogo/a", icon: "fa-user-graduate" },
+  { name: "Maestro", icon: "fa-chalkboard-teacher" },
+  { name: "Chef", icon: "fa-utensils" }
 ]);
 
 const form = ref({
@@ -334,8 +332,8 @@ const schedule = ref({
     { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
   ],
-  Martes: [ 
-     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+  Martes: [
+    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
@@ -345,9 +343,9 @@ const schedule = ref({
     { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-   ],
-  Miercoles: [ 
-     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+  ],
+  Miercoles: [
+    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
@@ -357,9 +355,9 @@ const schedule = ref({
     { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-   ],
-  Jueves: [ 
-     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+  ],
+  Jueves: [
+    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
@@ -369,9 +367,9 @@ const schedule = ref({
     { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-   ],
-  Viernes: [ 
-     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+  ],
+  Viernes: [
+    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
@@ -381,9 +379,9 @@ const schedule = ref({
     { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-   ],
-  Sábado: [ 
-     { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
+  ],
+  Sábado: [
+    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
@@ -393,7 +391,7 @@ const schedule = ref({
     { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
     { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-   ],
+  ],
 });
 
 //9 => 6 L=>S
@@ -411,7 +409,7 @@ const getDateSelected = (dayName: string, timeSelected: string) => {
 
 <style scoped>
 ion-content {
-  --background: #dadada;
+  --background: #ebebeb;
 }
 
 /* Estilos personalizados para imitar el diseño iOS */

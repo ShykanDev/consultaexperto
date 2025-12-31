@@ -667,13 +667,52 @@ const finaliceAppointment = async () => {
       finishedByName: authStore().getUserName || 'Nombre no disponible'
     })
     
+    
     await batch.commit();
     emit('reload');
+    
+    // Call the rating alert
+    try {
+        await presentRatingAlert();
+    } catch (e) {
+        console.error("Error presenting rating alert", e);
+    }
+
   } catch (error) {
     console.error('Error finalizando la cita:', error);
     emit('reload');
   }
 }
+
+const presentRatingAlert = async () => {
+  const isExpert = authStore().getUserUid === props.data.expertUid;
+  const targetName = isExpert ? props.data.userName : props.data.expertName;
+  const raterRole = isExpert ? 'Experto' : 'Usuario';
+
+  const alert = await alertController.create({
+    header: 'Calificar servicio',
+    subHeader: `Califica tu experiencia con ${targetName}`,
+    message: 'Selecciona una calificación:',
+    inputs: [
+      { label: '⭐️⭐️⭐️⭐️⭐️ Excelente', type: 'radio', value: 5, checked: true },
+      { label: '⭐️⭐️⭐️⭐️ Muy bueno', type: 'radio', value: 4 },
+      { label: '⭐️⭐️⭐️ Bueno', type: 'radio', value: 3 },
+      { label: '⭐️⭐️ Regular', type: 'radio', value: 2 },
+      { label: '⭐️ Mal', type: 'radio', value: 1 },
+    ],
+    buttons: [
+      { text: 'Omitir', role: 'cancel' },
+      { 
+        text: 'Enviar', 
+        handler: (stars) => {
+          console.log(`Estrellas dejadas por ${raterRole}:`, stars);
+        } 
+      }
+    ],
+  });
+
+  await alert.present();
+};
 
 const cancelationReason = ref('');
 

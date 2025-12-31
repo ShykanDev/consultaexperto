@@ -35,14 +35,14 @@
             <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
             <div v-if="props.expertData.isSuspended" class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200">
                 <p class="text-xs font-bold text-red-800 !font-poppins">Motivo de la suspension:</p>
-                <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas solicitudes.' }}</p>
+                <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas consultas.' }}</p>
             </div>
-            <ion-alert trigger="unsuspend-alert" header="¿Está seguro de desbloquear a este experto?" message="Al desbloquear a este experto, podrá volver a atender nuevas solicitudes." :buttons="alertButtons">
+            <ion-alert :is-open="unsuspendAlert"  header="¿Está seguro de desbloquear a este experto?" message="Al desbloquear a este experto, podrá volver a atender nuevas consultas." :buttons="alertButtons">
    
            
             </ion-alert>
             <div class="grid grid-cols-3 gap-1 p-1 mt-2">
-                <ion-button id="unsuspend-alert"  v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">
+                <ion-button  @click="toggleUnsuspendAlert" v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">
                     <ion-icon slot="start" :icon="checkmarkCircleSharp"></ion-icon>
                     <span class="text-sm font-medium">Desbloquear</span>
                 </ion-button>
@@ -69,7 +69,7 @@ import { IExpert } from '@/interfaces/IExpert';
 import { useExpertAdminStore } from '@/stores/expertAdmin';
 import { updateDoc } from 'firebase/firestore';
 import { toastController } from '@ionic/vue';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
     const toast = await toastController.create({
@@ -94,7 +94,10 @@ const expertAdminStore = useExpertAdminStore();
 const alertButtons = [
   {
     text: 'Cancelar',
-    role: 'cancel'
+    role: 'cancel',
+    handler: () => {
+      unsuspendAlert.value = false;
+    }
   },
   {
     text: 'Desbloquear',
@@ -146,6 +149,9 @@ const suspendUser = () => {
         presentToast('top', 'Error al suspender al experto', 'danger');
     });
 }
+
+const unsuspendAlert = ref(false);
+const toggleUnsuspendAlert = () => unsuspendAlert.value = !unsuspendAlert.value;
 
 const unsuspendUser = () => {
     if (!props.expertData.docRef) {
