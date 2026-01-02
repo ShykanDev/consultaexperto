@@ -108,7 +108,6 @@ import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { refresh } from 'ionicons/icons';
 import 'animate.css';
-import { C } from 'vue-router/dist/router-CWoNjPRp.mjs';
 
 const authStore = authStoreInstance(); authStore
 
@@ -131,7 +130,8 @@ const getUserAppointments = async () => {
     querySnapshot.forEach(doc =>{
       const userAppointment = doc.data() as ISchedule;
       userAppointment.docId = doc.id;
-      userAppointment.docRef = doc.ref.path;
+      userAppointment.docRef = doc.ref;
+      userAppointment.docRefPath = doc.ref.path;
       userAppointments.value.push(userAppointment)
     })
     //Restore 1 const userData = querySnapshot.docs.map((doc) => doc.data() as ISchedule).filter((appointment) => appointment.expertName !== null);

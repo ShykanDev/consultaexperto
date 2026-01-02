@@ -704,8 +704,22 @@ const presentRatingAlert = async () => {
       { text: 'Omitir', role: 'cancel' },
       { 
         text: 'Enviar', 
-        handler: (stars) => {
+        handler: async (stars) => {
           console.log(`Estrellas dejadas por ${raterRole}:`, stars);
+          try {
+
+            const appointmentDocRef = doc(db, props.data.docRefPath);
+            
+            
+            
+            await updateDoc(appointmentDocRef, {
+              [raterRole === 'Experto' ? 'expertRating' : 'userRating'] : stars
+            })
+            
+          } catch (error) {
+            console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
+            
+          }
         } 
       }
     ],

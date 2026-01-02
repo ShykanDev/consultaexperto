@@ -4,6 +4,7 @@ import { Slot } from "../Ischedule";
 export interface ISchedule {
  docId?: string;
  docRef: DocumentReference;
+ docRefPath: string;
 createdAt: Timestamp;
 DayName: string;
 expertName: string;
