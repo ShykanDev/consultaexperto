@@ -15,5 +15,6 @@ export const useExpertUiStore= defineStore('expertAdmin', {
     resetCurrentExpert() {
       this.expertData = {} as IExpert;
     }
-  }
+  },
+  persist:true
 });

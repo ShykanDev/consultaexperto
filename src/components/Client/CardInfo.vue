@@ -15,13 +15,13 @@
         <!-- Contenido principal -->
         <div class="flex relative flex-col text-left flex-1 font-poppins ">
           <!--Stars-->
-          <article v-if="authStore().getIsExpert"
+          <article v-if="authStore().getIsExpert && props.data.isFinished"
             class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
             <p class="text-xs font-poppins text-slate-400">Calificación:</p>
             <v-icon v-for="(star, index) in props.data.expertRating" :key="index" name="bi-star-fill"
               class="text-yellow-500" scale=".6" />
           </article>
-          <article v-if="authStore().getIsClient"
+          <article v-if="authStore().getIsClient && props.data.isFinished"
             class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
             <p class="text-xs font-poppins text-slate-400">Calificación:</p>
             <v-icon v-for="(star, index) in props.data.userRating" :key="index" name="bi-star-fill"
@@ -283,6 +283,7 @@ import { IonButton } from '@ionic/vue';
 import { collection, count, doc, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
 import { computed, onMounted, ref, Slot } from 'vue';
 import emailjs from '@emailjs/browser';
+import { useExpertUiStore } from '@/stores/expertUi';
 
 const experts = ref([
   {
@@ -842,7 +843,7 @@ const viewSchedule = async () => {
       console.error('No expert UID provided');
       return;
     }
-    ionRouter.navigate('/expert-info-fixed', 'back');
+    ionRouter.navigate('/expert-info-fixed', 'back', 'push');
   } catch (error) {
     console.error('Navigation error:', error);
   }

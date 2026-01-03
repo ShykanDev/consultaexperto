@@ -6,8 +6,7 @@
           <ion-back-button class="text-sm" :default-href="'/tabs/expert-list-modern'" :icon="chevronBack" color="primary"
             text="Volver" style="text-transform: none;" />
         </ion-buttons>
-        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{
-          expertUiStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}</ion-title>
+        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{expertData?.fullName?.split(' ')[0] || 'Usuario' }}</ion-title>
         <ion-buttons slot="end">
           <ion-button style="width: 4rem;"></ion-button>
         </ion-buttons>
@@ -21,17 +20,17 @@
           <ion-avatar class="mb-4 w-24 h-24">
             <img src="https://picsum.photos/200/300" alt="Profile picture of Jordan Smith"
               class="w-24 h-24 ring ring-offset-2 ring-offset-white"
-              :class="{ 'ring-red-600': expertUiStore.getCurrentExpert?.isSuspended, 'ring-blue-500': !expertUiStore.getCurrentExpert?.isSuspended }" />
+              :class="{ 'ring-red-600': expertData?.isSuspended, 'ring-blue-500': !expertData?.isSuspended }" />
           </ion-avatar>
           <ion-text class="text-center">
             <h1 class="text-2xl font-bold font-manrope">
-              {{ expertUiStore.getCurrentExpert?.fullName || 'Juan Pérez' }}
+              {{ expertData?.fullName || 'Juan Pérez' }}
             </h1>
-            <h3 v-if="expertUiStore.getCurrentExpert.isSuspended"
-              :class="{ 'text-red-600 font-poppins font-bold': expertUiStore.getCurrentExpert?.isSuspended }">
+            <h3 v-if="expertData?.isSuspended"
+              :class="{ 'text-red-600 font-poppins font-bold': expertData?.isSuspended }">
               (Suspendido)</h3>
             <p class="mt-1 text-base text-blue-700 font-poppins">
-              {{ expertUiStore.getCurrentExpert?.specialty || 'Specialty' }}
+              {{ expertData?.specialty || 'Specialty' }}
             </p>
           </ion-text>
         </ion-card-content>
@@ -48,19 +47,19 @@
           <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label color="primary">
               <p class="!text-blue-600">Nombre</p>
-              <p class="">{{ expertUiStore.getCurrentExpert?.fullName ?? 'Juan Perez' }} </p>
+              <p class="">{{ expertData?.fullName ?? 'Juan Perez' }} </p>
             </ion-label>
           </ion-item>
           <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label>
               <p class="!text-blue-700 !font-poppins">Especialidad</p>
-              <p class="!font-poppins">{{ expertUiStore.getCurrentExpert?.specialty ?? 'Médico' }}</p>
+              <p class="!font-poppins">{{ expertData?.specialty ?? 'Médico' }}</p>
             </ion-label>
           </ion-item>
           <ion-item class="py-3.5 border-t border-gray-200">
             <ion-label>
               <p class="!text-blue-700 !font-poppins">Cédula profesional</p>
-              <p class="!font-poppins">{{ expertUiStore.getCurrentExpert?.professionalId ?? 'No se proporcionó cédula profesional' }}</p>
+              <p class="!font-poppins">{{ expertData?.professionalId ?? 'No se proporcionó cédula profesional' }}</p>
             </ion-label>
           </ion-item>
 
@@ -77,7 +76,7 @@
         </ion-card-header>
         <ion-card-content>
           <p class="text-sm leading-relaxed">
-            {{ expertUiStore.getCurrentExpert?.bio ?? 'Biografía de ejemplo' }}
+            {{ expertData?.bio ?? 'Biografía de ejemplo' }}
           </p>
         </ion-card-content>
       </ion-card>
@@ -184,7 +183,7 @@ import {
   useIonRouter,
   IonIcon
 } from '@ionic/vue';
-import { addDoc, collection, doc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { calendarClearOutline, chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -193,6 +192,7 @@ import { IExpertSchedule, Slot } from '@/interfaces/Ischedule';
 import { authStore } from '@/store/auth';
 import emailjs from '@emailjs/browser';
 import { ISchedule } from '@/interfaces/user/ISchedule';
+import { IExpert } from '@/interfaces/IExpert';
 
 /**
  * Presenta un mensaje tipo toast al usuario.
@@ -222,9 +222,6 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
 const expertUiStore = useExpertUiStore()
 const savingChanges = ref(false);
 
-onIonViewDidLeave(() => {
-  expertUiStore.resetCurrentExpert();
-})
 
 /**
  * Mapeo de días a números para facilitar cálculos de fechas (0=Domingo, 1=Lunes, etc.)
@@ -505,7 +502,7 @@ const updateSubcollectionSchedule = async () => {
 
         await sendTestEmail(dayName, appointmentDate);
 
-        presentToast('top', `Cita agenda con éxito para el ${appointmentDate.toLocaleDateString()}.`, 'success');
+        presentToast('top', `Cita agendada con éxito para el ${appointmentDate.toLocaleDateString()}.`, 'success');
         
         setTimeout(() => {
             routerIon.navigate('/tabs/expert-list-modern', 'back', 'replace');
@@ -611,6 +608,33 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
     // No bloqueamos el flujo principal si falla el email, solo logueamos
   }
 }
+
+const expertData = ref<IExpert>(); 
+const getUserData = async () => {
+  
+  if(!expertUiStore.getCurrentExpert.userUid){
+    console.log('No se encontro el uid del usuario')
+    return;
+  }
+  try {
+    console.log('Intentando obtener datos del experto');
+    const expertDocRef = doc(db, 'experts', expertUiStore.getCurrentExpert.userUid);
+    const expertDocSnap = await getDoc(expertDocRef);
+
+    if(expertDocSnap.exists()){
+      expertData.value = expertDocSnap.data() as  IExpert;
+    }
+
+  } catch (error) {
+    console.log(`Error al obtener datos del experto: ${error}`);
+    
+  }
+
+}
+
+onIonViewDidEnter(() => {
+  getUserData();
+})
 </script>
 
 <style scoped>
