@@ -14,6 +14,106 @@
     </ion-header>
 
     <ion-content class="ion-padding">
+      <section v-if="loadingExpertData">
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header Skeleton -->
+  
+
+    <!-- Contenido principal -->
+    <section class="p-4 space-y-4">
+      <!-- Profile Header Skeleton -->
+      <div class="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
+        <div class="mb-4 w-24 h-24 rounded-full bg-gray-200 animate-pulse"></div>
+        <div class="text-center space-y-2">
+          <div class="h-6 w-32 bg-gray-200 rounded animate-pulse mx-auto"></div>
+          <div class="h-4 w-20 bg-gray-200 rounded animate-pulse mx-auto"></div>
+          <div class="h-4 w-28 bg-gray-200 rounded animate-pulse mx-auto"></div>
+        </div>
+      </div>
+
+      <!-- Información del experto Skeleton -->
+      <div class="bg-white rounded-lg shadow-sm">
+        <div class="bg-gray-50 px-4 pt-4 pb-2 rounded-t-lg">
+          <div class="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="px-4 divide-y divide-gray-200">
+          <div class="py-3.5 space-y-2">
+            <div class="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div class="py-3.5 space-y-2">
+            <div class="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div class="py-3.5 space-y-2">
+            <div class="h-4 w-28 bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-4 w-40 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Biografía Skeleton -->
+      <div class="bg-white rounded-lg shadow-sm">
+        <div class="bg-gray-50 px-4 pt-4 pb-2 rounded-t-lg">
+          <div class="h-5 w-20 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div class="p-4 space-y-2">
+          <div class="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-4 w-5/6 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Horarios del experto Skeleton -->
+      <div class="w-full max-w-md mx-auto px-4 py-3">
+        <div class="h-5 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-2"></div>
+        <div class="h-4 w-64 bg-gray-200 rounded animate-pulse mx-auto"></div>
+      </div>
+
+      <!-- Notificación de cita Skeleton -->
+      <div class="w-full max-w-md mx-auto px-4 py-3">
+        <div class="mt-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 flex items-center gap-2">
+          <div class="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-4 w-48 bg-gray-200 rounded animate-pulse"></div>
+          <div class="ml-auto h-8 w-16 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Slots de horario Skeleton -->
+      <div class="flex w-full overflow-x-auto gap-4 p-4">
+        <div class="flex-shrink-0 w-48 md:w-52 rounded-2xl bg-white p-2 shadow-sm">
+          <div class="h-4 w-20 bg-gray-200 rounded animate-pulse mx-auto mb-2"></div>
+          <div class="space-y-2">
+            <div class="h-8 w-full bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-8 w-full bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-8 w-full bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        </div>
+        <div class="flex-shrink-0 w-48 md:w-52 rounded-2xl bg-white p-2 shadow-sm">
+          <div class="h-4 w-20 bg-gray-200 rounded animate-pulse mx-auto mb-2"></div>
+          <div class="space-y-2">
+            <div class="h-8 w-full bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-8 w-full bg-gray-200 rounded animate-pulse"></div>
+            <div class="h-8 w-full bg-gray-200 rounded animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fecha programada Skeleton -->
+      <div class="mb-4 text-center">
+        <div class="h-4 w-32 bg-gray-200 rounded animate-pulse mx-auto mb-2"></div>
+        <div class="inline-block px-4 py-2 bg-gray-100 rounded-xl shadow-sm border border-gray-200 w-48">
+          <div class="h-5 w-full bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Botón de guardar Skeleton -->
+      <div class="w-full py-3 bg-gray-200 text-white font-medium rounded-lg shadow-sm animate-pulse"></div>
+    </section>
+  </div>
+</section>
+
+
       <!-- Profile Header -->
       <ion-card class="ion-no-margin" style="background-color: #fff;">
         <ion-card-content class="flex flex-col items-center p-6">
@@ -609,6 +709,7 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
   }
 }
 
+const loadingExpertData = ref(false);
 const expertData = ref<IExpert>(); 
 const getUserData = async () => {
   
@@ -617,6 +718,7 @@ const getUserData = async () => {
     return;
   }
   try {
+    loadingExpertData.value = true;
     console.log('Intentando obtener datos del experto');
     const expertDocRef = doc(db, 'experts', expertUiStore.getCurrentExpert.userUid);
     const expertDocSnap = await getDoc(expertDocRef);
@@ -624,10 +726,10 @@ const getUserData = async () => {
     if(expertDocSnap.exists()){
       expertData.value = expertDocSnap.data() as  IExpert;
     }
-
+    loadingExpertData.value = false;
   } catch (error) {
     console.log(`Error al obtener datos del experto: ${error}`);
-    
+    loadingExpertData.value = false;
   }
 
 }
