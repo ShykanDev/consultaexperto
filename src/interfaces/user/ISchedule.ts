@@ -24,4 +24,6 @@ canceledByUid?:string;
 finishedAt?:Timestamp;
 finishedByName?:string;
 finishedByUid?:string;
+expertRating?:number;
+userRating?:number;
 }

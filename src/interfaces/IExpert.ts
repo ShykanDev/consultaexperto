@@ -28,5 +28,7 @@ export interface IExpert {
     docRef?: DocumentReference;
 
     schedule: IExpertSchedule
+
+    
 }
 
