@@ -2,7 +2,7 @@
   <section class="ios-appointment-section">
     <!-- Vista de tarjeta -->
     <article v-if="view === 'card'"
-      :class="{ 'animate__animated animate__bounceInLeft animate__faster':view === 'card' }"
+      :class="{ 'animate__animated animate__bounceInLeft animate__faster': firstLoad && props.index === 0 || !firstLoad }"
       class="ios-card rounded-3xl shadow-sm  bg-white p-4 ripple-parent " @click="toggleView">
       <div class="flex flex-row items-center justify-between w-full">
         <!-- Icono de especialidad -->
@@ -31,12 +31,7 @@
           <span class="ios-title font-medium text-blue-900 text-base">
             Consulta con 
             <span
-              class="font-medium text-blue-600">{{ props.data.expertName }}</span>
-           <span class="font-medium text-blue-400">
-            |
-           </span> Categoría: 
-            <span
-              class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
+              class="font-medium text-blue-600">{{ props.data.userName }}</span>
           </span>
           <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
             <v-icon name="fa-calendar-alt" class="inline mr-1" scale="0.8" /> Programada para el: {{ formattedDate }}
@@ -68,10 +63,10 @@
     </article>
 
     <!-- Vista detallada -->
-    <div class="animate__animated animate__bounceInRight animate-duration-1000 animate__faster" v-if="view === 'modal'">
+    <div class="animate__animated animate__bounceInRight animate-duration-1000 animate__faster" v-else>
       <!-- Encabezado -->
       <div class="ios-header p-6 w-full max-w-full mb-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
-        <span @click.stop="toggleView" class="flex items-center gap-2 animate-fade-left">
+        <span @click="toggleView" class="flex items-center gap-2 animate-fade-left">
           <v-icon name="fa-chevron-left" class="text-blue-600" />
           <button
             class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver</button>
@@ -83,9 +78,7 @@
             <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
           </div>
           <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
-            @click="viewSchedule"
-              class="font-medium text-blue-600 underline">{{ props.data.expertName }}</span></h3>
-          <button @click="updateExpertStars(4)" class="bg-blue text-white bg-blue-600 rounded-lg p-2">Update Expert Stars</button>
+              class="font-medium text-blue-600">{{ props.data.userName }}</span></h3>
           <div class="flex justify-center">
             <span v-if="props.data.isCanceled" class="text-red-600 font-medium">(Cancelada)</span>
             <span v-if="props.data.isFinished" class="text-green-500 font-medium">(Finalizada)</span>
@@ -152,10 +145,10 @@
             <v-icon name="co-link" class="text-xl text-blue-600" />
           </div>
           <div class="flex justify-between items-center w-full">
-            <p class="font-normal text-gray-700">Enlace:</p>
-            <p v-if="!props.data.appointmentLink && !props.data.acceptedByExpert" class="font-normal text-xs text-blue-600">ⓘ El enlace se generará una vez que el experto confirme la cita.
+            <p class="font-medium text-gray-700">Enlace:</p>
+            <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...
             </p>
-            <a v-else :href="props.data.appointmentLink" class="font-normal text-xs text-blue-600 break-all">{{
+            <a v-else :href="props.data.appointmentLink" target="_blank" class="font-medium text-blue-600 break-all">{{
               props.data.appointmentLink }}</a>
           </div>
         </article>
@@ -186,10 +179,11 @@
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Estado:</p>
-            <p class="font-medium"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Esperando confirmación del experto' }}
+            <p class="font-normal"
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-blue-800'">
+              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : '' }}
             </p>
+            <p v-if="!props.data.isFinished && !props.data.isCanceled" class="text-xs text-blue-600">ⓘ El enlace se generará cuando usted acepte la cita.</p>
           </div>
         </article>
 
@@ -269,10 +263,12 @@
       <!-- Botones de acción -->
       <div v-if="!props.data.isFinished && !props.data.isCanceled"
         class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4">
-        <ion-button mode="ios" color="danger" class="ios-button" style="text-transform: none;"
+        <ion-button v-if="!props.data.isFinished" mode="ios" color="danger" class="ios-button" style="text-transform: none;"
           @click="presentAlert">Cancelar cita</ion-button>
-        <ion-button v-if="props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
+        <ion-button v-if="props.data.acceptedByExpert && !props.data.isFinished" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
           @click="finaliceAppointment">Marcar como finalizada</ion-button>
+           <ion-button v-if="!props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
+          @click="confirmConsult">Confirmar cita</ion-button>
       </div>
 
 
@@ -749,6 +745,23 @@ const finaliceAppointment = async () => {
     emit('reload');
   }
 }
+
+
+const confirmConsult = async () => {
+ try {
+  const docRef = doc(db, `${props.data.docRef.path}`)
+  await updateDoc(docRef, {
+    acceptedByExpert:true,
+    acceptedAt:Timestamp.now(),
+    appointmentLink: `https://meet.jit.si/${props.data.expertName}-${props.data.userName}`
+  })
+  emit('reload');
+ } catch (error) {
+  
+  console.log(`Error in confirming appointment function: ${error}`);
+ }
+}
+
 
 const presentRatingAlert = async () => {
   const isExpert = authStore().getUserUid === props.data.expertUid;

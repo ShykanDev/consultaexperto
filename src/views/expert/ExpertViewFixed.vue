@@ -14,16 +14,18 @@
     </ion-header>
 
     <ion-content class="ion-padding">
-      <section v-if="loadingExpertData">
+      <section v-if="!expertDataLoaded">
   <div class="min-h-screen bg-gray-50">
     <!-- Header Skeleton -->
   
 
     <!-- Contenido principal -->
-    <section class="p-4 space-y-4">
+    <section class="p-4 space-y-4 ">
       <!-- Profile Header Skeleton -->
       <div class="bg-white rounded-lg shadow-sm p-6 flex flex-col items-center">
-        <div class="mb-4 w-24 h-24 rounded-full bg-gray-200 animate-pulse"></div>
+        <div class="mb-4 w-24 h-24 rounded-full bg-gray-200  flex items-center justify-center">
+          <ion-spinner name="lines-sharp-small" class="text-primary  text-white"></ion-spinner>
+        </div>
         <div class="text-center space-y-2">
           <div class="h-6 w-32 bg-gray-200 rounded animate-pulse mx-auto"></div>
           <div class="h-4 w-20 bg-gray-200 rounded animate-pulse mx-auto"></div>
@@ -113,6 +115,7 @@
   </div>
 </section>
 
+  <section v-else>
 
       <!-- Profile Header -->
       <ion-card class="ion-no-margin" style="background-color: #fff;">
@@ -249,6 +252,7 @@
         <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
       </ion-button>
      
+  </section>
 
 
     </ion-content>
@@ -319,7 +323,6 @@ const presentToast = async (position: 'top' | 'middle' | 'bottom', message: stri
   await toast.present();
 };
 
-const expertUiStore = useExpertUiStore()
 const savingChanges = ref(false);
 
 
@@ -334,7 +337,7 @@ const dayMap: { [key: string]: number } = {
  * Computa el horario del experto ordenado correctamente.
  */
 const schedule = computed(() => {
-  const originalSchedule = expertUiStore.getCurrentExpert.schedule;
+  const originalSchedule = expertData.value?.schedule;
   const orderedDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
   const orderedSchedule: Record<string, Slot[]> = {};
 
@@ -540,7 +543,7 @@ const updateSubcollectionSchedule = async () => {
       return;
     }
 
-    if(expertUiStore.getCurrentExpert.isSuspended || expertUiStore.getCurrentExpert.isBanned){
+    if(expertData.value?.isSuspended || expertData.value?.isBanned){
       presentToast('top', 'No puede agendar horarios con este experto, contacte al administrador.', 'danger');
       return;
     }
@@ -573,7 +576,7 @@ const updateSubcollectionSchedule = async () => {
     }
 
     savingChanges.value = true;
-    const expertPath = doc(db, `experts/${expertUiStore.getCurrentExpert.docId}`);
+    const expertPath = doc(db, `experts/${expertData.value?.userUid}`);
     
     try {
         console.log('Guardando schedule...', schedule.value);
@@ -588,19 +591,20 @@ const updateSubcollectionSchedule = async () => {
         await addDoc(schedulesCollection, {
             userName: authStore().getUserName,
             userUid: authStore().getUserUid,
-            expertUid: expertUiStore.getCurrentExpert.userUid,
-            expertName: expertUiStore.getCurrentExpert.fullName,
+            expertUid: expertData.value?.userUid,
+            expertName: expertData.value?.fullName,
             expertSchedule: slotSelected.value,
-            expertSpecialty: expertUiStore.getCurrentExpert.specialty,
-            expertProfessionalId: expertUiStore.getCurrentExpert.professionalId,
+            expertSpecialty: expertData.value?.specialty,
+            expertProfessionalId: expertData.value?.professionalId,
             appointmentLink: '',
             isFinished: false,
             dayName: dayName,
             appointmentDate: Timestamp.fromDate(appointmentDate),
             createdAt: Timestamp.now(),
+            acceptedByExpert: false,
         });
 
-        await sendTestEmail(dayName, appointmentDate);
+       // await sendTestEmail(dayName, appointmentDate);
 
         presentToast('top', `Cita agendada con éxito para el ${appointmentDate.toLocaleDateString()}.`, 'success');
         
@@ -625,8 +629,10 @@ const userHasSlotsTaken = ref(false);
 const userAppointmentString = ref('');
 const calculatedAppointmentDate = ref<string | null>(null);
 
-onIonViewDidEnter(() => {
-  const currentSchedule = expertUiStore.getCurrentExpert.schedule;
+onIonViewDidEnter(async () => {
+
+  if(!await getExpertData()) return;
+  const currentSchedule = expertData.value?.schedule;
   // Verificar si hay algún slot ya tomado por el usuario actual (que ya esté en BD)
   // Verificar si hay algún slot ya tomado por el usuario actual
   userHasSlotsTaken.value = false;
@@ -650,6 +656,11 @@ onIonViewDidEnter(() => {
   })
 })
 
+onIonViewDidLeave(() => {
+  expertData.value = undefined;
+  expertDataLoaded.value = false;
+})
+
 const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
   if (!slotSelected.value) return;
 
@@ -668,7 +679,7 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
       section1Item1Label: 'Nombre:',
       section1Item1Value: authStore().getUserName ?? 'Usuario',
       section1Item2Label: 'Servicio:',
-      section1Item2Value: expertUiStore.getCurrentExpert.specialty,
+      section1Item2Value: expertData.value?.specialty,
 
       // Section 2 – Detalles de la cita
       section2Icon: '📅',
@@ -689,7 +700,7 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
       section3Title: 'Datos del experto',
       section3TitleColor: '#8e8e93',
       section3Item1Label: 'Cédula',
-      section3Item1Value: expertUiStore.getCurrentExpert.professionalId,
+      section3Item1Value: expertData.value?.professionalId,
       section3Item2Label: 'Fecha de creación de la cita',
       section3Item2Value: new Date().toLocaleDateString(),
 
@@ -709,34 +720,35 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
   }
 }
 
-const loadingExpertData = ref(false);
+const expertDataLoaded = ref(false);
+
 const expertData = ref<IExpert>(); 
-const getUserData = async () => {
+const getExpertData = async () => {
   
-  if(!expertUiStore.getCurrentExpert.userUid){
+  if(!useExpertUiStore().getExpertUid){
     console.log('No se encontro el uid del usuario')
-    return;
+    expertDataLoaded.value = true;
+    return false;
   }
   try {
-    loadingExpertData.value = true;
+    expertDataLoaded.value = false;
     console.log('Intentando obtener datos del experto');
-    const expertDocRef = doc(db, 'experts', expertUiStore.getCurrentExpert.userUid);
+    const expertDocRef = doc(db, `experts/${useExpertUiStore().getExpertUid}`);
     const expertDocSnap = await getDoc(expertDocRef);
 
     if(expertDocSnap.exists()){
       expertData.value = expertDocSnap.data() as  IExpert;
     }
-    loadingExpertData.value = false;
+    
+    expertDataLoaded.value = true;
+    return true;
   } catch (error) {
     console.log(`Error al obtener datos del experto: ${error}`);
-    loadingExpertData.value = false;
+    expertDataLoaded.value = false;
+    return false;
   }
-
 }
 
-onIonViewDidEnter(() => {
-  getUserData();
-})
 </script>
 
 <style scoped>

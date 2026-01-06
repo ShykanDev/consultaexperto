@@ -1,20 +1,19 @@
-import { IExpert } from "@/interfaces/IExpert";
 import { defineStore } from "pinia";
 
 export const useExpertUiStore= defineStore('expertAdmin', {
   state: () => ({
-    expertData: {} as IExpert
+    expertUid: '',
   }),
   getters: {
-    getCurrentExpert: (state) => state.expertData
+    getExpertUid: (state) => state.expertUid,
   },
   actions: {
-    setExpertData(expert: IExpert) {
-      this.expertData = expert;
+    resetExpertUid() {
+      this.expertUid = '';
     },
-    resetCurrentExpert() {
-      this.expertData = {} as IExpert;
-    }
+    setExpertUid(uid: string) {
+      this.expertUid = uid;
+    },
   },
   persist:true
 });

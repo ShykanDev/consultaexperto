@@ -61,8 +61,8 @@ const viewSchedule = async () => {
       console.error('No expert UID provided');
       return;
     }
-    expertUiStore.resetCurrentExpert();
-    expertUiStore.setExpertData(props.expertData);
+    expertUiStore.resetExpertUid() ;
+    expertUiStore.setExpertUid(props.expertData.userUid);
     router.push('/expert-info-fixed');
     closeCard();
   } catch (error) {

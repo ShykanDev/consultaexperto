@@ -97,9 +97,9 @@ import { onIonViewDidEnter } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { ref, computed } from 'vue';
 import { authStore as authStoreInstance } from '@/store/auth';
-import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { refresh } from 'ionicons/icons';
+import CardInfo from '@/components/Expert/CardInfo.vue';
 
 
 const authStore = authStoreInstance(); authStore
