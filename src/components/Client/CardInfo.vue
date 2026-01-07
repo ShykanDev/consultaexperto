@@ -38,15 +38,17 @@
             <span
               class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
           </span>
-          <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
-            <v-icon name="fa-calendar-alt" class="inline mr-1" scale="0.8" /> Programada para el: {{ formattedDate }}
+          <span class="ios-subtitle text-gray-600 font-manrope text-sm font-medium">
+            <v-icon name="fa-calendar-alt" class="inline mr-1 text-blue-600" scale="0.8" /> Programada para el: 
+            <span class="font-semibold text-blue-800">{{ formattedDate }}</span>
           </span>
           <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
-            <v-icon name="fa-clock" class="inline mr-1" scale="0.8" /> Hora: {{ formattedTime }} hrs
+            <v-icon name="fa-clock" class="inline mr-1 text-blue-600" scale="0.8" /> Hora: 
+            <span class="font-semibold text-blue-800">{{ formattedTime }} hrs</span>
           </span>
           <span class="ios-meta text-gray-500 font-quicksand text-xs font-semibold">
-            <v-icon name="fa-info-circle" class="inline mr-1" scale="0.8" /> Creada el: {{
-              props.data.createdAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
+            <v-icon name="fa-info-circle" class="inline mr-1 text-blue-600" scale="0.8" /> Creada el: 
+            <span class="font-semibold text-blue-800">{{ props.data.createdAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}</span>
           </span>
           <span v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished"
             class="ios-status text-emerald-600 font-quicksand text-sm font-semibold">
@@ -155,7 +157,7 @@
             <p class="font-normal text-gray-700">Enlace:</p>
             <p v-if="!props.data.appointmentLink && !props.data.acceptedByExpert" class="font-normal text-xs text-blue-600">ⓘ El enlace se generará una vez que el experto confirme la cita.
             </p>
-            <a v-else :href="props.data.appointmentLink" class="font-normal text-xs text-blue-600 break-all">{{
+            <a v-else :href="props.data.appointmentLink" target="_blank" class="font-normal text-xs text-blue-600 break-all">{{
               props.data.appointmentLink }}</a>
           </div>
         </article>
@@ -187,9 +189,12 @@
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Estado:</p>
             <p class="font-medium"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Esperando confirmación del experto' }}
+              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : props.data.acceptedByExpert ? 'text-green-600' : 'text-yellow-600'">
+              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : props.data.acceptedByExpert ? '' : 'Esperando confirmación del experto' }}
             </p>
+            <p v-if="!props.data.isFinished && !props.data.isCanceled && props.data.acceptedByExpert" class="text-xs text-blue-600">
+              Confirmada, podrá acceder cuando sea el día de la cita.
+             </p>
           </div>
         </article>
 
@@ -270,9 +275,19 @@
       <div v-if="!props.data.isFinished && !props.data.isCanceled"
         class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4">
         <ion-button mode="ios" color="danger" class="ios-button" style="text-transform: none;"
-          @click="presentAlert">Cancelar cita</ion-button>
-        <ion-button v-if="props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
-          @click="finaliceAppointment">Marcar como finalizada</ion-button>
+          @click="presentAlert">
+          <div class="!flex !items-center gap-2 justify-between">
+            <span>Cancelar cita</span>
+            <v-icon name="bi-calendar-x-fill" class="inline mr-1" scale="1" />
+          </div>
+        </ion-button>
+        <ion-button v-if="props.data.acceptedByExpert && props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
+          @click="finaliceAppointment">
+          <div class="!flex !items-center gap-2 justify-between">
+            <span>Marcar como finalizada</span>
+            <v-icon name="bi-calendar-check" class="inline mr-1" scale="1" />
+          </div>
+        </ion-button>
       </div>
 
 
@@ -287,7 +302,7 @@ import { ISchedule } from '@/interfaces/user/ISchedule';
 import { authStore } from '@/store/auth';
 import { alertController, IonRippleEffect, useIonRouter } from '@ionic/vue';
 import { IonButton } from '@ionic/vue';
-import { collection, count, doc, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { collection, count, doc, DocumentReference, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
 import { computed, onMounted, ref, Slot } from 'vue';
 import emailjs from '@emailjs/browser';
 import { useExpertUiStore } from '@/stores/expertUi';
@@ -782,6 +797,8 @@ const presentRatingAlert = async () => {
               [raterRole === 'Experto' ? 'expertRating' : 'userRating']: stars
             })
 
+            updateRoleStars(stars);
+
           } catch (error) {
             console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
 
@@ -826,11 +843,20 @@ const presentAlert = async () => {
   await alert.present();
 };
 
-const updateExpertStars = async (starsGiven: number ) => {
+const updateRoleStars = async (starsGiven: number ) => {
   
+  if (starsGiven < 1 || starsGiven > 5) return false;
+
+  if (!authStore().getUserUid || !authStore().getUserName) {
+    console.log('No user data available');
+    return false;
+  }
+
+  const rolePath = authStore().getIsExpert ? 'experts' : 'users';
+  let dynamicDocRef:DocumentReference;
   try {
-    const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
-    await updateDoc(expertDocRef, {
+    dynamicDocRef = doc(db,`${rolePath}/${authStore().getUserUid}`);
+    await updateDoc(dynamicDocRef, {
     [`rating.stars.${starsGiven}`]: increment(1),
     'rating.total': increment(starsGiven),
     'rating.count': increment(1)

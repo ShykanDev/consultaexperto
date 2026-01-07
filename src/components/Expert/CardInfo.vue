@@ -183,7 +183,8 @@
               :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-blue-800'">
               {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : '' }}
             </p>
-            <p v-if="!props.data.isFinished && !props.data.isCanceled" class="text-xs text-blue-600">ⓘ El enlace se generará cuando usted acepte la cita.</p>
+            <p v-if="!props.data.isFinished && !props.data.isCanceled && !props.data.acceptedByExpert" class="text-xs text-blue-600">ⓘ El enlace se generará cuando usted acepte la cita.</p>
+            <p v-else-if="!props.data.isFinished && !props.data.isCanceled && props.data.acceptedByExpert" class="text-xs text-blue-600">Espere el día de la cita para acceder al enlace.</p>
           </div>
         </article>
 
@@ -264,13 +265,28 @@
       <div v-if="!props.data.isFinished && !props.data.isCanceled"
         class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4">
         <ion-button v-if="!props.data.isFinished" mode="ios" color="danger" class="ios-button" style="text-transform: none;"
-          @click="presentAlert">Cancelar cita</ion-button>
-        <ion-button v-if="props.data.acceptedByExpert && !props.data.isFinished" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
-          @click="finaliceAppointment">Marcar como finalizada</ion-button>
-           <ion-button v-if="!props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button" style="text-transform: none;"
-          @click="confirmConsult">Confirmar cita</ion-button>
+          @click="presentAlert">
+          <div class="!flex !items-center gap-2 justify-between">
+            <span>Cancelar cita</span>
+            <v-icon name="gi-cancel" class="mr-1" scale="1" />
+          </div>
+          </ion-button>
+        <ion-button v-if="props.data.acceptedByExpert && !props.data.isFinished" mode="ios" color="primary" class="ios-button flex items-center gap-2" style="text-transform: none;"
+          @click="finaliceAppointment">
+          <div class="!flex !items-center gap-2 justify-between">
+            <span>Marcar como finalizada</span>
+            <v-icon name="bi-calendar-check" class="inline mr-1" scale="1" />
+          </div>
+          </ion-button>
+           <ion-button v-if="!props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button flex items-center gap-2" style="text-transform: none;"
+          @click="confirmConsult">
+          <div class="!flex !items-center gap-2 justify-between">
+            <span>Confirmar cita</span>
+            <v-icon name="bi-calendar-check" class="inline mr-1" scale="1" />
+          </div>
+          </ion-button>
       </div>
-
+      <ion-loading :is-open="loadingFirebase" :duration="3000" :message="loadingFirebaseMessage"> </ion-loading>
 
     </div>
   </section>
@@ -282,8 +298,8 @@ import { IExpert } from '@/interfaces/IExpert';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { authStore } from '@/store/auth';
 import { alertController, IonRippleEffect, useIonRouter } from '@ionic/vue';
-import { IonButton } from '@ionic/vue';
-import { collection, count, doc, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { IonButton, IonLoading } from '@ionic/vue';
+import { collection, count, doc, DocumentReference, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
 import { computed, onMounted, ref, Slot } from 'vue';
 import emailjs from '@emailjs/browser';
 import { useExpertUiStore } from '@/stores/expertUi';
@@ -381,6 +397,10 @@ const experts = ref([
 ]);
 
 const emit = defineEmits(['reload']);
+
+//loading UI values
+const loadingFirebase = ref(false);
+const loadingFirebaseMessage = ref('');
 
 const getLightBackgroundColor = (specialty: string): string => {
   if (props.data.isCanceled) {
@@ -496,6 +516,8 @@ onMounted(() => {
 
 const sendEmail = async (cancelTime: Timestamp) => {
   try {
+    loadingFirebase.value = true;
+    loadingFirebaseMessage.value = 'Enviando correo...';
     const dayName = (props.data as any).DayName || (props.data as any).dayName || formattedDay.value || 'Día desconocido';
 
     emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
@@ -542,9 +564,10 @@ const sendEmail = async (cancelTime: Timestamp) => {
 
       email: authStore().getUserEmail,
     });
-
+    loadingFirebase.value = false;
   } catch (error) {
     console.log(error);
+    loadingFirebase.value = false;
   }
 }
 
@@ -595,6 +618,8 @@ const normalizeText = (text: string) =>
 const cancelAppointment = async () => {
 
   try {
+    loadingFirebase.value = true;
+    loadingFirebaseMessage.value = 'Cancelando cita...';
     const cancellationTime = Timestamp.now();
     //Step 1: Update the expert schedule and clear the user data
 
@@ -605,6 +630,7 @@ const cancelAppointment = async () => {
     //Return if slot doesnt exist
     if (!snap.exists()) {
       console.log('Could not find the expert document');
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -625,6 +651,7 @@ const cancelAppointment = async () => {
     //Return if slot can´t be found 
     if (!slotMatch) {
       console.log(`Could not find the expert slot for this appointment`);
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -638,6 +665,7 @@ const cancelAppointment = async () => {
     //Return if document doesnt has a docRef
     if (!props.data.docRef) {
       console.log(`Couldn't find docRef for this document `);
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -665,7 +693,7 @@ const cancelAppointment = async () => {
     })
     await batch.commit();
     await sendEmail(cancellationTime);
-
+    loadingFirebase.value = false;
     console.log('Appointment canceled successfully');
     emit('reload');
     return true;
@@ -673,6 +701,7 @@ const cancelAppointment = async () => {
 
   } catch (error) {
     console.error('Error in batch function:', error);
+    loadingFirebase.value = false;
     emit('reload');
     return false;
   }
@@ -682,6 +711,8 @@ const finaliceAppointment = async () => {
 
 
   try {
+    loadingFirebase.value = true;
+    loadingFirebaseMessage.value = 'Finalizando cita...';
     const batch = writeBatch(db);
     //Step 1: Update the expert schedule and clear the user data
 
@@ -692,6 +723,7 @@ const finaliceAppointment = async () => {
     //Return if slot doesnt exist
     if (!snap.exists()) {
       console.log('Could not find the expert document');
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -712,6 +744,7 @@ const finaliceAppointment = async () => {
     //Return if slot can´t be found 
     if (!slotMatch) {
       console.log(`Could not find the expert slot for this appointment`);
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -732,6 +765,7 @@ const finaliceAppointment = async () => {
 
     await batch.commit();
     emit('reload');
+    loadingFirebase.value = false;
 
     // Call the rating alert
     try {
@@ -743,12 +777,15 @@ const finaliceAppointment = async () => {
   } catch (error) {
     console.error('Error finalizando la cita:', error);
     emit('reload');
+    loadingFirebase.value = false;
   }
 }
 
 
 const confirmConsult = async () => {
  try {
+  loadingFirebase.value = true;
+  loadingFirebaseMessage.value = 'Confirmando cita...';
   const docRef = doc(db, `${props.data.docRef.path}`)
   await updateDoc(docRef, {
     acceptedByExpert:true,
@@ -756,8 +793,9 @@ const confirmConsult = async () => {
     appointmentLink: `https://meet.jit.si/${props.data.expertName}-${props.data.userName}`
   })
   emit('reload');
+  loadingFirebase.value = false;
  } catch (error) {
-  
+  loadingFirebase.value = false;
   console.log(`Error in confirming appointment function: ${error}`);
  }
 }
@@ -786,15 +824,7 @@ const presentRatingAlert = async () => {
         handler: async (stars) => {
           console.log(`Estrellas dejadas por ${raterRole}:`, stars);
           try {
-
-            const appointmentDocRef = doc(db, props.data.docRefPath);
-
-
-
-            await updateDoc(appointmentDocRef, {
-              [raterRole === 'Experto' ? 'expertRating' : 'userRating']: stars
-            })
-
+            await updateRoleStars(stars)
           } catch (error) {
             console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
 
@@ -839,19 +869,35 @@ const presentAlert = async () => {
   await alert.present();
 };
 
-const updateExpertStars = async (starsGiven: number ) => {
+const updateRoleStars = async (starsGiven: number ) => {
   
+  if (starsGiven < 1 || starsGiven > 5) return false;
+
+  if (!authStore().getUserUid || !authStore().getUserName) {
+    console.log('No user data available');
+    return false;
+  }
+
+console.log(`Is user Expert: ${authStore().getIsExpert}`);
+console.log(`User UID: ${authStore().getUserUid}`);
+console.log(`User Name: ${authStore().getUserName}`);
+
+
+  //If user is expert, update user rating, else update expert rating 
+  const rolePath = authStore().getIsExpert ? 'users' : 'experts';
+  const roleUid = rolePath === 'users' ? props.data.userUid : props.data.expertUid;
+  let dynamicDocRef:DocumentReference;
   try {
-    const expertDocRef = doc(db, `experts/${props.data.expertUid}`);
-    await updateDoc(expertDocRef, {
+    dynamicDocRef = doc(db,`${rolePath}/${roleUid}`);
+    await updateDoc(dynamicDocRef, {
     [`rating.stars.${starsGiven}`]: increment(1),
     'rating.total': increment(starsGiven),
     'rating.count': increment(1)
     })
 
-
+    console.log(`${rolePath} stars updated successfully to user with uid: ${roleUid}`);
   } catch (error) {
-    console.log(`Error trying to update expert stars : ${error}`);
+    console.log(`Error trying to update ${rolePath} stars : ${error}`);
 
   }
 }

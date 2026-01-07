@@ -150,6 +150,7 @@ import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
   FaTimesCircle,
   FaUserCheck,
   BiStarFill,
+  GiCancel,
 } from "oh-vue-icons/icons";
 addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   MdFreecancellationTwotone,
@@ -268,7 +269,9 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   FaUserTimes,
   BiCalendarXFill,
   FaUserCheck,
-  BiStarFill
+  BiStarFill,
+  BiCalendarCheck,
+  GiCancel
 );
 
 // Import the functions you need from the SDKs you need

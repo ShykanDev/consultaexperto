@@ -245,16 +245,17 @@
         </div>
       </div>
 
-      <ion-button v-if="!userHasSlotsTaken" class="ion-margin-vertical" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
-        @click="updateSubcollectionSchedule()">{{
-          !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
-        }}
-        <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
+      <ion-button v-if="!userHasSlotsTaken && !savingChanges" class="ion-margin-vertical mr-2" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
+        @click="updateSubcollectionSchedule()">
+        <span class="mr-2">{{
+          !savingChanges ? 'Agendar cita' : 'Guardando Cambios'
+        }}</span>
+        <v-icon name="bi-calendar-check"></v-icon>
       </ion-button>
      
   </section>
 
-
+  <ion-loading :is-open="loading" :message="loadingMessage" :duration="0"></ion-loading>
     </ion-content>
 
 
@@ -285,7 +286,8 @@ import {
   onIonViewDidLeave,
   onIonViewDidEnter,
   useIonRouter,
-  IonIcon
+  IonIcon,
+  IonLoading
 } from '@ionic/vue';
 import { addDoc, collection, doc, getDoc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
 import { calendarClearOutline, chevronBack } from 'ionicons/icons';
@@ -304,6 +306,9 @@ import { IExpert } from '@/interfaces/IExpert';
  * @param message Mensaje a mostrar
  * @param color Color del toast (ej. 'success', 'warning', 'danger')
  */
+
+ const loading = ref(false);
+ const loadingMessage = ref('');
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
     message: message,
@@ -575,6 +580,8 @@ const updateSubcollectionSchedule = async () => {
         return;
     }
 
+    loading.value = true;
+    loadingMessage.value = 'Agendando cita...';
     savingChanges.value = true;
     const expertPath = doc(db, `experts/${expertData.value?.userUid}`);
     
@@ -606,11 +613,12 @@ const updateSubcollectionSchedule = async () => {
 
        // await sendTestEmail(dayName, appointmentDate);
 
-        presentToast('top', `Cita agendada con éxito para el ${appointmentDate.toLocaleDateString()}.`, 'success');
+        presentToast('top', `Cita agendada con éxito para el ${appointmentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}.`, 'success');
         
         setTimeout(() => {
             routerIon.navigate('/tabs/expert-list-modern', 'back', 'replace');
         }, 1500);
+        loading.value = false;
         
     } catch (error) { 
         console.error(error);
@@ -619,8 +627,8 @@ const updateSubcollectionSchedule = async () => {
         slotSelected.value.takenBy = null;
         slotSelected.value.takenAt = null;
         calculatedAppointmentDate.value = null;
-    } finally {
         savingChanges.value = false;
+        loading.value = false;
     }
 };
 
