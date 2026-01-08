@@ -12,8 +12,17 @@ export interface IExpert {
     profilePicture?: string;
 
     experienceYears?: number;
-    rating?: number;
-    totalRatings?: number;
+    rating?: {
+        count?: number;
+        stars:{
+            1?: number;
+            2?: number;
+            3?: number;
+            4?: number;
+            5?: number;
+        };
+        total?: number;
+    };
     completedSessions?: number;
 
     isSuspended?: boolean;

@@ -87,7 +87,6 @@
           <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
             @click="viewSchedule"
               class="font-medium text-blue-600 underline">{{ props.data.expertName }}</span></h3>
-          <button @click="updateExpertStars(4)" class="bg-blue text-white bg-blue-600 rounded-lg p-2">Update Expert Stars</button>
           <div class="flex justify-center">
             <span v-if="props.data.isCanceled" class="text-red-600 font-medium">(Cancelada)</span>
             <span v-if="props.data.isFinished" class="text-green-500 font-medium">(Finalizada)</span>
@@ -289,7 +288,7 @@
           </div>
         </ion-button>
       </div>
-
+      <ion-loading :is-open="loadingFirebase" :duration="3000" :message="loadingFirebaseMessage"> </ion-loading>
 
     </div>
   </section>
@@ -297,13 +296,12 @@
 </template>
 
 <script lang="ts" setup>
-import { IExpert } from '@/interfaces/IExpert';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { authStore } from '@/store/auth';
 import { alertController, IonRippleEffect, useIonRouter } from '@ionic/vue';
-import { IonButton } from '@ionic/vue';
-import { collection, count, doc, DocumentReference, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
-import { computed, onMounted, ref, Slot } from 'vue';
+import { IonButton, IonLoading } from '@ionic/vue';
+import { collection, doc, DocumentReference, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { computed, onMounted, ref } from 'vue';
 import emailjs from '@emailjs/browser';
 import { useExpertUiStore } from '@/stores/expertUi';
 
@@ -697,10 +695,13 @@ const cancelAppointment = async () => {
   }
 };
 
+const loadingFirebase = ref(false);
+const loadingFirebaseMessage = ref('');
+
 const finaliceAppointment = async () => {
-
-
   try {
+    loadingFirebase.value = true;
+    loadingFirebaseMessage.value = 'Finalizando cita...';
     const batch = writeBatch(db);
     //Step 1: Update the expert schedule and clear the user data
 
@@ -711,6 +712,7 @@ const finaliceAppointment = async () => {
     //Return if slot doesnt exist
     if (!snap.exists()) {
       console.log('Could not find the expert document');
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -731,6 +733,7 @@ const finaliceAppointment = async () => {
     //Return if slot can´t be found 
     if (!slotMatch) {
       console.log(`Could not find the expert slot for this appointment`);
+      loadingFirebase.value = false;
       return false;
     }
 
@@ -751,6 +754,7 @@ const finaliceAppointment = async () => {
 
     await batch.commit();
     emit('reload');
+    loadingFirebase.value = false;
 
     // Call the rating alert
     try {
@@ -762,6 +766,7 @@ const finaliceAppointment = async () => {
   } catch (error) {
     console.error('Error finalizando la cita:', error);
     emit('reload');
+    loadingFirebase.value = false;
   }
 }
 
@@ -788,17 +793,7 @@ const presentRatingAlert = async () => {
         handler: async (stars) => {
           console.log(`Estrellas dejadas por ${raterRole}:`, stars);
           try {
-
-            const appointmentDocRef = doc(db, props.data.docRefPath);
-
-
-
-            await updateDoc(appointmentDocRef, {
-              [raterRole === 'Experto' ? 'expertRating' : 'userRating']: stars
-            })
-
-            updateRoleStars(stars);
-
+            await updateRoleStars(stars)
           } catch (error) {
             console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
 
@@ -811,6 +806,38 @@ const presentRatingAlert = async () => {
   await alert.present();
 };
 
+const updateRoleStars = async (starsGiven: number ) => {
+  
+  if (starsGiven < 1 || starsGiven > 5) return false;
+
+  if (!authStore().getUserUid || !authStore().getUserName) {
+    console.log('No user data available');
+    return false;
+  }
+
+console.log(`Is user Expert: ${authStore().getIsExpert}`);
+console.log(`User UID: ${authStore().getUserUid}`);
+console.log(`User Name: ${authStore().getUserName}`);
+
+
+  //If user is expert, update user rating, else update expert rating 
+  const rolePath = authStore().getIsExpert ? 'users' : 'experts';
+  const roleUid = rolePath === 'users' ? props.data.userUid : props.data.expertUid;
+  let dynamicDocRef:DocumentReference;
+  try {
+    dynamicDocRef = doc(db,`${rolePath}/${roleUid}`);
+    await updateDoc(dynamicDocRef, {
+    [`rating.stars.${starsGiven}`]: increment(1),
+    'rating.total': increment(starsGiven),
+    'rating.count': increment(1)
+    })
+
+    console.log(`${rolePath} stars updated successfully to user with uid: ${roleUid}`);
+  } catch (error) {
+    console.log(`Error trying to update ${rolePath} stars : ${error}`);
+
+  }
+}
 const cancelationReason = ref('');
 
 const presentAlert = async () => {
@@ -843,31 +870,7 @@ const presentAlert = async () => {
   await alert.present();
 };
 
-const updateRoleStars = async (starsGiven: number ) => {
-  
-  if (starsGiven < 1 || starsGiven > 5) return false;
 
-  if (!authStore().getUserUid || !authStore().getUserName) {
-    console.log('No user data available');
-    return false;
-  }
-
-  const rolePath = authStore().getIsExpert ? 'experts' : 'users';
-  let dynamicDocRef:DocumentReference;
-  try {
-    dynamicDocRef = doc(db,`${rolePath}/${authStore().getUserUid}`);
-    await updateDoc(dynamicDocRef, {
-    [`rating.stars.${starsGiven}`]: increment(1),
-    'rating.total': increment(starsGiven),
-    'rating.count': increment(1)
-    })
-
-
-  } catch (error) {
-    console.log(`Error trying to update expert stars : ${error}`);
-
-  }
-}
 
 const ionRouter = useIonRouter();
 const viewSchedule = async () => {

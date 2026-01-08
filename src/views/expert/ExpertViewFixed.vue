@@ -135,6 +135,22 @@
             <p class="mt-1 text-base text-blue-700 font-poppins">
               {{ expertData?.specialty || 'Specialty' }}
             </p>
+            
+            <!-- Rating Display -->
+            <div v-if="expertData?.rating" class="mt-2">
+              <article class="flex items-center justify-center gap-1">
+                <span class="text-slate-600 font-manrope font-semibold text-sm">
+                  {{ calcStarsValue(expertData.rating).toFixed(1) }}
+                </span>
+                <v-icon name="io-star" scale="1" class="text-yellow-500" />  
+                <p class="text-slate-500 text-sm font-poppins ml-1">
+                  ({{ expertData.rating.count }} {{ expertData.rating.count === 1 ? 'cita' : 'citas' }})
+                </p>
+              </article>
+
+              <!-- TODO: display the full rating stars -->
+               
+            </div>
           </ion-text>
         </ion-card-content>
       </ion-card>
@@ -299,6 +315,10 @@ import { authStore } from '@/store/auth';
 import emailjs from '@emailjs/browser';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { IExpert } from '@/interfaces/IExpert';
+import { useRating } from '@/composables/stars';
+
+// Destructure the calcStarsValue function from useRating composable
+const { calcStarsValue } = useRating();
 
 /**
  * Presenta un mensaje tipo toast al usuario.

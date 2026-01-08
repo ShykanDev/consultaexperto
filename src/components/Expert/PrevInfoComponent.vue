@@ -16,13 +16,23 @@
 
       <!-- Detalles del experto -->
       <div class="ios-expert-details">
-        <div class="ios-expert-header">
-          <h2 class="ios-expert-name">
+        <div class=" flex items-center justify-around flex-col">
+          <h2 class="!text-xl font-normal font-poppins text-blue-600">
             {{ expertData?.fullName || 'Experto' }}
           </h2>
-          <span class="ios-expert-specialty-badge">
+          <span class="bg-blue-500 text-white px-2 py-1 rounded-full">
             {{ expertData?.specialty || 'Especialidad' }}
           </span>
+          <div v-if="expertData?.rating">
+            <article class="flex items-center my-2">
+              <span class="text-slate-500 font-manrope font-semibold mr-1">
+                {{ calcStarsValue(expertData.rating).toFixed(1) }}
+              </span>
+              <v-icon name="io-star" scale="1" class="text-yellow-500" />  
+              <p class="text-slate-500 text-xs">({{ expertData.rating.count }} citas) </p>
+
+            </article>
+          </div>
         </div>
 
         <p class="ios-expert-bio">
@@ -46,6 +56,9 @@
 import { useRouter } from 'vue-router';
 import { IExpert } from '@/interfaces/IExpert';
 import { useExpertUiStore } from '@/stores/expertUi';
+import { FcRating } from 'oh-vue-icons/icons';
+import { useRating } from '@/composables/stars';
+
 
 const expertUiStore = useExpertUiStore();
 
@@ -72,6 +85,11 @@ const viewSchedule = async () => {
 
 const emit = defineEmits(['closeCard']);
 const closeCard = () => emit('closeCard');
+
+//Calculate stars values
+const {calcStarsValue} = useRating();
+
+
 </script>
 
 <style scoped>

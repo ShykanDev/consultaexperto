@@ -118,6 +118,7 @@ const q = query(collectionRef, where('userUid', '==', authStoreInstance().getUse
 const isLoading = ref(false);
 const getUserAppointments = async () => {
   userAppointments.value = [];
+  
   try {
     isLoading.value = true;
     const querySnapshot = await getDocs(q);

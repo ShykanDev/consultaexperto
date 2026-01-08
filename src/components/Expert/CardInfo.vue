@@ -915,6 +915,7 @@ const viewSchedule = async () => {
     console.error('Navigation error:', error);
   }
 };
+
 </script>
 
 <style scoped>
