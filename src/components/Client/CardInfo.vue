@@ -152,12 +152,16 @@
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
             <v-icon name="co-link" class="text-xl text-blue-600" />
           </div>
-          <div class="flex justify-between items-center w-full">
+          <div class="flex justify-between items-center w-full gap-2">
             <p class="font-normal text-gray-700">Enlace:</p>
             <p v-if="!props.data.appointmentLink && !props.data.acceptedByExpert" class="font-normal text-xs text-blue-600">ⓘ El enlace se generará una vez que el experto confirme la cita.
             </p>
-            <a v-else :href="props.data.appointmentLink" target="_blank" class="font-normal text-xs text-blue-600 break-all">{{
-              props.data.appointmentLink }}</a>
+            <p v-if="props.data.appointmentLink && props.data.acceptedByExpert && !props.data.isOpenedLinkByExpert" class="font-normal text-xs text-blue-600 flex items-center gap-1"><v-icon name="fa-check-circle" class="text-blue-600" scale=".9" /> El experto ha aceptado su cita, el enlace estará disponible en la fecha de la cita.</p>
+          <div v-if="props.data.appointmentLink && props.data.acceptedByExpert && props.data.isOpenedLinkByExpert">
+            <p class="text-blue-600 text-center text-xs font-poppins">El experto ha iniciado la cita, tiene 5 minutos para unirse.</p>
+            <ion-button size="small" mode="ios" color="primary" class="flex items-center gap-2 font-poppins text-xs" @click="joinCall">Unirse a la llamada <v-icon name="bi-person-video" class="ml-2 text-xl text-white "  animation="flash" speed="slow" scale="1.6" /></ion-button>
+
+          </div>
           </div>
         </article>
       </div>
@@ -192,7 +196,7 @@
               {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : props.data.acceptedByExpert ? '' : 'Esperando confirmación del experto' }}
             </p>
             <p v-if="!props.data.isFinished && !props.data.isCanceled && props.data.acceptedByExpert" class="text-xs text-blue-600">
-              Confirmada, podrá acceder cuando sea el día de la cita.
+             Su cita fue confirmada por {{ props.data.expertName }}
              </p>
           </div>
         </article>
@@ -397,7 +401,6 @@ const experts = ref([
   }
 ]);
 
-const emit = defineEmits(['reload']);
 
 const getLightBackgroundColor = (specialty: string): string => {
   if (props.data.isCanceled) {
@@ -573,6 +576,22 @@ const toggleView = () => {
   view.value = view.value === 'card' ? 'modal' : 'card';
 }
 
+const joinCall = () => {
+  if(props.data.isCanceled || props.data.isFinished){
+    console.log('La cita ya fue cancelada o finalizada');
+    return;
+  }
+  if (!props.data.isOpenedLinkByExpert ){
+    console.log('El experto no ha abierto la cita');
+    return;
+  }
+  try {
+    window.open(props.data.appointmentLink, '_blank', 'noopener,noreferrer');
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 /***Firebase Values****/
 
 const db = getFirestore();
@@ -607,7 +626,6 @@ const normalizeText = (text: string) =>
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .trim();
-
 
 const cancelAppointment = async () => {
 
@@ -684,13 +702,11 @@ const cancelAppointment = async () => {
     await sendEmail(cancellationTime);
 
     console.log('Appointment canceled successfully');
-    emit('reload');
     return true;
 
 
   } catch (error) {
     console.error('Error in batch function:', error);
-    emit('reload');
     return false;
   }
 };
@@ -753,7 +769,6 @@ const finaliceAppointment = async () => {
 
 
     await batch.commit();
-    emit('reload');
     loadingFirebase.value = false;
 
     // Call the rating alert
@@ -765,7 +780,6 @@ const finaliceAppointment = async () => {
 
   } catch (error) {
     console.error('Error finalizando la cita:', error);
-    emit('reload');
     loadingFirebase.value = false;
   }
 }

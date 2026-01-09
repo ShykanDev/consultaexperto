@@ -35,7 +35,7 @@
            <div class="relative mb-4">
               <div class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-blue-400 to-blue-600 shadow-xl overflow-hidden">
                 <img 
-                  :src="expertData.profilePicture || expertData.imgUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + (expertData.fullName || 'User')" 
+                  :src="expertData.profilePicture || expertData.imgUrl" 
                   class="w-full h-full object-cover rounded-full bg-white"
                   alt="Profile"
                 />
@@ -59,13 +59,13 @@
               </div>
               <div class="w-[1px] h-8 bg-gray-200"></div>
               <div class="flex flex-col items-center">
-                 <span class="text-lg font-bold text-gray-800 font-poppins">{{ expertData.completedSessions || 0 }}</span>
+                 <span class="text-lg font-bold text-gray-800 font-poppins">{{ expertData.completedSessions }}</span>
                  <span class="text-xs text-gray-500 font-medium">Sesiones</span>
               </div>
               <div class="w-[1px] h-8 bg-gray-200"></div>
               <div class="flex flex-col items-center">
                  <span class="text-lg font-bold text-gray-800 font-poppins flex items-center gap-1">
-                   {{ expertData.rating || 5.0 }} <ion-icon :icon="star" class="text-yellow-400 text-xs"></ion-icon>
+                 {{calcStarsValue(expertData.rating!).toFixed(1)}}   <ion-icon :icon="star" class="text-yellow-400 text-xs"></ion-icon>
                  </span>
                  <span class="text-xs text-gray-500 font-medium">Rating</span>
               </div>
@@ -148,6 +148,7 @@ import { ref } from 'vue';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { authStore as useAuthStore } from '@/store/auth';
 import { IExpert } from '@/interfaces/IExpert';
+import { useRating } from '@/composables/stars';
 
 const authStore = useAuthStore();
 const db = getFirestore();
@@ -184,6 +185,11 @@ const loadExpertData = async () => {
 onIonViewDidEnter(() => {
   loadExpertData();
 });
+
+
+//UI
+
+const {calcStarsValue} = useRating();
 </script>
 
 <style scoped>

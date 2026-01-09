@@ -28,4 +28,7 @@ acceptedAt?:Timestamp;
 acceptedByExpert?:boolean;
 expertRating?:number;
 userRating?:number;
+isOpenedLinkByExpert?:boolean;
+openedLinkAt?:Timestamp;
+consultInCourse?:boolean;
 }

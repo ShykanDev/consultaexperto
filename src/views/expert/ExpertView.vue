@@ -54,7 +54,7 @@
           </div>
           <ion-content v-else class="ion-padding">
              <div v-for="(appointment, index) in proxAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" :index="index" />
+              <CardInfo  v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" :index="index" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -68,7 +68,7 @@
           </div>
           <ion-content v-else class="ion-padding">
             <div v-for="(appointment, index) in finishedAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" v-if="appointment.isFinished" :data="appointment" />
+              <CardInfo  v-if="appointment.isFinished" :data="appointment" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -82,7 +82,7 @@
           </div>
           <ion-content v-else class="ion-padding">
             <div v-for="(appointment, index) in canceledAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" v-if="appointment.isCanceled" :data="appointment" />
+              <CardInfo  v-if="appointment.isCanceled" :data="appointment" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -92,9 +92,9 @@
 </template>
 
 <script lang="ts" setup>
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonSearchbar, IonSpinner } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonSearchbar, IonSpinner, onIonViewDidLeave } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { ref, computed } from 'vue';
 import { authStore as authStoreInstance } from '@/store/auth';
 import { ISchedule } from '@/interfaces/user/ISchedule';
@@ -110,33 +110,37 @@ const expertCollection = collection(db,'schedules');
 const queryCollection = query(expertCollection,where('expertUid', '==', authStore.getUserUid));
 const isLoading = ref(false);
 
-const getUserAppointments = async () => {
-  try {
-    isLoading.value = true;
-    const querySnapshot = await getDocs(queryCollection);
-    if(querySnapshot.empty){
-      userAppointments.value = [];
-      console.log('No hay citas futuras');
-      return;
-    }
-    userAppointments.value = querySnapshot.docs.map((doc) => {
-        const data = doc.data() as ISchedule;
-        data.docId = doc.id;
-        data.docRef = doc.ref;
-        return data;
-    }).filter((appointment) => appointment.expertName !== null);
-    
-    console.log(userAppointments.value);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    isLoading.value = false;
-  }
-}
+//Firebase onSnapshot data
+
+let unsub: (() => void) | null = null;
 
 onIonViewDidEnter(() => {
-  getUserAppointments();
+  unsub = onSnapshot(
+    queryCollection,
+    (querySnapshot) => {
+      userAppointments.value = [];
+      querySnapshot.forEach((doc) => {
+       const schedule = doc.data() as ISchedule;
+       schedule.docRef = doc.ref;
+       schedule.docRefPath = doc.ref.path;
+       schedule.docId = doc.id;
+       userAppointments.value.push(schedule);
+      });
+    },
+    (error) => {
+      console.error(error);
+    }
+  );
+});
+
+onIonViewDidLeave(()=> {
+  userAppointments.value = [];
+  if(unsub) {
+    unsub();
+    unsub = null;
+  }
 })
+
 
 /** Filtering and Sorting Logic **/
 
@@ -199,7 +203,6 @@ const filterAndSortAppointments = (appointments: ISchedule[]) => {
         // Search by User Name for Expert View
         const uName = (app.userName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const specialty = (app.expertSpecialty || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        
         let status = 'programada';
         if (app.isFinished) status = 'finalizada';
         if (app.isCanceled) status = 'cancelada'; 

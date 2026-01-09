@@ -5,7 +5,7 @@
       <ion-toolbar>
         <ion-title class="text-center text-blue-600">Agenda</ion-title>
         <ion-buttons slot="end">
-          <ion-button class="text-sm font-quicksand" color="primary" @click="getUserAppointments()" style="text-transform: none;">
+          <ion-button class="text-sm font-quicksand" color="primary"  style="text-transform: none;">
             <ion-icon :icon="refresh" class="w-3 h-3" color="primary" :class="{ 'animate-spin': isLoading }"></ion-icon>
             Actualizar
           </ion-button>
@@ -58,7 +58,7 @@
           </div>
           <ion-content class="ion-padding" v-else >
             <div v-for="(appointment, index) in proxAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" :index="index" />
+              <CardInfo v-if="!appointment.isFinished && !appointment.isCanceled" :data="appointment" :index="index" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -73,7 +73,7 @@
           <ion-content class="ion-padding" v-else>
             <!--Finished Appointments-->
             <div v-for="(appointment, index) in finishedAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" v-if="appointment.isFinished" :data="appointment" />
+              <CardInfo v-if="appointment.isFinished" :data="appointment" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -89,7 +89,7 @@
           <ion-content v-else class="ion-padding">
             <!--Canceled Appointments-->
             <div v-for="(appointment, index) in canceledAppointments" :key="index" class="my-2">
-              <CardInfo @reload="getUserAppointments()" :data="appointment" />
+              <CardInfo :data="appointment" />
             </div>
           </ion-content>
         </ion-segment-content>
@@ -101,7 +101,7 @@
 <script lang="ts" setup>
 import { IonPage, IonHeader, IonToolbar, IonTitle,  IonSpinner, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, onIonViewDidLeave, IonSearchbar  } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
 import { authStore as authStoreInstance } from '@/store/auth';
 import CardInfo from '@/components/Client/CardInfo.vue';
@@ -116,7 +116,11 @@ const db = getFirestore();
 const collectionRef = collection(db, 'schedules');
 const q = query(collectionRef, where('userUid', '==', authStoreInstance().getUserUid));
 const isLoading = ref(false);
-const getUserAppointments = async () => {
+
+//Firebase 
+let unsub: (() => void) | null = null;
+
+/*const getUserAppointments = async () => {
   userAppointments.value = [];
   
   try {
@@ -144,18 +148,51 @@ const getUserAppointments = async () => {
     isLoading.value = false;
   }
 }
+*/
 
 onIonViewDidEnter(() => {
   isLoading.value = true;
-  setTimeout(() => {
-    isLoading.value = false;
-    getUserAppointments();
-  }, 700);
-})
+
+  unsub = onSnapshot(q, (querySnapshot) => {
+
+      userAppointments.value = [];
+
+      if (querySnapshot.empty) {
+        isLoading.value = false;
+        return;
+      }
+
+      querySnapshot.forEach((doc) => {
+        const userAppointment = doc.data() as ISchedule;
+        userAppointment.docId = doc.id;
+        userAppointment.docRef = doc.ref;
+        userAppointment.docRefPath = doc.ref.path;
+        userAppointments.value.push(userAppointment);
+      });
+
+      isLoading.value = false;
+      
+    },
+    (error) => {
+      console.error(error);
+      isLoading.value = false;
+    }
+  );
+});
+
 
 onIonViewDidLeave(() => {
+  if (unsub) {
+    unsub();
+    unsub = null;
+  }
+
   userAppointments.value = [];
-})
+  isLoading.value = false;
+});
+
+
+
 
 interface SegmentChangeEventDetail {
   value?: string;

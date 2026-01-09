@@ -1,5 +1,5 @@
 <template>
-  <section class="ios-appointment-section">
+  <section class="ios-appointment-section animate__animated animate__bounceInLeft animate__faster">
     <!-- Vista de tarjeta -->
     <article v-if="view === 'card'"
       :class="{ 'animate__animated animate__bounceInLeft animate__faster': firstLoad && props.index === 0 || !firstLoad }"
@@ -15,12 +15,6 @@
         <!-- Contenido principal -->
         <div class="flex relative flex-col text-left flex-1 font-poppins ">
           <!--Stars-->
-          <article v-if="authStore().getIsExpert && props.data.isFinished"
-            class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
-            <p class="text-xs font-poppins text-slate-400">Calificación:</p>
-            <v-icon v-for="(star, index) in props.data.expertRating" :key="index" name="bi-star-fill"
-              class="text-yellow-500" scale=".6" />
-          </article>
           <article v-if="authStore().getIsClient && props.data.isFinished"
             class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
             <p class="text-xs font-poppins text-slate-400">Calificación:</p>
@@ -148,8 +142,7 @@
             <p class="font-medium text-gray-700">Enlace:</p>
             <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...
             </p>
-            <a v-else :href="props.data.appointmentLink" target="_blank" class="font-medium text-blue-600 break-all">{{
-              props.data.appointmentLink }}</a>
+            <ion-button mode="ios" color="primary" v-else @click="markLinkAsOpened" class="font-medium text-blue-600 break-all cursor-pointer">Comenzar Cita</ion-button>
           </div>
         </article>
       </div>
@@ -396,7 +389,7 @@ const experts = ref([
   }
 ]);
 
-const emit = defineEmits(['reload']);
+
 
 //loading UI values
 const loadingFirebase = ref(false);
@@ -433,6 +426,7 @@ const getIcon = (specialty: string): string => {
 };
 
 const firstLoad = ref(true);
+
 /**Vue Props */
 const props = defineProps({
   data: {
@@ -695,14 +689,12 @@ const cancelAppointment = async () => {
     await sendEmail(cancellationTime);
     loadingFirebase.value = false;
     console.log('Appointment canceled successfully');
-    emit('reload');
     return true;
 
 
   } catch (error) {
     console.error('Error in batch function:', error);
     loadingFirebase.value = false;
-    emit('reload');
     return false;
   }
 };
@@ -764,7 +756,6 @@ const finaliceAppointment = async () => {
 
 
     await batch.commit();
-    emit('reload');
     loadingFirebase.value = false;
 
     // Call the rating alert
@@ -776,7 +767,6 @@ const finaliceAppointment = async () => {
 
   } catch (error) {
     console.error('Error finalizando la cita:', error);
-    emit('reload');
     loadingFirebase.value = false;
   }
 }
@@ -792,8 +782,37 @@ const confirmConsult = async () => {
     acceptedAt:Timestamp.now(),
     appointmentLink: `https://meet.greenhost.net/${props.data.expertName}${props.data.userName}${props.data.createdAt.toDate().getTime()}`//This could be redirected to my page and then I can redirect to the link //expert should enter first and then client should be able to join
   })
-  emit('reload');
+    loadingFirebase.value = false;
+ } catch (error) {
   loadingFirebase.value = false;
+  console.log(`Error in confirming appointment function: ${error}`);
+ }
+}
+
+const markLinkAsOpened = async () => {
+
+  //if schedule is finished return
+  if (props.data.isFinished) {
+    console.log('Schedule is already finished');
+    return;
+  }
+  if (props.data.isCanceled) {
+    console.log('Schedule is already canceled');
+    return;
+  }
+
+ try {
+  loadingFirebase.value = true;
+  loadingFirebaseMessage.value = 'Preparando para entrar al link...';
+  const docRef = doc(db, `${props.data.docRef.path}`)
+  await updateDoc(docRef, {
+    isOpenedLinkByExpert:true,
+    openedLinkAt:Timestamp.now(),
+    consultInCourse:true
+  })
+    loadingFirebase.value = false;
+    window.open(props.data.appointmentLink, '_blank', 'noopener,noreferrer');
+
  } catch (error) {
   loadingFirebase.value = false;
   console.log(`Error in confirming appointment function: ${error}`);

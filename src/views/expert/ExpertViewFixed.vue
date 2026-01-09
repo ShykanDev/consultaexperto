@@ -144,7 +144,7 @@
                 </span>
                 <v-icon name="io-star" scale="1" class="text-yellow-500" />  
                 <p class="text-slate-500 text-sm font-poppins ml-1">
-                  ({{ expertData.rating.count }} {{ expertData.rating.count === 1 ? 'cita' : 'citas' }})
+                  ({{ expertData.rating.count }} {{ expertData.rating.count === 1 ? 'calificación' : 'calificaciones' }})
                 </p>
               </article>
 
