@@ -790,7 +790,7 @@ const confirmConsult = async () => {
   await updateDoc(docRef, {
     acceptedByExpert:true,
     acceptedAt:Timestamp.now(),
-    appointmentLink: `https://meet.jit.si/${props.data.expertName}-${props.data.userName}`
+    appointmentLink: `https://meet.greenhost.net/${props.data.expertName}${props.data.userName}${props.data.createdAt.toDate().getTime()}`//This could be redirected to my page and then I can redirect to the link //expert should enter first and then client should be able to join
   })
   emit('reload');
   loadingFirebase.value = false;
@@ -808,8 +808,8 @@ const presentRatingAlert = async () => {
 
   const alert = await alertController.create({
     header: 'Calificar servicio',
-    subHeader: `Califica tu experiencia con ${targetName}`,
-    message: 'Selecciona una calificación:',
+    subHeader: `Califique su experiencia con ${targetName}`,
+    message: 'Seleccione una calificación:',
     inputs: [
       { label: '⭐️⭐️⭐️⭐️⭐️ Excelente', type: 'radio', value: 5, checked: true },
       { label: '⭐️⭐️⭐️⭐️ Muy bueno', type: 'radio', value: 4 },

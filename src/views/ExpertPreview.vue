@@ -105,11 +105,11 @@
   </h2>
   <div class="flex flex-col gap-0 p-1 bg-white rounded-xl ring-1 ring-offset-1 shadow-md backdrop-blur-sm transition-all duration-300 ease-in-out bg-white/70 ion-margin-vertical font-poppins" :class="{'ring-[#0054E9]': toggleValue, 'ring-gray-200': !toggleValue}">
 
-    <ion-toggle class="text-blue-600 ion-margin-vertical"  v-model="showSchedule" mode="ios" enable-on-off-labels color="primary">{{ showSchedule ? 'Ocultar' : 'Mostrar' }} horario</ion-toggle>
+    <ion-toggle class="text-blue-600 ion-margin-vertical"  v-model="showSchedule" enable-on-off-labels color="primary">Mostrar horarios del experto</ion-toggle>
 
-    <ion-toggle  @click="getConsultations" class="text-blue-600 ion-margin-vertical"  v-model="showConsultations" mode="ios" enable-on-off-labels color="primary">{{ showConsultations ? 'Ocultar' : 'Mostrar' }} consultas</ion-toggle>
+    <ion-toggle  @click="getConsultations" class="text-blue-600 ion-margin-vertical"  v-model="showConsultations" enable-on-off-labels color="primary">Mostrar consultas</ion-toggle>
 
-    <ion-toggle v-if="showSchedule" class="text-blue-600"  v-model="toggleValue" mode="ios" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
+    <ion-toggle v-if="showSchedule" class="text-blue-600"  v-model="toggleValue" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
 
     <span v-if="showSchedule" class="text-xs text-center text-gray-500">{{ toggleValue ? 'Ahora puede editar el horario' : 'No podrá actualizar el horario hasta activarlos' }}</span>
   </div>

@@ -11,9 +11,11 @@
                     <p v-if="props.expertData.isSuspended" class="text-sm font-medium leading-tight text-red-700 font-poppins">(Suspendido)</p>
                 </div>
                 <p class="text-sm text-neutral-600">{{ props.expertData.specialty ?? 'Especialidad' }}</p>
-                <div class="flex gap-1 items-center mt-1">
-                    <ion-icon :icon="starSharp" class="text-yellow-400" v-for="(_, index) in 5" :key="index"></ion-icon>
-                    <p class="ml-1 text-xs text-neutral-500">{{ props.expertData.rating || 0 }}</p>
+                <div v-if="props.expertData.rating" class="flex gap-1 items-center mt-1">
+                    <ion-icon :icon="starSharp" class="text-yellow-400" ></ion-icon>
+                    <p class="ml-1 text-xs text-neutral-500">{{ calcStarsValue(props.expertData.rating) }}</p> <span class="text-xs text-neutral-500">
+                        ({{ props.expertData.rating.count ?? 0 }} valoraciones)
+                    </span>
                 </div>
                 <p class="text-xs text-gray-500">{{ props.expertData.isBanned ? 'Bloqueado' : 'Activo' }}</p>
             </div>
@@ -70,6 +72,10 @@ import { useExpertAdminStore } from '@/stores/expertAdmin';
 import { updateDoc } from 'firebase/firestore';
 import { toastController } from '@ionic/vue';
 import { onMounted, ref } from 'vue';
+import { useRating } from '@/composables/stars';
+
+
+const {calcStarsValue} = useRating();
 
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
     const toast = await toastController.create({

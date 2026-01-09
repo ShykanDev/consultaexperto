@@ -305,7 +305,7 @@ import {
   IonIcon,
   IonLoading
 } from '@ionic/vue';
-import { addDoc, collection, doc, getDoc, getFirestore, Timestamp, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getFirestore, Timestamp, writeBatch } from 'firebase/firestore';
 import { calendarClearOutline, chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -313,7 +313,6 @@ import { useExpertUiStore } from '@/stores/expertUi';
 import { IExpertSchedule, Slot } from '@/interfaces/Ischedule';
 import { authStore } from '@/store/auth';
 import emailjs from '@emailjs/browser';
-import { ISchedule } from '@/interfaces/user/ISchedule';
 import { IExpert } from '@/interfaces/IExpert';
 import { useRating } from '@/composables/stars';
 
@@ -603,53 +602,88 @@ const updateSubcollectionSchedule = async () => {
     loading.value = true;
     loadingMessage.value = 'Agendando cita...';
     savingChanges.value = true;
+
+    // Use a Firestore Batch to ensure atomic operations (All or Nothing)
+    // "Guardian" Strategy: Create a unique ticket doc to prevent double booking
+    const batch = writeBatch(db);
+
+    // 1. Define the Guardian Ticket Reference
+    // Key Concept: The ID is composed of expertUID + Day + Time.
+    // Example: "chemex_Lunes_10:00" -> Unique ID guarantees only one person can create it.
+    const guardianId = `${expertData.value?.userUid}_${dayName}_${slotSelected.value.time}`;
+    const guardianRef = doc(db, 'bookings', guardianId);
+
+    // 2. Add the Guardian Write to the Batch
+    // We set dummy data purely to reserve the slot.
+    // Security Rule: allow create: if !exists(doc) -> This prevents race conditions.
+    batch.set(guardianRef, {
+        reserverUid: authStore().getUserUid,
+        createdAt: Timestamp.now()
+    });
+
+    // 3. Update the Local Schedule (Version A - Array)
+    // We still update the array for UI compatibility (so the calendar looks red).
+    console.log('Guardando schedule...', schedule.value);
+    slotSelected.value.takenAt = Timestamp.now();
     const expertPath = doc(db, `experts/${expertData.value?.userUid}`);
     
+    batch.update(expertPath, {
+        schedule: schedule.value
+    });
+    
+    // 4. Create the Actual Appointment Document
+    // Using set() on a new doc ref to include it in the batch
+    const newScheduleRef = doc(collection(db, 'schedules'));
+    batch.set(newScheduleRef, {
+        userName: authStore().getUserName,
+        userUid: authStore().getUserUid,
+        expertUid: expertData.value?.userUid,
+        expertName: expertData.value?.fullName,
+        expertSchedule: slotSelected.value,
+        expertSpecialty: expertData.value?.specialty,
+        expertProfessionalId: expertData.value?.professionalId,
+        appointmentLink: '',
+        isFinished: false,
+        dayName: dayName,
+        appointmentDate: Timestamp.fromDate(appointmentDate),
+        createdAt: Timestamp.now(),
+        acceptedByExpert: false,
+    });
+
     try {
-        console.log('Guardando schedule...', schedule.value);
-        slotSelected.value.takenAt = Timestamp.now();
-        
-        // Actualizamos el documento del experto
-        await updateDoc(expertPath, {
-            schedule: schedule.value
-        });
-        
-        // Creamos la cita en la colección 'schedules'
-        await addDoc(schedulesCollection, {
-            userName: authStore().getUserName,
-            userUid: authStore().getUserUid,
-            expertUid: expertData.value?.userUid,
-            expertName: expertData.value?.fullName,
-            expertSchedule: slotSelected.value,
-            expertSpecialty: expertData.value?.specialty,
-            expertProfessionalId: expertData.value?.professionalId,
-            appointmentLink: '',
-            isFinished: false,
-            dayName: dayName,
-            appointmentDate: Timestamp.fromDate(appointmentDate),
-            createdAt: Timestamp.now(),
-            acceptedByExpert: false,
-        });
+        // 5. Commit the Batch
+        // This executes all 3 operations atomically.
+        // If the "Guardian" doc already exists (someone else booked 1ms ago),
+        // the ENTIRE batch fails, and nothing is written. Safety guaranteed.
+        await batch.commit();
 
        // await sendTestEmail(dayName, appointmentDate);
 
         presentToast('top', `Cita agendada con éxito para el ${appointmentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}.`, 'success');
         
         setTimeout(() => {
-            routerIon.navigate('/tabs/expert-list-modern', 'back', 'replace');
+            routerIon.navigate('/tabs/client-appointments', 'forward', 'push');
         }, 1500);
-        loading.value = false;
+
+    } catch (error: any) {
+        console.error('Error al agendar cita (Batch Guard):', error);
         
-    } catch (error) { 
-        console.error(error);
-        presentToast('top', 'Hubo un error al agendar la cita.', 'danger');
-        // Revertimos cambio local visual si falló
-        slotSelected.value.takenBy = null;
-        slotSelected.value.takenAt = null;
-        calculatedAppointmentDate.value = null;
+        // Handle "Document already exists" error specifically
+        if (error.code === 'already-exists' || error.message?.includes('already exists')) {
+             presentToast('top', '¡Lo sentimos! Este horario acaba de ser reservado por otra persona.', 'danger');
+        } else {
+             presentToast('top', 'Error al agendar la cita. Intente nuevamente.', 'danger');
+        }
         savingChanges.value = false;
         loading.value = false;
+        // Revert local UI change
+        slotSelected.value.takenBy = null;
+        return;
     }
+    
+    savingChanges.value = false;
+    loading.value = false;
+
 };
 
 

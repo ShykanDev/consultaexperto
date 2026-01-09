@@ -777,8 +777,8 @@ const presentRatingAlert = async () => {
 
   const alert = await alertController.create({
     header: 'Calificar servicio',
-    subHeader: `Califica tu experiencia con ${targetName}`,
-    message: 'Selecciona una calificación:',
+    subHeader: `Califique su experiencia con ${targetName}`,
+    message: 'Seleccione una calificación:',
     inputs: [
       { label: '⭐️⭐️⭐️⭐️⭐️ Excelente', type: 'radio', value: 5, checked: true },
       { label: '⭐️⭐️⭐️⭐️ Muy bueno', type: 'radio', value: 4 },

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useExpertUiStore= defineStore('expertAdmin', {
+export const useExpertUiStore= defineStore('expertUi', {
   state: () => ({
     expertUid: '',
   }),
@@ -16,4 +16,4 @@ export const useExpertUiStore= defineStore('expertAdmin', {
     },
   },
   persist:true
-});
+}); 
