@@ -15,10 +15,10 @@
         <!-- Contenido principal -->
         <div class="flex relative flex-col text-left flex-1 font-poppins ">
           <!--Stars-->
-          <article v-if="authStore().getIsClient && props.data.isFinished"
+          <article v-if="authStore().getIsExpert && props.data.isFinished"
             class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
             <p class="text-xs font-poppins text-slate-400">Calificación:</p>
-            <v-icon v-for="(star, index) in props.data.userRating" :key="index" name="bi-star-fill"
+            <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill"
               class="text-yellow-500" scale=".6" />
           </article>
 
@@ -71,6 +71,16 @@
             class="ios-header-icon inline-flex justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
             <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
           </div>
+
+          <div v-if="!props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished" class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full">
+            <p>No ha calificado esta consulta</p>
+            <ion-button size="small" mode="ios" @click="presentRatingAlert">Calificar <v-icon name="bi-star-fill" class="inline ml-1 text-white" scale="0.8" /></ion-button>
+          </div>
+          <div v-else-if="props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished" class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full">
+            <p>Usted calificó esta consulta con:</p>
+            <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill" class="text-yellow-500" scale="0.8" />
+          </div>
+
           <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
               class="font-medium text-blue-600">{{ props.data.userName }}</span></h3>
           <div class="flex justify-center">
@@ -750,6 +760,7 @@ const finaliceAppointment = async () => {
     batch.update(doc(db, `schedules/${props.data.docId}`), {
       isFinished: true,
       finishedAt: Timestamp.now(),
+      finishedByExpert:true,
       finishedByUid: authStore().getUserUid || 'UID no disponible',
       finishedByName: authStore().getUserName || 'Nombre no disponible'
     })
@@ -843,7 +854,8 @@ const presentRatingAlert = async () => {
         handler: async (stars) => {
           console.log(`Estrellas dejadas por ${raterRole}:`, stars);
           try {
-            await updateRoleStars(stars)
+            await updateRoleStars(stars);
+            await updateConsultRating(stars);
           } catch (error) {
             console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
 
@@ -904,6 +916,7 @@ console.log(`User Name: ${authStore().getUserName}`);
 
   //If user is expert, update user rating, else update expert rating 
   const rolePath = authStore().getIsExpert ? 'users' : 'experts';
+  const roleType = authStore().getIsExpert ? 'User' : 'Expert';
   const roleUid = rolePath === 'users' ? props.data.userUid : props.data.expertUid;
   let dynamicDocRef:DocumentReference;
   try {
@@ -911,12 +924,41 @@ console.log(`User Name: ${authStore().getUserName}`);
     await updateDoc(dynamicDocRef, {
     [`rating.stars.${starsGiven}`]: increment(1),
     'rating.total': increment(starsGiven),
-    'rating.count': increment(1)
+    'rating.count': increment(1),
     })
 
     console.log(`${rolePath} stars updated successfully to user with uid: ${roleUid}`);
   } catch (error) {
     console.log(`Error trying to update ${rolePath} stars : ${error}`);
+
+  }
+}
+
+const updateConsultRating = async (starsGiven: number ) => {
+  
+  if (starsGiven < 1 || starsGiven > 5) return false;
+
+  if (!authStore().getUserUid || !authStore().getUserName) {
+    console.log('No user data available');
+    return false;
+  }
+
+
+
+
+  //If user is expert, update user rating, else update expert rating 
+  const roleType = authStore().getIsExpert ? 'Expert' : 'User';
+  let dynamicDocRef:DocumentReference;
+  try {
+    dynamicDocRef = doc(db,`${props.data.docRef.path}`);
+    await updateDoc(dynamicDocRef, {
+    [`ratedBy${roleType}`]: true,
+    [`consultRatingBy${roleType}`]: starsGiven,
+    })
+
+    console.log(`${roleType} consult rating updated successfully to user with uid: ${authStore().getUserUid}`);
+  } catch (error) {
+    console.log(`Error trying to update ${roleType} consult rating : ${error}`);
 
   }
 }

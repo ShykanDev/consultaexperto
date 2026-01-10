@@ -31,4 +31,8 @@ userRating?:number;
 isOpenedLinkByExpert?:boolean;
 openedLinkAt?:Timestamp;
 consultInCourse?:boolean;
+ratedByExpert?:boolean;
+ratedByUser?:boolean;
+consultRatingByUser?:number;
+consultRatingByExpert?:number;
 }

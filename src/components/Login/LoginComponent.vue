@@ -8,7 +8,7 @@
     </section>
 
     <div class="px-1 py-1 mx-auto  md:px-2">
-      <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-1">
         <div class="order-2 space-y-3 md:order-1">
           <h2
             class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">

@@ -29,7 +29,7 @@
                 {{ calcStarsValue(expertData.rating).toFixed(1) }}
               </span>
               <v-icon name="io-star" scale="1" class="text-yellow-500" />  
-              <p class="text-slate-500 text-xs">({{ expertData.rating.count }} citas) </p>
+              <p class="text-slate-500 text-xs">({{ expertData.rating.count }} calificaciones) </p>
 
             </article>
           </div>

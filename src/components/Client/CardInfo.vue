@@ -15,16 +15,11 @@
         <!-- Contenido principal -->
         <div class="flex relative flex-col text-left flex-1 font-poppins ">
           <!--Stars-->
-          <article v-if="authStore().getIsExpert && props.data.isFinished"
-            class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
-            <p class="text-xs font-poppins text-slate-400">Calificación:</p>
-            <v-icon v-for="(star, index) in props.data.expertRating" :key="index" name="bi-star-fill"
-              class="text-yellow-500" scale=".6" />
-          </article>
+    
           <article v-if="authStore().getIsClient && props.data.isFinished"
             class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
             <p class="text-xs font-poppins text-slate-400">Calificación:</p>
-            <v-icon v-for="(star, index) in props.data.userRating" :key="index" name="bi-star-fill"
+            <v-icon v-for="(star, index) in props.data.consultRatingByUser" :key="index" name="bi-star-fill"
               class="text-yellow-500" scale=".6" />
           </article>
 
@@ -84,14 +79,24 @@
             class="ios-header-icon inline-flex justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
             <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
           </div>
+
+          <div v-if="!props.data.ratedByUser && !props.data.isCanceled && props.data.isFinished" class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full">
+            <p>No ha calificado esta consulta</p>
+            <ion-button size="small" mode="ios" @click="presentRatingAlert">Calificar <v-icon name="bi-star-fill" class="inline ml-1 text-white" scale="0.8" /></ion-button>
+          </div>
+          <div v-else-if="props.data.ratedByUser && !props.data.isCanceled && props.data.isFinished" class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full">
+            <p>Usted calificó esta consulta con:</p>
+            <v-icon v-for="(star, index) in props.data.consultRatingByUser" :key="index" name="bi-star-fill" class="text-yellow-500" scale="0.8" />
+          </div>
+
           <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
             @click="viewSchedule"
               class="font-medium text-blue-600 underline">{{ props.data.expertName }}</span></h3>
           <div class="flex justify-center">
-            <span v-if="props.data.isCanceled" class="text-red-600 font-medium">(Cancelada)</span>
-            <span v-if="props.data.isFinished" class="text-green-500 font-medium">(Finalizada)</span>
+            <span v-if="props.data.isCanceled" class="text-red-600 font-medium font-poppins">(Cancelada)</span>
+            <span v-if="props.data.isFinished" class="text-emerald-600 font-medium font-poppins">(Cita finalizada <v-icon name="bi-calendar2-check" class="inline ml-1" scale="1" /> )</span>
             <span v-if="!props.data.isCanceled && !props.data.isFinished"
-              class="text-blue-600 font-medium">(Programada)</span>
+              class="text-blue-600 font-medium font-poppins">(Programada)</span>
           </div>
           <p class="font-medium text-gray-600 font-poppins text-center">
             Especialidad: <span class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
@@ -152,12 +157,13 @@
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
             <v-icon name="co-link" class="text-xl text-blue-600" />
           </div>
-          <div class="flex justify-between items-center w-full gap-2">
+          <div v-if="!props.data.ratedByUser" class="flex justify-between items-center w-full gap-2">
             <p class="font-normal text-gray-700">Enlace:</p>
+            <p v-if="props.data.isFinished" class="font-poppins text-xs text-blue-600">Su cita finalizó <v-icon name="fa-check-circle" class="text-blue-600" scale=".9" /></p>
             <p v-if="!props.data.appointmentLink && !props.data.acceptedByExpert" class="font-normal text-xs text-blue-600">ⓘ El enlace se generará una vez que el experto confirme la cita.
             </p>
             <p v-if="props.data.appointmentLink && props.data.acceptedByExpert && !props.data.isOpenedLinkByExpert" class="font-normal text-xs text-blue-600 flex items-center gap-1"><v-icon name="fa-check-circle" class="text-blue-600" scale=".9" /> El experto ha aceptado su cita, el enlace estará disponible en la fecha de la cita.</p>
-          <div v-if="props.data.appointmentLink && props.data.acceptedByExpert && props.data.isOpenedLinkByExpert">
+          <div v-if="props.data.appointmentLink && props.data.acceptedByExpert && props.data.isOpenedLinkByExpert && !props.data.isFinished">
             <p class="text-blue-600 text-center text-xs font-poppins">El experto ha iniciado la cita, tiene 5 minutos para unirse.</p>
             <ion-button size="small" mode="ios" color="primary" class="flex items-center gap-2 font-poppins text-xs" @click="joinCall">Unirse a la llamada <v-icon name="bi-person-video" class="ml-2 text-xl text-white "  animation="flash" speed="slow" scale="1.6" /></ion-button>
 
@@ -277,7 +283,7 @@
       <!-- Botones de acción -->
       <div v-if="!props.data.isFinished && !props.data.isCanceled"
         class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4">
-        <ion-button mode="ios" color="danger" class="ios-button" style="text-transform: none;"
+        <ion-button v-if="!props.data.acceptedByExpert" mode="ios" color="danger" class="ios-button" style="text-transform: none;"
           @click="presentAlert">
           <div class="!flex !items-center gap-2 justify-between">
             <span>Cancelar cita</span>
@@ -807,7 +813,8 @@ const presentRatingAlert = async () => {
         handler: async (stars) => {
           console.log(`Estrellas dejadas por ${raterRole}:`, stars);
           try {
-            await updateRoleStars(stars)
+            await updateRoleStars(stars);
+            await updateConsultRating(stars);
           } catch (error) {
             console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
 
@@ -836,6 +843,7 @@ console.log(`User Name: ${authStore().getUserName}`);
 
   //If user is expert, update user rating, else update expert rating 
   const rolePath = authStore().getIsExpert ? 'users' : 'experts';
+  const roleType = authStore().getIsExpert ? 'User' : 'Expert';
   const roleUid = rolePath === 'users' ? props.data.userUid : props.data.expertUid;
   let dynamicDocRef:DocumentReference;
   try {
@@ -843,7 +851,8 @@ console.log(`User Name: ${authStore().getUserName}`);
     await updateDoc(dynamicDocRef, {
     [`rating.stars.${starsGiven}`]: increment(1),
     'rating.total': increment(starsGiven),
-    'rating.count': increment(1)
+    'rating.count': increment(1),
+      [`ratedBy${roleType}`]: true,
     })
 
     console.log(`${rolePath} stars updated successfully to user with uid: ${roleUid}`);
@@ -852,6 +861,36 @@ console.log(`User Name: ${authStore().getUserName}`);
 
   }
 }
+
+const updateConsultRating = async (starsGiven: number ) => {
+  
+  if (starsGiven < 1 || starsGiven > 5) return false;
+
+  if (!authStore().getUserUid || !authStore().getUserName) {
+    console.log('No user data available');
+    return false;
+  }
+
+
+
+
+  //If user is expert, update user rating, else update expert rating 
+  const roleType = authStore().getIsExpert ? 'Expert' : 'User';
+  let dynamicDocRef:DocumentReference;
+  try {
+    dynamicDocRef = doc(db,`${props.data.docRef.path}`);
+    await updateDoc(dynamicDocRef, {
+    [`ratedBy${roleType}`]: true,
+    [`consultRatingBy${roleType}`]: starsGiven,
+    })
+
+    console.log(`${roleType} consult rating updated successfully to user with uid: ${authStore().getUserUid}`);
+  } catch (error) {
+    console.log(`Error trying to update ${roleType} consult rating : ${error}`);
+
+  }
+}
+
 const cancelationReason = ref('');
 
 const presentAlert = async () => {
