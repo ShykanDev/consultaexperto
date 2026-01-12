@@ -662,7 +662,9 @@ const updateSubcollectionSchedule = async () => {
         presentToast('top', `Cita agendada con éxito para el ${appointmentDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}.`, 'success');
         
         setTimeout(() => {
+          savingChanges.value = true;
             routerIon.navigate('/tabs/client-appointments', 'forward', 'push');
+            savingChanges.value = false;
         }, 1500);
 
     } catch (error: any) {
@@ -785,6 +787,10 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
 const expertDataLoaded = ref(false);
 
 const expertData = ref<IExpert>(); 
+
+
+let unsub: (() => void) | null; //Make get appointmentData function onSnapshot onIonViewDidEnter and onIonViewDidLeave
+
 const getExpertData = async () => {
   
   if(!useExpertUiStore().getExpertUid){
@@ -792,7 +798,7 @@ const getExpertData = async () => {
     expertDataLoaded.value = true;
     return false;
   }
-  try {
+ /* try {
     expertDataLoaded.value = false;
     console.log('Intentando obtener datos del experto');
     const expertDocRef = doc(db, `experts/${useExpertUiStore().getExpertUid}`);
@@ -808,8 +814,12 @@ const getExpertData = async () => {
     console.log(`Error al obtener datos del experto: ${error}`);
     expertDataLoaded.value = false;
     return false;
-  }
+  }*/
+
+
+
 }
+
 
 </script>
 
