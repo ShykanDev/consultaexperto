@@ -305,7 +305,7 @@ import {
   IonIcon,
   IonLoading
 } from '@ionic/vue';
-import { collection, doc, getDoc, getFirestore, Timestamp, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDoc, getFirestore, onSnapshot, Timestamp, writeBatch } from 'firebase/firestore';
 import { calendarClearOutline, chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -319,15 +319,15 @@ import { useRating } from '@/composables/stars';
 // Destructure the calcStarsValue function from useRating composable
 const { calcStarsValue } = useRating();
 
+
+ const loading = ref(false);
+ const loadingMessage = ref('');
 /**
  * Presenta un mensaje tipo toast al usuario.
  * @param position Posición en la pantalla ('top', 'middle', 'bottom')
  * @param message Mensaje a mostrar
  * @param color Color del toast (ej. 'success', 'warning', 'danger')
  */
-
- const loading = ref(false);
- const loadingMessage = ref('');
 const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
   const toast = await toastController.create({
     message: message,
@@ -721,8 +721,13 @@ onIonViewDidEnter(async () => {
 })
 
 onIonViewDidLeave(() => {
-  expertData.value = undefined;
+  expertData.value = null;
   expertDataLoaded.value = false;
+
+  if(unsub) {
+    unsub();
+    unsub = null
+  }
 })
 
 const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
@@ -786,37 +791,36 @@ const sendTestEmail = async (dayName: string, appointmentDate: Date) => {
 
 const expertDataLoaded = ref(false);
 
-const expertData = ref<IExpert>(); 
+const expertData = ref<IExpert|null>(null); 
 
 
-let unsub: (() => void) | null; //Make get appointmentData function onSnapshot onIonViewDidEnter and onIonViewDidLeave
+let unsub: (() => void) | null;
+
+
+//const expertDocSnap = await getDoc(expertDocRef);
 
 const getExpertData = async () => {
+  const expertDocRef = doc(db, `experts/${useExpertUiStore().getExpertUid}`);
+  console.log('Intentando obtener datos del experto', expertDocRef);
   
   if(!useExpertUiStore().getExpertUid){
     console.log('No se encontro el uid del usuario')
     expertDataLoaded.value = true;
     return false;
   }
- /* try {
-    expertDataLoaded.value = false;
-    console.log('Intentando obtener datos del experto');
-    const expertDocRef = doc(db, `experts/${useExpertUiStore().getExpertUid}`);
-    const expertDocSnap = await getDoc(expertDocRef);
 
-    if(expertDocSnap.exists()){
-      expertData.value = expertDocSnap.data() as  IExpert;
-    }
-    
-    expertDataLoaded.value = true;
-    return true;
-  } catch (error) {
-    console.log(`Error al obtener datos del experto: ${error}`);
-    expertDataLoaded.value = false;
-    return false;
-  }*/
+unsub = onSnapshot(expertDocRef, (snaphot)=> {
 
+  if(!snaphot.exists){
+    presentToast('top', 'No se encontó al experto, vuelva a intentarlo', 'danger')
+    return expertDataLoaded.value = false;
+  }
 
+  expertData.value = null;
+  expertData.value = snaphot.data() as IExpert;
+  expertDataLoaded.value = true;
+
+})
 
 }
 
