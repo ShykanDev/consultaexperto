@@ -5,9 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonRouterOutlet, isPlatform } from '@ionic/vue';
+import { IonApp, IonRouterOutlet, isPlatform, onIonViewDidEnter } from '@ionic/vue';
 import { onMounted, onBeforeMount } from 'vue';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { authStore } from './store/auth';
+import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 console.log('App.vue script is executing...');
 
@@ -32,4 +35,16 @@ onMounted(async () => {
     }
   }
 });
+
+onMounted(()=>{
+  onAuthStateChanged(auth, (user)=> {
+    if(user) {
+      console.log('User is connected',user);
+      authStore().setUserData('users',user.uid);
+    }else {
+      authStore().unsuscribeListener()
+      console.log('There is not user connected');
+    }
+  })
+})
 </script>

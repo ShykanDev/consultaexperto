@@ -19,4 +19,17 @@ export interface IUser {
   terms: boolean;               // Example: true
   docRef?: DocumentReference;    // Example: DocumentReference
   docId?: string;                // Example: "lQk78CrcenUc8NvQVCgPc61Bd7q1"
+  expertsBlocked:{
+    [key: string]: {
+      blockedAt: Timestamp;
+      blockedBy: string;
+      reason: string;
+    };
+  };
+  categoryConsultations:{
+    [key: string]: {
+      isTaken: boolean;
+      lastTakenAt: Timestamp;
+    };
+  };
 }

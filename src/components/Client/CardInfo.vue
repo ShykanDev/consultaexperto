@@ -111,6 +111,8 @@
               class="text-yellow-500" scale=".6" />
           </p>
 
+          <ion-button router-link="/help" size="small" mode="ios" color="primary" v-if="props.data.acceptedByExpert"  class="font-medium text-white break-all cursor-pointer font-poppins">¿Tuvo algún problema? <v-icon name="md-supportagent-outlined" class="inline ml-1" scale="1" /></ion-button>
+
         </div>
       </div>
 

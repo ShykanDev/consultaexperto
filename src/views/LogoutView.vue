@@ -27,6 +27,7 @@
         </div>
         <h2 class="text-xl font-bold text-gray-900">{{ authStorePinia().getUserName || 'Usuario' }}</h2>
         <p class="text-sm text-gray-500 font-medium">{{ authStorePinia().getUserEmail }}</p>
+        <p>{{ authStorePinia().getUserData ?? 'No hay datos del usuario' }}</p>
       </div>
 
       <!-- Sección Seguridad -->

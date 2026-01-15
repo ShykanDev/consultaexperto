@@ -1,3 +1,5 @@
+import { IUser } from "@/interfaces/user/IUser";
+import { doc, getFirestore, onSnapshot, Unsubscribe } from "firebase/firestore";
 import { defineStore } from "pinia";
 
 export const authStore = defineStore('auth', {
@@ -9,6 +11,8 @@ export const authStore = defineStore('auth', {
         isClient: false,
         isExpert: false,
         isAdmin: false,
+        userData: null as IUser | null,
+        userListenerUnsuscribe: null as  Unsubscribe | null
     }),
     actions: {
         setUserName(userName: string) {
@@ -31,6 +35,33 @@ export const authStore = defineStore('auth', {
         },
         setIsAdmin(isAdmin: boolean) {
             this.isAdmin = isAdmin;
+        },
+        setUserData(collectionDb:string, userUid:string,){
+            if(this.userListenerUnsuscribe){
+                this.userListenerUnsuscribe();
+            }
+
+            const db = getFirestore();
+            const userDocRef = doc(db,`${collectionDb}/${userUid}`);
+            
+            this.userListenerUnsuscribe = onSnapshot(userDocRef, snapshot => {        
+                if(!snapshot.exists()){
+                    console.log(`Could not load user data from pinia snapshot`)
+                    return; 
+                }
+                this.userData = null;
+                const userDataSnapshot = snapshot.data() as IUser;
+                this.userData = userDataSnapshot;
+            },(error)=> {
+                this.userData = null;
+                console.log(`Error while loading user data from pinia snapshot`,error);
+            })
+        },
+        unsuscribeListener(){
+            if(this.userListenerUnsuscribe){
+            this.userListenerUnsuscribe();
+            this.userData = null;
+            }
         },
         setLogout() {
             this.isAuth = false;
@@ -59,6 +90,7 @@ export const authStore = defineStore('auth', {
         getIsClient: (state) => state.isClient,
         getIsExpert: (state) => state.isExpert,
         getIsAdmin: (state) => state.isAdmin,
+        getUserData: (state) => state.userData,
     },
     persist:true
 })

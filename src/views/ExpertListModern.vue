@@ -212,8 +212,10 @@
                                 Especialización</h3>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <SelectExpertCard v-for="expert in experts" :key="expert.name" :name="expert.name"
-                                :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)" />
+                            <SelectExpertCard v-for="expert in experts" :key="expert.name" :name="expert.name" 
+                            :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)" 
+                            :data-cy="`expert-card-${expert.name}`"
+                                />
                         </div>
                     </section>
 

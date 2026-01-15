@@ -561,6 +561,11 @@ const schedulesCollection = collection(db, 'schedules');
 /**
  * Función principal para guardar los cambios y agendar la cita.
  */
+
+const userHasConsultInThisCategory = () => { //This function returns true if the user has a consult in this category (Not finished yet)
+  authStore().getUserData?.categoryConsultations 
+}
+
 const updateSubcollectionSchedule = async () => {
     if(!slotSelected.value) {
       presentToast('top', 'No se ha seleccionado ningún horario', 'warning');
@@ -693,12 +698,8 @@ const userHasSlotsTaken = ref(false);
 const userAppointmentString = ref('');
 const calculatedAppointmentDate = ref<string | null>(null);
 
-onIonViewDidEnter(async () => {
-
-  if(!await getExpertData()) return;
-  const currentSchedule = expertData.value?.schedule;
-  // Verificar si hay algún slot ya tomado por el usuario actual (que ya esté en BD)
-  // Verificar si hay algún slot ya tomado por el usuario actual
+  const verifyUserHasSlotsTaken = () => {
+     const currentSchedule = expertData.value?.schedule;
   userHasSlotsTaken.value = false;
   userAppointmentString.value = '';
   
@@ -712,6 +713,12 @@ onIonViewDidEnter(async () => {
        }
     }
   }
+  }
+
+onIonViewDidEnter(async () => {
+
+ if(! await getExpertData()) return;
+ verifyUserHasSlotsTaken();
 
   // Inicializar EmailJS
   emailjs.init({
@@ -818,6 +825,7 @@ unsub = onSnapshot(expertDocRef, (snaphot)=> {
 
   expertData.value = null;
   expertData.value = snaphot.data() as IExpert;
+  verifyUserHasSlotsTaken();
   expertDataLoaded.value = true;
 
 })

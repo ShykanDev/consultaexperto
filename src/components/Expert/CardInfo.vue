@@ -152,7 +152,7 @@
             <p class="font-medium text-gray-700">Enlace:</p>
             <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...
             </p>
-            <ion-button mode="ios" color="primary" v-else @click="markLinkAsOpened" class="font-medium text-blue-600 break-all cursor-pointer">Comenzar Cita</ion-button>
+            <ion-button mode="ios" color="primary" v-else-if="props.data.acceptedByExpert" @click="markLinkAsOpened" class="font-medium text-blue-600 break-all cursor-pointer">Comenzar Cita</ion-button>
           </div>
         </article>
       </div>

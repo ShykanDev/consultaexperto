@@ -93,6 +93,12 @@
             <span>{{ user.userAge ? `${getAge(user.userAge)} años` : '' }}</span>
          </div>
 
+        <!-- Extra Info (Collapsible or just small) -->
+         <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs">
+            <span>ID: {{ user.userId }}</span>
+            <span>{{ user.userAge ? `${getAge(user.userAge)} años` : '' }}</span>
+         </div>
+
       </ion-card-content>
     </div>
 

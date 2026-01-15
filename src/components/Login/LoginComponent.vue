@@ -95,6 +95,7 @@
           <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
             <ion-icon slot="start" :icon="mailOutline" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
             <ion-input 
+            data-cy="email-input"
               v-model="email" 
               type="email" 
               placeholder="correo@ejemplo.com"
@@ -108,6 +109,7 @@
           <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
             <ion-icon slot="start" :icon="lockClosed" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
             <ion-input 
+            data-cy="password-input"
               v-model="password" 
               placeholder="************"
               class="font-medium text-slate-700 h-14"

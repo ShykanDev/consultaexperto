@@ -1,0 +1,114 @@
+# Roadmap: Expert Blocking and User Compensation System
+
+This document outlines the steps to implement a feature where administrators can block specific experts for a given user and grant them a new free consultation message/opportunity following a reported issue.
+
+---
+
+## 1. Data Model & Interface Updates
+
+### A. Update `IUser` Interface
+File: `src/interfaces/user/IUser.ts`
+Add a new property to store blocked experts at the user level.
+```typescript
+export interface IUser {
+  // ... existing fields
+  expertsBlocked?: { [expertUid: string]: string }; // Key: expertUid, Value: reason
+}
+```
+
+### B. Create `IReport` Interface (Optional but Recommended)
+Dedicated interface for support messages related to expert issues.
+```typescript
+export interface IReport {
+  reportId?: string;
+  userUid: string;
+  userName: string;
+  expertUid?: string;
+  scheduleId?: string;
+  subject: string;
+  message: string;
+  status: 'pending' | 'resolved';
+  createdAt: any; // Firestore Timestamp
+}
+```
+
+---
+
+## 2. Phase 1: Help Form Enhancement (`HelpView.vue`)
+
+Currently, the help form only shows a toast. It needs to save the report to Firestore.
+
+### Steps:
+1.  **Extract Expert ID**: When `isConsultRelated` is true and a `scheduleId` is selected, find the corresponding `expertUid` from the `finishedAppointments` array.
+2.  **Save to Firestore**:
+    - Create a function `submitSupportReport`.
+    - Use `addDoc(collection(db, 'reports'), { ...reportData })`.
+    - Include `userUid`, `userName`, `expertUid`, `scheduleId`, etc.
+3.  **Visual Feedback**: Keep the success toast but ensure data is actually persisted.
+---
+
+## 3. Phase 2: Admin Control Panel (`UserListCard.vue`)
+
+This is where the administrator manages the user's status and blocked experts.
+
+### UI Changes:
+1.  **Add a Section for "Blocked Experts"**: 
+    - In Edit Mode (or a new expansion), list experts already blocked for this user.
+2.  **Add "Block Expert" Functionality**:
+    - Implement a searchable dropdown or a simplified list of all experts.
+    - provide a button "Block for this user".
+3.  **Grant Free Consultation**:
+    - Add a specialized button "Give Compensation Credit" (Regalar Cita Gratis).
+    - This button will set `freeConsultations: true` for the user.
+
+### Logic (TypeScript):
+1.  **Function `blockExpertForUser(expertUid, reason)`**:
+    - Uses `updateDoc` to update the user document.
+    - Specifically: `updateDoc(userDocRef, { [`expertsBlocked.${expertUid}`]: reason })`.
+2.  **Function `grantFreeCredit()`**:
+    - Updates `freeConsultations` to `true`.
+
+---
+
+## 4. Phase 3: Expert Filtering Logic (`ExpertsListView.vue`)
+
+The app must now prevent the user from seeing experts they have blocked.
+
+### Logic Update:
+1.  **Fetch Filtered Experts**:
+    - In `gettingMockExperts(specialty)`, modify the logic to filter the results.
+    - Check the current user's `expertsBlocked` object.
+    - If `expert.userUid` exists as a key in `user.expertsBlocked`, do not push it to the `mockExperts` array.
+
+### Code Pattern Example:
+```typescript
+const currentUser = authStore().user; // Assuming user data is here
+// ... inside gettingMockExperts loop
+const data = doc.data() as IExpert;
+const isBlocked = currentUser?.expertsBlocked?.[data.userUid];
+
+if (!isBlocked) {
+  mockExperts.value.push(data);
+}
+```
+
+---
+
+## 5. Firebase Security Rules (Security)
+
+Ensure that only admins can update the `expertsBlocked` and `freeConsultations` fields for other users.
+
+```firestore
+match /users/{userId} {
+  allow update: if request.auth.token.admin == true; 
+  // Allow normal users to update other profile parts but protect these specific fields
+}
+```
+
+---
+
+## 6. Execution Order Recommendation
+1.  Update the **Interface** so TypeScript stops complaining.
+2.  Update **HelpView** to start collecting report data.
+3.  Update **ExpertsListView** filtering (to ensure the "Blocked" state actually does something).
+4.  Implement the **Admin UI** in `UserListCard` to allow the actual blocking and credit granting.

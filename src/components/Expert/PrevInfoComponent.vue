@@ -46,7 +46,7 @@
       </div>
 
       <!-- Botón de acción -->
-      <button @click="viewSchedule" class="ios-expert-button ">
+      <button @click="viewSchedule" class="ios-expert-button" data-cy="view-schedule-button">
         Ver disponibilidad
       </button>
     </div>
