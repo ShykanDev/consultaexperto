@@ -117,43 +117,68 @@
 
   <section v-else>
 
-      <!-- Profile Header -->
-      <ion-card class="ion-no-margin" style="background-color: #fff;">
-        <ion-card-content class="flex flex-col items-center p-6">
-          <ion-avatar class="mb-4 w-24 h-24">
-            <img src="https://picsum.photos/200/300" alt="Profile picture of Jordan Smith"
-              class="w-24 h-24 ring ring-offset-2 ring-offset-white"
-              :class="{ 'ring-red-600': expertData?.isSuspended, 'ring-blue-500': !expertData?.isSuspended }" />
-          </ion-avatar>
-          <ion-text class="text-center">
-            <h1 class="text-2xl font-bold font-manrope">
-              {{ expertData?.fullName || 'Juan Pérez' }}
-            </h1>
-            <h3 v-if="expertData?.isSuspended"
-              :class="{ 'text-red-600 font-poppins font-bold': expertData?.isSuspended }">
-              (Suspendido)</h3>
-            <p class="mt-1 text-base text-blue-700 font-poppins">
-              {{ expertData?.specialty || 'Specialty' }}
-            </p>
-            
-            <!-- Rating Display -->
-            <div v-if="expertData?.rating" class="mt-2">
-              <article class="flex items-center justify-center gap-1">
-                <span class="text-slate-600 font-manrope font-semibold text-sm">
-                  {{ calcStarsValue(expertData.rating).toFixed(1) }}
-                </span>
-                <v-icon name="io-star" scale="1" class="text-yellow-500" />  
-                <p class="text-slate-500 text-sm font-poppins ml-1">
-                  ({{ expertData.rating.count }} {{ expertData.rating.count === 1 ? 'calificación' : 'calificaciones' }})
-                </p>
-              </article>
+  <ion-card v-if="!validateFreeConsults(expertData?.specialty!)"  class="w-full sticky z-40 animate__animated animate__slideInDown  ring-1 ring-blue-500 top-0 mt-4 ion-no-margin  ion-padding bg-blue-100 border-l-4 border-r-4 border-blue-500 text-blue-700 text-sm font-alexandria rounded-md flex-col items-center gap-2">
+     <v-icon name="ri-error-warning-line" scale="1.5" class="text-blue-500 " animation="ring" />
+      <p class=" flex items-center gap-2 text-center">
+        No tiene más citas gratuitas en la categoría
+      </p>
+      <span class="font-bold">
+         {{ expertData?.specialty }}.         
 
-              <!-- TODO: display the full rating stars -->
-               
-            </div>
-          </ion-text>
-        </ion-card-content>
-      </ion-card>
+      </span>
+      <p class="mt-2 text-center  text-blue-700 font-bold font-montserrat italic">
+        Contrate una consulta con el experto
+      </p>
+        <ion-button @click="handleHiring" mode="ios" color="primary" class="text-white font-medium font-poppins  ml-1 inline-flex mt-2 items-center justify-center gap-1 w-full">
+          <span>
+            Contratar experto
+          </span>
+          <v-icon name="bi-person-badge" scale="1.1" class="text-white" />
+        </ion-button>
+    </ion-card>
+
+      <!-- Profile Header -->
+ <ion-card class="ion-no-margin" style="background-color: #fff;">
+  <ion-card-content class="flex flex-col items-center p-6">
+    
+    <!-- Contenido existente -->
+    <ion-avatar class="mb-4 w-24 h-24">
+      <img src="https://picsum.photos/200/300" alt="Profile picture of Jordan Smith"
+        class="w-24 h-24 ring ring-offset-2 ring-offset-white"
+        :class="{ 'ring-red-600': expertData?.isSuspended, 'ring-blue-500': !expertData?.isSuspended }" />
+    </ion-avatar>
+    <ion-text class="text-center">
+      <h1 class="text-2xl font-bold font-manrope">
+        {{ expertData?.fullName || 'Juan Pérez' }}
+      </h1>
+      <h3 v-if="expertData?.isSuspended"
+        :class="{ 'text-red-600 font-poppins font-bold': expertData?.isSuspended }">
+        (Suspendido)
+      </h3>
+      <p class="mt-1 text-base text-blue-700 font-poppins">
+        {{ expertData?.specialty || 'Specialty' }}
+      </p>
+
+      <!-- Rating Display -->
+      <div v-if="expertData?.rating" class="mt-2">
+        <article class="flex items-center justify-center gap-1">
+          <div class="flex-col bg-blue-200">
+
+          </div>
+          <span class="text-slate-600 font-manrope font-semibold text-sm">
+            {{ calcStarsValue(expertData.rating).toFixed(1) }}
+          </span>
+          <v-icon name="io-star" scale="1" class="text-yellow-500" />
+          <p class="text-slate-500 text-sm font-poppins ml-1">
+            ({{ expertData.rating.count }} {{ expertData.rating.count === 1 ? 'calificación' : 'calificaciones' }})
+          </p>
+        </article>
+      </div>
+    </ion-text>
+
+  </ion-card-content>
+</ion-card>
+
 
       <!-- Contact Information -->
       <ion-card class="ion-no-margin ion-margin-top" style="background-color: #fff;">
@@ -201,10 +226,10 @@
       </ion-card>
 
       <!-- Professional Bio -->
-      <h6 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
+      <h6 v-if="validateFreeConsults(expertData?.specialty!)" class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
         Horarios del experto 
       </h6>
-      <h6 class="text-center  text-gray-500 font-poppins">Estos son los horarios disponibles para citas</h6>
+      <h6 v-if="validateFreeConsults(expertData?.specialty!)" class="text-center  text-gray-500 font-poppins">Estos son los horarios disponibles para citas</h6>
         <div class="w-full max-w-md mx-auto px-4 py-3">
     <div v-if="userHasSlotsTaken" class="mt-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 flex items-center gap-2">
       <ion-icon :icon=calendarClearOutline class="text-[16px] text-blue-500"></ion-icon>
@@ -220,7 +245,7 @@
       </ion-button>
     </div>
   </div>
-<ion-card-content class="flex w-full overflow-x-scroll  gap-4 p-4 ">
+<ion-card-content  v-if="validateFreeConsults(expertData?.specialty!)" class="flex w-full overflow-x-scroll  gap-4 p-4 ">
   <article
     v-for="(slots, dayName) in schedule"
     :key="dayName"
@@ -261,7 +286,7 @@
         </div>
       </div>
 
-      <ion-button v-if="!userHasSlotsTaken && !savingChanges" class="ion-margin-vertical mr-2" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
+      <ion-button v-if="!userHasSlotsTaken && !savingChanges && validateFreeConsults(expertData?.specialty!)" class="ion-margin-vertical mr-2" :disabled="userHasSlotsTaken" mode="ios" color="primary" expand="block"
         @click="updateSubcollectionSchedule()">
         <span class="mr-2">{{
           !savingChanges ? 'Agendar cita' : 'Guardando Cambios'
@@ -305,7 +330,7 @@ import {
   IonIcon,
   IonLoading
 } from '@ionic/vue';
-import { collection, doc, getDoc, getFirestore, onSnapshot, Timestamp, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDoc, getFirestore, onSnapshot, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
 import { calendarClearOutline, chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -315,13 +340,17 @@ import { authStore } from '@/store/auth';
 import emailjs from '@emailjs/browser';
 import { IExpert } from '@/interfaces/IExpert';
 import { useRating } from '@/composables/stars';
+import { useHiringStore } from '@/store/hiring';
 
 // Destructure the calcStarsValue function from useRating composable
 const { calcStarsValue } = useRating();
 
 
+
+
  const loading = ref(false);
  const loadingMessage = ref('');
+
 /**
  * Presenta un mensaje tipo toast al usuario.
  * @param position Posición en la pantalla ('top', 'middle', 'bottom')
@@ -562,9 +591,6 @@ const schedulesCollection = collection(db, 'schedules');
  * Función principal para guardar los cambios y agendar la cita.
  */
 
-const userHasConsultInThisCategory = () => { //This function returns true if the user has a consult in this category (Not finished yet)
-  authStore().getUserData?.categoryConsultations 
-}
 
 const updateSubcollectionSchedule = async () => {
     if(!slotSelected.value) {
@@ -832,6 +858,49 @@ unsub = onSnapshot(expertDocRef, (snaphot)=> {
 
 }
 
+
+const validateFreeConsults = (expertSpecialty:string):boolean|undefined => {
+
+
+        if(!expertSpecialty){
+          console.log('Expert Specialty was not found, could not load function');
+          return false;
+        }
+           //Validations 
+
+           //If categoryConsultations not exists in field
+            if(!authStore().getUserData?.categoryConsultations){
+              console.log('Category Consultations was not found');              
+              return  false;
+            }
+           //If exists and document has the current specialty in it 
+           else if(authStore().getUserData?.categoryConsultations[expertSpecialty]){
+              console.log('Category Consultations was found and expert specialty was found', expertSpecialty);
+              
+              return false;
+            }
+           //If exists and it does not has the current specialty inside categoryConsultations
+           else if(authStore().getUserData?.categoryConsultations && !authStore().getUserData?.categoryConsultations[expertSpecialty]){
+              console.log('Category Consultations was found but expert specialty was not found', expertSpecialty);
+
+              return true;
+            }
+            
+            
+
+}
+
+
+const hiringStore = useHiringStore();
+
+const handleHiring = () => {
+  if(!expertData.value) {
+    console.log('Expert data was not found');
+    return;
+  }
+  hiringStore.setExpertHiringData(expertData.value.fullName!, expertData.value.specialty!, expertData.value.userUid!);
+  router.navigate('/hiring', 'forward', 'replace');
+}
 
 </script>
 

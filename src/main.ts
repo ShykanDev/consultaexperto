@@ -153,7 +153,13 @@ import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
   GiCancel,
   BiPersonVideo,
   BiCalendar2Check,
-  PxCalendarAlert
+  PxCalendarAlert,
+  RiErrorWarningLine,
+  HiUser,
+  HiIdentification,
+  HiAcademicCap,
+  HiPaperAirplane,
+  RiShieldCheckFill,
 } from "oh-vue-icons/icons";
 addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   MdFreecancellationTwotone,
@@ -277,7 +283,16 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   GiCancel,
   BiPersonVideo,
   BiCalendar2Check,
-  PxCalendarAlert
+  PxCalendarAlert,
+  RiErrorWarningLine,
+  BiPersonBadge,
+  BiBriefcase,
+  HiUser,
+  HiIdentification,
+  HiAcademicCap,
+  HiPaperAirplane,
+  RiShieldCheckFill
+
 );
 
 // Import the functions you need from the SDKs you need

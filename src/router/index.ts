@@ -146,6 +146,13 @@ const routes: Array<RouteRecordRaw> = [
       requiresAuth: false
     }
   },
+  {
+    path: '/hiring',
+    component: () => import('@/views/HiringView.vue'),
+    meta:{
+      requiresAuth: true
+    }
+  },
 
   {
     path: '/create-expert',

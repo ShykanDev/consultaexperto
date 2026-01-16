@@ -74,7 +74,7 @@
             class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver</button>
         </span>
 
-        <div class="flex flex-col items-center gap-2 mt-4">
+        <div class="flex flex-col items-center gap-2 mt-4 relative">
           <div
             class="ios-header-icon inline-flex justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
             <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
@@ -110,8 +110,36 @@
             <v-icon v-for="(star, index) in props.data.expertRating" :key="index" name="bi-star-fill"
               class="text-yellow-500" scale=".6" />
           </p>
+          <div v-if="props.data.isFinished && authStore().getIsClient" class="w-full mt-4 space-y-4 ">
+            <div class="ios-promo-banner group !ring-1 !ring-blue-500/40" @click="goToHiring">
+              <div class="flex items-center gap-4">
+                <div class="ios-promo-icon-box">
+                  <v-icon name="fa-user-tie" scale="1.1" class="text-blue-600" />
+                </div>
+                <div class="flex-1 text-left">
+                  <h4 class="text-slate-900 font-bold text-sm font-poppins">¿Le gustó el servicio?</h4>
+                  <p class="text-slate-500 text-[11px] font-poppins leading-snug">Contrate a {{ props.data.expertName }} para una asesoría completa.</p>
+                </div>
+                <v-icon name="fa-chevron-right" scale="0.8" class="text-slate-300 group-hover:text-blue-500 transition-colors" />
+              </div>
+              
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Sección de contratación</span>
+                <div class="flex items-center gap-1 text-[10px] font-medium text-slate-400">
+                  <v-icon name="hi-shield-check" scale="0.7" />
+                  Experto Verificado
+                </div>
+              </div>
+            </div>
 
-          <ion-button router-link="/help" size="small" mode="ios" color="primary" v-if="props.data.acceptedByExpert"  class="font-medium text-white break-all cursor-pointer font-poppins">¿Tuvo algún problema? <v-icon name="md-supportagent-outlined" class="inline ml-1" scale="1" /></ion-button>
+            <button 
+              @click="ionRouter.navigate('/help', 'forward', 'push')"
+              class="w-full py-2 flex items-center justify-center gap-2  text-xs font-medium text-blue-500 transition-all rounded-xl bg-slate-50"
+            >
+              <v-icon name="md-supportagent-outlined" scale="0.9" />
+              ¿Tuvo algún problema con la consulta?
+            </button>
+          </div>
 
         </div>
       </div>
@@ -316,6 +344,7 @@ import { collection, doc, DocumentReference, getDoc, getFirestore, increment, Ti
 import { computed, onMounted, ref } from 'vue';
 import emailjs from '@emailjs/browser';
 import { useExpertUiStore } from '@/stores/expertUi';
+import { useHiringStore } from '@/store/hiring';
 
 const experts = ref([
   {
@@ -940,6 +969,13 @@ const viewSchedule = async () => {
     console.error('Navigation error:', error);
   }
 };
+
+const hiringStore = useHiringStore();
+const goToHiring = () => {
+  if (!props.data.expertName || !props.data.expertSpecialty || !props.data.expertUid) return;
+  hiringStore.setExpertHiringData(props.data.expertName, props.data.expertSpecialty, props.data.expertUid);
+  ionRouter.navigate('/hiring', 'forward', 'push');
+};
 </script>
 
 <style scoped>
@@ -1034,5 +1070,41 @@ const viewSchedule = async () => {
 
 .custom-ripple {
   color: rgb(0, 124, 220);
+}
+
+/* Nuevo estilo iOS Profesional para Promo */
+.ios-promo-banner {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.ios-promo-banner:active {
+  transform: scale(0.98);
+  background: #fdfdfd;
+}
+
+.ios-promo-icon-box {
+  width: 44px;
+  height: 44px;
+  background: #eff6ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ios-btn-hiring {
+  --background: #2563eb;
+  --background-activated: #1d4ed8;
+  --border-radius: 12px;
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: -0.01em;
 }
 </style>

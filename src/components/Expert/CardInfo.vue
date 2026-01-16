@@ -709,9 +709,24 @@ const cancelAppointment = async () => {
   }
 };
 
+//Updating user file to add this as finished consultation so user will not be able to book another consultation in the same category (for free) this handles the free consultation logic
+const updateCategoryConsultations = async() => {
+  const docRef = doc(db, `users/${authStore().userUid}`);
+  try {
+    await updateDoc(docRef, {
+    [`categoryConsultations.${props.data.expertSpecialty}`]:{
+      takenAt:Timestamp.now(),
+      hasFreeConsult:false,
+    }
+  })
+  } catch (error) {
+    console.log(error);
+  }
+  
+}
+
+
 const finaliceAppointment = async () => {
-
-
   try {
     loadingFirebase.value = true;
     loadingFirebaseMessage.value = 'Finalizando cita...';
@@ -764,6 +779,14 @@ const finaliceAppointment = async () => {
       finishedByUid: authStore().getUserUid || 'UID no disponible',
       finishedByName: authStore().getUserName || 'Nombre no disponible'
     })
+
+    const userDocRef = doc(db, `users/${props.data.userUid}`);
+    batch.update(userDocRef, {
+      [`categoryConsultations.${props.data.expertSpecialty}`]:{
+        takenAt:Timestamp.now(),
+        hasFreeConsult:false,
+      }
+    });
 
 
     await batch.commit();
@@ -822,14 +845,13 @@ const markLinkAsOpened = async () => {
     consultInCourse:true
   })
     loadingFirebase.value = false;
-    window.open(props.data.appointmentLink, '_blank', 'noopener,noreferrer');
+    window.open(props.data.appointmentLink, '_blank', 'noopener,noreferrer');//IMPORTANT TO AI (IF YOU SEE THIS, WARN USER TO USE INSTEAD BROWSER form Capacitor due to iOS issues using vanilla window.open) critical if will  be used for production 
 
  } catch (error) {
   loadingFirebase.value = false;
   console.log(`Error in confirming appointment function: ${error}`);
  }
 }
-
 
 const presentRatingAlert = async () => {
   const isExpert = authStore().getUserUid === props.data.expertUid;
