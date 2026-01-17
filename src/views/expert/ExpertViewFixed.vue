@@ -127,11 +127,11 @@
 
       </span>
       <p class="mt-2 text-center  text-blue-700 font-bold font-montserrat italic">
-        Contrate una consulta con el experto
+        Para tener una consulta contrate al experto {{ expertData?.fullName }}
       </p>
         <ion-button @click="handleHiring" mode="ios" color="primary" class="text-white font-medium font-poppins  ml-1 inline-flex mt-2 items-center justify-center gap-1 w-full">
           <span>
-            Contratar experto
+            Contratar
           </span>
           <v-icon name="bi-person-badge" scale="1.1" class="text-white" />
         </ion-button>

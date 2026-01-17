@@ -78,12 +78,9 @@
           </div>
 
           <div class="p-3 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col items-center justify-center text-center gap-1">
-             <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Consultas Gratis</span>
-             <ion-icon 
-               :icon="userEdit.freeConsultations ? checkmarkCircle : closeCircle" 
-               class="text-xl"
-               :class="userEdit.freeConsultations ? 'text-blue-500' : 'text-gray-400'"
-             ></ion-icon>
+             <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Categorías gratuitas del usuario que ha tomado:</span>
+          <span v-if="user.categoryConsultations" @click="getCategoriesTaken" class="text-blue-500 cursor-pointer bg-slate-100 p-2 rounded-md">Ver categorías</span>
+          <p v-for="category in categoriesTaken" :key="category">{{ category }}</p>
           </div>
         </div>
         
@@ -203,6 +200,7 @@ import {
 import { reactive, ref, watch } from 'vue';
 import { IUser } from '@/interfaces/user/IUser';
 import { doc, getFirestore, Timestamp,  updateDoc } from 'firebase/firestore';
+import { OiBeaker } from 'oh-vue-icons/icons';
 
 const props = defineProps({
     user: {
@@ -274,7 +272,6 @@ function saveEdit() {
 
 
 function getAge(dateString: Timestamp| undefined) {
-  console.log(new Date(dateString?.toDate()));
   if (!dateString) return null;
   const today = new Date();
   const birthDate = new Date(dateString.toDate());
@@ -285,6 +282,21 @@ function getAge(dateString: Timestamp| undefined) {
   }
   return age;
 }
+
+const categoriesTaken = ref<any>([]);
+
+const getCategoriesTaken = () => {
+  if (!props.user.categoryConsultations) {
+    console.log('No hay categorías tomadas');
+    return [];
+  }
+  categoriesTaken.value = [];
+  
+  categoriesTaken.value = Object.entries(props.user.categoryConsultations).map(e => e).flat();
+  console.log(categoriesTaken.value);
+}
+
+
 </script>
 
 <style scoped>

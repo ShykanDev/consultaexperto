@@ -197,6 +197,13 @@ const routes: Array<RouteRecordRaw> = [
     meta:{
       requiresAuth: false
     }
+  },
+  {
+    path: '/account-suspended',
+    component: () => import('@/views/AccountSuspendedView.vue'),
+    meta:{
+      requiresAuth: false
+    }
   }
 
 ]
