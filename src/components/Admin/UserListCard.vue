@@ -8,7 +8,7 @@
 
     <!-- VIEW MODE -->
     <div v-if="!isEditing" class="card-content-view p-4">
-      <ion-card-header class="pb-2 pl-0 pt-0">
+         <ion-card-header class="pb-2 pl-0 pt-0">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-md bg-gradient-to-tr from-slate-100 to-slate-200 flex items-center justify-center text-white">
              <ion-icon :icon="personOutline" class="text-2xl text-blue-500"></ion-icon>
@@ -77,23 +77,89 @@
              </div>
           </div>
 
-          <div class="p-3 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col items-center justify-center text-center gap-1">
-             <span class="text-[10px] uppercase tracking-wider text-gray-400 font-bold">Categorías gratuitas del usuario que ha tomado:</span>
-          <span v-if="user.categoryConsultations" @click="getCategoriesTaken" class="text-blue-500 cursor-pointer bg-slate-100 p-2 rounded-md">Ver categorías</span>
-          <p v-for="category in categoriesTaken" :key="category">{{ category }}</p>
+
+          <div class="col-span-2 p-4 bg-blue-50/30 rounded-2xl border border-blue-100/50 flex flex-col gap-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="p-2 bg-blue-500 rounded-lg shadow-sm text-white">
+                  <ion-icon :icon="ribbonOutline"></ion-icon>
+                </div>
+                <span class="text-xs font-bold text-gray-800">Consultas Gratuitas Usadas</span>
+              </div>
+              <button 
+                v-if="user.categoryConsultations" 
+                @click="getCategoriesTaken" 
+                class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100 px-3 py-1.5 rounded-full hover:bg-blue-200 transition-colors"
+              >
+                {{ categoriesTaken.length > 0 ? 'Actualizar' : 'Ver Detalles' }}
+              </button>
+            </div>
+
+            <div v-if="categoriesTaken.length > 0" class="space-y-2">
+              <div 
+                v-for="category in categoriesTaken" 
+                :key="category[0]" 
+                class="bg-white p-3 rounded-xl border border-blue-50 shadow-sm flex flex-col gap-2"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <ion-icon :icon="medalOutline" class="text-blue-500"></ion-icon>
+                    <span class="text-sm font-bold text-gray-700">{{ category[0] ?? 'Sin especialidad' }}</span>
+                  </div>
+                  <ion-button 
+                    @click="reactiveConsultation(category[0])"
+                    size="small"  
+                    title="Reactivar consulta"
+                    color="primary"
+                    class="font-poppins font-base  "
+                    mode="ios"
+                    style="text-transform: none; padding-left: 2px; padding-right: 2px;"
+                  >
+                  Reactivar consulta gratuita 
+                    <ion-icon slot="icon-only" :icon="refreshOutline" class="text-xs px-2" ></ion-icon>
+                  </ion-button>
+                </div>
+                
+                <div class="flex flex-col gap-1">
+                  <!-- Taken At -->
+                  <div class="flex items-center gap-1.5 text-gray-500">
+                    <ion-icon :icon="calendarOutline" class="text-xs"></ion-icon>
+                    <span class="text-[10px] font-bold uppercase opacity-60">Usada:</span>
+                    <span v-if="category[1].takenAt" class="text-[11px] font-medium text-gray-700">
+                      {{ new Date(category[1].takenAt.toDate()).toLocaleString('es-MX', {dateStyle: 'medium', timeStyle: 'short'}) }}
+                    </span>
+                    <span v-else class="text-[11px] font-medium text-gray-400">Sin fecha de uso</span>
+                  </div>
+
+                  <!-- Reactivated At -->
+                  <div v-if="category[1].reactivatedAt" class="flex items-center gap-1.5 text-blue-500">
+                    <ion-icon :icon="timeOutline" class="text-xs"></ion-icon>
+                    <span class="text-[10px] font-bold uppercase opacity-60">Reactivada:</span>
+                    <span class="text-[11px] font-medium">
+                      {{ new Date(category[1].reactivatedAt.toDate()).toLocaleString('es-MX', {dateStyle: 'medium', timeStyle: 'short'}) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div v-else-if="!user.categoryConsultations" class="flex flex-col items-center justify-center py-4 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+              <ion-icon :icon="checkmarkCircle" class="text-gray-300 text-xl mb-1"></ion-icon>
+              <span class="text-[10px] text-gray-400 font-medium">Sin consultas registradas</span>
+            </div>
           </div>
         </div>
         
-        <!-- Extra Info (Collapsible or just small) -->
-         <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs">
-            <span>ID: {{ user.userId }}</span>
-            <span>{{ user.userAge ? `${getAge(user.userAge)} años` : '' }}</span>
-         </div>
-
-        <!-- Extra Info (Collapsible or just small) -->
-         <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-gray-400 text-xs">
-            <span>ID: {{ user.userId }}</span>
-            <span>{{ user.userAge ? `${getAge(user.userAge)} años` : '' }}</span>
+        <!-- ID & Age Info -->
+         <div class="pt-3 border-t border-gray-100 flex justify-between items-center text-gray-400">
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase tracking-tighter font-bold opacity-60">User ID</span>
+              <span class="text-[10px] font-mono">{{ user.userId }}</span>
+            </div>
+            <div v-if="user.userAge" class="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+              <ion-icon :icon="personOutline" class="text-[10px]"></ion-icon>
+               <span class="text-[10px] font-bold text-gray-600">{{ getAge(user.userAge) }} años</span>
+            </div>
          </div>
 
       </ion-card-content>
@@ -195,12 +261,17 @@ import {
   closeOutline,
   alertCircleOutline,
   mailOpenOutline,
-  banOutline
+  banOutline,
+  medalOutline,
+  calendarOutline,
+  refreshOutline,
+  chevronForwardOutline,
+  ribbonOutline,
+  timeOutline
 } from 'ionicons/icons';
 import { reactive, ref, watch } from 'vue';
 import { IUser } from '@/interfaces/user/IUser';
 import { doc, getFirestore, Timestamp,  updateDoc } from 'firebase/firestore';
-import { OiBeaker } from 'oh-vue-icons/icons';
 
 const props = defineProps({
     user: {
@@ -240,7 +311,7 @@ function cancelEdit() {
 
 function setBanned(status: boolean) {
   editForm.isBanned = status;
-  (status) ? editForm.banReason = '' : editForm.banReason = '';
+  if (!status) editForm.banReason = '';
 }
 
 
@@ -292,10 +363,28 @@ const getCategoriesTaken = () => {
   }
   categoriesTaken.value = [];
   
-  categoriesTaken.value = Object.entries(props.user.categoryConsultations).map(e => e).flat();
+  categoriesTaken.value = Object.entries(props.user.categoryConsultations).map(e => e);
   console.log(categoriesTaken.value);
 }
 
+const reactiveConsultation = async(category: string) => {
+
+  if (!props.user.categoryConsultations) {
+    console.log('No hay categorías tomadas');
+    return;
+  }
+
+  try {
+    const userDocRef = doc(db, 'users', props.user.userId);
+    updateDoc(userDocRef, {
+        [`categoryConsultations.${category}.hasFreeConsult`]: true,
+        [`categoryConsultations.${category}.reactivatedAt`]: Timestamp.now()
+    })
+    emit('userUpdated');
+  } catch (error) {
+    console.error('Error al reactivar las consultas gratis:', error);
+  }
+}
 
 </script>
 
