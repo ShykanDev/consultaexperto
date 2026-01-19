@@ -306,7 +306,7 @@ import { collection, count, doc, DocumentReference, getDoc, getFirestore, increm
 import { computed, onMounted, ref, Slot } from 'vue';
 import emailjs from '@emailjs/browser';
 import { useExpertUiStore } from '@/stores/expertUi';
-
+import { Browser } from '@capacitor/browser';
 const experts = ref([
   {
     specialty: "Importación y Exportación",
@@ -845,7 +845,7 @@ const markLinkAsOpened = async () => {
     consultInCourse:true
   })
     loadingFirebase.value = false;
-    window.open(props.data.appointmentLink, '_blank', 'noopener,noreferrer');//IMPORTANT TO AI (IF YOU SEE THIS, WARN USER TO USE INSTEAD BROWSER form Capacitor due to iOS issues using vanilla window.open) critical if will  be used for production 
+    Browser.open({ url: props.data.appointmentLink });
 
  } catch (error) {
   loadingFirebase.value = false;

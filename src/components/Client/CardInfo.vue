@@ -345,6 +345,8 @@ import { computed, onMounted, ref } from 'vue';
 import emailjs from '@emailjs/browser';
 import { useExpertUiStore } from '@/stores/expertUi';
 import { useHiringStore } from '@/store/hiring';
+import { Browser } from '@capacitor/browser';
+
 
 const experts = ref([
   {
@@ -623,7 +625,7 @@ const joinCall = () => {
     return;
   }
   try {
-    window.open(props.data.appointmentLink, '_blank', 'noopener,noreferrer');
+    Browser.open({ url: props.data.appointmentLink });
   } catch (error) {
     console.log(error);
   }
@@ -958,6 +960,9 @@ const presentAlert = async () => {
 
 const ionRouter = useIonRouter();
 const viewSchedule = async () => {
+  const isBlocked = verifyBlockedExpert(props.data.expertUid);
+  if(isBlocked) return;
+  
   try {
     if (!props.data.expertUid) {
       console.error('No expert UID provided');
@@ -976,6 +981,28 @@ const goToHiring = () => {
   hiringStore.setExpertHiringData(props.data.expertName, props.data.expertSpecialty, props.data.expertUid);
   ionRouter.navigate('/hiring', 'forward', 'push');
 };
+
+const verifyBlockedExpert =  (expertUid?:string): boolean => {
+  if(!expertUid) return false;
+  const expertsBlockedList = authStore().getUserData?.expertsBlocked;
+  if(!expertsBlockedList) return false;
+  
+  if(expertsBlockedList[expertUid]){
+    console.log(`Expert ${expertUid} is blocked`);
+    return true;
+  }
+  console.log(`Expert ${expertUid} is not blocked`);
+  return false;
+  
+  
+  
+
+};
+
+const isBlockedExpert = ref(false);
+if(view.value === 'modal'){
+  isBlockedExpert.value = verifyBlockedExpert(props.data.expertUid);
+}
 </script>
 
 <style scoped>

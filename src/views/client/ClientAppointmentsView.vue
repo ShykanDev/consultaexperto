@@ -5,7 +5,7 @@
       <ion-toolbar>
         <ion-title class="text-center text-blue-600">Agenda</ion-title>
         <ion-buttons slot="end">
-          <ion-button class="text-sm font-quicksand" color="primary"  style="text-transform: none;">
+          <ion-button class="text-sm font-quicksand hidden" color="primary"  style="text-transform: none;">
             <ion-icon :icon="refresh" class="w-3 h-3" color="primary" :class="{ 'animate-spin': isLoading }"></ion-icon>
             Actualizar
           </ion-button>

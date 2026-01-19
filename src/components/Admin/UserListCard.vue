@@ -140,7 +140,90 @@
                     </span>
                   </div>
                 </div>
+                <span>Si desea bloquear a un experto para este usuario haga clic en el botón "Ver listado de expertos"</span>
+                <ion-button 
+                  size="small" 
+                  :color="activeCategoryForExperts === category[0] ? 'medium' : 'primary'" 
+                  mode="ios" 
+                  @click="activeCategoryForExperts === category[0] ? (activeCategoryForExperts = null, expertList = []) : getExperts(category[0] ?? '')"
+                  class="mt-2"
+                >
+                  {{ activeCategoryForExperts === category[0] ? 'Ocultar expertos' : 'Ver listado de expertos' }}
+                </ion-button>
+
+                <!-- Expert Selection UI -->
+                <div 
+                  v-if="activeCategoryForExperts === category[0] && expertList.length > 0" 
+                  class="mt-4 p-4 bg-red-50/50 rounded-2xl border border-red-100 animate-in fade-in slide-in-from-top-2 duration-300"
+                >
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="p-1.5 bg-red-500 rounded-lg text-white shadow-sm">
+                      <ion-icon :icon="banOutline" class="text-xs"></ion-icon>
+                    </div>
+                    <span class="text-xs font-bold text-red-700">Bloquear Experto</span>
+                  </div>
+                  
+                  <p class="text-[10px] text-red-600/70 mb-4 font-medium leading-relaxed">
+                    Seleccione un experto para evitar que este usuario pueda volver a contactarlo en esta especialidad.
+                  </p>
+
+                  <ion-select 
+                    v-model="expertSelected" 
+                    interface="action-sheet"
+                    class="premium-select"
+                    placeholder="Seleccionar experto..."
+                    mode="ios"
+                  >
+                    <ion-select-option v-for="expert in expertList" :key="expert.userUid" :value="expert">
+                      {{ expert.fullName }}
+                    </ion-select-option>
+                  </ion-select>
+
+                  <div v-if="expertSelected" class="mt-4 space-y-3 pt-3 border-t border-red-100/50">
+                     <!-- Selected Expert Card -->
+                     <div class="p-3 bg-white rounded-xl border border-red-100 shadow-sm flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500 border border-red-100">
+                           <ion-icon :icon="personOutline"></ion-icon>
+                        </div>
+                        <div class="flex flex-col">
+                           <span class="text-xs font-bold text-gray-800">{{ expertSelected.fullName }}</span>
+                           <span class="text-[10px] text-gray-500 lowercase">{{ expertSelected.specialty }}</span>
+                        </div>
+                     </div>
+
+                     <!-- Reason Input -->
+                     <div class="space-y-1">
+                       <label class="text-[10px] font-bold text-red-700 uppercase ml-1">Motivo del bloqueo</label>
+                       <div class="bg-white rounded-xl border border-red-100 overflow-hidden shadow-sm focus-within:ring-2 ring-red-100 transition-all">
+                         <ion-input
+                           v-model="blockReason"
+                           placeholder="Explique por qué se bloquea..."
+                           class="custom-input px-3"
+                         ></ion-input>
+                       </div>
+                     </div>
+
+                     <ion-button 
+                       @click="blockExpert(expertSelected)" 
+                       expand="block" 
+                       color="danger" 
+                       mode="ios" 
+                       class="font-bold text-xs mt-2"
+                       style="--border-radius: 12px; height: 44px; text-transform: none;"
+                     >
+                       Confirmar Bloqueo de {{ expertSelected.fullName }}
+                       <ion-icon slot="end" :icon="closeCircle"></ion-icon>
+                     </ion-button>
+                  </div>
+                </div>
+
+                <div v-else-if="activeCategoryForExperts === category[0] && expertList.length === 0" class="mt-2 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-center">
+                  <span class="text-[10px] text-gray-400 font-medium">No hay otros expertos en esta categoría</span>
+                </div>
               </div>
+
+              
+            
             </div>
             
             <div v-else-if="!user.categoryConsultations" class="flex flex-col items-center justify-center py-4 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
@@ -250,7 +333,9 @@ import {
   IonButton,
   IonIcon,
   IonInput,
-  IonToggle
+  IonToggle,
+  IonSelect,
+  IonSelectOption
 } from '@ionic/vue';
 import { 
   personOutline, 
@@ -271,7 +356,7 @@ import {
 } from 'ionicons/icons';
 import { reactive, ref, watch } from 'vue';
 import { IUser } from '@/interfaces/user/IUser';
-import { doc, getFirestore, Timestamp,  updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, getFirestore, query, Timestamp,  updateDoc, where } from 'firebase/firestore';
 
 const props = defineProps({
     user: {
@@ -386,6 +471,60 @@ const reactiveConsultation = async(category: string) => {
   }
 }
 
+const expertList = ref<any[]>([]);
+const expertSelected = ref<any>(null);
+const activeCategoryForExperts = ref<string | null>(null);
+const blockReason = ref('Sin motivo proporcionado');
+const getExperts = async(specialtyParam:string) => {
+    try {
+        activeCategoryForExperts.value = specialtyParam;
+        expertSelected.value = null;
+        
+        const expertsRef = collection(db, 'experts');
+        const qGetSpecialties = query(expertsRef, where('specialty', '==', specialtyParam));
+        const expertsSnapshot = await getDocs(qGetSpecialties);
+        expertList.value = expertsSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                ...data,
+                userUid: data.userUid || doc.id,
+                expertId: data.expertId || doc.id
+            };
+        });
+    } catch (error) {
+      console.error('Error fetching experts:', error);
+    }
+}
+
+const blockExpert = async(expert:any) => {
+  if (!expert || !expert.userUid) {
+    console.error('Datos del experto incompletos:', expert);
+    return;
+  }
+    try {
+        const userDocRef = doc(db, 'users', props.user.userId);
+        await updateDoc(userDocRef, {
+            [`expertsBlocked.${expert.userUid}`]: {
+              expertName: expert.fullName || 'Desconocido',
+              expertUid: expert.userUid,
+              expertSpecialty: expert.specialty || 'Sin especialidad',
+              blockedAt: Timestamp.now(),
+              blockedBy: 'Admin',
+              reason: blockReason.value
+            }
+        })
+
+        // Clear state
+        expertSelected.value = null;
+        activeCategoryForExperts.value = null;
+        expertList.value = [];
+        
+        emit('userUpdated');
+    } catch (error) {
+      console.error('Error al bloquear al experto:', error);
+    }
+}
+
 </script>
 
 <style scoped>
@@ -409,5 +548,32 @@ const reactiveConsultation = async(category: string) => {
   --padding-end: 0;
   --placeholder-opacity: 0.4;
   font-size: 14px;
+}
+
+.premium-select {
+  --background: #ffffff;
+  --placeholder-color: #94a3b8;
+  --placeholder-opacity: 1;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  width: 100%;
+}
+
+.animate-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>

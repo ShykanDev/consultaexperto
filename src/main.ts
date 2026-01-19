@@ -160,6 +160,7 @@ import { FaFlag, RiZhihuFill, BiClipboard2CheckFill ,
   HiAcademicCap,
   HiPaperAirplane,
   RiShieldCheckFill,
+  FaUserSlash
 } from "oh-vue-icons/icons";
 addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   MdFreecancellationTwotone,
@@ -291,7 +292,8 @@ addIcons(FaFlag, RiZhihuFill, BiClipboard2CheckFill,
   HiIdentification,
   HiAcademicCap,
   HiPaperAirplane,
-  RiShieldCheckFill
+  RiShieldCheckFill,
+  FaUserSlash
 
 );
 

@@ -860,8 +860,6 @@ unsub = onSnapshot(expertDocRef, (snaphot)=> {
 
 
 const validateFreeConsults = (expertSpecialty:string):boolean|undefined => {
-
-
         if(!expertSpecialty){
           console.log('Expert Specialty was not found, could not load function');
           return false;
@@ -873,18 +871,22 @@ const validateFreeConsults = (expertSpecialty:string):boolean|undefined => {
               console.log('Category Consultations was not found');              
               return  false;
             }
+             //If includes hasFreeConsult is true
+            else if(authStore().getUserData?.categoryConsultations[expertSpecialty]?.hasFreeConsult){
+              console.log('Category Consultations was found and expert specialty was found', expertSpecialty);
+              return true;
+            }
            //If exists and document has the current specialty in it 
            else if(authStore().getUserData?.categoryConsultations[expertSpecialty]){
               console.log('Category Consultations was found and expert specialty was found', expertSpecialty);
-              
               return false;
             }
            //If exists and it does not has the current specialty inside categoryConsultations
            else if(authStore().getUserData?.categoryConsultations && !authStore().getUserData?.categoryConsultations[expertSpecialty]){
               console.log('Category Consultations was found but expert specialty was not found', expertSpecialty);
-
               return true;
             }
+           
             
             
 

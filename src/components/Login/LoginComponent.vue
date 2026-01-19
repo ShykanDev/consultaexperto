@@ -85,8 +85,8 @@
     <form @submit.prevent="login" class="mt-8 space-y-6">
 
       <div class="flex flex-col space-y-2 text-left">
-        <h1 class="text-3xl font-bold text-slate-800 font-manrope">Bienvenido</h1>
-        <p class="text-sm text-slate-500 font-medium">Ingresa tus credenciales para continuar</p>
+        <h1 class="text-3xl font-bold text-blue-500 font-manrope">Bienvenido</h1>
+        <p class="text-sm text-blue-600 font-medium">Ingresa tus credenciales para continuar</p>
       </div>
 
       <div class="space-y-5">

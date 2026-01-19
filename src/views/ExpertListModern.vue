@@ -308,27 +308,10 @@
                         </div>
                     </section>
 
-                    <!-- CTA Section -->
-                    <section class="px-4 py-8 text-center">
-                        <h2 class="text-3xl font-black mb-3 text-slate-900">¿Listo para comenzar?</h2>
-                        <p class="text-slate-500 mb-8 max-w-xs mx-auto">Conecta con expertos en todo momento.</p>
-                        <div class="flex flex-col gap-3 max-w-xs mx-auto">
-                            <ion-button
-                                router-link="/tabs/tab2"
-                                >Registrarse</ion-button>
-                            <ion-button
-                                router-link="/tabs/tab1"
-                                >Contactar</ion-button>
-                        </div>
-                    </section>
-
                     <!-- Footer -->
                     <footer class="bg-white border-t border-slate-200 pt-10 pb-10 px-6 mt-4">
                         <div class="flex flex-col gap-8 max-w-lg mx-auto">
-                            <div class="flex flex-col gap-4">
-                                <h2 class="text-xl font-black text-slate-900">Conoce a nuestros expertos</h2>
-                                <p class="text-sm text-slate-500">Conecta con expertos en todo momento.</p>
-                            </div>
+                        
                             <div class="grid grid-cols-2 gap-8 text-sm">
                                 <div class="flex flex-col gap-3">
                                     <h4 class="font-bold text-slate-900">Legal</h4>
@@ -336,9 +319,9 @@
                                     <a class="text-slate-500 hover:text-blue-600" href="#">Términos y condiciones</a>
                                 </div>
                                 <div class="flex flex-col gap-3">
-                                    <h4 class="font-bold text-slate-900">Contact</h4>
-                                    <a class="text-slate-500 hover:text-blue-600" href="#">Soporte</a>
-                                    <a class="text-slate-500 hover:text-blue-600" href="#">Unirse como experto</a>
+                                    <h4 class="font-bold text-slate-900">Contacto</h4>
+                                    <ion-button mode="ios" style="text-transform: none;" fill="clear" router-link="/tabs/tab1" class="text-slate-500 hover:text-blue-600">Soporte</ion-button>
+                                    <ion-button mode="ios" style="text-transform: none;" fill="clear" router-link="/tabs/tab2" class="text-slate-500 hover:text-blue-600">Unirse como experto</ion-button>
                                 </div>
                             </div>
                             <div class="pt-8 border-t border-slate-100 flex flex-col items-center gap-4">
@@ -349,19 +332,28 @@
                     </footer>
                 </article>
 
-                <!-- popup that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
-                <section v-if="expertPopup" @click.self="toggleExpertPopup('close')"
-                    class="flex overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center px-2 w-full h-full bg-black bg-opacity-30 animate-fade animate-duration-300">
+                <!-- modal that shows expert info (if there is more than one expert selected, it also shows a list of experts) -->
+                <ion-modal :is-open="expertPopup" @didDismiss="toggleExpertPopup('close')" :initial-breakpoint="0.75" :breakpoints="[0, 0.5, 0.75, 1]" handle-behavior="cycle">
+                    <ion-header class="ion-no-border">
+                        <ion-toolbar>
+                            <ion-title class="text-slate-800">Expertos Disponibles</ion-title>
+                            <ion-buttons slot="end">
+                                <ion-button @click="toggleExpertPopup('close')" color="medium">Cerrar</ion-button>
+                            </ion-buttons>
+                        </ion-toolbar>
+                    </ion-header>
+                    <ion-content class="ion-padding bg-slate-50">
+                        <!-- loader dots spinner -->
+                        <div v-if="!mockExperts.length" class="flex justify-center items-center h-40">
+                           <ion-spinner name="dots" color="primary"></ion-spinner>
+                        </div>
 
-                    <!-- loader dots spinner -->
-                   <ion-spinner v-if="!mockExperts.length" name="dots" color="primary" ></ion-spinner>
-
-                    <div v-if="mockExperts.length > 0" @click.stop
-                        class="overflow-auto p-6 w-full animate-fade animate-duration-300 bg-slate-100 rounded-2xl shadow-lg max-h-[80vh] ">
-                        <PrevInfoComponent @closeCard="toggleExpertPopup('close')"
-                            v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert" />
-                    </div>
-                </section>
+                        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-8">
+                            <PrevInfoComponent @closeCard="toggleExpertPopup('close')"
+                                v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert" />
+                        </div>
+                    </ion-content>
+                </ion-modal>
             </section>
         </ion-content>
     </ion-page>
@@ -369,12 +361,14 @@
 </template>
 
 <script lang="ts" setup>
-import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonSpinner } from '@ionic/vue';
+import { IonIcon, IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonSpinner, IonModal, IonButtons } from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import 'animate.css';
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
 import { IExpert } from '@/interfaces/IExpert';
+import { authStore } from '@/store/auth';
+import { useRouter } from 'vue-router';
 import {
     checkmarkCircleOutline,
     lockClosedOutline,
@@ -455,6 +449,22 @@ const db = getFirestore();
 const expertsCollection = collection(db, 'experts');
 const expertPopup = ref(false);
 const mockExperts = ref<IExpert[]>([]);
+const router = useRouter();
+const authStorePinia = authStore();
+
+const verifySuspended = () => {
+    if (authStorePinia.getUserData?.isSuspended) {
+        router.push('/account-suspended');
+    }
+}
+
+onMounted(() => {
+    verifySuspended();
+});
+
+watch(() => authStorePinia.getUserData, () => {
+    verifySuspended();
+}, { deep: true });
 
 // Array de expertos
 const experts = ref([

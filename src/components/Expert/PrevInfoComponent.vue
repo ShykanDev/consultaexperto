@@ -9,18 +9,19 @@
           alt="Expert Profile"
           class="ios-expert-avatar-image"
         />
-        <div v-else class="ios-expert-avatar-placeholder">
-          <v-icon name="la-user-tie-solid" scale="2.2" class="ios-expert-avatar-icon" />
+        <div v-else :class="isBlocked ? 'bg-slate-200' : 'ios-expert-avatar-placeholder'" class="ios-expert-avatar-placeholder">
+          <v-icon v-if="!isBlocked" name="la-user-tie-solid" scale="2.2" :class="isBlocked ? 'text-slate-500' : 'ios-expert-avatar-icon'" />
+          <v-icon v-if="isBlocked" name="fa-user-slash" scale="2.2" class="text-slate-500" />
         </div>
       </div>
 
       <!-- Detalles del experto -->
       <div class="ios-expert-details">
         <div class=" flex items-center justify-around flex-col">
-          <h2 class="!text-xl font-normal font-poppins text-blue-600">
+          <h2 :class="{'text-slate-500': isBlocked, 'text-blue-600': !isBlocked}" class="!text-xl font-normal font-poppins">
             {{ expertData?.fullName || 'Experto' }}
           </h2>
-          <span class="bg-blue-500 text-white px-2 py-1 rounded-full">
+          <span :class="{'bg-slate-500': isBlocked, 'bg-blue-500': !isBlocked}" class="text-white px-2 py-1 rounded-full">
             {{ expertData?.specialty || 'Especialidad' }}
           </span>
           <div v-if="expertData?.rating">
@@ -46,18 +47,26 @@
       </div>
 
       <!-- Botón de acción -->
-      <button @click="viewSchedule" class="ios-expert-button" data-cy="view-schedule-button">
+      <button v-if="!isBlocked" @click="viewSchedule(expertData?.userUid)" class="ios-expert-button" data-cy="view-schedule-button">
         Ver disponibilidad
       </button>
+      <div v-else class="flex items-center justify-center">
+        <ion-button color="medium" mode="ios" size="default" data-cy="view-schedule-button">
+          No disponible
+        </ion-button>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import { IExpert } from '@/interfaces/IExpert';
+import { IonButton } from '@ionic/vue';
 import { useExpertUiStore } from '@/stores/expertUi';
-import { FcRating } from 'oh-vue-icons/icons';
 import { useRating } from '@/composables/stars';
+import { authStore } from '@/store/auth';
+import { onMounted, ref } from 'vue';
+
 
 
 const expertUiStore = useExpertUiStore();
@@ -68,8 +77,12 @@ const props = defineProps({
 
 // ion routing to expert schedule view
 const router = useRouter();
-const viewSchedule = async () => {
+const viewSchedule = async (expertUid?:string) => {
   try {
+    if(verifyBlockedExpert(expertUid)){
+      alert('No puedes agendar citas con este experto');
+      return;
+    }
     if (!props.expertData?.userUid) {
       console.error('No expert UID provided');
       return;
@@ -83,6 +96,28 @@ const viewSchedule = async () => {
   }
 };
 
+const verifyBlockedExpert =  (expertUid?:string): boolean => {
+  if(!expertUid) return false;
+  const expertsBlockedList = authStore().getUserData?.expertsBlocked;
+  if(!expertsBlockedList) return false;
+  
+  if(expertsBlockedList[expertUid]){
+    console.log(`Expert ${expertUid} is blocked`);
+    return true;
+  }
+  console.log(`Expert ${expertUid} is not blocked`);
+  return false;
+  
+  
+  
+
+};
+
+const isBlocked = ref(false);
+onMounted(()=> {
+  isBlocked.value = verifyBlockedExpert(props.expertData?.userUid);
+})
+
 const emit = defineEmits(['closeCard']);
 const closeCard = () => emit('closeCard');
 
@@ -95,10 +130,8 @@ const {calcStarsValue} = useRating();
 <style scoped>
 /* Contenedor principal */
 .ios-expert-card-container {
-  width: 95%;
-  margin: 1rem auto;
+  width: 100%;
   padding: 0.5rem;
-  @apply sm:w-auto;
 }
 
 /* Tarjeta con estilo iOS */
@@ -106,14 +139,13 @@ const {calcStarsValue} = useRating();
   display: flex;
   flex-direction: column;
   background: white;
-  border-radius: 24px;
-  padding: 1.5rem;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.05),
-    0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.03);
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
 }
 
 .ios-expert-card:hover {

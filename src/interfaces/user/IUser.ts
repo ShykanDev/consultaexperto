@@ -30,6 +30,10 @@ export interface IUser {
     [key: string]: {
       isTaken: boolean;
       lastTakenAt: Timestamp;
+      hasFreeConsult: boolean;
+      reactivatedAt:Timestamp;
+      reactivatedBy:string;
+      reactivatedByName:string;
     };
   };
 }
