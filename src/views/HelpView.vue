@@ -190,6 +190,7 @@ import {
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import emailjs from '@emailjs/browser';
 
 const router = useRouter();
 
@@ -213,7 +214,9 @@ const handleContactSubmit = async () => {
     return;
   }
 
-  // Simulate sending
+  // Enviamos el correo con la información del formulario
+  await sendHelpEmail();
+
   const toast = await toastController.create({
     message: 'Su mensaje ha sido enviado correctamente. Responderemos pronto.',
     duration: 3000,
@@ -225,6 +228,8 @@ const handleContactSubmit = async () => {
   // Reset form
   contactForm.value.subject = '';
   contactForm.value.message = '';
+  contactForm.value.scheduleId = '';
+  isConsultRelated.value = false;
 };
 
 // FAQs Data
@@ -267,6 +272,69 @@ const faqs = [
   }
 ];
 
+const sendHelpEmail = async () => {
+  try {
+    const selectedAppointment = finishedAppointments.value.find(a => a.docId === contactForm.value.scheduleId);
+    const user = authStore();
+    
+    await emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
+      // Header
+      headerTitle: 'ADMINISTRACIÓN - CONTROL DE INCIDENCIAS',
+      greeting: 'TICKET #', 
+      userName: Math.floor(1000 + Math.random() * 9000).toString(), 
+      headerDescription: isConsultRelated.value 
+        ? `⚠️ RECLAMO SOBRE CITA: ${selectedAppointment?.expertName || 'N/A'}`
+        : 'Consulta General enviada desde la App',
+
+      // Section 1 – Datos del Usuario Reportando
+      section1Icon: '👥',
+      section1Title: 'Identificación del Usuario',
+      section1TitleColor: '#007aff',
+      section1Item1Label: 'Nombre / UID:',
+      section1Item1Value: `${user.getUserName || 'Usuario'} (${user.getUserUid?.substring(0, 6)}...)`,
+      section1Item2Label: 'Correo:',
+      section1Item2Value: user.getUserEmail || 'N/A',
+
+      // Section 2 – El Problema (Lo más importante visualmente)
+      section2Icon: '🚨',
+      section2Title: 'Detalle Crítico del Reporte',
+      section2TitleColor: '#ff3b30', 
+      section2Subtitle1: 'ASUNTO DEL REPORTE:',
+      section2Value1: contactForm.value.subject || 'Sin Asunto',
+      section2Subtitle2: 'MENSAJE DEL USUARIO:',
+      section2Value2: contactForm.value.message || 'Sin Mensaje',
+      section2HighlightLabel: 'PRIORIDAD:',
+      section2HighlightText: isConsultRelated.value ? 'ALTA - Revisar incidencia con experto' : 'MEDIA - Respuesta informativa',
+      
+      // Section 3 – Datos de la Cita (Carnita técnica)
+      section3Icon: '🩺',
+      section3Title: isConsultRelated.value ? 'Información Técnica de la Cita' : 'Contexto Adicional',
+      section3TitleColor: '#5856d6',
+      
+      section3Item1Label: isConsultRelated.value ? 'Experto / Especialidad:' : 'Fecha Reporte:',
+      section3Item1Value: isConsultRelated.value 
+        ? `${selectedAppointment?.expertName} (${selectedAppointment?.expertSpecialty})` 
+        : new Date().toLocaleDateString('es-ES'),
+        
+      section3Item2Label: isConsultRelated.value ? 'Finalizada el / DocID:' : 'Plataforma:',
+      section3Item2Value: isConsultRelated.value 
+        ? `${selectedAppointment?.finishedAt?.toDate().toLocaleString('es-ES')} [${contactForm.value.scheduleId}]`
+        : 'Centro de Ayuda (Mobile)',
+
+      // Footer
+      footerYear: new Date().getFullYear(),
+      footerLinkUrl: 'https://console.firebase.google.com/',
+      footerLinkText: 'Ver en Base de Datos (Firebase)',
+      footerRightsText: 'Este ticket requiere seguimiento en el panel de baneos.',
+
+      // Email destino (Administración)
+      email: 'shykandev@gmail.com',
+    });
+
+  } catch (error) {
+    console.error('Error enviando email técnico detallado:', error);
+  }
+}
 //Firebase Data
 
 const db = getFirestore();
