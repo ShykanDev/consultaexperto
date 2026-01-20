@@ -1,0 +1,114 @@
+[log] xml(load) at /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/AndroidManifest.xml
+[log] xml(load) Found root namespaces in XML file: http://schemas.android.com/apk/res/android
+Generating assets for ios, android, pwa
+[log] xml(setAttrs) at /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/AndroidManifest.xml - manifest/application
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-ldpi/ic_launcher_foreground.png (9.51 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png (14.74 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png (26.57 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png (41.32 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png (75.32 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png (118.78 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-ldpi/ic_launcher_background.png (277 B)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-mdpi/ic_launcher_background.png (350 B)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-hdpi/ic_launcher_background.png (531 B)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xhdpi/ic_launcher_background.png (697 B)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_background.png (1.02 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png (1.69 KB)
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+CREATE android adaptive-icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-ldpi/ic_launcher.png (1.12 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-mdpi/ic_launcher.png (2.37 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-hdpi/ic_launcher.png (6.06 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png (10.56 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png (20.92 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png (34.39 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-ldpi/ic_launcher_round.png (2.83 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png (4.56 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png (8.48 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png (13.35 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png (23.47 KB)
+CREATE android icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png (36.94 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable/splash.png (9.68 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-ldpi/splash.png (8.62 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-mdpi/splash.png (16.05 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-hdpi/splash.png (32.24 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-xhdpi/splash.png (67.24 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-xxhdpi/splash.png (93.28 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-xxxhdpi/splash.png (127.22 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-ldpi/splash.png (6.07 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-mdpi/splash.png (9.68 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-hdpi/splash.png (18.4 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-xhdpi/splash.png (33.34 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-xxhdpi/splash.png (50.12 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-xxxhdpi/splash.png (75.02 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-night/splash.png (9.75 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-night-ldpi/splash.png (9.75 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-night-mdpi/splash.png (18.7 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-night-hdpi/splash.png (38.49 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-night-xhdpi/splash.png (80.93 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-night-xxhdpi/splash.png (115.86 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-night-xxxhdpi/splash.png (162.86 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-night-ldpi/splash.png (7.25 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-night-mdpi/splash.png (11.95 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-night-hdpi/splash.png (25.06 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-night-xhdpi/splash.png (49.71 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-night-xxhdpi/splash.png (73.3 KB)
+CREATE android splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-night-xxxhdpi/splash.png (112.14 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable/splash.png (131.07 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-ldpi/splash.png (66.16 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-mdpi/splash.png (112.93 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-hdpi/splash.png (256.74 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-xhdpi/splash.png (553.21 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-xxhdpi/splash.png (824.54 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-land-xxxhdpi/splash.png (1.14 MB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-ldpi/splash.png (70.28 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-mdpi/splash.png (131.07 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-hdpi/splash.png (278 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-xhdpi/splash.png (599.73 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-xxhdpi/splash.png (894.6 KB)
+CREATE android splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/android/app/src/main/res/drawable-port-xxxhdpi/splash.png (1.3 MB)
+CREATE ios icon /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png (495.14 KB)
+CREATE ios splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@1x~universal~anyany.png (57.93 KB)
+CREATE ios splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@2x~universal~anyany.png (57.93 KB)
+CREATE ios splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@3x~universal~anyany.png (57.93 KB)
+CREATE ios splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@1x~universal~anyany-dark.png (174.11 KB)
+CREATE ios splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@2x~universal~anyany-dark.png (174.11 KB)
+CREATE ios splash-dark /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@3x~universal~anyany-dark.png (174.11 KB)
+CREATE ios splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@1x~universal~anyany.png (2.54 MB)
+CREATE ios splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@2x~universal~anyany.png (2.54 MB)
+CREATE ios splash /Users/chemex/Desktop/shykan/ConsultaExpertoApp/ios/App/App/Assets.xcassets/Splash.imageset/Default@3x~universal~anyany.png (2.54 MB)
+CREATE pwa icon icons/icon-48.webp (4.16 KB)
+CREATE pwa icon icons/icon-72.webp (7.91 KB)
+CREATE pwa icon icons/icon-96.webp (12.55 KB)
+CREATE pwa icon icons/icon-128.webp (18.58 KB)
+CREATE pwa icon icons/icon-192.webp (34.68 KB)
+CREATE pwa icon icons/icon-256.webp (53.21 KB)
+CREATE pwa icon icons/icon-512.webp (156.54 KB)
+
+
+Totals:
+android: 87 generated, 7.94 MB total
+ios: 10 generated, 8.78 MB total
+pwa: 7 generated, 287.62 KB total

@@ -5,7 +5,7 @@
       <ion-toolbar>
         <ion-title class="text-center text-blue-600">Agenda Expertos</ion-title>
          <ion-buttons slot="end">
-          <ion-button class="text-sm font-quicksand" color="primary" @click="getUserAppointments()" style="text-transform: none;">
+          <ion-button class="text-sm font-quicksand" color="primary" style="text-transform: none;">
             <ion-icon :icon="refresh" class="w-3 h-3" color="primary" :class="{ 'animate-spin': isLoading }"></ion-icon>
             Actualizar
           </ion-button>
@@ -94,7 +94,7 @@
 <script lang="ts" setup>
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonSearchbar, IonSpinner, onIonViewDidLeave } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
-import { collection, doc, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { ref, computed } from 'vue';
 import { authStore as authStoreInstance } from '@/store/auth';
 import { ISchedule } from '@/interfaces/user/ISchedule';
@@ -119,6 +119,10 @@ let unsub: (() => void) | null = null;
 let unsubExpertData:Unsubscribe|null = null;
 
 onIonViewDidEnter(() => {
+  // Cleanup any potential existing listeners before starting new ones
+  if (unsub) unsub();
+  if (unsubExpertData) unsubExpertData();
+
   unsub = onSnapshot(
     queryCollection,
     (querySnapshot) => {
@@ -135,19 +139,18 @@ onIonViewDidEnter(() => {
       console.error(error);
     }
   );
-});
 
-onIonViewDidEnter(()=> {
-const expertDocRef = doc(db, `experts/${authStore.getUserUid}`);
-unsubExpertData = onSnapshot(expertDocRef, (snapshot)=> {
-  if(!snapshot.exists()){
-    console.log(`Expert data was not found in servers`);
-    return;
-  }
-  expertStore().resetExpertData();
-  expertStore().setExpertData(snapshot.data() as IExpert)
-},(error)=> {console.log(`Error while getting snapshot expert data: ${error}`);
-})
+  const expertDocRef = doc(db, `experts/${authStore.getUserUid}`);
+  unsubExpertData = onSnapshot(expertDocRef, (snapshot)=> {
+    if(!snapshot.exists()){
+      console.log(`Expert data was not found in servers`);
+      return;
+    }
+    expertStore().resetExpertData();
+    expertStore().setExpertData(snapshot.data() as IExpert)
+  },(error)=> {
+    console.log(`Error while getting snapshot expert data: ${error}`);
+  })
 })
 
 onIonViewDidLeave(()=> {

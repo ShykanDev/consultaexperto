@@ -11,7 +11,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { authStore } from './store/auth';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import expertStore from './store/expert';
+
 
 const router = useIonRouter();
 console.log('App.vue script is executing...');
@@ -38,46 +38,40 @@ onMounted(async () => {
   }
 });
 
-onMounted(()=>{
-  onAuthStateChanged(auth, (user)=> {
-    if(user) {
-      console.log('User is connected',user);
-      authStore().setUserData('users',user.uid);
-    }else {
-      authStore().unsuscribeListener()
-      console.log('There is not user connected');
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log('User is connected', user);
+      // Determine collection based on stored role (Pinia persistence)
+      const collection = authStore().getIsExpert ? 'experts' : 'users';
+      authStore().setUserData(collection, user.uid);
+    } else {
+      authStore().unsuscribeListener();
+      console.log('No user connected');
     }
-  })
-})
+  });
+});
 
+// Watch for changes in user data to redirect if banned/suspended
+watch(() => authStore().getUserData, (userData) => {
+  if (!userData) return;
 
-const validateUserBanned = () => {
-//If is user banned, redirect to account suspended
-if(authStore().getIsClient){
-  console.log('User is client');
-  watch(()=>authStore().getIsUserBanned, ()=> {
-    if(authStore().getIsUserBanned){
-      authStore().setLogout();
-      router.navigate('/account-suspended');
-    }
-  })
-}
-}
+  const isClient = authStore().getIsClient;
+  const isExpert = authStore().getIsExpert;
 
-const validateExpertBanned = () => {
-//If is user banned, redirect to account suspended
-if(authStore().getIsExpert){
-  console.log('User is expert');
-  watch(()=>expertStore().getExpertData.isSuspended, ()=> {
-    if(expertStore().getExpertData.isSuspended){
-      authStore().setLogout();
-      router.navigate('/account-suspended');
-    }
-  })
-} 
-}
-onMounted(()=>{
-  validateUserBanned();
-  validateExpertBanned();
-})
+  if (isClient && userData.isBanned) {
+    console.log('Client is banned, redirecting...');
+    authStore().setLogout();
+    router.navigate('/account-suspended');
+    return;
+  }
+
+  if (isExpert && userData.isSuspended) {
+    console.log('Expert is suspended, redirecting...');
+    authStore().setLogout();
+    router.navigate('/account-suspended');
+    return;
+  }
+}, { deep: true });
+
 </script>

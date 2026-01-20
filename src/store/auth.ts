@@ -59,11 +59,13 @@ export const authStore = defineStore('auth', {
         },
         unsuscribeListener(){
             if(this.userListenerUnsuscribe){
-            this.userListenerUnsuscribe();
-            this.userData = null;
+                this.userListenerUnsuscribe();
+                this.userListenerUnsuscribe = null;
             }
+            this.userData = null;
         },
         setLogout() {
+            this.unsuscribeListener();
             this.isAuth = false;
             this.userName = null;
             this.userUid = null;
@@ -73,6 +75,7 @@ export const authStore = defineStore('auth', {
             this.isAdmin = false;
         },
         resetAuth() {
+            this.unsuscribeListener();
             this.isAuth = false;
             this.userName = null;
             this.userUid = null;

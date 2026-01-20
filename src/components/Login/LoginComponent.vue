@@ -302,6 +302,7 @@ const handleExpertLogin = (uid: string, name: string, userEmail: string, expertD
   authStore().setUserName(name);
   authStore().setUserEmail(userEmail);
   authStore().setIsExpert(true);
+  authStore().setUserData('experts', uid);
   expertStore().setExpertData(expertData);
   presentToast("top", `Bienvenido ${name}`, "success");
   router.push("/expert");
@@ -314,6 +315,7 @@ const handleClientLogin = (uid: string, name: string, userEmail: string) => {
   authStore().setUserName(name);
   authStore().setUserEmail(userEmail);
   authStore().setIsClient(true);
+  authStore().setUserData('users', uid);
 
   presentToast("top", `Bienvenido ${name}`, "success");
   if(testingFirebaseRules.value){
