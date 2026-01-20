@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue'
 import { authStore } from '@/store/auth';
+import expertStore from '@/store/expert';
+// const authStorePinia = authStore(); // Removed to avoid getActivePinia() error at initialization
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -37,42 +39,42 @@ const routes: Array<RouteRecordRaw> = [
         path: 'tab3',
         component: () => import('@/views/Tab3Page.vue'),
         meta:{  
-          requiresAuth: true
+          requiresAuth: true,
         }
       },
       {
         path: 'user-account',
         component: () => import('@/views/client/UserAccount.vue'),
         meta:{
-          requiresAuth: true
+          requiresAuth: true,
         }
       },
       {
         path: 'user-account/:id',
         component: () => import('@/views/client/UserAccount.vue'),
         meta:{
-          requiresAuth: true
+          requiresAuth: true,
         }
       },
       {
         path: 'experts-list',
         component: () => import('@/views/ExpertsListView.vue'),
         meta:{
-          requiresAuth: true
+          requiresAuth: true,
         }
       },
       {
         path: 'client-appointments',
         component: () => import('@/views/client/ClientAppointmentsView.vue'),
         meta:{
-          requiresAuth: true
+          requiresAuth: true,
         }
       },  
       {
         path: 'expert-list-modern',
         component: () => import('@/views/ExpertListModern.vue'),
         meta:{
-          requiresAuth: true
+          requiresAuth: true,
         }
       },
     ],
@@ -82,7 +84,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/add-experts',
     component: () => import('@/views/mock/AddExpertsView.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   
   },
@@ -90,14 +92,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/expert-info',
     component: () => import('@/views/ExpertInfoView.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
   {
     path: '/expert-info-fixed',
   component: () => import('@/views/expert/ExpertViewFixed.vue'),  
   meta:{
-    requiresAuth: true
+    requiresAuth: true,
   }
 },
   {
@@ -111,25 +113,34 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'appointments',
         component: () => import('@/views/expert/ExpertView.vue'),
+        meta:{
+          requiresAuth: true,
+        }
       },
       {
         path: 'profile',
         component: () => import('@/views/expert/ExpertProfileView.vue'),
+        meta:{
+          requiresAuth: true,
+        }
       },
       {
         path: 'logout',
         component: () => import('@/views/LogoutView.vue'),
+        meta:{
+          requiresAuth: true,
+        }
       }
     ],
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
   {
     path: '/logout',
     component: () => import('@/views/LogoutView.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
   {
@@ -150,7 +161,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/hiring',
     component: () => import('@/views/HiringView.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
 
@@ -158,7 +169,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/create-expert',
     component: () => import('@/views/CreateExpert.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
 
@@ -166,7 +177,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/expert-preview',
     component: () => import('@/views/ExpertPreview.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
 
@@ -174,7 +185,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/expert-list-admin',
     component: () => import('@/views/ExpertListAdmin.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
   {
@@ -188,7 +199,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/users-list-admin',
     component: () => import('@/views/admin/UsersList.vue'),
     meta:{
-      requiresAuth: true
+      requiresAuth: true,
     }
   },
   {
@@ -214,17 +225,33 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const authStorePinia = authStore();
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!authStorePinia.getIsAuth) {
-      next({
-        path: '/tabs/tab1'
-      })
+  const authStorePinia = authStore(); // Access store inside the guard
+  const expertStorePinia = expertStore(); // Access store inside the guard
+
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const isAuth = authStorePinia.getIsAuth;
+  const isBannedUser = authStorePinia.getUserData?.isBanned ?? false;
+  const isBannedExpert = expertStorePinia.getExpertData?.isSuspended ?? false;
+
+  // 1. Always allow access to the account-suspended view to avoid infinite loops
+  if (to.path === '/account-suspended') {
+    return next();
+  }
+
+  // 2. If user is banned and tries to access a protected route
+  if (isAuth && (isBannedUser || isBannedExpert) && requiresAuth) {
+    return next({ path: '/account-suspended' });
+  }
+
+  // 3. Handle protected routes
+  if (requiresAuth) {
+    if (!isAuth) {
+      next({ path: '/tabs/tab1' });
     } else {
-      next()
+      next();
     }
   } else {
-    next()
+    next();
   }
 })
 export default router

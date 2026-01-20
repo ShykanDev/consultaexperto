@@ -72,10 +72,7 @@
               </div>
             </div>
           </div>
-
-
         </div>
-
       </div>
     </div>
 
@@ -83,7 +80,6 @@
 
 
     <form @submit.prevent="login" class="mt-8 space-y-6">
-
       <div class="flex flex-col space-y-2 text-left">
         <h1 class="text-3xl font-bold text-blue-500 font-manrope">Bienvenido</h1>
         <p class="text-sm text-blue-600 font-medium">Ingresa tus credenciales para continuar</p>
@@ -201,7 +197,7 @@ import {
 import {  sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { authStore } from '@/store/auth';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
 import clientStore from '@/store/client';
 import {
@@ -210,6 +206,8 @@ import {
   onIonViewDidLeave
 } from '@ionic/vue';
 import { toastController } from '@ionic/vue';
+import expertStore from '@/store/expert';
+import { IExpert } from '@/interfaces/IExpert';
 
 console.log('LoginComponent.vue script is executing...');
 
@@ -298,13 +296,13 @@ const handleAdminLogin = (uid: string, name: string, userEmail: string) => {
   router.push("/expert-list-admin"); // ruta especial
 };
 
-const handleExpertLogin = (uid: string, name: string, userEmail: string) => {
+const handleExpertLogin = (uid: string, name: string, userEmail: string, expertData: IExpert) => {
   authStore().setIsAuth(true);
   authStore().setUserUid(uid);
   authStore().setUserName(name);
   authStore().setUserEmail(userEmail);
   authStore().setIsExpert(true);
-
+  expertStore().setExpertData(expertData);
   presentToast("top", `Bienvenido ${name}`, "success");
   router.push("/expert");
 };
@@ -326,6 +324,7 @@ const handleClientLogin = (uid: string, name: string, userEmail: string) => {
  //DEBUG ONLY router.push("/firebase"); // route for testing firebase rules
 
 };
+
 
 
 const testingFirebaseRules = ref(false); //Allows testing firebase rules handling
@@ -361,7 +360,16 @@ const login = async () => {
     const isExpert = await verifyIsExpert(userEmail);
 
     if (isExpert) {
-      handleExpertLogin(uid, name, userEmail);
+      
+      const docRef = doc(db,`experts/${uid}` ) 
+      const expertData = await getDoc(docRef)
+      if(!expertData.exists()){
+        presentToast("top", "Error al iniciar sesión, intente de nuevo", "danger");
+        return;
+      }
+      console.log(`EXPERT DATA: ${expertData.data()}`);
+      
+      handleExpertLogin(uid, name, userEmail, expertData.data() as IExpert);
     } else {
       handleClientLogin(uid, name, userEmail);
     }

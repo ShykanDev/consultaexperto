@@ -91,6 +91,7 @@ export const authStore = defineStore('auth', {
         getIsExpert: (state) => state.isExpert,
         getIsAdmin: (state) => state.isAdmin,
         getUserData: (state) => state.userData,
+        getIsUserBanned: (state) => state.userData?.isBanned,
     },
     persist:true
 })

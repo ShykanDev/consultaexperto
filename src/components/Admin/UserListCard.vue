@@ -300,18 +300,7 @@
            </p>
         </div>
 
-        <!-- Toggle Free Consultations (Disabled if Banned) -->
-         <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-gray-200 shadow-sm" :class="{'opacity-50 pointer-events-none': editForm.isBanned}">
-            <div class="flex flex-col">
-              <span class="text-xs font-bold text-gray-700">Consultas Gratis</span>
-              <span class="text-[10px] text-gray-400">Permitir preguntas sin costo</span>
-            </div>
-            <ion-toggle 
-              v-model="editForm.freeConsultations" 
-              :disabled="editForm.isBanned"
-              mode="ios"
-            ></ion-toggle>
-         </div>
+       
       </div>
 
       <div class="mt-6 flex gap-2">

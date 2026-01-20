@@ -94,12 +94,15 @@
 <script lang="ts" setup>
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonSegmentView, IonSegment, IonSegmentButton, IonSegmentContent, IonLabel, IonButtons, IonButton, IonIcon, IonSelect, IonSelectOption, IonSearchbar, IonSpinner, onIonViewDidLeave } from '@ionic/vue';
 import { onIonViewDidEnter } from '@ionic/vue';
-import { collection, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, getDocs, getFirestore, onSnapshot, query, where } from 'firebase/firestore';
 import { ref, computed } from 'vue';
 import { authStore as authStoreInstance } from '@/store/auth';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { refresh } from 'ionicons/icons';
 import CardInfo from '@/components/Expert/CardInfo.vue';
+import { Unsubscribe } from 'firebase/auth';
+import expertStore from '@/store/expert';
+import { IExpert } from '@/interfaces/IExpert';
 
 
 const authStore = authStoreInstance(); authStore
@@ -113,6 +116,7 @@ const isLoading = ref(false);
 //Firebase onSnapshot data
 
 let unsub: (() => void) | null = null;
+let unsubExpertData:Unsubscribe|null = null;
 
 onIonViewDidEnter(() => {
   unsub = onSnapshot(
@@ -133,13 +137,34 @@ onIonViewDidEnter(() => {
   );
 });
 
+onIonViewDidEnter(()=> {
+const expertDocRef = doc(db, `experts/${authStore.getUserUid}`);
+unsubExpertData = onSnapshot(expertDocRef, (snapshot)=> {
+  if(!snapshot.exists()){
+    console.log(`Expert data was not found in servers`);
+    return;
+  }
+  expertStore().resetExpertData();
+  expertStore().setExpertData(snapshot.data() as IExpert)
+},(error)=> {console.log(`Error while getting snapshot expert data: ${error}`);
+})
+})
+
 onIonViewDidLeave(()=> {
   userAppointments.value = [];
   if(unsub) {
     unsub();
     unsub = null;
   }
+  if(unsubExpertData) {
+    unsubExpertData();
+    unsubExpertData = null;
+  }
 })
+
+
+
+
 
 
 /** Filtering and Sorting Logic **/

@@ -313,8 +313,8 @@ console.log('Creating Vue app...');
 const app = createApp(App)
   .component("v-icon", OhVueIcon)
   .use(IonicVue)
-  .use(router)
   .use(pinia)
+  .use(router)
   .component('VueDatePicker', VueDatePicker);
 
 console.log('Waiting for router to be ready...');

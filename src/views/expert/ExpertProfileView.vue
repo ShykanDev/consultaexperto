@@ -50,6 +50,7 @@
            <span class="px-4 py-1.5 bg-blue-50 text-blue-600 rounded-full text-sm font-semibold font-quicksand">
              {{ expertData.specialty }}
            </span>
+           <span class="text-xs text-gray-500 font-medium">Data: {{ expertStore().getExpertData ?? 'No data' }}</span>
 
            <!-- Stats Row -->
            <div class="flex items-center justify-center gap-8 mt-6 w-full max-w-xs">
@@ -149,6 +150,7 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { authStore as useAuthStore } from '@/store/auth';
 import { IExpert } from '@/interfaces/IExpert';
 import { useRating } from '@/composables/stars';
+import expertStore from '@/store/expert';
 
 const authStore = useAuthStore();
 const db = getFirestore();

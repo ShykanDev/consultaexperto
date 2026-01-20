@@ -38,7 +38,7 @@
             expand="block" 
             mode="ios" 
             class="ios-blue-button h-14 font-bold text-lg shadow-lg"
-            @click="handleContactSupport"
+            router-link="/help"
           >
             Contactar Soporte
             <ion-icon slot="end" :icon="mailOutline"></ion-icon>
@@ -54,23 +54,19 @@
             Volver al inicio
           </ion-button>
         </div>
-
-        <!-- Footer Footer -->
-        <footer class="mt-auto pt-10 text-xs text-gray-400 font-medium">
-          &copy; {{ new Date().getFullYear() }} Consulta Experto • Seguridad & Privacidad
-        </footer>
-
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
+import { auth } from '@/firebase';
 import { 
   IonPage, 
   IonContent, 
   IonIcon, 
-  IonButton 
+  IonButton, 
+  useIonRouter
 } from '@ionic/vue';
 import { 
   shieldOutline, 
@@ -78,17 +74,15 @@ import {
   mailOutline,
   chevronBackOutline
 } from 'ionicons/icons';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
+const router = useIonRouter();
 
-const handleContactSupport = () => {
-  // Opening email client or redirecting to help
-  window.location.href = 'mailto:soporte@consultaexperto.com?subject=Revisión de Cuenta Suspendida';
-};
 
+
+const authFirebase = auth;
 const handleReturn = () => {
-  router.push('/tabs/tab1');
+  authFirebase.signOut();
+  router.navigate('/', 'root', 'replace');
 };
 </script>
 

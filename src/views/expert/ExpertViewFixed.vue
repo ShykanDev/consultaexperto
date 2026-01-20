@@ -330,7 +330,7 @@ import {
   IonIcon,
   IonLoading
 } from '@ionic/vue';
-import { collection, doc, getDoc, getFirestore, onSnapshot, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDoc, getFirestore, onSnapshot, runTransaction, Timestamp } from 'firebase/firestore';
 import { calendarClearOutline, chevronBack } from 'ionicons/icons';
 import { computed, ref } from 'vue';
 import { toastController } from '@ionic/vue';
@@ -432,6 +432,7 @@ const isAnSlotAlreadyTaken = () => Object.values(schedule.value).flat(1).find((s
  * @param timeStr Hora en formato string (ej. "10:00")
  * @returns Objeto Date con la fecha y hora calculada.
  */
+
 const calculateNextAppointmentDate = (dayName: string, timeStr: string): Date => {
   const targetDay = dayMap[dayName];
   if (targetDay === undefined) throw new Error("Día inválido");
@@ -459,6 +460,7 @@ const calculateNextAppointmentDate = (dayName: string, timeStr: string): Date =>
 
   return appointmentDate;
 }
+
 
 /**
  * Valida si faltan al menos 24 horas para la fecha de la cita.
@@ -634,59 +636,125 @@ const updateSubcollectionSchedule = async () => {
     loadingMessage.value = 'Agendando cita...';
     savingChanges.value = true;
 
-    // Use a Firestore Batch to ensure atomic operations (All or Nothing)
-    // "Guardian" Strategy: Create a unique ticket doc to prevent double booking
-    const batch = writeBatch(db);
+    // // COMENTADO PARA USAR TRANSACTION EN SU LUGAR
+    // // Use a Firestore Batch to ensure atomic operations (All or Nothing)
+    // // "Guardian" Strategy: Create a unique ticket doc to prevent double booking
+    // const batch = writeBatch(db);
 
-    // 1. Define the Guardian Ticket Reference
-    // Key Concept: The ID is composed of expertUID + Day + Time.
-    // Example: "chemex_Lunes_10:00" -> Unique ID guarantees only one person can create it.
+    // // 1. Define the Guardian Ticket Reference
+    // // Key Concept: The ID is composed of expertUID + Day + Time.
+    // // Example: "chemex_Lunes_10:00" -> Unique ID guarantees only one person can create it.
     const guardianId = `${expertData.value?.userUid}_${dayName}_${slotSelected.value.time}`;
     const guardianRef = doc(db, 'bookings', guardianId);
 
-    // 2. Add the Guardian Write to the Batch
-    // We set dummy data purely to reserve the slot.
-    // Security Rule: allow create: if !exists(doc) -> This prevents race conditions.
-    batch.set(guardianRef, {
-        reserverUid: authStore().getUserUid,
-        createdAt: Timestamp.now()
-    });
+    // // 2. Add the Guardian Write to the Batch
+    // // We set dummy data purely to reserve the slot.
+    // // Security Rule: allow create: if !exists(doc) -> This prevents race conditions.
+    // batch.set(guardianRef, {
+    //     reserverUid: authStore().getUserUid,
+    //     createdAt: Timestamp.now()
+    // });
 
-    // 3. Update the Local Schedule (Version A - Array)
-    // We still update the array for UI compatibility (so the calendar looks red).
-    console.log('Guardando schedule...', schedule.value);
-    slotSelected.value.takenAt = Timestamp.now();
+    // // 3. Update the Local Schedule (Version A - Array)
+    // // We still update the array for UI compatibility (so the calendar looks red).
+    // console.log('Guardando schedule...', schedule.value);
+    // slotSelected.value.takenAt = Timestamp.now();
     const expertPath = doc(db, `experts/${expertData.value?.userUid}`);
     
-    batch.update(expertPath, {
-        schedule: schedule.value
-    });
+    // batch.update(expertPath, {
+    //     schedule: schedule.value
+    // });
     
-    // 4. Create the Actual Appointment Document
-    // Using set() on a new doc ref to include it in the batch
+    // // 4. Create the Actual Appointment Document
+    // // Using set() on a new doc ref to include it in the batch
     const newScheduleRef = doc(collection(db, 'schedules'));
-    batch.set(newScheduleRef, {
-        userName: authStore().getUserName,
-        userUid: authStore().getUserUid,
-        expertUid: expertData.value?.userUid,
-        expertName: expertData.value?.fullName,
-        expertSchedule: slotSelected.value,
-        expertSpecialty: expertData.value?.specialty,
-        expertProfessionalId: expertData.value?.professionalId,
-        appointmentLink: '',
-        isFinished: false,
-        dayName: dayName,
-        appointmentDate: Timestamp.fromDate(appointmentDate),
-        createdAt: Timestamp.now(),
-        acceptedByExpert: false,
-    });
+    // batch.set(newScheduleRef, {
+    //     userName: authStore().getUserName,
+    //     userUid: authStore().getUserUid,
+    //     expertUid: expertData.value?.userUid,
+    //     expertName: expertData.value?.fullName,
+    //     expertSchedule: slotSelected.value,
+    //     expertSpecialty: expertData.value?.specialty,
+    //     expertProfessionalId: expertData.value?.professionalId,
+    //     appointmentLink: '',
+    //     isFinished: false,
+    //     dayName: dayName,
+    //     appointmentDate: Timestamp.fromDate(appointmentDate),
+    //     createdAt: Timestamp.now(),
+    //     acceptedByExpert: false,
+    // });
 
     try {
-        // 5. Commit the Batch
-        // This executes all 3 operations atomically.
-        // If the "Guardian" doc already exists (someone else booked 1ms ago),
-        // the ENTIRE batch fails, and nothing is written. Safety guaranteed.
-        await batch.commit();
+        // // 5. Commit the Batch
+        // // This executes all 3 operations atomically.
+        // // If the "Guardian" doc already exists (someone else booked 1ms ago),
+        // // the ENTIRE batch fails, and nothing is written. Safety guaranteed.
+        // await batch.commit();
+
+        // INICIAMOS LA TRANSACCIÓN PARA EVITAR CONDICIONES DE CARRERA (RACE CONDITIONS)
+        // LAS TRANSACCIONES LEEN PRIMERO Y LUEGO ESCRIBEN. SI ALGO CAMBIA DURANTE EL PROCESO, SE REINTENTA.
+        await runTransaction(db, async (transaction) => {
+            
+            // 1. LEEMOS EL GUARDIÁN Y EL EXPERTO PARA ASEGURARNOS DE QUE TODO SIGA DISPONIBLE
+            const guardianDoc = await transaction.get(guardianRef);
+            const expertDoc = await transaction.get(expertPath);
+
+            if (guardianDoc.exists()) {
+                // SI EL GUARDIÁN YA EXISTE, SIGNIFICA QUE ALGUIEN MÁS GANÓ EL SLOT
+                throw new Error("Lamentablemente este horario ya fue reservado.");
+            }
+
+            if (!expertDoc.exists()) {
+                throw new Error("El experto no existe.");
+            }
+
+            // 2. ACTUALIZAMOS LA DATA DEL CALENDARIO EN EL DOCUMENTO DEL EXPERTO
+            // OBTENEMOS EL SCHEDULE ACTUALIZADO DESDE EL DOCUMENTO RECIÉN LEÍDO
+            const currentDocData = expertDoc.data();
+            const currentSchedule = currentDocData?.schedule || {};
+            
+            // BUSCAMOS EL SLOT DENTRO DEL ARRAY CORRESPONDIENTE AL DÍA (dayName)
+            const daySlots = currentSchedule[dayName] || [];
+            const slotToUpdate = daySlots.find((s: any) => s.time === slotSelected.value!.time);
+
+            if (!slotToUpdate || (slotToUpdate.takenBy && slotToUpdate.takenBy !== authStore().getUserUid)) {
+                throw new Error("El horario ya no está disponible.");
+            }
+
+            // MARCAMOS EL SLOT COMO TOMADO
+            slotToUpdate.takenBy = authStore().getUserUid;
+            slotToUpdate.takenAt = Timestamp.now();
+
+            // 3. REGISTRAMOS TODOS LOS CAMBIOS DE FORMA ATÓMICA DENTRO DE LA TRANSACCIÓN
+            
+            // RESERVAMOS EL GUARDIAN TICKET
+            transaction.set(guardianRef, {
+                reserverUid: authStore().getUserUid,
+                createdAt: Timestamp.now()
+            });
+
+            // ACTUALIZAMOS EL DOCUMENTO DEL EXPERTO CON EL NUEVO SCHEDULE
+            transaction.update(expertPath, {
+                schedule: currentSchedule
+            });
+
+            // CREAMOS EL DOCUMENTO DE LA CITA (APPOINTMENT)
+            transaction.set(newScheduleRef, {
+                userName: authStore().getUserName,
+                userUid: authStore().getUserUid,
+                expertUid: expertData.value?.userUid,
+                expertName: expertData.value?.fullName,
+                expertSchedule: slotSelected.value,
+                expertSpecialty: expertData.value?.specialty,
+                expertProfessionalId: expertData.value?.professionalId,
+                appointmentLink: '',
+                isFinished: false,
+                dayName: dayName,
+                appointmentDate: Timestamp.fromDate(appointmentDate),
+                createdAt: Timestamp.now(),
+                acceptedByExpert: false,
+            });
+        });
 
        // await sendTestEmail(dayName, appointmentDate);
 
@@ -699,18 +767,20 @@ const updateSubcollectionSchedule = async () => {
         }, 1500);
 
     } catch (error: any) {
-        console.error('Error al agendar cita (Batch Guard):', error);
+        console.error('Error al agendar cita (Transaction):', error);
         
-        // Handle "Document already exists" error specifically
-        if (error.code === 'already-exists' || error.message?.includes('already exists')) {
+        // MANEJAMOS ERRORES ESPECÍFICOS DE LA TRANSACCIÓN O DEL PROCESO
+        if (error.message === 'Lamentablemente este horario ya fue reservado.' || error.code === 'already-exists') {
              presentToast('top', '¡Lo sentimos! Este horario acaba de ser reservado por otra persona.', 'danger');
         } else {
-             presentToast('top', 'Error al agendar la cita. Intente nuevamente.', 'danger');
+             presentToast('top', error.message || 'Error al agendar la cita. Intente nuevamente.', 'danger');
         }
         savingChanges.value = false;
         loading.value = false;
-        // Revert local UI change
-        slotSelected.value.takenBy = null;
+        // REVERTIMOS EL CAMBIO LOCAL EN LA UI
+        if (slotSelected.value) {
+            slotSelected.value.takenBy = null;
+        }
         return;
     }
     

@@ -1,3 +1,4 @@
+import { IExpert } from '@/interfaces/IExpert'
 import { defineStore } from 'pinia'
 
 const expertStore = defineStore('expert', {
@@ -6,6 +7,7 @@ const expertStore = defineStore('expert', {
     expertName: '',
     expertUid: '',
     summary: '',
+    expertData: {} as IExpert | any
   }),
   actions: {
     setExpertArea(expertArea: string) {
@@ -20,14 +22,21 @@ const expertStore = defineStore('expert', {
     setSummary(summary: string) {
       this.summary = summary
     },
+    setExpertData(expertData: IExpert) {
+      this.expertData = expertData
+    },
+    resetExpertData(){
+      this.expertData = {} as IExpert
+    }
   },
   getters: {
     getExpertName: (state) => state.expertName,
     getExpertArea: (state) => state.expertArea,
     getExpertUid: (state) => state.expertUid,
     getSummary: (state) => state.summary,
+    getExpertData: (state) => state.expertData,
   },
-  persist: true,
+  
 })
 
 export default expertStore
