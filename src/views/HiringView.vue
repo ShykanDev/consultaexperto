@@ -166,30 +166,73 @@ const handleSendEmail = async () => {
     return;
   }
 
+  
+
   isSending.value = true;
   
   try {
-    // Configura aquí tus IDs de EmailJS
     const templateParams = {
-      to_email: 'informes@consultaexperto.com',
-      user_name: auth.getUserName,
-      user_email: auth.getUserEmail,
-      expert_name: hiringStore.expertName,
-      expert_specialty: hiringStore.expertSpecialty,
-      message: comment.value
+      // Dynamic Subject for Admin
+      subject: `Nueva solicitud de contratación de un experto por parte de ${auth.getUserName || 'un usuario'}`,
+      
+      // Header One UI Style
+      headerTitle: 'CONSULTAEXPERTO - SOLICITUD DE CONTRATACIÓN',
+      greeting: 'SOLICITUD DE CONTRATACIÓN',
+      userName: auth.getUserName?.toUpperCase() || 'USUARIO',
+      headerDescription: 'Nueva orden de contratación generada desde ConsultaExperto.',
+
+      // Sección CLIENTE (Fondo Azul Samsung)
+      section1Icon: '👤',
+      sectionTitle1: 'DATOS COMPLETOS DEL SOLICITANTE',
+      section1TitleColor: '#034EA2', // Samsung Navy Blue
+      section1Item1Label: 'Nombre Completo:',
+      section1Item1Value: auth.getUserName || 'N/A',
+      section1Item2Label: 'UID USUARIO (Identificador Único):',
+      section1Item2Value: auth.getUserUid || 'N/A', // UID COMPLETO SIN RECORTAR
+
+      // Sección EXPERTO (Fondo Gris One UI)
+      section2Icon: '🏢',
+      sectionTitle2: 'DATOS DEL EXPERTO',
+      section2TitleColor: '#000000',
+      section2Subtitle1: 'Nombre del Experto:',
+      section2Value1: hiringStore.expertName || 'N/A',
+      section2Subtitle2: 'UID DEL EXPERTO (DB Ref):',
+      section2Value2: hiringStore.expertUid || 'N/A', // UID COMPLETO SIN RECORTAR
+      section2HighlightLabel: 'MENSAJE / REQUERIMIENTOS:',
+      section2HighlightText: comment.value,
+
+      // Sección TÉCNICA (One UI Dark Mode accent)
+      section3Icon: '🛠️',
+      section3Title: 'METADATA DE LA OPERACIÓN',
+      section3TitleColor: '#1428a0', // Samsung Accent
+      section3Item1Label: 'Categoría Solicitada:',
+      section3Item1Value: hiringStore.expertSpecialty || 'N/A',
+      section3Item2Label: 'Estatus de Contacto por WhatsApp:',
+      section3Item2Value: acceptPhone.value ? `Teléfono: ${authStore().getUserData?.phone}` : 'No autorizado, contactar por correo.',
+
+      // Info adicional para el template Samsung
+      emailUser: auth.getUserEmail || 'N/A',
+      timestamp: new Date().toLocaleString('es-ES'),
+
+      // Footer
+      footerYear: new Date().getFullYear(),
+      footerLinkUrl: '',
+      footerLinkText: 'consultaexperto',
+      footerRightsText: 'Sistema de administración Consulta Experto.',
+      
+      // Email para administración
+      email: 'shykandev@gmail.com',
     };
 
-    // NOTA: Se asume que emailjs ya está inicializado en main.ts o ExpertViewFixed
-    // await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
-    
-    // Simulamos el envío ya que el usuario dijo que él se encarga del resto
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Envío real a través de EmailJS
+    await emailjs.send('service_q9e8lj2', 'template_v29drnw', templateParams);
 
-    presentToast('Solicitud enviada correctamente. Revisaremos tu caso pronto.', 'success');
+    presentToast('Solicitud enviada. El administrador revisará los datos técnicos.', 'success');
     comment.value = '';
+    acceptPhone.value = false;
   } catch (error) {
-    console.error('Error al enviar solicitud:', error);
-    presentToast('Hubo un error al enviar la solicitud. Intenta más tarde.', 'danger');
+    console.error('Error al enviar solicitud de contratación (Admin View):', error);
+    presentToast('Error en la comunicación con el servidor técnico.', 'danger');
   } finally {
     isSending.value = false;
   }

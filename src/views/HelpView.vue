@@ -187,7 +187,7 @@ import {
   IonCheckbox,
   onIonViewDidEnter,
 } from '@ionic/vue';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, query, Timestamp, where } from 'firebase/firestore';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import emailjs from '@emailjs/browser';
@@ -277,11 +277,11 @@ const sendHelpEmail = async () => {
     const selectedAppointment = finishedAppointments.value.find(a => a.docId === contactForm.value.scheduleId);
     const user = authStore();
     
-    await emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
+    await emailjs.send('service_q9e8lj2', 'template_v29drnw', {
       // Header
       headerTitle: 'ADMINISTRACIÓN - CONTROL DE INCIDENCIAS',
       greeting: 'TICKET #', 
-      userName: Math.floor(1000 + Math.random() * 9000).toString(), 
+      userName: `${user.getUserUid?.substring(0, 6)}${Timestamp.now().seconds} `, 
       headerDescription: isConsultRelated.value 
         ? `⚠️ RECLAMO SOBRE CITA: ${selectedAppointment?.expertName || 'N/A'}`
         : 'Consulta General enviada desde la App',
@@ -291,7 +291,7 @@ const sendHelpEmail = async () => {
       section1Title: 'Identificación del Usuario',
       section1TitleColor: '#007aff',
       section1Item1Label: 'Nombre / UID:',
-      section1Item1Value: `${user.getUserName || 'Usuario'} (${user.getUserUid?.substring(0, 6)}...)`,
+      section1Item1Value: `${user.getUserName || 'Usuario'} (${user.getUserUid})`,
       section1Item2Label: 'Correo:',
       section1Item2Value: user.getUserEmail || 'N/A',
 
@@ -304,7 +304,7 @@ const sendHelpEmail = async () => {
       section2Subtitle2: 'MENSAJE DEL USUARIO:',
       section2Value2: contactForm.value.message || 'Sin Mensaje',
       section2HighlightLabel: 'PRIORIDAD:',
-      section2HighlightText: isConsultRelated.value ? 'ALTA - Revisar incidencia con experto' : 'MEDIA - Respuesta informativa',
+      section2HighlightText: isConsultRelated.value ? 'ALTA - Revisar incidencia en la aplicación' : 'BAJA - Respuesta informativa',
       
       // Section 3 – Datos de la Cita (Carnita técnica)
       section3Icon: '🩺',
@@ -323,9 +323,9 @@ const sendHelpEmail = async () => {
 
       // Footer
       footerYear: new Date().getFullYear(),
-      footerLinkUrl: 'https://console.firebase.google.com/',
-      footerLinkText: 'Ver en Base de Datos (Firebase)',
-      footerRightsText: 'Este ticket requiere seguimiento en el panel de baneos.',
+      footerLinkUrl: '',
+      footerLinkText: 'Ver en la aplicación',
+      footerRightsText: 'Este ticket requiere seguimiento, en el panel del administrador.',
 
       // Email destino (Administración)
       email: 'shykandev@gmail.com',
