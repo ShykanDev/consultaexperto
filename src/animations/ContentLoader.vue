@@ -37,8 +37,8 @@
 </style>
 
 <template>
-  <div class="card">
-    <div class="card__skeleton card__title"></div>
+  <div class="card card__skeleton card__title">
+    </div>
     <div class="card__skeleton card__description"></div>
-  </div>
+  
 </template>

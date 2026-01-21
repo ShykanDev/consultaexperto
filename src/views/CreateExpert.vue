@@ -1,166 +1,135 @@
 <template>
-  <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title class="font-nunito" color="primary">Crear Nuevo Experto</ion-title>
-        <ion-buttons slot="start">
-          <ion-back-button color="primary" :icon="chevronBack" default-href="/expert-list-admin" text="Atrás"
-            style="text-transform: none;"></ion-back-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content >
+  <div class="web-page min-h-screen bg-gray-50">
+    <header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
+      <nav class="web-toolbar h-16 flex items-center px-4">
+        <div class="web-buttons flex items-center space-x-2 order-first">
+          <button class="web-back-btn p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+            @click="$router.back()">
+            <v-icon name="hi-solid-chevron-left" scale="1.5" />
+          </button>
+        </div>
+        <h1 class="web-title text-lg font-bold text-gray-900 font-nunito">Crear Nuevo Experto</h1>
+      </nav>
+    </header>
+
+    <main class="web-content overflow-y-auto p-6 max-w-4xl mx-auto">
+      <!-- Basic Information Section -->
       <div class="space-y-8">
-        <!-- Basic Information Section -->
-        <ion-card>
-          <ion-card-header class="expert-info">
-            <ion-card-title class="font-nunito text-center font-normal" color="primary">Información del nuevo experto</ion-card-title>
-          </ion-card-header>
-          <ion-card-content style="background-color: #F5F7F8;">
-            <div class="flex flex-col py-3 space-y-4">
-              <ion-input label="Nombre completo" label-placement="floating" placeholder="Ingrese nombre completo"
-                v-model="form.fullName" fill="outline" class="font-poppins"></ion-input>
+        <div class="web-card bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
+          <div class="web-card-header p-4 border-b bg-blue-600 text-white">
+            <h2 class="text-lg font-bold font-nunito text-center">Información del nuevo experto</h2>
+          </div>
 
-              <ion-input label="Correo electrónico" label-placement="floating" type="email"
-                placeholder="ejemplo@dominio.com" v-model="form.email" fill="outline" class="font-poppins"></ion-input>
+          <div class="web-card-content p-6 space-y-4 bg-[#F5F7F8] flex flex-col">
 
-              <ion-select v-model="form.specialty" label="Especialidad del experto"
-                class="text-black bg-white rounded-md" label-placement="floating">
-                <ion-select-option v-for="(e, index) in experts" :key="index" :value="e.name">{{ e.name
-                  }}</ion-select-option>
-              </ion-select>
-              <ion-input label="URL de imagen" label-placement="floating" type="url"
-                placeholder="https://ejemplo.com/imagen.png" v-model="form.imgUrl" fill="outline"
-                class="font-poppins"></ion-input>
-
-              <div class="grid grid-cols-2 gap-4">
-                <ion-input label="Años de experiencia" label-placement="floating" type="number" placeholder="ej. 5"
-                  v-model="form.experienceYears" fill="outline" min="0" class="font-poppins"></ion-input>
-
-                <ion-input label="ID profesional (opcional)" label-placement="floating" placeholder="ID profesional"
-                  v-model="form.professionalId" fill="outline" class="font-poppins"></ion-input>
-              </div>
-
-              <ion-textarea label="Biografía" label-placement="floating" placeholder="Breve descripción del experto..."
-                v-model="form.bio" :rows="4" fill="outline" class="font-poppins"></ion-textarea>
+            <div class="space-y-1">
+              <label class="text-sm font-semibold text-gray-700 ml-1">Nombre completo</label>
+              <input
+                class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                type="text" placeholder="Ingrese nombre completo" v-model="form.fullName">
             </div>
-            <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-              Horarios del experto</h2>
-            <section class="grid-cols-3 grid justify-center gap-1">
-              <article v-for="(slots, dayName) in schedule" :key="dayName"
-                class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500  col-span-1 ">
 
-                <span class="text-center text-blue-500">
+            <div class="space-y-1">
+              <label class="text-sm font-semibold text-gray-700 ml-1">Correo electrónico</label>
+              <input
+                class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                type="email" placeholder="ejemplo@dominio.com" v-model="form.email">
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-sm font-semibold text-gray-700 ml-1">Especialidad del experto</label>
+              <select
+                class="w-full p-3 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                v-model="form.specialty">
+                <option value="" disabled>Seleccione una especialidad</option>
+                <option v-for="(e, index) in experts" :key="index" :value="e.name">
+                  {{ e.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-sm font-semibold text-gray-700 ml-1">URL de imagen</label>
+              <input
+                class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                type="url" placeholder="https://ejemplo.com/imagen.png" v-model="form.imgUrl">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-sm font-semibold text-gray-700 ml-1">Años de experiencia</label>
+                <input
+                  class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                  type="number" placeholder="ej. 5" v-model="form.experienceYears" min="0">
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-sm font-semibold text-gray-700 ml-1">ID profesional (opcional)</label>
+              <input
+                class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                type="text" placeholder="ID profesional" v-model="form.professionalId">
+            </div>
+
+
+            <div class="space-y-1">
+              <label class="text-sm font-semibold text-gray-700 ml-1">Biografía</label>
+              <textarea
+                class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
+                placeholder="Breve descripción del experto..." v-model="form.bio" rows="4"></textarea>
+            </div>
+
+
+            <h3 class="mt-8 text-center font-bold text-blue-600 mb-4 font-poppins">Horarios del experto</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <div v-for="(slots, dayName) in schedule" :key="dayName" class="space-y-2">
+                <div class="text-center text-blue-600 font-bold text-xs uppercase tracking-wider">
                   {{ dayName }}
-                </span>
-
-                <div v-for="(slot, slotIndex) in slots" :key="slotIndex"
-                  class="py-3 mb-2 text-lg font-medium text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-                  :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
-                  @click="getDateSelected(dayName, slot.time)">
-                  {{ slot.time }}
                 </div>
-              </article>
-            </section>
-          </ion-card-content>
-        </ion-card>
+                <div class="space-y-1">
+                  <button
+                    class="w-full py-2 text-xs font-semibold text-center rounded-lg border transition-all duration-200"
+                    v-for="(slot, slotIndex) in slots" :key="slotIndex" @click="getDateSelected(dayName, slot.time)"
+                    :class="slot.isAvailable ? 'bg-white text-slate-700 border-slate-200 hover:border-blue-400' : 'bg-blue-600 text-white border-blue-600'">
+                    {{ slot.time }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
 
 
-        <!-- Administrative Controls Section
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Controles Administrativos</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-list>
-              <ion-item>
-                <ion-label>Está Suspendido</ion-label>
-                <ion-toggle v-model="form.isSuspended" slot="end"></ion-toggle>
-              </ion-item>
+          <!-- Action Buttons -->
+          <div class="pt-4 pb-8 space-y-3">
+            <button
+              class="w-full py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-100 hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50 transition-all font-manrope"
+              :disabled="!isFormValid" @click="createExpert">
+              Crear Experto
+            </button>
+            <button
+              class="w-full py-4 bg-white text-blue-600 font-bold rounded-2xl border-2 border-blue-600 hover:bg-blue-50 active:scale-[0.98] transition-all font-manrope"
+              @click="resetForm">
+              Restablecer Formulario
+            </button>
+          </div>
 
-              <ion-item>
-                <ion-label>Está Bloqueado</ion-label>
-                <ion-toggle v-model="form.isBanned" slot="end"></ion-toggle>
-              </ion-item>
-
-              <ion-input
-                label="Razón de suspensión/bloqueo"
-                label-placement="floating"
-                placeholder="Razón requerida si está suspendido o bloqueado"
-                :disabled="!form.isSuspended && !form.isBanned"
-                v-model="form.suspensionReason"
-                fill="outline"
-                class="font-poppins"
-              ></ion-input>
-            </ion-list>
-          </ion-card-content>
-        </ion-card>
-          -->
-
-        <!-- Action Buttons -->
-        <div class="pt-4 pb-8 space-y-3">
-          <ion-button expand="block" shape="round" :disabled="!isFormValid" @click="createExpert" class="custom-send">
-            Crear Experto
-          </ion-button>
-          <ion-button expand="block" fill="outline" @click="resetForm">
-            Restablecer Formulario
-          </ion-button>
         </div>
       </div>
-    </ion-content>
-  </ion-page>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonBackButton,
-  IonSelect,
-  IonItem,
-  IonSelectOption,
-  IonInput,
-  IonTextarea,
-  IonButton,
-  IonButtons,
-  IonToggle,
-  IonNote,
-  IonIcon,
-} from '@ionic/vue';
-import { addDoc, collection, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
-import { chevronBack, helpOutline } from 'ionicons/icons';
 import { ref, computed } from 'vue';
-
-import { toastController } from '@ionic/vue';
-import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, updateProfile } from 'firebase/auth';
+import { addDoc, collection, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
-import { IExpertSchedule } from '@/interfaces/Ischedule';
+import { useToast } from 'vue-toastification';
 
-const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-  const toast = await toastController.create({
-    message: message,
-    duration: 1500,
-    position: position,
-    color: color,
-    swipeGesture: 'vertical',
-    translucent: true,
-    buttons: [
-      {
-        text: 'cerrar',
-        role: 'cancel',
-      }
-    ]
-  });
-
-  await toast.present();
-};
+const toast = useToast();
+const db = getFirestore();
+const auth = authFirebase;
 
 const experts = ref([
   { name: "Abogado", icon: "fa-balance-scale" },
@@ -185,7 +154,7 @@ const form = ref({
   specialty: '',
   email: '',
   imgUrl: '',
-  experienceYears: null,
+  experienceYears: null as number | null,
   professionalId: '',
   bio: '',
   rating: 5,
@@ -196,20 +165,30 @@ const form = ref({
   suspensionReason: '',
 });
 
+const schedule = ref({
+  Lunes: generateSlots(),
+  Martes: generateSlots(),
+  Miercoles: generateSlots(),
+  Jueves: generateSlots(),
+  Viernes: generateSlots(),
+  Sábado: generateSlots(),
+});
+
+function generateSlots() {
+  const times = ["9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+  return times.map(time => ({ isAvailable: true, takenAt: null, takenBy: null, time }));
+}
+
 const isFormValid = computed(() => {
   return (
     form.value.fullName.trim() !== '' &&
     form.value.email.trim() !== '' &&
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email) &&
     form.value.experienceYears !== null &&
-    form.value.bio.trim() !== ''
+    form.value.bio.trim() !== '' &&
+    form.value.specialty !== ''
   );
 });
-
-const cancelForm = () => {
-  // Lógica para cancelar el formulario
-  console.log('Formulario cancelado');
-};
 
 const resetForm = () => {
   form.value = {
@@ -230,224 +209,39 @@ const resetForm = () => {
   };
 };
 
-
-const db = getFirestore();
-const expertsCollection = collection(db, 'experts');
-const emailsExperts = collection(db, 'EmailsExperts');
-const auth = authFirebase;
-
-
-
-const setSubcollectionSchedule = async (expertDocId: string) => {
-  const expertPath = doc(db, `experts/${expertDocId}`);
-
-  await updateDoc(expertPath, {
-    schedule: schedule.value
-  });
-
-  console.log("Horario guardado con éxito");
-};
-
-
-
-
-const createExpert = () => {
-  if (!form.value.fullName.trim()) {
-    presentToast('top', 'El nombre completo es obligatorio', 'danger');
-    return;
-  }
-  if (!form.value.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.value.email)) {
-    presentToast('top', 'Ingrese un correo electrónico válido', 'danger');
-    return;
-  }
-  if (form.value.experienceYears === null) {
-    presentToast('top', 'Los años de experiencia son obligatorios', 'danger');
-    return;
-  }
-  if (!form.value.bio.trim()) {
-    presentToast('top', 'La biografía es obligatoria', 'danger');
-    return;
-  }
-
-
-  createUserWithEmailAndPassword(auth, form.value.email, '1234567890')
-    .then((userCredential) => {
-      // User created successfully
-      const user = userCredential.user;
-      updateProfile(user, { displayName: form.value.fullName }).then(() => {
-        console.log('Profile updated successfully');
-        presentToast('top', 'Perfil actualizado exitosamente', 'success');
-      }).catch((error) => {
-        console.error('Error updating profile: ', error);
-        presentToast('top', 'Error al actualizar perfil: ' + error.message, 'danger');
-      });
-      sendEmailVerification(user).then(() => {
-        console.log('Email verification sent successfully');
-        presentToast('top', 'Verificación de correo electrónico enviada exitosamente', 'success');
-      }).catch((error) => {
-        console.error('Error sending email verification: ', error);
-        presentToast('top', 'Error al enviar verificación de correo electrónico: ' + error.message, 'danger');
-      });
-      form.value.userUid = user.uid;
-      // Now create the expert
-      const docRef = doc(db, `experts/${user.uid}`);
-      setDoc(docRef, form.value).then((res) => {
-        console.log('Expert created with ID:', docRef.id);
-        presentToast('top', 'Experto creado exitosamente', 'success');
-        setSubcollectionSchedule(docRef.id).then(ok => {
-          console.log(`subcollection successfully created ${ok}`);
-        }).catch(error => {
-          console.log(error)
-        })
-        resetForm();
-      })
-        .catch((error) => {
-          presentToast('top', 'Error al crear experto: ' + error.message, 'danger');
-          console.error('Error creating expert: ', error);
-        });
-      addDoc(emailsExperts, { email: form.value.email })
-        .catch((error) => {
-          presentToast('top', 'Error al crear correo: ' + error.message, 'danger');
-          console.error('Error creating email: ', error);
-        });
-
-    })
-    .catch((error) => {
-      presentToast('top', 'Error al crear usuario: ' + error.message, 'danger');
-      console.error('Error creating user: ', error);
-    });
-};
-
-
-const schedule = ref({
-  Lunes: [
-    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-  ],
-  Martes: [
-    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-  ],
-  Miercoles: [
-    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-  ],
-  Jueves: [
-    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-  ],
-  Viernes: [
-    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-  ],
-  Sábado: [
-    { isAvailable: true, takenAt: null, takenBy: null, time: "9:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "10:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "11:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "12:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "13:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "14:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "15:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "16:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "17:00" },
-    { isAvailable: true, takenAt: null, takenBy: null, time: "18:00" }
-  ],
-});
-
-//9 => 6 L=>S
-
 const getDateSelected = (dayName: string, timeSelected: string) => {
-  const slot = schedule.value[dayName].find(s => s.time === timeSelected);
-  if (slot) slot.isAvailable = !slot.isAvailable;
+  const daySlots = (schedule.value as any)[dayName];
+  if (daySlots) {
+    const slot = daySlots.find((s: any) => s.time === timeSelected);
+    if (slot) slot.isAvailable = !slot.isAvailable;
+  }
 };
 
+const createExpert = async () => {
+  if (!isFormValid.value) return;
 
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, form.value.email, '1234567890');
+    const user = userCredential.user;
 
+    await updateProfile(user, { displayName: form.value.fullName });
+    await sendEmailVerification(user);
 
+    form.value.userUid = user.uid;
+    const docRef = doc(db, `experts/${user.uid}`);
+    await setDoc(docRef, form.value);
 
+    // Save schedule
+    await updateDoc(docRef, { schedule: schedule.value });
+
+    // Add to EmailsExperts collection
+    await addDoc(collection(db, 'EmailsExperts'), { email: form.value.email });
+
+    toast.success('Experto creado exitosamente. Se ha enviado verificación por email.');
+    resetForm();
+  } catch (error: any) {
+    console.error('Error creating expert:', error);
+    toast.error('Error: ' + error.message);
+  }
+};
 </script>
-
-<style scoped>
-ion-content {
-  --background: #ebebeb;
-}
-
-/* Estilos personalizados para imitar el diseño iOS */
-ion-input,
-ion-textarea {
-  --background: #FFFFFF;
-  --border-radius: 0.5rem;
-  --border-color: #E5E5EA;
-  --color: #1D1D1F;
-  --placeholder-color: #494949;
-}
-
-
-ion-card {
-  --background: #FFFFFF;
-  --border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-}
-
-
-.text-danger {
-  color: #FF3B30;
-}
-
-.grid {
-  display: grid;
-}
-
-.custom-send {
-  --background: #3c69ff;
-  --color: white;
-  --border-radius: 0.75rem;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: normal;
-}
-
-ion-card-header.expert-info {
-  --background: #ffffff !important;
-}
-</style>

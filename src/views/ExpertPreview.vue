@@ -1,376 +1,232 @@
 <template>
-  <ion-page>
-    <ion-header class="ion-no-border">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button class="text-sm" :default-href="'/expert-list-admin'" :icon="chevronBack" color="primary" text="Volver" style="text-transform: none;" />
-        </ion-buttons>
-        <ion-title class="text-sm text-center font-manrope" color="primary">Perfil de {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button style="width: 4rem;"></ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
+  <div class="web-page min-h-screen bg-gray-50">
+    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
+      <nav class="h-16 flex items-center px-4 max-w-5xl mx-auto">
+        <RouterLink to="/home" class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+          <v-icon name="md-arrowbackiosnew-round" />
+        </RouterLink>
+        <h1 class="ml-4 text-lg font-bold text-gray-900">
+          Perfil de {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}
+        </h1>
+      </nav>
+    </header>
 
-    <ion-content class="ion-padding">
+    <main class="max-w-5xl mx-auto p-4 space-y-6">
       <!-- Profile Header -->
-      <ion-card class="ion-no-margin" style="background-color: #fff;">
-        <ion-card-content class="flex flex-col items-center p-6"> 
-          <ion-avatar class="mb-4 w-24 h-24">
-            <img
-            src="https://picsum.photos/200/300"
-              alt="Profile picture of Jordan Smith"
-              class="w-24 h-24 ring ring-offset-2 ring-offset-white"
-              :class="{'ring-red-600': expertAdminStore.getCurrentExpert?.isSuspended, 'ring-blue-500': !expertAdminStore.getCurrentExpert?.isSuspended}"
-            />
-          </ion-avatar>
-          <ion-text class="text-center">
-            <h1 class="text-2xl font-bold font-manrope">
-              {{ expertAdminStore.getCurrentExpert?.fullName || 'Juan Pérez' }}
-            </h1>
-            <h3 v-if="expertAdminStore.getCurrentExpert.isSuspended" :class="{'text-red-600 font-poppins font-bold': expertAdminStore.getCurrentExpert?.isSuspended}"> (Suspendido)</h3>
-            <p class="mt-1 text-base text-blue-700 font-poppins">
-              {{ expertAdminStore.getCurrentExpert?.specialty || 'Specialty' }}
-            </p>
-          </ion-text>
-        </ion-card-content>
-      </ion-card>
+      <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 flex flex-col items-center">
+        <div class="relative mb-4">
+          <img class="w-32 h-32 rounded-full object-cover ring-4 ring-offset-4"
+            :src="expertAdminStore.getCurrentExpert?.profilePicture || 'https://picsum.photos/200/300'"
+            :class="expertAdminStore.getCurrentExpert?.isSuspended ? 'ring-red-500' : 'ring-blue-500'"
+            alt="Profile picture" />
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900">{{ expertAdminStore.getCurrentExpert?.fullName || 'Juan Pérez' }}
+        </h1>
+        <p v-if="expertAdminStore.getCurrentExpert?.isSuspended" class="text-red-600 font-bold">(Suspendido)</p>
+        <p class="mt-1 text-blue-600 font-medium">{{ expertAdminStore.getCurrentExpert?.specialty || 'Especialidad' }}
+        </p>
+      </div>
 
-      <!-- Contact Information -->
-      <ion-card class="ion-no-margin ion-margin-top" style="background-color: #fff;">
-        <ion-card-header style="background-color: #fafafa">
-          <ion-card-title class="px-4 pt-4 pb-2 text-lg font-bold" color="primary">
-            Información del experto
-          </ion-card-title>
-        </ion-card-header>
-        <ion-list lines="none" class="px-4">
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label color="primary">
-              <p class="!text-blue-600">Nombre</p>
-              <p class="">{{ expertAdminStore.getCurrentExpert?.fullName ?? 'Juan Perez' }} </p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label>
-              <p class="!text-blue-700 !font-poppins">Email</p>
-              <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.email ?? 'correo@usuario.com' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label>
-              <p class="!text-blue-700 !font-poppins">Especialidad</p>
-              <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.specialty ?? 'Médico' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label>
-              <p class="!text-blue-700 !font-poppins">Cédula profesional</p>
-              <p class="!font-poppins">{{ expertAdminStore.getCurrentExpert?.professionalId ?? 'No se proporcionó cédula profesional' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label >
-              <p class=" !font-poppins !text-blue-700" >Suspendido </p>
-              <p class="!font-poppins" :class="{ '!text-red-500': expertAdminStore.getCurrentExpert?.isSuspended }">{{ expertAdminStore.getCurrentExpert?.isSuspended ? 'El usuario está suspendido' : 'El usuario no está suspendido temporalmente' }}</p>
-            </ion-label>
-          </ion-item>
-          <ion-item class="py-3.5 border-t border-gray-200">
-            <ion-label>
-              <p class="!text-blue-700 !font-poppins">Motivo de la suspension</p>
-              <p class="!font-poppins" :class="{ '!text-red-500': expertAdminStore.getCurrentExpert?.isSuspended }">{{ expertAdminStore.getCurrentExpert?.suspensionReason ?? 'El usuario no tiene un motivo de suspension' }}</p>
-            </ion-label>
-          </ion-item>
-    
-        </ion-list>
-      </ion-card>
+      <!-- Information Card -->
+      <div class="bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
+        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
+          <h2 class="text-lg font-bold text-gray-800">Información del experto</h2>
+        </div>
+        <div class="divide-y divide-gray-100">
+          <p>ExpertInfo: {{ expertInfo }}</p>
+          <div class="px-6 py-4 flex justify-between items-center" v-for="item in expertInfo" :key="item.label">
+            <span class="text-gray-500 font-medium">{{ item.label }}</span>
+            <span class="text-gray-900" :class="item.class">{{ item.value }}</span>
+          </div>
+        </div>
+      </div>
 
-      <!-- Professional Bio -->
-      <ion-card class="" style="background-color: #fff;">
-        <ion-card-header style="background-color: #fafafa">
-          <ion-card-title class="mb-2 text-lg font-bold" color="primary">
-            Biografía
-          </ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p class="text-sm leading-relaxed">
-            {{ expertAdminStore.getCurrentExpert?.bio ?? 'Biografía de ejemplo' }}
-          </p>
-        </ion-card-content>
-      </ion-card>
+      <!-- Bio -->
+      <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-3">Biografía</h2>
+        <p class="text-gray-600 leading-relaxed">{{ expertAdminStore.getCurrentExpert?.bio || 'Sin biografía disponible.' }}</p>
+      </div>
 
-     <!-- Professional Bio -->
-<ion-card-content>
-  <h2 class="p-1 w-full font-medium text-center text-blue-600 bg-white rounded-xl shadow-sm font-poppins">
-    Horarios del experto {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] ?? 'Experto' }}
-  </h2>
-  <div class="flex flex-col gap-0 p-1 bg-white rounded-xl ring-1 ring-offset-1 shadow-md backdrop-blur-sm transition-all duration-300 ease-in-out bg-white/70 ion-margin-vertical font-poppins" :class="{'ring-[#0054E9]': toggleValue, 'ring-gray-200': !toggleValue}">
+      <!-- Schedule Section -->
+      <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+          <h2 class="text-lg font-bold text-gray-800">Horarios Disponibles</h2>
+          <div class="flex gap-2">
+            <button @click="showSchedule = !showSchedule"
+              class="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+              :class="showSchedule ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'">
+              {{ showSchedule ? 'Ocultar Horarios' : 'Ver Horarios' }}
+            </button>
+            <button @click="toggleConsultations" class="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+              :class="showConsultations ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'">
+              Ver Consultas
+            </button>
+          </div>
+        </div>
 
-    <ion-toggle class="text-blue-600 ion-margin-vertical"  v-model="showSchedule" enable-on-off-labels color="primary">Mostrar horarios del experto</ion-toggle>
+        <div v-if="showSchedule" class="space-y-6 animate-fade-in">
+          <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-2xl border border-blue-100">
+            <input type="checkbox" v-model="canEdit" class="w-5 h-5 text-blue-600 rounded">
+            <span class="text-sm font-medium text-blue-800">Habilitar edición de horarios</span>
+          </div>
 
-    <ion-toggle  @click="getConsultations" class="text-blue-600 ion-margin-vertical"  v-model="showConsultations" enable-on-off-labels color="primary">Mostrar consultas</ion-toggle>
-
-    <ion-toggle v-if="showSchedule" class="text-blue-600"  v-model="toggleValue" enable-on-off-labels color="primary">Cambios {{ toggleValue ? 'Activados' : 'Desactivados' }}</ion-toggle>
-
-    <span v-if="showSchedule" class="text-xs text-center text-gray-500">{{ toggleValue ? 'Ahora puede editar el horario' : 'No podrá actualizar el horario hasta activarlos' }}</span>
-  </div>
-
-<!-- Schedule Time -->
-  <section v-if="showSchedule" >
-   <article
-  v-for="(slots, dayName) in schedule"
-  :key="dayName"
-  class="p-1 rounded-md ring-offset-1 transition-all duration-200 ease-in hover:ring-1 hover:ring-offset-slate-200 hover:scale-[101%] hover:ring-blue-500">
-  
-  <span class="text-center text-blue-500">
-    {{ dayName }}
-  </span>
-
-  <div
-    v-for="(slot, slotIndex) in slots"
-    :key="slotIndex"
-    class="mb-2 py-[3px] font-semibold text-center rounded-md ring-1 ring-gray-200 cursor-pointer font-poppins"
-    :class="{ 'bg-white text-slate-700': slot.isAvailable, 'bg-[#2C7CEE] rounded-md text-white': !slot.isAvailable }"
-    @click="getDateSelected(dayName, slot.time)"
-  >
-    {{ slot.time }}
-  </div>
-   </article>
-  </section>
-
-  <ion-button v-if="showSchedule" class="ion-margin-vertical" mode="ios" color="primary" expand="block" @click="updateSubcollectionSchedule()">{{ 
-  !savingChanges ? 'Guardar cambios' : 'Guardando Cambios'
-    
-    }}
-    <ion-spinner v-show="savingChanges" name="lines-sharp-small"></ion-spinner>
-  </ion-button>
-
-  <div v-if="loadingAppointments" class="w-full flex justify-center items-center">
-    <ion-spinner name="lines-sharp-small"></ion-spinner>
-  </div>
-
-  <section v-if="userAppointments && userAppointments.length > 0 && showConsultations">
-<div class="w-full flex justify-center items-center">
-  <ion-spinner v-show="loadingAppointments" name="lines-sharp-small"></ion-spinner>
-</div>
-        <div v-for="(appointment, index) in userAppointments" :key="index" class="flex  flex-col gap-5 px-2 space-y-3 bgred">
-              <ExpertScheduleData :data="appointment" @reloadData="getConsultationsEmitCall" />
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div v-for="(slots, dayName) in schedule" :key="dayName"
+              class="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+              <h3 class="text-blue-600 font-bold mb-3 text-center border-b border-blue-100 pb-2">{{ dayName }}</h3>
+              <div class="grid grid-cols-2 gap-2">
+                <button v-for="(slot, idx) in slots" :key="idx" @click="handleSlotClick(dayName, slot.time)"
+                  class="py-2 px-1 text-xs font-semibold rounded-lg border transition-all"
+                  :class="slot.isAvailable ? 'bg-white text-gray-700 border-gray-200' : 'bg-blue-600 text-white border-blue-600'">
+                  {{ slot.time }}
+                </button>
+              </div>
             </div>
-  </section>
-</ion-card-content>
+          </div>
 
+          <button @click="saveSchedule" :disabled="!canEdit || saving"
+            class="w-full h-12 bg-blue-600 text-white font-bold rounded-xl shadow-lg disabled:opacity-50 transition-all">
+            {{ saving ? 'Guardando...' : 'Guardar Cambios de Horario' }}
+          </button>
+        </div>
+      </div>
 
-
-   
-    </ion-content>
-
-
-  </ion-page>
+      <!-- Consultations List -->
+      <section v-if="showConsultations" class="space-y-4 animate-fade-in">
+        <h2 class="text-lg font-bold text-gray-800">Consultas del Experto</h2>
+        <div v-if="loadingAppointments" class="flex justify-center p-10">
+          <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        </div>
+        <div v-else-if="userAppointments.length === 0" class="text-center p-10 text-gray-400">
+          No hay consultas registradas.
+        </div>
+        <div v-else class="grid gap-4">
+          <ExpertScheduleData v-for="(appointment, index) in userAppointments" :key="index" :data="appointment"
+            @reloadData="getUserAppointments" />
+        </div>
+      </section>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
-
+import { ref, computed } from 'vue';
+// import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import { useExpertAdminStore } from '@/stores/expertAdmin';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonButtons,
-  IonButton,
-  IonLabel,
-  IonTitle,
-  IonContent,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonAvatar,
-  IonText,
-  IonList,
-  IonItem,
-  IonBackButton,
-  onIonViewDidLeave,
-  IonToggle,
-  useIonRouter,
-  IonSpinner,
-
-} from '@ionic/vue';
 import { collection, doc, getDocs, getFirestore, query, updateDoc, where } from 'firebase/firestore';
-import { chevronBack } from 'ionicons/icons';
-import { computed, ref } from 'vue';
-import { toastController } from '@ionic/vue';
 import ExpertScheduleData from '@/components/Expert/ExpertScheduleData.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
-import { authStore } from '@/store/auth';
+
+// const router = useRouter();
+const toast = useToast();
 const db = getFirestore();
-
-const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-  const toast = await toastController.create({
-    message: message,
-    duration: 1500,
-    position: position,
-    color: color,
-    swipeGesture: 'vertical',
-    translucent: true,
-    buttons: [
-      {
-        text: 'cerrar',
-        role: 'cancel',
-      }
-    ]
-  });
-
-  await toast.present();
-};
-
+const expertAdminStore = useExpertAdminStore();
 
 const showSchedule = ref(false);
-const toggleShowSchedule = () => showSchedule.value = !showSchedule.value;
-
 const showConsultations = ref(false);
-const getConsultations = () => {
-  
-  if(!showConsultations.value){
-    userAppointments.value = [];
-    getUserAppointments();
-  }
-
-};
-const getConsultationsEmitCall = () => {
-  getUserAppointments();
-};
-
-const expertAdminStore = useExpertAdminStore();
-const savingChanges = ref(false);
-
-
-//Get expert appointments
-const userAppointments = ref<ISchedule[]>([]);
-const collectionRef = collection(db, 'schedules');//Filter by expertUid
+const canEdit = ref(false);
+const saving = ref(false);
 const loadingAppointments = ref(false);
+const userAppointments = ref<ISchedule[]>([]);
 
-const getUserAppointments = () => {
-const expertQuery = query(collectionRef, where('expertUid', '==', expertAdminStore.getCurrentExpert.userUid));
-
-  console.log('Getting appointments');
-  console.log(authStore().getUserUid);
-  userAppointments.value = [];
-  loadingAppointments.value = true;
-  getDocs(expertQuery)
-    .then((querySnapshot) => {
-      if(querySnapshot.empty){
-        console.log('No appointments found');
-        return;
-      }
-      querySnapshot.forEach((doc) => {
-        console.log(`DocRef =>: ${JSON.stringify(doc.ref)}`);
-        const data = doc.data();
-        data.docRef = doc.ref;
-        data.docId = doc.id;
-        userAppointments.value.push(data as ISchedule);
-      });
-      console.log(userAppointments.value);
-      loadingAppointments.value = false;
-    })
-    .catch((error) => {
-      console.error('Error al obtener las citas:', error);
-      loadingAppointments.value = false;
-    }).finally(() => {
-      loadingAppointments.value = false;
-    });
-}
-
-
-onIonViewDidLeave(()=> {
-  //expertAdminStore.resetCurrentExpert();
-})
+const expertInfo = computed(() => [
+  { label: 'Nombre', value: expertAdminStore.getCurrentExpert?.fullName || 'N/A' },
+  { label: 'Email', value: expertAdminStore.getCurrentExpert?.email || 'N/A' },
+  { label: 'Especialidad', value: expertAdminStore.getCurrentExpert?.specialty || 'N/A' },
+  { label: 'Cédula', value: expertAdminStore.getCurrentExpert?.professionalId || 'No proporcionada' },
+  {
+    label: 'Estado',
+    value: expertAdminStore.getCurrentExpert?.isSuspended ? 'Suspendido' : 'Activo',
+    class: expertAdminStore.getCurrentExpert?.isSuspended ? 'text-red-500 font-bold' : 'text-green-600 font-bold'
+  },
+  {
+    label: 'Motivo Suspensión',
+    value: expertAdminStore.getCurrentExpert?.suspensionReason || 'Ninguno',
+    class: expertAdminStore.getCurrentExpert?.isSuspended ? 'text-red-400' : 'text-gray-400'
+  }
+]);
 
 const schedule = computed(() => {
-  const originalSchedule = expertAdminStore.getCurrentExpert?.schedule;
+  const original = expertAdminStore.getCurrentExpert?.schedule || {};
   const orderedDays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
-  const orderedSchedule: Record<string, any> = {};
-
+  const ordered: Record<string, any> = {};
   orderedDays.forEach(day => {
-    if (originalSchedule?.[day]) {
-      orderedSchedule[day] = originalSchedule[day];
-    }
+    if ((original as any)[day]) ordered[day] = (original as any)[day]; //dont fix this keep it as it is
   });
-
-  return orderedSchedule;
+  return ordered;
 });
 
-const getDateSelected = (dayName: number, timeSelected: string) => {
-    if(!toggleValue.value){
-      presentToast('top', 'Debe habilitar el boton de cambios para editar los horarios', 'warning');
-      return;
-  }
-  // Add a check to ensure schedule[dayName] is not undefined before trying to call find
-  if (!schedule.value || !schedule.value[dayName]) {
-    console.error(`Schedule or schedule for day ${dayName} is undefined.`);
-    // Optionally, handle this case by returning or throwing an error
+const handleSlotClick = (day: string, time: string) => {
+  if (!canEdit.value) {
+    toast.info('Habilita la edición para modificar los horarios');
     return;
   }
-  const slot = schedule.value[dayName].find(s => s.time === timeSelected);
-  if (slot) slot.isAvailable = !slot.isAvailable;
-};
-
-
-const routerIon = useIonRouter();
-const updateSubcollectionSchedule = async () => {
-
-  
-  if(!toggleValue.value){
-      presentToast('top', 'Debe habilitar el boton de cambios para poder editar los datos', 'danger');
-      return;
+  const daySchedule = (schedule.value as any)[day];
+  if (daySchedule) {
+    const slot = (daySchedule as any[]).find(s => s.time === time);
+    if (slot) slot.isAvailable = !slot.isAvailable;
   }
-
-  savingChanges.value = true;
-  const expertPath = doc(db, `experts/${expertAdminStore.getCurrentExpert.docId}`);
-  try {
-      await updateDoc(expertPath, {
-        schedule: schedule.value
-      }); 
-      presentToast('top', 'Se ha actualizado el horario con exito', 'success');
-
-      setTimeout(() => {
-        routerIon.back();
-      }, 1500);
-      savingChanges.value = false;
-
-    } catch (error) {
-      console.log(error);
-      presentToast('top', 'Hubo un error al actualizar el horario', 'danger');
-      savingChanges.value = false;
-    }
-    
-
 };
 
+const toggleConsultations = () => {
+  showConsultations.value = !showConsultations.value;
+  if (showConsultations.value && userAppointments.value.length === 0) {
+    getUserAppointments();
+  }
+};
 
-const toggleValue = ref(false);
+const getUserAppointments = async () => {
+  const expertUid = expertAdminStore.getCurrentExpert?.userUid;
+  if (!expertUid) return;
 
+  loadingAppointments.value = true;
+  try {
+    const q = query(collection(db, 'schedules'), where('expertUid', '==', expertUid));
+    const snap = await getDocs(q);
+    userAppointments.value = snap.docs.map(doc => ({ ...doc.data(), docId: doc.id, docRef: doc.ref } as ISchedule));
+  } catch (error) {
+    console.error(error);
+    toast.error('Error al cargar consultas');
+  } finally {
+    loadingAppointments.value = false;
+  }
+};
+
+const saveSchedule = async () => {
+  const expertId = expertAdminStore.getCurrentExpert?.docId;
+  if (!expertId) return;
+
+  saving.value = true;
+  try {
+    await updateDoc(doc(db, `experts/${expertId}`), {
+      schedule: schedule.value
+    });
+    toast.success('Horario actualizado');
+    canEdit.value = false;
+  } catch (error) {
+    console.error(error);
+    toast.error('Error al guardar cambios');
+  } finally {
+    saving.value = false;
+  }
+};
 </script>
 
 <style scoped>
-/* Custom styles to match your design */
-ion-card {
-  --background: var(--ion-color-content-light);
-  --color: var(--ion-color-text-primary-light);
-  border-radius: 1rem;
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
-
-ion-chip {
-  --background: rgba(var(--ion-color-primary-rgb), 0.1);
-  --color: var(--ion-color-primary);
-  border-radius: 9999px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
-
-
-
-ion-content{
-  --background: #eeeeee;
-}
-
 </style>

@@ -1,198 +1,185 @@
 <template>
-  <ion-page>
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="bg-white/80 backdrop-blur-md ">
-        <ion-buttons slot="start">
-          <ion-button @click="router.back()" class="group">
-            <v-icon name="md-arrowbackiosnew-round" class="text-blue-600 transition-transform group-hover:-translate-x-1" />
+  <div class="web-page min-h-screen bg-gray-50">
+    <header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
+      <nav class="web-toolbar h-16 flex items-center px-4 bg-white/80 backdrop-blur-md">
+        <div class="web-buttons">
+          <button
+            class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 group"
+            @click="router.back()">
+            <v-icon class="text-blue-600 transition-transform group-hover:-translate-x-1"
+              name="md-arrowbackiosnew-round" />
             <span class="ml-1 text-lg font-semibold text-blue-600">Atrás</span>
-          </ion-button>
-        </ion-buttons>
-        <ion-title class="font-bold text-gray-800 font-quicksand">
-          Centro de Ayuda
-        </ion-title>
-      </ion-toolbar>
-    </ion-header>
+          </button>
+        </div>
+        <h1 class="web-title text-lg font-bold text-gray-800 ml-4 font-quicksand">Centro de Ayuda </h1>
+      </nav>
+    </header>
 
-    <ion-content class="bg-gray-50 ">
-      <div class="px-4 py-6 mx-auto  space-y-8">
-        
-        <!-- Section 1: Contact Form -->
-        <section class="animate-fade-up">
-          <div class="p-6 bg-white shadow-xl rounded-2xl ring-1 ring-gray-100">
-            <h2 class="mb-2 text-2xl font-bold text-blue-600 text-center">Contacto</h2>
-            <p class="mb-6 text-sm text-gray-500 text-center">
-              ¿Tiene alguna duda o sugerencia? Envíenos un mensaje directo.
-            </p>
-            
-            <form class="space-y-4" @submit.prevent="handleContactSubmit">
-              <div class="space-y-1">
-                <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Asunto</label>
-                <ion-input
-                  v-model="contactForm.subject"
-                  type="text" 
-                  placeholder="Ej. Problema con mi cuenta"
-                  class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                />
-              </div>
+    <main class="web-content overflow-y-auto p-4 space-y-8">
+      <!-- Section 1: Contact Form -->
+      <section class="animate-fade-up">
+        <div class="p-6 bg-white shadow-xl rounded-2xl ring-1 ring-gray-100">
+          <h2 class="mb-2 text-2xl font-bold text-blue-600 text-center">Contacto</h2>
+          <p class="mb-6 text-sm text-gray-500 text-center">
+            ¿Tiene alguna duda o sugerencia? Envíenos un mensaje directo.
+          </p>
 
-             <!-- Checkbox to mark if the problem is related to a consultation (it will show a select to choose the consultation)-->
-              <div>
-               <ion-checkbox v-model="isConsultRelated"><span :class="{ 'text-blue-600': isConsultRelated, 'text-gray-600': !isConsultRelated }" class="px-1 font-poppins text-xs">
-              <v-icon name="px-calendar-alert" class="text-blue-600" scale="1.1"/> 
-                Mi problema es sobre una consulta</span></ion-checkbox>
-              </div>
-
-              <!-- Select to choose the consultation (if the checkbox  above is checked) -->
-                <ion-select v-if="isConsultRelated" interface="action-sheet" v-model="contactForm.scheduleId" placeholder="Seleccione una consulta">
-                  <ion-select-option v-for="appointment in finishedAppointments" class="text-gray-900  !border-black !border-b-2" :key="appointment.docId" :value="appointment.docId">
-                    <div class="flex items-center gap-2 font-poppins">
-                      <span> {{ appointment.expertName }} categoria '{{ appointment.expertSpecialty }}'</span>
-                      <span> Finalizada el {{ appointment.finishedAt?.toDate().toLocaleString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' }) || 'N/A' }} a las {{ appointment.finishedAt?.toDate().toLocaleString('es-ES', { hour: 'numeric', minute: 'numeric' }) || 'N/A' }}hrs </span>
-                    </div>
-                  </ion-select-option>
-                </ion-select>
-              
-              <div class="space-y-1">
-                <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Mensaje</label>
-                <ion-textarea 
-                  v-model="contactForm.message"
-                  :rows="4" 
-                  placeholder="Describa su situación detalladamente..."
-                  class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                ></ion-textarea>
-              </div>
-
-              <button 
-                type="submit"
-                class="w-full py-4 text-white font-bold bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
-              >
-                <v-icon name="fa-paper-plane" scale="1" />
-                <span>Enviar Mensaje</span>
-              </button>
-            </form>
-          </div>
-        </section>
-
-        <!-- Section 2: Important Info Cards -->
-        <section class="grid gap-4 md:grid-cols-2 animate-fade-up animate-delay-100">
-          
-          <!-- Free Trial -->
-          <div class="p-5 bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm rounded-2xl">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="p-2 bg-blue-100 rounded-full">
-                <v-icon name="fa-clock" class="text-blue-600" />
-              </div>
-              <h3 class="text-lg font-bold text-gray-900 ">15 Minutos Gratis</h3>
+          <form class="space-y-4" @submit.prevent="handleContactSubmit">
+            <div class="space-y-1">
+              <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Asunto</label>
+              <input
+                class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                v-model="contactForm.subject" type="text" placeholder="Ej. Problema con mi cuenta" />
             </div>
-            <p class="text-sm leading-relaxed text-gray-600 ">
-              Su primera cita incluye <span class="font-bold text-blue-600 dark:text-blue-400">15 minutos sin costo</span>. No se requiere tarjeta de crédito para agendar esta consulta de prueba.
-            </p>
-          </div>
 
-          <!-- Verified Experts -->
-          <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
-             <div class="flex items-center gap-3 mb-3">
-              <div class="p-2 bg-green-100 rounded-full">
-                <v-icon name="fa-check-circle" class="text-green-600" />
-              </div>
-              <h3 class="text-lg font-bold text-gray-900">Expertos Verificados</h3>
+            <div>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  type="checkbox" v-model="isConsultRelated">
+                <span class="px-1 font-poppins text-xs"
+                  :class="{ 'text-blue-600': isConsultRelated, 'text-gray-600': !isConsultRelated }">
+                  <v-icon class="mr-1" name="px-calendar-alert" scale="1.1" />
+                  Mi problema es sobre una consulta
+                </span>
+              </label>
             </div>
-            <p class="text-sm leading-relaxed text-gray-600 ">
-              Para su tranquilidad, todos nuestros expertos son sometidos a pruebas de veracidad y sus documentos son validados manualmente.
-            </p>
-          </div>
 
-          <!-- Account Recovery -->
-           <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
-             <div class="flex items-center gap-3 mb-3">
-              <div class="p-2 bg-purple-100 rounded-full">
-                <v-icon name="md-password-round" class="text-purple-600" />
-              </div>
-              <h3 class="text-lg font-bold text-gray-900">Recuperar Cuenta</h3>
+            <div v-if="isConsultRelated">
+              <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase block mb-1">Seleccionar
+                Consulta</label>
+              <select
+                class="web-select w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-poppins text-sm"
+                v-model="contactForm.scheduleId">
+                <option value="">Seleccione una consulta</option>
+                <option v-for="appointment in finishedAppointments" :key="appointment.docId" :value="appointment.docId">
+                  {{ appointment.expertName }} - {{ appointment.expertSpecialty }} ({{
+                    appointment.finishedAt?.toDate().toLocaleDateString() }})
+                </option>
+              </select>
             </div>
-            <p class="text-sm leading-relaxed text-gray-600 ">
-              Si olvida su contraseña, puede recuperarla fácilmente ingresando su correo electrónico registrado. Se le enviará un enlace de restablecimiento.
-            </p>
-          </div>
 
-          <!-- Account Deletion -->
-           <div class="p-5 bg-white border border-red-100 shadow-sm rounded-2xl">
-             <div class="flex items-center gap-3 mb-3">
-              <div class="p-2 bg-red-100 rounded-full">
-                <v-icon name="fa-user-times" class="text-red-600" />
-              </div>
-              <h3 class="text-lg font-bold text-gray-900">Eliminar Cuenta</h3>
+            <div class="space-y-1">
+              <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Mensaje</label>
+              <textarea
+                class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                v-model="contactForm.message" :rows="4"
+                placeholder="Describa su situación detalladamente..."></textarea>
             </div>
-            <p class="text-sm leading-relaxed text-gray-600">
-              Para eliminar permanentemente su cuenta, envíe un correo a <a href="mailto:informes@grupochimex.com" class="font-medium text-red-500 hover:underline">informes@grupochimex.com</a> indicando su nombre y el motivo.
-            </p>
+
+            <button
+              class="w-full py-4 text-white font-bold bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
+              type="submit" :disabled="isSending">
+              <v-icon name="fa-paper-plane" scale="1" />
+              <span>{{ isSending ? 'Enviando...' : 'Enviar Mensaje' }}</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Section 2: Important Info Cards -->
+      <section class="grid gap-4 md:grid-cols-2 animate-fade-up animate-delay-100">
+        <!-- Free Trial -->
+        <div class="p-5 bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm rounded-2xl">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-blue-100 rounded-full">
+              <v-icon class="text-blue-600" name="fa-clock" />
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">15 Minutos Gratis</h3>
           </div>
-
-        </section>
-
-        <!-- Section 3: FAQ -->
-        <section class="px-2 animate-fade-up animate-delay-200">
-          <h2 class="mb-4 text-xl font-bold text-gray-900 flex items-center gap-2">
-            <v-icon name="fa-question-circle" class="text-blue-500" />
-            Preguntas Frecuentes
-          </h2>
-          
-          <ion-accordion-group class="ios-accordion-group">
-            <ion-accordion v-for="(faq, index) in faqs" :key="index" :value="`faq-${index}`" class="mb-3 bg-white shadow-sm rounded-2xl ring-1 ring-gray-100 overflow-hidden">
-              <ion-item slot="header" color="light" lines="none" class="bg-transparent">
-                <ion-label class="font-semibold !text-blue-600 py-2 whitespace-normal leading-snug">
-                  {{ faq.question }}
-                </ion-label>
-              </ion-item>
-              <div slot="content" class="px-5 py-4 text-sm text-gray-600  bg-gray-50  border-t border-gray-100 ">
-                {{ faq.answer }}
-              </div>
-            </ion-accordion>
-          </ion-accordion-group>
-        </section>
-        
-        <!-- Footer Info -->
-        <div class="pt-8 text-center pb-safe">
-           <p class="text-xs text-gray-400">
-             © 2026 ConsultaExperto. Todos los derechos reservados.
-           </p>
+          <p class="text-sm leading-relaxed text-gray-600">
+            Su primera cita incluye <span class="font-bold text-blue-600">15 minutos sin costo</span>. No se requiere
+            tarjeta de crédito para agendar esta consulta de prueba.
+          </p>
         </div>
 
-      </div>
-    </ion-content>
-  </ion-page>
+        <!-- Verified Experts -->
+        <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-green-100 rounded-full">
+              <v-icon class="text-green-600" name="fa-check-circle" />
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Expertos Verificados</h3>
+          </div>
+          <p class="text-sm leading-relaxed text-gray-600">
+            Para su tranquilidad, todos nuestros expertos son sometidos a pruebas de veracidad y sus documentos son
+            validados manualmente.
+          </p>
+        </div>
+
+        <!-- Account Recovery -->
+        <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-purple-100 rounded-full">
+              <v-icon class="text-purple-600" name="md-password-round" />
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Recuperar Cuenta</h3>
+          </div>
+          <p class="text-sm leading-relaxed text-gray-600">
+            Si olvida su contraseña, puede recuperarla fácilmente ingresando su correo electrónico registrado. Se le
+            enviará un enlace de restablecimiento.
+          </p>
+        </div>
+
+        <!-- Account Deletion -->
+        <div class="p-5 bg-white border border-red-100 shadow-sm rounded-2xl">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2 bg-red-100 rounded-full">
+              <v-icon class="text-red-600" name="fa-user-times" />
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Eliminar Cuenta</h3>
+          </div>
+          <p class="text-sm leading-relaxed text-gray-600">
+            Para eliminar permanentemente su cuenta, envíe un correo a <a
+              class="font-medium text-red-500 hover:underline"
+              href="mailto:informes@grupochimex.com">informes@grupochimex.com</a> indicando su nombre y el
+            motivo.
+          </p>
+        </div>
+      </section>
+
+      <!-- Section 3: FAQ -->
+      <section class="animate-fade-up animate-delay-200">
+        <h2 class="mb-4 text-xl font-bold text-gray-900 flex items-center gap-2">
+          <v-icon class="text-blue-500" name="fa-question-circle" />
+          Preguntas Frecuentes
+        </h2>
+
+        <div class="space-y-3">
+          <div class="bg-white shadow-sm rounded-2xl ring-1 ring-gray-100 overflow-hidden" v-for="(faq, index) in faqs"
+            :key="index">
+            <button class="w-full flex items-center p-4 text-left hover:bg-gray-50/50 transition-colors"
+              @click="faq.isOpen = !faq.isOpen">
+              <span class="flex-1 font-semibold text-blue-600 leading-snug">{{ faq.question }}</span>
+              <v-icon class="ml-2 text-gray-400" :name="faq.isOpen ? 'hi-solid-chevron-up' : 'hi-solid-chevron-down'" />
+            </button>
+            <div class="px-5 py-4 text-sm text-gray-600 bg-gray-50 border-t border-gray-100" v-if="faq.isOpen">
+              {{ faq.answer }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="pt-8 text-center pb-8">
+        <p class="text-xs text-gray-400">
+          © 2026 ConsultaExperto. Todos los derechos reservados.
+        </p>
+      </footer>
+    </main>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { authStore } from '@/store/auth';
-import { 
-  IonPage, 
-  IonHeader, 
-  IonToolbar, 
-  IonButtons, 
-  IonButton, 
-  IonTitle, 
-  IonContent,
-  IonAccordionGroup,
-  IonAccordion,
-  IonItem,
-  IonLabel,
-  IonSelect,
-  IonSelectOption,
-  toastController,
-  IonInput,
-  IonTextarea,
-  IonCheckbox,
-  onIonViewDidEnter,
-} from '@ionic/vue';
 import { collection, getDocs, getFirestore, query, Timestamp, where } from 'firebase/firestore';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, onMounted, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import emailjs from '@emailjs/browser';
+import { useToast } from 'vue-toastification';
 
 const router = useRouter();
+const toast = useToast();
+const isSending = ref(false);
 
 // Contact Form State
 const contactForm = ref({
@@ -200,149 +187,132 @@ const contactForm = ref({
   message: '',
   scheduleId: ''
 });
-const isConsultRelated = ref(false); //Checkbox state to show 
+const isConsultRelated = ref(false);
 
 const handleContactSubmit = async () => {
   if (!contactForm.value.subject || !contactForm.value.message) {
-    const toast = await toastController.create({
-      message: 'Por favor complete todos los campos.',
-      duration: 2000,
-      color: 'warning',
-      position: 'top'
-    });
-    await toast.present();
+    toast.warning('Por favor complete todos los campos.');
     return;
   }
 
-  // Enviamos el correo con la información del formulario
-  await sendHelpEmail();
-
-  const toast = await toastController.create({
-    message: 'Su mensaje ha sido enviado correctamente. Responderemos pronto.',
-    duration: 3000,
-    color: 'success',
-    position: 'top'
-  });
-  await toast.present();
-  
-  // Reset form
-  contactForm.value.subject = '';
-  contactForm.value.message = '';
-  contactForm.value.scheduleId = '';
-  isConsultRelated.value = false;
+  isSending.value = true;
+  try {
+    await sendHelpEmail();
+    toast.success('Su mensaje ha sido enviado correctamente.');
+    // Reset form
+    contactForm.value.subject = '';
+    contactForm.value.message = '';
+    contactForm.value.scheduleId = '';
+    isConsultRelated.value = false;
+  } catch (error) {
+    toast.error('Error al enviar el mensaje. Intente de nuevo.');
+  } finally {
+    isSending.value = false;
+  }
 };
 
-// FAQs Data
-const faqs = [
+// FAQs Data with reactive state
+const faqs = ref([
   {
     question: "¿Los primeros 15 minutos son realmente gratuitos?",
-    answer: "Sí. La primera cita con cualquier experto incluye 15 minutos completamente gratuitos, para que usted pueda evaluar el servicio sin ningún compromiso."
+    answer: "Sí. La primera cita con cualquier experto incluye 15 minutos completamente gratuitos, para que usted pueda evaluar el servicio sin ningún compromiso.",
+    isOpen: false
   },
   {
     question: "¿Es necesario agregar una tarjeta para acceder a la prueba gratuita?",
-    answer: "No. No solicitamos información bancaria ni tarjetas de crédito para agendar su consulta gratuita de 15 minutos."
+    answer: "No. No solicitamos información bancaria ni tarjetas de crédito para agendar su consulta gratuita de 15 minutos.",
+    isOpen: false
   },
   {
     question: "¿Cómo garantizan que los expertos son profesionales reales?",
-    answer: "Todos nuestros expertos pasan por un riguroso proceso de verificación manual, en el cual validamos su identidad, credenciales académicas y experiencia profesional."
+    answer: "Todos nuestros expertos pasan por un riguroso proceso de verificación manual, en el cual validamos su identidad, credenciales académicas y experiencia profesional.",
+    isOpen: false
   },
   {
     question: "¿Qué debo hacer si olvidé mi contraseña?",
-    answer: "Puede recuperarla fácilmente desde la pantalla de inicio de sesión seleccionando la opción 'Olvidé mi contraseña'. Le enviaremos un enlace a su correo electrónico registrado."
+    answer: "Puede recuperarla fácilmente desde la pantalla de inicio de sesión seleccionando la opción 'Olvidé mi contraseña'. Le enviaremos un enlace a su correo electrónico registrado.",
+    isOpen: false
   },
   {
     question: "¿Cómo puedo eliminar mi cuenta?",
-    answer: "Para solicitar la baja de su cuenta, envíe un correo electrónico a informes@grupochimex.com indicando su nombre completo y el motivo de la solicitud. El proceso se iniciará de inmediato."
+    answer: "Para solicitar la baja de su cuenta, envíe un correo electrónico a informes@grupochimex.com indicando su nombre completo y el motivo de la solicitud. El proceso se iniciará de inmediato.",
+    isOpen: false
   },
   {
     question: "¿Mis datos personales están protegidos?",
-    answer: "Sí. La seguridad de su información es una prioridad para nosotros. Sus datos se encuentran encriptados y solo se comparten, cuando es necesario, con el experto que usted seleccione."
+    answer: "Sí. La seguridad de su información es una prioridad para nosotros. Sus datos se encuentran encriptados y solo se comparten, cuando es necesario, con el experto que usted seleccione.",
+    isOpen: false
   },
   {
     question: "¿Puedo cambiar de experto si no quedo conforme con la asesoría?",
-    answer: "Sí. Si la asesoría no cumple con sus expectativas, usted puede seleccionar otro experto disponible en la plataforma. Tenga en cuenta que la prueba gratuita es única por cuenta."
+    answer: "Sí. Si la asesoría no cumple con sus expectativas, usted puede seleccionar otro experto disponible en la plataforma. Tenga en cuenta que la prueba gratuita es única por cuenta.",
+    isOpen: false
   },
   {
     question: "¿Puedo contactar a soporte si presento un problema técnico?",
-    answer: "Sí. Puede utilizar el formulario ubicado al inicio de esta página para reportar cualquier inconveniente técnico o realizar consultas sobre el funcionamiento de la aplicación."
+    answer: "Sí. Puede utilizar el formulario ubicado al inicio de esta página para reportar cualquier inconveniente técnico o realizar consultas sobre el funcionamiento de la aplicación.",
+    isOpen: false
   },
   {
     question: "¿Qué sucede si tengo un problema con una consulta?",
-    answer: "Usted puede reportar la situación de inmediato mediante el formulario de contacto. Evaluaremos el caso y tomaremos las medidas correspondientes para reprogramar su cita en caso de ser necesario; si es durante la prueba gratuita, se le reagendará la cita gratuita. Tenga en cuenta que si reporta un problema con un experto, a fin de darle un mejor servicio, el experto con el que tuvo la cita no podrá ser seleccionado de nuevo."
+    answer: "Usted puede reportar la situación de inmediato mediante el formulario de contacto. Evaluaremos el caso y tomaremos las medidas correspondientes para reprogramar su cita en caso de ser necesario.",
+    isOpen: false
   }
-];
+]);
 
 const sendHelpEmail = async () => {
-  try {
-    const selectedAppointment = finishedAppointments.value.find(a => a.docId === contactForm.value.scheduleId);
-    const user = authStore();
-    
-    await emailjs.send('service_q9e8lj2', 'template_v29drnw', {
-      // Header
-      headerTitle: 'ADMINISTRACIÓN - CONTROL DE INCIDENCIAS',
-      greeting: 'TICKET #', 
-      userName: `${user.getUserUid?.substring(0, 6)}${Timestamp.now().seconds} `, 
-      headerDescription: isConsultRelated.value 
-        ? `⚠️ RECLAMO SOBRE CITA: ${selectedAppointment?.expertName || 'N/A'}`
-        : 'Consulta General enviada desde la App',
+  const selectedAppointment = finishedAppointments.value.find(a => a.docId === contactForm.value.scheduleId);
+  const user = authStore();
 
-      // Section 1 – Datos del Usuario Reportando
-      section1Icon: '👥',
-      section1Title: 'Identificación del Usuario',
-      section1TitleColor: '#007aff',
-      section1Item1Label: 'Nombre / UID:',
-      section1Item1Value: `${user.getUserName || 'Usuario'} (${user.getUserUid})`,
-      section1Item2Label: 'Correo:',
-      section1Item2Value: user.getUserEmail || 'N/A',
+  return emailjs.send('service_q9e8lj2', 'template_v29drnw', {
+    headerTitle: 'ADMINISTRACIÓN - CONTROL DE INCIDENCIAS',
+    userName: `${user.getUserUid?.substring(0, 6)}${Timestamp.now().seconds} `,
+    headerDescription: isConsultRelated.value
+      ? `⚠️ RECLAMO SOBRE CITA: ${selectedAppointment?.expertName || 'N/A'}`
+      : 'Consulta General enviada desde la App',
 
-      // Section 2 – El Problema (Lo más importante visualmente)
-      section2Icon: '🚨',
-      section2Title: 'Detalle Crítico del Reporte',
-      section2TitleColor: '#ff3b30', 
-      section2Subtitle1: 'ASUNTO DEL REPORTE:',
-      section2Value1: contactForm.value.subject || 'Sin Asunto',
-      section2Subtitle2: 'MENSAJE DEL USUARIO:',
-      section2Value2: contactForm.value.message || 'Sin Mensaje',
-      section2HighlightLabel: 'PRIORIDAD:',
-      section2HighlightText: isConsultRelated.value ? 'ALTA - Revisar incidencia en la aplicación' : 'BAJA - Respuesta informativa',
-      
-      // Section 3 – Datos de la Cita (Carnita técnica)
-      section3Icon: '🩺',
-      section3Title: isConsultRelated.value ? 'Información Técnica de la Cita' : 'Contexto Adicional',
-      section3TitleColor: '#5856d6',
-      
-      section3Item1Label: isConsultRelated.value ? 'Experto / Especialidad:' : 'Fecha Reporte:',
-      section3Item1Value: isConsultRelated.value 
-        ? `${selectedAppointment?.expertName} (${selectedAppointment?.expertSpecialty})` 
-        : new Date().toLocaleDateString('es-ES'),
-        
-      section3Item2Label: isConsultRelated.value ? 'Finalizada el / DocID:' : 'Plataforma:',
-      section3Item2Value: isConsultRelated.value 
-        ? `${selectedAppointment?.finishedAt?.toDate().toLocaleString('es-ES')} [${contactForm.value.scheduleId}]`
-        : 'Centro de Ayuda (Mobile)',
+    section1Icon: '👥',
+    section1Title: 'Identificación del Usuario',
+    section1TitleColor: '#007aff',
+    section1Item1Label: 'Nombre / UID:',
+    section1Item1Value: `${user.getUserName || 'Usuario'} (${user.getUserUid})`,
+    section1Item2Label: 'Correo:',
+    section1Item2Value: user.getUserEmail || 'N/A',
 
-      // Footer
-      footerYear: new Date().getFullYear(),
-      footerLinkUrl: '',
-      footerLinkText: 'Ver en la aplicación',
-      footerRightsText: 'Este ticket requiere seguimiento, en el panel del administrador.',
+    section2Icon: '🚨',
+    section2Title: 'Detalle Crítico del Reporte',
+    section2TitleColor: '#ff3b30',
+    section2Subtitle1: 'ASUNTO DEL REPORTE:',
+    section2Value1: contactForm.value.subject || 'Sin Asunto',
+    section2Subtitle2: 'MENSAJE DEL USUARIO:',
+    section2Value2: contactForm.value.message || 'Sin Mensaje',
+    section2HighlightLabel: 'PRIORIDAD:',
+    section2HighlightText: isConsultRelated.value ? 'ALTA' : 'INFORMATIVA',
 
-      // Email destino (Administración)
-      email: 'shykandev@gmail.com',
-    });
+    section3Icon: '🩺',
+    section3Title: isConsultRelated.value ? 'Información Técnica de la Cita' : 'Contexto Adicional',
+    section3TitleColor: '#5856d6',
 
-  } catch (error) {
-    console.error('Error enviando email técnico detallado:', error);
-  }
+    section3Item1Label: isConsultRelated.value ? 'Experto / Especialidad:' : 'Fecha Reporte:',
+    section3Item1Value: isConsultRelated.value
+      ? `${selectedAppointment?.expertName} (${selectedAppointment?.expertSpecialty})`
+      : new Date().toLocaleDateString('es-ES'),
+
+    section3Item2Label: isConsultRelated.value ? 'Finalizada el / DocID:' : 'Plataforma:',
+    section3Item2Value: isConsultRelated.value
+      ? `${selectedAppointment?.finishedAt?.toDate().toLocaleString('es-ES')} [${contactForm.value.scheduleId}]`
+      : 'Centro de Ayuda (Web)',
+
+    footerYear: new Date().getFullYear(),
+    footerRightsText: 'Este ticket requiere seguimiento en el panel de administrador.',
+    email: 'shykandev@gmail.com',
+  });
 }
+
 //Firebase Data
-
 const db = getFirestore();
-const docRef = collection(db, `schedules`);
-const qGetUserSchedules = query(docRef, where('userUid', '==', authStore().getUserUid))
-
-//User Appointments Values
 const userAppointments = ref<ISchedule[]>([]);
+
 const finishedAppointments = computed<ISchedule[]>(() => {
   return [...userAppointments.value]
     .filter(a => a.isFinished)
@@ -353,67 +323,39 @@ const finishedAppointments = computed<ISchedule[]>(() => {
     });
 });
 
-//Methods
 const getUserAppointments = async () => {
   try {
-    userAppointments.value = []; // Clear existing appointments
+    const uid = authStore().getUserUid;
+    if (!uid) return;
+
+    const docRef = collection(db, 'schedules');
+    const qGetUserSchedules = query(docRef, where('userUid', '==', uid));
     const docSnapshot = await getDocs(qGetUserSchedules);
-    if (docSnapshot.empty) {
-      console.log('No se encontró ningún documento');
-      return;
-    }
-    
-    docSnapshot.forEach(doc => {
-      const data = doc.data();
-      const appointment: ISchedule = {
-        ...data as ISchedule,
-        docId: doc.id,
-        docRef: doc.ref,
-        docRefPath: doc.ref.path
-      };
-      userAppointments.value.push(appointment);
-    });
+
+    userAppointments.value = docSnapshot.docs.map(doc => ({
+      ...doc.data() as ISchedule,
+      docId: doc.id,
+      docRef: doc.ref,
+      docRefPath: doc.ref.path
+    }));
   } catch (error) {
-    console.log(`Error while fetching user finished appointments: ${error}`);
+    console.error(`Error while fetching appointments: ${error}`);
   }
 }
-onIonViewDidEnter(() => {
+
+onMounted(() => {
   getUserAppointments();
 })
 
-watch(isConsultRelated, () => {
-  if(isConsultRelated.value){
+watch(isConsultRelated, (newVal) => {
+  if (newVal && userAppointments.value.length === 0) {
     getUserAppointments();
   }
 })
-
-
 </script>
 
 <style scoped>
-/* Custom Scrollbar for hidden scroll feel */
-ion-content {
-  --background: transparent;
-}
-
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* Accordion Custom Styling */
-ion-accordion-group.ios-accordion-group ion-accordion {
-  border-radius: 16px;
-}
-
-ion-accordion.accordion-expanding,
-ion-accordion.accordion-expanded {
-  background-color: white;
-}
-
-@media (prefers-color-scheme: dark) {
-  ion-accordion.accordion-expanding,
-  ion-accordion.accordion-expanded {
-    background-color: rgba(39, 39, 42, 1); /* zinc-800 */
-  }
 }
 </style>

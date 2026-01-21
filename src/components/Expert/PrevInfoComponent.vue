@@ -1,67 +1,67 @@
 <template>
-  <div class="ios-expert-card-container">
-    <div class="ios-expert-card">
-      <!-- Imagen de perfil o icono -->
-      <div class="ios-expert-avatar">
-        <img
-          v-if="expertData?.imgUrl"
-          :src="expertData.imgUrl"
-          alt="Expert Profile"
-          class="ios-expert-avatar-image"
-        />
-        <div v-else :class="isBlocked ? 'bg-slate-200' : 'ios-expert-avatar-placeholder'" class="ios-expert-avatar-placeholder">
-          <v-icon v-if="!isBlocked" name="la-user-tie-solid" scale="2.2" :class="isBlocked ? 'text-slate-500' : 'ios-expert-avatar-icon'" />
-          <v-icon v-if="isBlocked" name="fa-user-slash" scale="2.2" class="text-slate-500" />
-        </div>
+  <div class="ios-expert-card-container ios-expert-card">
+
+    <!-- Imagen de perfil o icono -->
+    <div class="ios-expert-avatar">
+      <img class="ios-expert-avatar-image" v-if="expertData?.imgUrl" :src="expertData.imgUrl" alt="Expert Profile" />
+      <div class="ios-expert-avatar-placeholder" :class="isBlocked ? 'bg-slate-200' : 'ios-expert-avatar-placeholder'">
+        <v-icon v-if="!isBlocked" name="la-user-tie-solid" scale="2.2"
+          :class="isBlocked ? 'text-slate-500' : 'ios-expert-avatar-icon'" />
+        <v-icon class="text-slate-500" v-if="isBlocked" name="fa-user-slash" scale="2.2" />
       </div>
 
-      <!-- Detalles del experto -->
-      <div class="ios-expert-details">
-        <div class=" flex items-center justify-around flex-col">
-          <h2 :class="{'text-slate-500': isBlocked, 'text-blue-600': !isBlocked}" class="!text-xl font-normal font-poppins">
-            {{ expertData?.fullName || 'Experto' }}
-          </h2>
-          <span :class="{'bg-slate-500': isBlocked, 'bg-blue-500': !isBlocked}" class="text-white px-2 py-1 rounded-full">
-            {{ expertData?.specialty || 'Especialidad' }}
+
+    </div>
+    <!-- Detalles del experto -->
+    <div class="ios-expert-details flex items-center justify-around flex-col">
+      <h2 class="!text-xl font-normal font-poppins"
+        :class="{ 'text-slate-500': isBlocked, 'text-blue-600': !isBlocked }">
+        {{ expertData?.fullName || 'Experto' }}</h2>
+      <span class="text-white px-2 py-1 rounded-full" :class="{ 'bg-slate-500': isBlocked, 'bg-blue-500': !isBlocked }">
+        {{ expertData?.specialty || 'Especialidad' }}
+      </span>
+      <div v-if="expertData?.rating">
+        <article class="flex items-center my-2">
+          <span class="text-slate-500 font-manrope font-semibold mr-1">
+            {{ calcStarsValue(expertData.rating).toFixed(1) }}
           </span>
-          <div v-if="expertData?.rating">
-            <article class="flex items-center my-2">
-              <span class="text-slate-500 font-manrope font-semibold mr-1">
-                {{ calcStarsValue(expertData.rating).toFixed(1) }}
-              </span>
-              <v-icon name="io-star" scale="1" class="text-yellow-500" />  
-              <p class="text-slate-500 text-xs">({{ expertData.rating.count }} calificaciones) </p>
+          <v-icon class="text-yellow-500" name="io-star" scale="1" />
+          <p class="text-slate-500 text-xs">({{ expertData.rating.count }} calificaciones) </p>
 
-            </article>
-          </div>
-        </div>
-
-        <p class="ios-expert-bio">
-          {{ expertData?.bio || 'Sin descripción disponible' }}
-        </p>
-
-        <!-- Rating con estrellas -->
-        <div class="w-full my-2">
-          <span class="text-gray-500">Cédula: {{ expertData?.professionalId }}</span>
-        </div>
+        </article>
       </div>
+
+
+      <p class="ios-expert-bio">
+        {{ expertData?.bio || 'Sin descripción disponible' }}
+      </p>
+
+      <!-- Rating con estrellas -->
+      <div class="w-full my-2">
+        <span class="text-gray-500">Cédula: {{ expertData?.professionalId }}</span>
+      </div>
+
 
       <!-- Botón de acción -->
-      <button v-if="!isBlocked" @click="viewSchedule(expertData?.userUid)" class="ios-expert-button" data-cy="view-schedule-button">
+      <button class="ios-expert-button" v-if="!isBlocked" @click="viewSchedule(expertData?.userUid)"
+        data-cy="view-schedule-button">
         Ver disponibilidad
       </button>
-      <div v-else class="flex items-center justify-center">
-        <ion-button color="medium" mode="ios" size="default" data-cy="view-schedule-button">
+      <div class="flex items-center justify-center">
+        <button
+          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50"
+          color="medium" size="default" data-cy="view-schedule-button">
           No disponible
-        </ion-button>
+        </button>
       </div>
+
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import { IExpert } from '@/interfaces/IExpert';
-import { IonButton } from '@ionic/vue';
+
 import { useExpertUiStore } from '@/stores/expertUi';
 import { useRating } from '@/composables/stars';
 import { authStore } from '@/store/auth';
@@ -72,14 +72,14 @@ import { onMounted, ref } from 'vue';
 const expertUiStore = useExpertUiStore();
 
 const props = defineProps({
- expertData:Object as () => IExpert
+  expertData: Object as () => IExpert
 });
 
 // ion routing to expert schedule view
 const router = useRouter();
-const viewSchedule = async (expertUid?:string) => {
+const viewSchedule = async (expertUid?: string) => {
   try {
-    if(verifyBlockedExpert(expertUid)){
+    if (verifyBlockedExpert(expertUid)) {
       alert('No puedes agendar citas con este experto');
       return;
     }
@@ -89,32 +89,32 @@ const viewSchedule = async (expertUid?:string) => {
     }
     expertUiStore.resetExpertUid();
     expertUiStore.setExpertUid(props.expertData.userUid);
-    router.push('/expert-info-fixed');
+    router.push('/expert-info');
     closeCard();
   } catch (error) {
     console.error('Navigation error:', error);
   }
 };
 
-const verifyBlockedExpert =  (expertUid?:string): boolean => {
-  if(!expertUid) return false;
+const verifyBlockedExpert = (expertUid?: string): boolean => {
+  if (!expertUid) return false;
   const expertsBlockedList = authStore().getUserData?.expertsBlocked;
-  if(!expertsBlockedList) return false;
-  
-  if(expertsBlockedList[expertUid]){
+  if (!expertsBlockedList) return false;
+
+  if (expertsBlockedList[expertUid]) {
     console.log(`Expert ${expertUid} is blocked`);
     return true;
   }
   console.log(`Expert ${expertUid} is not blocked`);
   return false;
-  
-  
-  
+
+
+
 
 };
 
 const isBlocked = ref(false);
-onMounted(()=> {
+onMounted(() => {
   isBlocked.value = verifyBlockedExpert(props.expertData?.userUid);
 })
 
@@ -122,7 +122,7 @@ const emit = defineEmits(['closeCard']);
 const closeCard = () => emit('closeCard');
 
 //Calculate stars values
-const {calcStarsValue} = useRating();
+const { calcStarsValue } = useRating();
 
 
 </script>

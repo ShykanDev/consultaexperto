@@ -1,0 +1,3 @@
+src/components/Expert/PrevInfoComponent.vue(12,119): error TS1005: ',' expected.
+src/views/client/ClientAppointmentsView.vue(37,141): error TS1005: ',' expected.
+src/views/expert/ExpertView.vue(34,141): error TS1005: ',' expected.

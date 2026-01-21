@@ -138,7 +138,8 @@
 </style>
 
 <template>
-  <div class="spinner center">
+  <div class="spinner center spinner-blade">
+      </div>
       <div class="spinner-blade"></div>
       <div class="spinner-blade"></div>
       <div class="spinner-blade"></div>
@@ -150,6 +151,5 @@
       <div class="spinner-blade"></div>
       <div class="spinner-blade"></div>
       <div class="spinner-blade"></div>
-      <div class="spinner-blade"></div>
-  </div>
+  
 </template>

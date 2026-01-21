@@ -1,161 +1,155 @@
 <template>
-  <div class="relative w-full  ion-padding">
-
-    <section v-if="loading"
-      class="flex fixed top-0 right-0 bottom-0 left-0 z-50 justify-center items-center bg-white bg-opacity-90">
-      <!--Loader dots spinner (when user is logging in)-->
-      <LoaderMultipleDots />-
+  <div
+    class="relative pt-24 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 flex items-center justify-center p-6">
+    <!-- Loader -->
+    <section v-if="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+      <LoaderMultipleDots />
     </section>
 
-    <div class="px-1 py-1 mx-auto  md:px-2">
-      <div class="grid grid-cols-1 gap-8 items-center md:grid-cols-1">
-        <div class="order-2 space-y-3 md:order-1">
-          <h2
-            class="p-0 m-0 text-4xl font-semibold text-transparent bg-clip-text bg-gradient-to-br from-blue-500 to-blue-400 font-manrope">
-            Agende una cita con un experto verificado
-          </h2>
+    <div class="w-full  space-y-10">
+      <!-- Hero / Título principal con gradiente lindo -->
+      <div class="text-center space-y-4">
+        <h1
+          class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 bg-clip-text text-transparent tracking-tight font-manrope mx-2 p-2">
+          Consulte a un experto de manera gratuita por 15 minutos
+        </h1>
+        <p class="text-xl text-gray-700 font-medium">
+          Con un <span class="text-blue-600 font-semibold">experto verificado</span>
+        </p>
+      </div>
 
-          <aside class="grid grid-cols-3 p-2 text-blue-500 bg-white rounded-3xl shadow-sm ion-padding min-h-28">
-            <div class="grid col-span-2 items-center p-2">
-              <h4 class="text-base font-manrope">Inicie sesión para consultar un experto <span
-                  class="font-bold text-blue-600">{{ experts[currentExpert].name
-                  }}</span>
-              </h4>
-              <div
-                class="flex flex-col justify-around items-center p-1 text-sm font-medium text-center text-blue-700 bg-blue-100 rounded-2xl opacity-90 text-md font-poppins">
-                <p>¡Primera consulta gratis! </p>
-                <div class="flex gap-2">
-                  <v-icon name="md-supportagent-outlined" scale="1" />
-                  <v-icon name="bi-gift-fill" scale="1" />
-                </div>
-              </div>
+      <!-- Tarjeta del experto destacado – más linda y moderna -->
+      <div
+        class="bg-white/80 backdrop-blur-md border border-blue-100 rounded-2xl shadow-xl p-6 transition-all hover:shadow-2xl">
+        <div class="flex items-center gap-5">
+          <div class="relative flex-shrink-0">
+            <img class="w-20 h-20 rounded-full object-cover ring-4 ring-blue-200/60 shadow-lg"
+              :src="experts[currentExpert].img" :alt="experts[currentExpert].name" :key="experts[currentExpert].name" />
+            <div class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-white">
             </div>
-            <div class="flex justify-center items-center min-h-28">
-              <img :src="experts[currentExpert].img"
-                class="w-40 rounded-3xl ring-2 ring-blue-500 ring-offset-2 animate-fade"
-                :key="experts[currentExpert].name" :alt="experts[currentExpert].name">
+          </div>
+
+          <div class="flex-1 flex-col flex items-start">
+            <p class="text-sm text-gray-500 mb-1 font-medium">Hable ahora con</p>
+            <h3 class="text-lg font-bold text-gray-900">{{ experts[currentExpert].name }}</h3>
+            <div
+              class="mt-2 inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-sm">
+              <v-icon name="bi-gift-fill" scale="0.85" />
+              <span>¡Primera consulta gratis!*</span>
             </div>
-          </aside>
-
-
-          <div class="flex justify-center mt-7 w-full shadow-sm transition-colors duration-300 ease-in-out"
-            :class="{ 'bg-gradient-to-r from-blue-600 to-blue-600 shadow-sm rounded-2xl ring-1 ring-blue-200 animate-fade': isAccordionOpen, 'bg-white shadow-md rounded-full': !isAccordionOpen }">
-            <div class="w-full">
-              <div class="w-full">
-                <!-- Header del acordeón -->
-                <div class="flex justify-between items-center p-4 rounded-lg cursor-pointer" @click="toggleAccordion">
-                  <span class="font-medium text-md font-poppins"
-                    :class="{ 'text-white': isAccordionOpen, 'text-blue-600': !isAccordionOpen }">{{ isAccordionOpen ?
-                      'Listado de expertos' : 'Ver todos los expertos' }}</span>
-                  <v-icon name="hi-solid-chevron-down" scale="1.5"
-                    class="transition-transform duration-300 ease-in-out"
-                    :class="{ 'rotate-180 text-white ': isAccordionOpen }" />
-                </div>
-
-                <!-- Contenido del acordeón -->
-                <div v-show="isAccordionOpen"
-                  class="p-4 bg-white rounded-b-2xl animate-fade-down animate-duration-300">
-                  <ul>
-                    <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
-                      class="p-1 mb-1 font-medium rounded-md transition-colors duration-200 cursor-pointer text-slate-700 font-inter hover:bg-blue-600 hover:text-white animate-fade-down ion-padding"
-                      :class="{
-                        'bg-blue-600 text-white': expert.name === experts[currentExpert].name,
-                        'bg-blue-500/25': expert.name !== experts[currentExpert].name,
-                        'bg-blue-800 text-white font-black italic': expert.name === userSelection,
-                      }" :style="{
-                        'animation-delay': `${index * 50}ms`
-                      }">
-                      {{ expert.name.includes('en') ? expert.name.replace(/en/, '') : expert.name }}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
+            <small class="text-xs text-gray-400 mt-2 font-poppins">*Las consultas gratuitas son de 15 minutos gratuitos
+              por
+              categoría</small>
           </div>
         </div>
       </div>
+
+      <!-- Acordeón de expertos – más elegante -->
+      <div>
+        <button @click="toggleAccordion"
+          class="w-full flex items-center justify-between px-5 py-4 bg-white border border-blue-200 rounded-xl text-left shadow-sm hover:shadow-md hover:border-blue-300 transition-all group"
+          :class="{ 'border-blue-500 bg-blue-50/60': isAccordionOpen }">
+          <span class="font-semibold text-gray-800 group-hover:text-blue-700 transition-colors">
+            {{ isAccordionOpen ? 'Ocultar lista de expertos' : 'Ver todos los expertos disponibles' }}
+          </span>
+          <v-icon name="hi-solid-chevron-down"
+            class="text-blue-500 text-xl transition-transform duration-300 group-hover:scale-110"
+            :class="{ 'rotate-180': isAccordionOpen }" />
+        </button>
+
+        <div v-show="isAccordionOpen"
+          class="mt-3 bg-white border border-blue-100 rounded-xl shadow-lg overflow-hidden divide-y divide-blue-50 animate-fade-in">
+          <ul class="max-h-72 overflow-y-auto">
+            <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
+              class="px-5 py-4 cursor-pointer hover:bg-blue-50/70 transition-colors flex items-center gap-4" :class="{
+                'bg-blue-100/60 font-semibold text-blue-800': expert.name === experts[currentExpert].name,
+                'border-l-4 border-blue-500': expert.name === userSelection
+              }">
+              <div
+                class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-blue-600 font-medium">
+                {{ expert.name.charAt(0) }}
+              </div>
+              <span>{{ expert.name.replace('en ', '') }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Formulario de login – más lindo, con mejor espaciado y color -->
+      <form @submit.prevent="login"
+        class="bg-white border border-blue-100 rounded-2xl shadow-xl p-8 space-y-7 backdrop-blur-sm">
+        <div class="text-center space-y-2">
+          <h2 class="text-3xl font-bold text-blue-500 font-manrope">Le damos la bienvenida</h2>
+          <p class="text-gray-600">Ingresa para conectar con tu experto</p>
+        </div>
+
+        <!-- Email -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+          <div
+            class="flex items-center px-5 py-4 bg-blue-50/40 border border-blue-200 rounded-xl focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-md focus-within:ring-2 focus-within:ring-blue-200 transition-all">
+            <v-icon class="text-blue-500 mr-3 text-xl" name="md-email" />
+            <input v-model="email" type="email"
+              class="bg-transparent border-none outline-none flex-1 text-gray-800 placeholder-gray-500 font-medium"
+              placeholder="su@correo.com" required />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Contraseña</label>
+          <div
+            class="flex items-center px-5 py-4 bg-blue-50/40 border border-blue-200 rounded-xl focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-md focus-within:ring-2 focus-within:ring-blue-200 transition-all">
+            <v-icon class="text-blue-500 mr-3 text-xl" name="md-password-round" />
+            <input v-model="password" :type="showPassword ? 'text' : 'password'"
+              class="bg-transparent border-none outline-none flex-1 text-gray-800 placeholder-gray-500 font-medium"
+              placeholder="••••••••••" required />
+            <button type="button" @click="showPassword = !showPassword"
+              class="text-blue-500 hover:text-blue-700 transition-colors">
+              <v-icon :name="showPassword ? 'hi-solid-eye' : 'hi-solid-eye-off'" />
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 space-y-5">
+          <button type="submit"
+            class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl active:scale-[0.98] transition-all duration-200">
+            Iniciar Sesión
+          </button>
+
+          <div class="text-center">
+            <button type="button" @click="showResetModal = true"
+              class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+              ¿Olvidó tu contraseña?
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
 
-
-
-
-    <form @submit.prevent="login" class="mt-8 space-y-6">
-      <div class="flex flex-col space-y-2 text-left">
-        <h1 class="text-3xl font-bold text-blue-500 font-manrope">Bienvenido</h1>
-        <p class="text-sm text-blue-600 font-medium">Ingresa tus credenciales para continuar</p>
-      </div>
-
-      <div class="space-y-5">
-        <!-- Email Input -->
-         <div class="relative group">
-          <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
-            <ion-icon slot="start" :icon="mailOutline" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
-            <ion-input 
-            data-cy="email-input"
-              v-model="email" 
-              type="email" 
-              placeholder="correo@ejemplo.com"
-              class="font-medium text-slate-700 h-14"
-            ></ion-input>
-          </ion-item>
-         </div>
-
-        <!-- Password Input -->
-        <div class="relative group">
-          <ion-item lines="none" class="rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 group-focus-within:border-blue-500 group-focus-within:ring-2 group-focus-within:ring-blue-100 bg-white">
-            <ion-icon slot="start" :icon="lockClosed" class="text-gray-400 group-focus-within:text-blue-500 transition-colors ml-2"></ion-icon>
-            <ion-input 
-            data-cy="password-input"
-              v-model="password" 
-              placeholder="************"
-              class="font-medium text-slate-700 h-14"
-              :type="showPassword ? 'text' : 'password'"
-            ></ion-input>
-            <ion-button 
-              fill="clear" 
-              slot="end" 
-              @click="showPassword = !showPassword"
-              class="text-gray-400 hover:text-gray-600"
-            >
-              <ion-icon slot="icon-only" :icon="showPassword ? eye : eyeOff"></ion-icon>
-            </ion-button>
-          </ion-item>
+    <!-- Modal de reset (con toques de color) -->
+    <GenericModal v-model:show="showResetModal" title="Recupera tu acceso"
+      message="Te enviaremos un enlace a tu correo para restablecer la contraseña." confirmText="Enviar enlace"
+      @confirm="handleResetPassword">
+      <div class="mt-6">
+        <div
+          class="flex items-center px-5 py-4 bg-blue-50/40 border border-blue-200 rounded-xl focus-within:border-blue-500 focus-within:bg-white focus-within:shadow-md focus-within:ring-2 focus-within:ring-blue-200 transition-all">
+          <v-icon class="text-blue-500 mr-3 text-xl" name="md-email" />
+          <input v-model="resetEmail" type="email"
+            class="bg-transparent border-none outline-none flex-1 text-gray-800 placeholder-gray-500"
+            placeholder="tu@correo.com" />
         </div>
       </div>
-
-      <!-- Action Buttons -->
-      <div class="space-y-4 pt-2">
-        <ion-button 
-          expand="block" 
-          @click="login" 
-          class="h-14 font-bold rounded-2xl shadow-lg shadow-blue-500/30 text-white"
-          style="--background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); --border-radius: 16px; text-transform: none; letter-spacing: 0.5px;"
-        >
-          Iniciar Sesión
-        </ion-button>
-
-        <div class="flex justify-center">
-          <button 
-            type="button"
-            id="present-alert" 
-            class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
-          >
-            ¿Olvidó su contraseña?
-          </button>
-        </div>
-        
-          <ion-alert trigger="present-alert" header="Recuperar contraseña" sub-header="Ingresa tu correo para recibir instrucciones" :buttons="alertButtons"
-          :inputs="alertInputs" class="custom-alert"></ion-alert>
-      </div>
-
-    </form>
-
+    </GenericModal>
   </div>
 </template>
-
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import GenericModal from '@/components/Common/GenericModal.vue';
+
+// Image imports
 import Abogado from '@/assets/img/Abogado.jpeg';
 import Arquitecto from '@/assets/img/arquitecto.jpeg';
 import Chef from '@/assets/img/ChefFin.jpeg';
@@ -171,225 +165,30 @@ import Publicidad from '@/assets/img/Publicidad.jpeg';
 import Traductor from '@/assets/img/Traductor.jpeg';
 import WebDesigner from '@/assets/img/webDev.jpeg';
 
-
-
-
-
-
-
-
-
-
-
 import {
-  IonItem,
-  IonInput,
-  IonButton,
-  IonIcon,
-  IonAlert
-} from '@ionic/vue';
-import {
-  lockClosed,
-  eye,
-  eyeOff,
-  mailOutline
-} from 'ionicons/icons';
-import {  sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword
+} from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { authStore } from '@/store/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
 import clientStore from '@/store/client';
-import {
-  onIonViewDidEnter,
-  onIonViewWillLeave,
-  onIonViewDidLeave
-} from '@ionic/vue';
-import { toastController } from '@ionic/vue';
 import expertStore from '@/store/expert';
 import { IExpert } from '@/interfaces/IExpert';
 
-console.log('LoginComponent.vue script is executing...');
-
-const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-  const toast = await toastController.create({
-    message: message,
-    duration: 1500,
-    position: position,
-    color: color,
-    swipeGesture: 'vertical',
-    translucent: true,
-    buttons: [
-      {
-        text: 'cerrar',
-        role: 'cancel',
-      }
-    ]
-  });
-
-  await toast.present();
-};
-
+const toast = useToast();
+const router = useRouter();
+const db = getFirestore();
+const auth = authFirebase;
 
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
-
-//router for ionic to push views 
-const router = useRouter();
-
-const auth = authFirebase;
-const db = getFirestore();
-const collectionEmailsExperts = collection(db, 'EmailsExperts');
-const verifyIsExpert = async (email: string) => {
-  const qGetExpertMatch = query(collectionEmailsExperts, where('email', '==', email));
-  const docSnapshot = await getDocs(qGetExpertMatch);
-  try {
-    if (docSnapshot.empty) {
-      console.log('No se encontro un experto con este correo, el usuario es cliente');
-      return false;
-    }
-    docSnapshot.forEach((doc) => {
-      console.log('Se encontro un experto con este correo, el usuario es experto');
-      console.log(doc.id, ' => ', doc.data());
-    });
-    return true;
-  } catch (error) {
-    console.log(error);
-    return false;
-  }
-}
-
-
-const adminEmailsCollection = collection(db, 'AdminEmails');
-const isAdminEmail = async (email: string) => {
-  try {
-    const qGetAdminMatch = query(adminEmailsCollection, where('email', '==', email));
-    const snapshot = await getDocs(qGetAdminMatch);
-    if (snapshot.empty) {
-      console.log('There are not results for the current email');
-      return false;
-    }
-    // Since we queried by email, existence implies it matches.
-    // However, keeping the logging logic but simplifying the return.
-    snapshot.docs.forEach(doc => {
-      console.log(doc.data());
-      if (doc.data().email === email) {
-        console.log(`El correo ${email} es de un administrador`);
-      }
-    });
-    return true;
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
-};
-
-const handleAdminLogin = (uid: string, name: string, userEmail: string) => {
-  authStore().setIsAuth(true);
-  authStore().setUserUid(uid);
-  authStore().setUserName(name);
-  authStore().setUserEmail(userEmail);
-  authStore().setIsAdmin(true);
-
-  presentToast("top", `Bienvenido ${name}`, "success");
-  router.push("/expert-list-admin"); // ruta especial
-};
-
-const handleExpertLogin = (uid: string, name: string, userEmail: string, expertData: IExpert) => {
-  authStore().setIsAuth(true);
-  authStore().setUserUid(uid);
-  authStore().setUserName(name);
-  authStore().setUserEmail(userEmail);
-  authStore().setIsExpert(true);
-  authStore().setUserData('experts', uid);
-  expertStore().setExpertData(expertData);
-  presentToast("top", `Bienvenido ${name}`, "success");
-  router.push("/expert");
-};
-
-const handleClientLogin = (uid: string, name: string, userEmail: string) => {
-  authStore().setIsAuth(true);
-  authStore().setUserUid(uid);
-  clientStore().setClientUid(uid);
-  authStore().setUserName(name);
-  authStore().setUserEmail(userEmail);
-  authStore().setIsClient(true);
-  authStore().setUserData('users', uid);
-
-  presentToast("top", `Bienvenido ${name}`, "success");
-  if(testingFirebaseRules.value){
-    router.push("/firebase"); // route for testing firebase rules
-    return;
-  }
-  router.push("/tabs/expert-list-modern"); // RESTORE AFTER DEBUG
- //DEBUG ONLY router.push("/firebase"); // route for testing firebase rules
-
-};
-
-
-
-const testingFirebaseRules = ref(false); //Allows testing firebase rules handling
-const login = async () => {
-  if(testingFirebaseRules.value && email.value == 'test@gmail.com' && password.value == 'test'){
-    handleClientLogin('test', 'test', 'test@gmail.com');
-    return;
-  }
-
-  if (!email.value || !password.value) {
-    presentToast("top", "Por favor, ingrese su correo y contraseña", "danger");
-    return;
-  }
-  setLoading(true);
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-
-    if (!userCredential || !userCredential.user || !userCredential.user.email || !userCredential.user.uid) {
-      setLoading(false);
-      return;
-    }
-
-    const { email: userEmail, uid, displayName } = userCredential.user;
-    const name = displayName || "Usuario";
-
-    // 1. Special roles
-    if (await isAdminEmail(userEmail)) {
-      handleAdminLogin(uid, name, userEmail);
-      return;
-    }
-
-    // 2. Dynamic roles
-    const isExpert = await verifyIsExpert(userEmail);
-
-    if (isExpert) {
-      
-      const docRef = doc(db,`experts/${uid}` ) 
-      const expertData = await getDoc(docRef)
-      if(!expertData.exists()){
-        presentToast("top", "Error al iniciar sesión, intente de nuevo", "danger");
-        return;
-      }
-      console.log(`EXPERT DATA: ${expertData.data()}`);
-      
-      handleExpertLogin(uid, name, userEmail, expertData.data() as IExpert);
-    } else {
-      handleClientLogin(uid, name, userEmail);
-    }
-
-  } catch (error) {
-    console.error(error);
-    presentToast("top", "Error al iniciar sesión, intente de nuevo", "danger");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+const loading = ref(false);
 const isAccordionOpen = ref(false);
-
-const toggleAccordion = () => {
-  isAccordionOpen.value = !isAccordionOpen.value;
-};
+const showResetModal = ref(false);
+const resetEmail = ref('');
 
 const experts = ref([
   { name: "Abogado", icon: "fa-balance-scale", img: Abogado },
@@ -408,316 +207,139 @@ const experts = ref([
   { name: "Chef", icon: "fa-utensils", img: Chef }
 ]);
 
-
 const currentExpert = ref(0);
+let expertInterval: any = null;
 
 onMounted(() => {
-  if (!isSelecting.value) {
-    setInterval(() => {
-      currentExpert.value++;
-      if (currentExpert.value >= experts.value.length) {
-        currentExpert.value = 0;
-      }
-
-    }, 4000);
-  }
+  expertInterval = setInterval(() => {
+    if (!isSelecting.value) {
+      currentExpert.value = (currentExpert.value + 1) % experts.value.length;
+    }
+  }, 4000);
 });
 
-//Is user selecting an expert (boolean)
-const isSelecting = ref();
+onUnmounted(() => {
+  if (expertInterval) clearInterval(expertInterval);
+});
 
-//User selection (expert user selected)
-const userSelection = ref();
+const isSelecting = ref(false);
+const userSelection = ref('');
 
-//Setting the user selection to store on the userSelection ref
-const setUserSelection = (expert: string): void => {
+const setUserSelection = (expert: string) => {
   isSelecting.value = true;
   userSelection.value = expert;
-}
+};
 
+const toggleAccordion = () => {
+  isAccordionOpen.value = !isAccordionOpen.value;
+};
 
-const alertButtons = [
-  {
-    text: 'Cancelar',
-    role: 'cancel',
-    handler: () => {
-      console.log('Cancelado')
+const handleResetPassword = async () => {
+  if (!resetEmail.value) {
+    toast.error('Por favor, ingresa tu correo');
+    return;
+  }
+  try {
+    await sendPasswordResetEmail(auth, resetEmail.value);
+    toast.success('Correo de restablecimiento enviado');
+    showResetModal.value = false;
+  } catch (error) {
+    toast.error('Error al enviar el correo. Verifica tu dirección.');
+  }
+};
+
+const login = async () => {
+  if (!email.value || !password.value) {
+    toast.warning("Por favor, ingrese su correo y contraseña");
+    return;
+  }
+
+  loading.value = true;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+    const { email: userEmail, uid, displayName } = userCredential.user;
+    const name = displayName || "Usuario";
+
+    // Admin Check
+    const adminQuery = query(collection(db, 'AdminEmails'), where('email', '==', userEmail));
+    const adminSnap = await getDocs(adminQuery);
+    if (!adminSnap.empty) {
+      handleAdminLogin(uid, name, userEmail || '');
+      return;
     }
-  },
-  {
-    text: 'Aceptar',
-    handler: async (data: any) => {
-      try {
-        console.log(data[0]);
 
-        await sendPasswordResetEmail(auth, data[0])
-        presentToast('top', 'Correo de restablecimiento de contraseña enviado', 'success');
-        console.log('Correo de restablecimiento de contraseña enviado');
-      } catch (error) {
-        console.log('Error al enviar correo de restablecimiento de contraseña', error);
-        presentToast('top', 'Error al enviar correo de restablecimiento de contraseña', 'danger');
+    // Expert Check
+    const expertQuery = query(collection(db, 'EmailsExperts'), where('email', '==', userEmail));
+    const expertSnap = await getDocs(expertQuery);
+
+    if (!expertSnap.empty) {
+      const docRef = doc(db, `experts/${uid}`);
+      const expertData = await getDoc(docRef);
+      if (expertData.exists()) {
+        handleExpertLogin(uid, name, userEmail || '', expertData.data() as IExpert);
       }
+    } else {
+      handleClientLogin(uid, name, userEmail || '');
     }
-  }
-]
-
-
-const alertInputs = [
-  {
-    type: 'email',
-    placeholder: 'correo@ejemplo.com',
-    min: 1,
-    max: 1000,
-  },
-];
-
-
-
-const loading = ref(false);
-const setLoading = (value: boolean) => loading.value = value;
-
-
-//Animation for brand name
-
-const names = [
-  ['consulta', 'gratis', 'en', 'linea', '.com'],
-  ['consulta', 'experto', '.com'],
-  ['consulta', 'especializada', '.com']
-];
-
-const currentName = ref<string[]>(names[0]);
-let timeoutId: ReturnType<typeof setTimeout> | null = null;
-
-const startAnimation = () => {
-  const changeName = () => {
-    timeoutId = setTimeout(() => {
-      const currentIndex = names.findIndex(name =>
-        JSON.stringify(name) === JSON.stringify(currentName.value)
-      );
-      const nextIndex = (currentIndex + 1) % names.length;
-      currentName.value = names[nextIndex];
-      changeName(); // Siguiente iteración
-    }, 5000);
-  };
-
-  // Iniciar la animación
-  changeName();
-};
-
-const stopAnimation = () => {
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-    timeoutId = null;
+  } catch (error) {
+    toast.error("Error al iniciar sesión. Verifique sus credenciales.");
+  } finally {
+    loading.value = false;
   }
 };
 
-// Cuando la vista está a punto de entrar
-onIonViewDidEnter(() => {
-  startAnimation();
+const handleAdminLogin = (uid: string, name: string, email: string) => {
+  const store = authStore();
+  store.setIsAuth(true);
+  store.setUserUid(uid);
+  store.setUserName(name);
+  store.setUserEmail(email);
+  store.setIsAdmin(true);
+  toast.success(`Bienvenido Admin ${name}`);
+  router.push("/expert-list-admin");
+};
 
+const handleExpertLogin = (uid: string, name: string, email: string, data: IExpert) => {
+  const store = authStore();
+  store.setIsAuth(true);
+  store.setUserUid(uid);
+  store.setUserName(name);
+  store.setUserEmail(email);
+  store.setIsExpert(true);
+  store.setUserData('experts', uid);
+  expertStore().setExpertData(data);
+  toast.success(`Bienvenido Experto ${name}`);
+  router.push("/expert");
+};
 
-});
-
-// Cuando la vista está a punto de salir 
-onIonViewWillLeave(() => {
-  stopAnimation();
-});
-
-// Cuando la vista ya salió
-onIonViewDidLeave(() => {
-  stopAnimation();
-});
+const handleClientLogin = (uid: string, name: string, email: string) => {
+  const store = authStore();
+  store.setIsAuth(true);
+  store.setUserUid(uid);
+  clientStore().setClientUid(uid);
+  store.setUserName(name);
+  store.setUserEmail(email);
+  store.setIsClient(true);
+  store.setUserData('users', uid);
+  toast.success(`Bienvenido ${name}`);
+  router.push("/home");
+};
 </script>
 
 <style scoped>
-.container {
-  padding: 2rem;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: .5rem;
-}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
-.header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--ion-color-dark);
-  margin-bottom: 0.5rem;
-}
-
-.header p {
-  color: var(--ion-color-medium);
-}
-
-.form-container {
-  background: transparent;
-  margin-bottom: 1.5rem;
-}
-
-.input-item {
-  --background: var(--ion-color-light);
-  --border-radius: 12px;
-  --padding-start: 1rem;
-  --padding-end: 1rem;
-  margin-bottom: 1rem;
-}
-
-.input-icon {
-  color: var(--ion-color-medium);
-  margin-right: 1rem;
-}
-
-.custom-input {
-  --padding-start: 0;
-}
-
-.password-toggle {
-  --padding-end: 0;
-  color: var(--ion-color-medium);
-}
-
-.login-button {
-  --border-radius: 25px;
-  --padding: 1;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-  height: 60px;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.forgot-password {
-  --color: var(--ion-color-medium);
-  text-transform: none;
-  font-size: 0.9rem;
-}
-
-.actions {
-  text-align: center;
-}
-
-.welcome {
-  color: aqua;
-}
-
-.expert-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.expert-icon {
-  font-size: 3.5rem;
-  color: var(--ion-color-primary);
-  margin-bottom: 1rem;
-}
-
-.expert-title {
-  text-align: center;
-  font-size: 1.5rem;
-  color: var(--ion-color-dark);
-  margin: 0;
-}
-
-.expert-variable {
-  color: var(--ion-color-primary);
-  font-weight: 600;
-}
-
-.expert-info {
-  background: rgb(8, 164, 255);
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin: 2rem 0;
-  color: white;
-}
-
-.professional-text {
-  text-align: center;
-  color: var(--ion-color-dark);
-  line-height: 1.4;
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-/* Estilo más sutil para la consulta gratis */
-.free-consultation.subtle {
-  background: rgba(var(--ion-color-success-rgb), 0.1);
-  border: 1px solid rgba(var(--ion-color-success-rgb), 0.2);
-  border-radius: 12px;
-  padding: 5px;
-  text-align: center;
-  margin-top: 1.5rem;
-}
-
-.free-consultation.subtle .consultation-icon {
-  font-size: 1.5rem;
-  color: var(--ion-color-success);
-  margin-bottom: 0.5rem;
-}
-
-.free-consultation.subtle .consultation-text {
-  color: var(--ion-color-medium);
-  font-size: 0.85rem;
-  line-height: 1.3;
-  margin: 0;
-}
-
-.free-consultation.subtle strong {
-  color: var(--ion-color-success);
-  font-weight: 500;
-}
-
-ion-accordion {
-  margin: 0 auto;
-}
-
-ion-accordion.accordion-expanding,
-ion-accordion.accordion-expanded {
-  width: calc(100% - 32px);
-
-  margin: 16px auto;
-}
-
-ion-accordion.accordion-collapsing ion-item[slot='header'],
-ion-accordion.accordion-collapsed ion-item[slot='header'] {
-  --background: var(--ion-color-light);
-  --color: var(--ion-color-light-contrast);
-}
-
-ion-accordion.accordion-expanding ion-item[slot='header'],
-ion-accordion.accordion-expanded ion-item[slot='header'] {
-  --background: var(--ion-color-primary);
-  --color: var(--ion-color-primary-contrast);
-}
-
-ion-icon.custom {
-  --background: var(--ion-color-primary);
-  --color: red;
-}
-
-ion-button.login {
-  --background: rgb(0, 75, 156);
-  --color: white;
-  --border-radius: 20px;
-  --padding: 1;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: 60px;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-ion-input.input {
-  --border-radius: 25px;
-  --padding: 1;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  height: 60px;
-  font-weight: 600;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

@@ -1,25 +1,22 @@
 <template>
-  <ion-page>
-    <ion-header  class="ion-no-border">
-      <ion-toolbar >
-          <ion-title slot="start" class="text-base font-bold text-blue-500 text-start sm:text-xl font-quicksand">Registrarse</ion-title>
-          <div slot="end" class="flex">
-            <span class="text-sm" v-html="currentName" :key="currentName"></span>
-          </div>
-      </ion-toolbar>
-    </ion-header>
+  <div class="web-page min-h-screen bg-gray-50"><header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm border-none shadow-none">
+      <nav class="web-toolbar h-16 flex items-center px-4">
+          <h1 class="web-title text-lg font-bold text-gray-900 order-first text-base text-blue-500 text-start sm:text-xl font-quicksand">Registrarse</h1>
+          <h1 class="order-last flex"><span class="text-sm" v-html="currentName" :key="currentName"></span></h1>
+      </nav>
+    </header>
 
 
       <RegisterComponent></RegisterComponent>
 
-  </ion-page>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
+
 import ExploreContainer from '@/components/ExploreContainer.vue';
 import RegisterComponent from '@/components/Login/RegisterComponent.vue';
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 
   const names = [
@@ -52,11 +49,11 @@ const currentName = ref<string[]>(names[0]);
   
  }
 
- onIonViewDidEnter(() => {
+ onMounted(() => {
   animateNames();
 })
 
-onIonViewDidLeave(() => {
+onUnmounted(() => {
   if(timeoutId){
     clearInterval(timeoutId);
     timeoutId = null;

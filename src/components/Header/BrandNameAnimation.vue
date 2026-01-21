@@ -1,12 +1,12 @@
 <template>
     <div class="">
-        <span v-for="(name, index) in currentName" :key="index" class="animate-fade">{{ name }}</span>
+        <span class="animate-fade" v-for="(name, index) in currentName" :key="index">{{ name }}</span>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { onIonViewDidEnter, onIonViewDidLeave } from '@ionic/vue';
-import { ref } from 'vue';
+
+import { ref, onMounted, onUnmounted } from 'vue';
 const names = ref(
     [
         ['consulta', 'gratis', 'en', 'linea', '.com'],
@@ -29,11 +29,11 @@ const changeName = () => {
     }, 2000);
 }
 
-onIonViewDidEnter(() => {
+onMounted(() => {
     changeName();
 })
 
-onIonViewDidLeave(() => {
+onUnmounted(() => {
     if(timeoutId){
         clearTimeout(timeoutId);
     }

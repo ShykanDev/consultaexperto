@@ -1,110 +1,83 @@
 <template>
-  <ion-page>
-<ion-segment>
-    <ion-segment-button value="users" content-id="users">
-      <ion-label>Users</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="experts" content-id="experts">
-      <ion-label>Experts</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="third" content-id="third">
-      <ion-label>Third</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-  <ion-segment-view>
-    <ion-segment-content id="users">
-        <ion-content>
-            <div>Testing Get Users (When user is auth)</div>
-            <ion-button @click="getUsers">Get Users</ion-button>
-            <ion-button @click="getSelfUser">Get Self User</ion-button>
-            <div>
-              <p>Users Data</p>
-              <p class="text-red-600">If data is present here, then firebase is still allowing user to fetch info that is not allowed (error is expected)</p>
-              <p v-if="usersData.length > 0" class="text-white bg-red-600 p-2 rounded-2xl">Users found: You should not be able to see this, check firebase rules </p>
-              <ul v-if="usersData.length > 0">
-                <li v-for="user in usersData" :key="user.docId">
+  <div class="web-page min-h-screen bg-gray-50 p-4">
+    <div class="flex p-1 bg-gray-100 rounded-xl mb-4">
+      <button class="flex-1 py-2 text-sm font-bold rounded-lg transition-all" value="users">
+        <div class="web-label flex-1">Users</div>
+      </button>
+      <button class="flex-1 py-2 text-sm font-bold rounded-lg transition-all" value="experts">
+        <div class="web-label flex-1">Experts</div>
+      </button>
+    </div>
+
+    <div id="users">
+      <main class="web-content overflow-y-auto">
+        <div class="font-bold text-lg mb-4">Testing Get Users (When user is auth)</div>
+        <div class="flex gap-2 mb-4">
+          <button class="web-btn bg-blue-600 text-white px-4 py-2 rounded-lg" @click="getUsers">Get Users</button>
+          <button class="web-btn bg-blue-600 text-white px-4 py-2 rounded-lg" @click="getSelfUser">Get Self
+            User</button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <p class="font-bold">Users Data</p>
+            <p class="text-red-500 text-sm">If data is present here, then firebase is still allowing user to fetch info
+              that is not allowed (error is expected)</p>
+            <div v-if="usersData.length > 0" class="text-white bg-red-600 p-3 rounded-xl mt-2">
+              Users found: You should not be able to see this, check firebase rules
+              <ul class="mt-2 list-disc pl-5">
+                <li v-for="user in usersData" :key="user.userId">
                   {{ user.name }} - {{ user.email }}
                 </li>
               </ul>
             </div>
+          </div>
 
-            <div class="mt-4">
-              <p>Self User Data</p>
-              <p class="text-red-600">If user can't fetch this data, then firebase is not allowing user to fetch info that is not allowed (info is expected)</p>
-              <p v-if="!userSelfData" class="text-white bg-green-600 p-2 rounded-2xl">User Data: You should be able to see this, if you see this firebase rules are working correctly </p>
-             <p v-if="userSelfData" class="text-white bg-red-600 p-2 rounded-2xl">User Data: {{ userSelfData }}</p>
+          <div>
+            <p class="font-bold">Self User Data</p>
+            <p class="text-red-600 text-sm">If user can't fetch this data, then firebase is not allowing user to fetch
+              info that is not allowed (info is expected)</p>
+            <div class="text-white bg-red-600 p-3 rounded-xl mt-2" v-if="userSelfData">
+              User Data: {{ userSelfData }}
             </div>
-        </ion-content>
-    </ion-segment-content>
-    <ion-segment-content id="experts">Experts</ion-segment-content>
-  </ion-segment-view>
-  </ion-page>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="mt-8" id="experts">
+      <h2 class="font-bold">Experts</h2>
+      <p>Experts testing section...</p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  IonPage,
-  IonSegment,
-  IonSegmentButton,
-  IonLabel,
-  IonSegmentView,
-  IonSegmentContent,
-  IonContent
-} from '@ionic/vue';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import { toastController } from '@ionic/vue';
-
-console.log('LoginComponent.vue script is executing...');
-
-const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-  const toast = await toastController.create({
-    message: message,
-    duration: 1500,
-    position: position,
-    color: color,
-    swipeGesture: 'vertical',
-    translucent: true,
-    buttons: [
-      {
-        text: 'cerrar',
-        role: 'cancel',
-      }
-    ]
-  });
-
-  await toast.present();
-};
 import { ref } from 'vue';
 import { IUser } from '@/interfaces/user/IUser';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const usersData = ref<IUser[]>([]);
+const userSelfData = ref<IUser | null>(null);
 
 const db = getFirestore();
-
 const usersCollection = collection(db, 'users');
 
-
-const getUsers=()=>{
+const getUsers = () => {
   usersData.value = [];
-  const usersSnapshot = getDocs(usersCollection).then((snapshot)=>{
-    usersData.value = snapshot.docs.map((doc)=>doc.data() as IUser);
-    console.log(usersData.value);
-    presentToast('bottom', 'Usuarios obtenidos correctamente', 'success');
-  }).catch((error)=>{
-    console.log(`Error al obtener los usuarios: ${error}`);
-    presentToast('bottom', 'Error al obtener los usuarios' + error, 'danger');
-  }); 
+  getDocs(usersCollection).then((snapshot) => {
+    usersData.value = snapshot.docs.map((doc) => ({ ...doc.data() as IUser, userId: doc.id }));
+    toast.success('Usuarios obtenidos correctamente');
+  }).catch((error) => {
+    console.error(`Error al obtener los usuarios: ${error}`);
+    toast.error('Error al obtener los usuarios: ' + error.message);
+  });
 }
 
-const userSelfData = ref<IUser|null>(null);
-const getSelfUser=()=>{
-  userSelfData.value = null;
-  const usersSnapshot = getDocs(usersCollection).then((snapshot)=>{
-    console.log(userSelfData.value);
-    presentToast('bottom', 'Usuarios obtenidos correctamente', 'success');
-  }).catch((error)=>{
-    console.log(`Error al obtener los usuarios: ${error}`);
-    presentToast('bottom', 'Error al obtener los usuarios' + error, 'danger');
-  }); 
+const getSelfUser = () => {
+  // Logic for self user
+  toast.info('Feature post-migration');
 }
 </script>

@@ -1,167 +1,123 @@
 <template>
-  <ion-page>
-    <ion-header class="ion-no-border">
-      <ion-toolbar>
-        <ion-title color="primary" class="text-sm tracking-tight font-poppins">
-          Expertos
-        </ion-title>
-        <ion-buttons slot="start">
-          <ion-back-button color="primary" :icon="chevronBack" default-href="/tabs/tab1" text="Salir" style="text-transform: none; " >
-          </ion-back-button>
-        </ion-buttons>
-        <ion-buttons  slot="end">
-          <ion-button  routerLink="/create-expert" routerDirection="forward" class="!text-sm create-expert font-poppins" style="text-transform: none; padding-right: 2px; font-size: small!important;">Crear Experto</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-      <ion-toolbar class="px-2 py-1 searchbar">
-          <p class="py-1 ml-3 font-medium text-center text-blue-500">
-            Ver  y administrar expertos registrados
-          </p>
-        <ion-searchbar
-          placeholder="Nombre, Especialidad, Correo, etc..."
-          class="ion-margin-vertical custom"
-          :debounce="300"
-          enterkeyhint="search"
-          v-model="searchQuery"
-          @ion-input="searchExpertByName(searchQuery)"
-    ></ion-searchbar>
-      </ion-toolbar>
+  <div class="web-page min-h-screen bg-gray-50 flex flex-col">
+    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
+      <nav class="h-16 flex items-center px-4 max-w-5xl mx-auto justify-between">
+        <h1 class="text-xl font-bold text-gray-900 font-manrope">Administrar Expertos</h1>
+        <div class="flex items-center gap-3">
+          <button
+            class="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 text-sm"
+            @click="router.push('/create-expert')">
+            Crear Experto
+          </button>
+          <button
+            class="px-4 py-2 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all active:scale-95 text-sm"
+            @click="router.push('/users-list-admin')">
+            Ver Usuarios
+          </button>
+        </div>
+      </nav>
 
-    </ion-header>
+      <div class="max-w-5xl mx-auto w-full px-4 py-3 bg-gray-50/50">
+        <div class="relative">
+          <v-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" name="fa-search" />
+          <input
+            class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-medium text-gray-700 shadow-sm"
+            placeholder="Buscar por nombre, especialidad, correo..." v-model="searchQuery"
+            @input="searchExpertByName(searchQuery)">
+        </div>
+      </div>
+    </header>
 
-    <ion-content class="ion-padding">
-      <ion-button router-link="/users-list-admin" mode="ios" color="primary" >Ver usuarios</ion-button>
-      <ion-refresher slot="fixed"  @ionRefresh="handleRefresh($event)">
-      <ion-refresher-content refreshing-spinner="circles"></ion-refresher-content>
-      </ion-refresher>
-      <div class="flex justify-center items-center w-full">
-        <ion-spinner name="lines-sharp-small" v-if="loading"></ion-spinner>
-        <p v-if="experts.length == 0 && !loading" class="font-poppins">No se ha encontrado ningún experto</p>
+    <main class="flex-1 max-w-5xl mx-auto w-full p-4 overflow-y-auto">
+      <div v-if="loading" class="flex flex-col items-center justify-center py-20 gap-4">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <p class="text-gray-500 font-medium">Cargando expertos...</p>
       </div>
 
-          <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts" @callOpenModal="openModal"/>
-<!--4:50 PM Edited dissmis on click backdrop now is mow set to true -->
-          <ion-modal ref="modale" :is-open="isOpenModal" backdrop-dismiss :initial-breakpoint="0.50" :breakpoints="[0, 0.25, 0.5, 0.75, 1]">
-            <ion-header mode="ios" class="rounded-header">
-              <ion-toolbar class="rounded-header" >
-                <ion-title color="primary" class="text-sm font-medium tracking-tight font-poppins">
-                  Suspender Experto
-                </ion-title>
+      <div v-else-if="experts.length === 0" class="flex flex-col items-center justify-center py-20 gap-4">
+        <v-icon name="ri-user-smile-line" scale="3" class="text-gray-300" />
+        <p class="text-gray-500 font-medium">No se ha encontrado ningún experto</p>
+      </div>
 
-              </ion-toolbar>
+      <div v-else class="grid gap-4 lg:grid-cols-2">
+        <ExpertCard v-for="(expert, index) in experts" :key="index" :expert-data="expert" @reload="getAllExperts"
+          @callOpenModal="openModal" />
+      </div>
 
-            </ion-header>
-      <ion-content class="ion-padding">
-        <ion-text color="medium">
-          <p class="ml-3 font-medium text-left text-blue-500">
-            ¿Está seguro de suspender a <span class="font-bold font-montserrat">{{ expertSelectedData.specialty }}</span> {{expertSelectedData.fullName}}?
-          </p>
-          <ion-textarea @click="$refs.modale.$el.setCurrentBreakpoint(1)" auto-grow  class="ion-margin-vertical suspension-reason" v-model="suspensionReason" placeholder="Ej: El experto contactó con el usuario sin permiso"></ion-textarea>
-        </ion-text>
-        <div class="flex justify-around">
-          <ion-button @click="suspendUser" button-type="button" class="w-full" mode="ios" color="danger" style="text-transform: none;">Suspender</ion-button>
-          <ion-button @click="closeModal" button-type="button" class="w-full" mode="ios" color="light" style="text-transform: none;">Cancelar</ion-button>
+      <!-- Suspension Modal -->
+      <GenericModal v-model:show="isOpenModal" title="Suspender Experto" confirmText="Suspender" @confirm="suspendUser"
+        @cancel="closeModal">
+        <div class="space-y-4">
+          <div class="p-4 bg-rose-50 rounded-2xl border border-rose-100">
+            <p class="text-rose-900 font-medium">
+              ¿Está seguro de suspender a <span class="font-bold">{{ expertSelectedData.fullName }}</span> ({{
+                expertSelectedData.specialty }})?
+            </p>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-gray-700 ml-1">Motivo de la suspensión</label>
+            <textarea
+              class="w-full h-32 p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 focus:ring-rose-100 focus:border-rose-500 transition-all font-medium text-gray-700 resize-none"
+              v-model="suspensionReason" placeholder="Ej: El experto contactó con el usuario sin permiso"></textarea>
+          </div>
         </div>
-      </ion-content>
-    </ion-modal>
-    </ion-content>
-  </ion-page>
+      </GenericModal>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import ExpertCard from '@/components/Experts/ExpertCard.vue';
+import GenericModal from '@/components/Common/GenericModal.vue';
 import { IExpert } from '@/interfaces/IExpert';
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,   
-  IonText,
-  IonSearchbar,
-  IonContent,
-  IonBackButton,
-  onIonViewDidEnter,
-  IonSpinner,
-  IonButton,
-  IonModal, 
-  IonTextarea,
-  IonRefresher,
-  IonRefresherContent,
-  RefresherCustomEvent,
-} from '@ionic/vue';
 import { collection, getDocs, getFirestore, updateDoc } from 'firebase/firestore';
-import {
-  chevronBack,
-} from 'ionicons/icons';
-import { ref } from 'vue';
 
-import { toastController } from '@ionic/vue';
-
-const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-    const toast = await toastController.create({
-      message: message,
-      duration: 1500,
-      position: position,
-      color: color,
-      swipeGesture:'vertical',
-      translucent: true,
-      buttons: [
-        {
-          text: 'cerrar',
-          role: 'cancel',
-        }
-      ]
-    });
-
-    await toast.present();
-  };
-
-
-
-const allExperts = ref<IExpert[]>([])
-const experts = ref<IExpert[]>([])
+const router = useRouter();
+const toast = useToast();
 const db = getFirestore();
-const expertsCollection = collection(db, 'experts');
+
+const allExperts = ref<IExpert[]>([]);
+const experts = ref<IExpert[]>([]);
 const loading = ref(false);
 const isOpenModal = ref(false);
-const suspensionReason = ref(''); 
-const getAllExperts = () => {
-  experts.value = [];
-  allExperts.value = [];
+const suspensionReason = ref('');
+const searchQuery = ref('');
+const expertSelectedData = ref<Partial<IExpert>>({});
+
+const getAllExperts = async () => {
   loading.value = true;
-  
-  getDocs(expertsCollection).then(querySnapshot => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'experts'));
     if (querySnapshot.empty) {
-      console.log('No hay expertos registrados');
-      presentToast('top', 'No hay expertos registrados', 'warning');
+      toast.warning('No hay expertos registrados');
+      loading.value = false;
       return;
     }
+
+    const fetchedExperts: IExpert[] = [];
     querySnapshot.forEach(doc => {
-  const data = doc.data();
+      fetchedExperts.push({
+        ...doc.data(),
+        docId: doc.id,
+        docRef: doc.ref,
+      } as IExpert);
+    });
 
-  const expert: IExpert = {
-    ...data,
-    docId: doc.id,
-    docRef: doc.ref,
-  };
-
-  experts.value.push(expert);
-  allExperts.value.push(expert);
-  console.log("Expert data:", expert);
-});
-
-  }).catch(err=>{
+    allExperts.value = fetchedExperts;
+    experts.value = fetchedExperts;
+  } catch (err: any) {
     console.error('Error al cargar los expertos:', err);
-    presentToast('top', 'Error al cargar los expertos: ' + err.message, 'danger');
-  }).finally(() => {
+    toast.error('Error al cargar los expertos: ' + err.message);
+  } finally {
     loading.value = false;
-  })
-}
+  }
+};
 
-const searchExpertByName = (query: string) => {
-  const q = query.toLowerCase()
-
+const searchExpertByName = (queryText: string) => {
+  const q = queryText.toLowerCase();
   experts.value = allExperts.value.filter(expert => {
     return [
       expert.fullName,
@@ -169,120 +125,55 @@ const searchExpertByName = (query: string) => {
       expert.email,
       expert.specialty,
       expert.suspensionReason
-    ].some(field => field?.toLowerCase().includes(q))
-  })
-}
+    ].some(field => field?.toLowerCase().includes(q));
+  });
+};
 
-
-onIonViewDidEnter(()=> {
-  getAllExperts()
-})
-
-const searchQuery = ref('');
-
-const expertSelectedData = ref<IExpert>({})
-
-const openModal = (expertData:IExpert) => {
+const openModal = (expertData: IExpert) => {
   expertSelectedData.value = expertData;
   isOpenModal.value = true;
-}
+};
+
 const closeModal = () => {
   suspensionReason.value = '';
   expertSelectedData.value = {};
   isOpenModal.value = false;
-}
+};
 
-const suspendUser = () => {
-  if (!suspensionReason.value) {
-    presentToast('top', 'Error: No se proporcionó un motivo de suspensión', 'danger');
+const suspendUser = async () => {
+  if (!suspensionReason.value.trim()) {
+    toast.error('Error: No se proporcionó un motivo de suspensión');
     return;
   }
-    if (!expertSelectedData.value.docRef) {
-        presentToast('top', 'Error: No se encontró el experto', 'danger');
-        console.log('ERROR: expertSelectedData.value.docRef is undefined');
-        console.log('Current expert:', expertSelectedData.value);
-        return;
-    }
-    
-    updateDoc(expertSelectedData.value.docRef!, {
-        isSuspended: true,
-        suspensionReason: suspensionReason.value
-    })
-    .then(() => {
-        getAllExperts();
-        presentToast('top', 'Experto suspendido exitosamente', 'success');
-        closeModal();
-    })
-    .catch((error) => {
-        console.error('Error suspending expert:', error);
-        presentToast('top', 'Error al suspender al experto', 'danger');
+
+  if (!expertSelectedData.value.docRef) {
+    toast.error('Error: No se encontró el experto');
+    return;
+  }
+
+  try {
+    await updateDoc(expertSelectedData.value.docRef, {
+      isSuspended: true,
+      suspensionReason: suspensionReason.value.trim()
     });
-}
 
+    toast.success('Experto suspendido exitosamente');
+    await getAllExperts();
+    closeModal();
+  } catch (error) {
+    console.error('Error suspending expert:', error);
+    toast.error('Error al suspender al experto');
+  }
+};
 
- const handleRefresh = (event: RefresherCustomEvent) => {
-    setTimeout(() => {
-      getAllExperts();
-      event.target.complete();
-    }, 2000);
-  };
+onMounted(() => {
+  getAllExperts();
+});
 </script>
 
 <style scoped>
-/* Custom styles for dark/light mode and card overlays */
-ion-card {
-  --background: white;
-  --border-radius: 1rem;
-  --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.dark ion-card {
-  --background: rgba(27, 38, 54, 0.5);
-}
-
-ion-badge {
-  --border-radius: 9999px;
-  --padding-top: 0.25rem;
-  --padding-bottom: 0.25rem;
-  --padding-start: 0.5rem;
-  --padding-end: 0.5rem;
-}
-
-ion-chip {
-  --border-radius: 9999px;
-  --padding-top: 0.25rem;
-  --padding-bottom: 0.25rem;
-  --padding-start: 0.75rem;
-  --padding-end: 0.75rem;
-}
-ion-content{
-  --background:#f4f3f3 !important;
-}
-
-ion-toolbar.searchbar {
-  --background: #fbfbfb !important;
-  --color: white !important;
-  --border-radius: 11px !important;
-}
-
-ion-button.create-expert{
-  --background: var(--ion-color-primary);
-  --color:white;
-  --border-radius:11px;
-}
-ion-searchbar.custom{
-  --background: #ffffff ;
-  --color: rgb(0, 64, 183) ;
-  --placeholder-color: #3e6bbf ;
-  --border-radius: 11px !important;
-}
-ion-modal{
-  --border-radius: 19px !important;
-}
-ion-textarea.suspension-reason{
-  --background: #fdfdfd ;
-  --color: rgb(0, 64, 183) ;
-  --placeholder-color: #3e6bbf ;
-  --border-radius: 11px !important;
+.web-search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 </style>

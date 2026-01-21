@@ -1,9 +1,9 @@
 <template>
   <section class="ios-appointment-section animate__animated animate__bounceInLeft animate__faster">
     <!-- Vista de tarjeta -->
-    <article v-if="view === 'card'"
+    <article
       :class="{ 'animate__animated animate__bounceInLeft animate__faster': firstLoad && props.index === 0 || !firstLoad }"
-      class="ios-card rounded-3xl shadow-sm  bg-white p-4 ripple-parent " @click="toggleView">
+      class="ios-card rounded-3xl shadow-sm bg-white p-4 ripple-parent" v-if="view === 'card'" @click="toggleView">
       <div class="flex flex-row items-center justify-between w-full">
         <!-- Icono de especialidad -->
         <div class="ios-icon-container"
@@ -13,97 +13,104 @@
         </div>
 
         <!-- Contenido principal -->
-        <div class="flex relative flex-col text-left flex-1 font-poppins ">
+        <div class="flex relative flex-col text-left flex-1 font-poppins">
           <!--Stars-->
-          <article v-if="authStore().getIsExpert && props.data.isFinished"
-            class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full">
+          <article class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full"
+            v-if="authStore().getIsExpert && props.data.isFinished">
             <p class="text-xs font-poppins text-slate-400">Calificación:</p>
-            <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill"
-              class="text-yellow-500" scale=".6" />
+            <v-icon class="text-yellow-500" v-for="(star, index) in props.data.consultRatingByExpert" :key="index"
+              name="bi-star-fill" scale=".6" />
           </article>
 
           <span class="ios-title font-medium text-blue-900 text-base">
-            Consulta con 
-            <span
-              class="font-medium text-blue-600">{{ props.data.userName }}</span>
+            Consulta con
+            <span class="font-medium text-blue-600">{{ props.data.userName }}</span>
+          </span>
+
+          <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
+            <v-icon class="inline mr-1" name="fa-calendar-alt" scale="0.8" /> Programada para el: {{ formattedDate }}
           </span>
           <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
-            <v-icon name="fa-calendar-alt" class="inline mr-1" scale="0.8" /> Programada para el: {{ formattedDate }}
-          </span>
-          <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
-            <v-icon name="fa-clock" class="inline mr-1" scale="0.8" /> Hora: {{ formattedTime }} hrs
+            <v-icon class="inline mr-1" name="fa-clock" scale="0.8" /> Hora: {{ formattedTime }} hrs
           </span>
           <span class="ios-meta text-gray-500 font-quicksand text-xs font-semibold">
-            <v-icon name="fa-info-circle" class="inline mr-1" scale="0.8" /> Creada el: {{
+            <v-icon class="inline mr-1" name="fa-info-circle" scale="0.8" /> Creada el: {{
               props.data.createdAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
           </span>
-          <span v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished"
-            class="ios-status text-emerald-600 font-quicksand text-sm font-semibold">
-            <v-icon name="fa-check-circle" class="inline mr-1" scale="0.8" /> Finalizada el: {{
+          <span class="ios-status text-emerald-600 font-quicksand text-sm font-semibold"
+            v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished">
+            <v-icon class="inline mr-1" name="fa-check-circle" scale="0.8" /> Finalizada el: {{
               props.data.finishedAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
           </span>
-          <span v-if="props.data.isCanceled" class="ios-status text-red-600 font-quicksand text-sm font-semibold">
-            <v-icon name="fa-times-circle" class="inline mr-1" scale="0.8" /> Cancelada el: {{
+          <span class="ios-status text-red-600 font-quicksand text-sm font-semibold" v-if="props.data.isCanceled">
+            <v-icon class="inline mr-1" name="fa-times-circle" scale="0.8" /> Cancelada el: {{
               props.data.canceledAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
           </span>
         </div>
 
         <!-- Flecha para expandir -->
         <div class="flex items-center ml-2">
-          <v-icon name="fa-chevron-right" class="text-blue-600" scale="0.9" />
+          <v-icon class="text-blue-600" name="fa-chevron-right" scale="0.9" />
         </div>
+
+
       </div>
-      <ion-ripple-effect type="unbounded" class="custom-ripple"></ion-ripple-effect>
     </article>
 
     <!-- Vista detallada -->
-    <div class="animate__animated animate__bounceInRight animate-duration-1000 animate__faster" v-else>
+    <div class="animate__animated animate__bounceInRight animate-duration-1000 animate__faster" v-if="view === 'modal'">
       <!-- Encabezado -->
       <div class="ios-header p-6 w-full max-w-full mb-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
-        <span @click="toggleView" class="flex items-center gap-2 animate-fade-left">
-          <v-icon name="fa-chevron-left" class="text-blue-600" />
+        <div class="flex items-center gap-2 animate-fade-left" @click="toggleView">
+          <v-icon class="text-blue-600" name="fa-chevron-left" />
           <button
             class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver</button>
-        </span>
-
-        <div class="flex flex-col items-center gap-2 mt-4">
-          <div
-            class="ios-header-icon inline-flex justify-center items-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
-            <v-icon name="fa-calendar-check" class="text-2xl text-blue-600" />
-          </div>
-
-          <div v-if="!props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished" class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full">
-            <p>No ha calificado esta consulta</p>
-            <ion-button size="small" mode="ios" @click="presentRatingAlert">Calificar <v-icon name="bi-star-fill" class="inline ml-1 text-white" scale="0.8" /></ion-button>
-          </div>
-          <div v-else-if="props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished" class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full">
-            <p>Usted calificó esta consulta con:</p>
-            <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill" class="text-yellow-500" scale="0.8" />
-          </div>
-
-          <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
-              class="font-medium text-blue-600">{{ props.data.userName }}</span></h3>
-          <div class="flex justify-center">
-            <span v-if="props.data.isCanceled" class="text-red-600 font-medium">(Cancelada)</span>
-            <span v-if="props.data.isFinished" class="text-green-500 font-medium">(Finalizada)</span>
-            <span v-if="!props.data.isCanceled && !props.data.isFinished"
-              class="text-blue-600 font-medium">(Programada)</span>
-          </div>
-          <p class="font-medium text-gray-600 font-poppins text-center">
-            Especialidad: <span class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
-          </p>
-          <p class="font-medium text-gray-600 font-poppins text-center" v-if="authStore().getIsClient">
-            <v-icon v-for="(star, index) in props.data.userRating" :key="index" name="bi-star-fill"
-              class="text-yellow-500" scale=".6" />
-          </p>
-
-          <p class="font-medium text-gray-600 font-poppins text-center" v-if="authStore().getIsExpert">
-            <v-icon v-for="(star, index) in props.data.expertRating" :key="index" name="bi-star-fill"
-              class="text-yellow-500" scale=".6" />
-          </p>
-
         </div>
+
+        <div
+          class="flex flex-col items-center gap-2 mt-4 ios-header-icon inline-flex justify-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
+
+          <v-icon class="text-2xl text-blue-600" name="fa-calendar-check" />
+        </div>
+
+        <div class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full"
+          v-if="!props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished">
+          <p>No ha calificado esta consulta</p>
+          <button
+            class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50"
+            size="small" @click="presentRatingAlert">Calificar <v-icon class="inline ml-1 text-white"
+              name="bi-star-fill" scale="0.8" /></button>
+        </div>
+        <div class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full"
+          v-else-if="props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished">
+          <p>Usted calificó esta consulta con:</p>
+          <v-icon class="text-yellow-500" v-for="(star, index) in props.data.consultRatingByExpert" :key="index"
+            name="bi-star-fill" scale="0.8" />
+        </div>
+
+        <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
+            class="font-medium text-blue-600">{{ props.data.userName }}</span></h3>
+        <div class="flex justify-center">
+          <span class="text-red-600 font-medium" v-if="props.data.isCanceled">(Cancelada)</span>
+          <span class="text-green-500 font-medium" v-if="props.data.isFinished">(Finalizada)</span>
+          <span class="text-blue-600 font-medium"
+            v-if="!props.data.isCanceled && !props.data.isFinished">(Programada)</span>
+        </div>
+        <p class="font-medium text-gray-600 font-poppins text-center">
+          Especialidad: <span class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
+        </p>
+        <p class="font-medium text-gray-600 font-poppins text-center" v-if="authStore().getIsClient">
+          <v-icon class="text-yellow-500" v-for="(star, index) in props.data.userRating" :key="index"
+            name="bi-star-fill" scale=".6" />
+        </p>
+
+        <p class="font-medium text-gray-600 font-poppins text-center" v-if="authStore().getIsExpert">
+          <v-icon class="text-yellow-500" v-for="(star, index) in props.data.expertRating" :key="index"
+            name="bi-star-fill" scale=".6" />
+        </p>
+
       </div>
+
 
       <!-- Datos de la cita -->
       <span class="ios-section-title p-6 w-full max-w-full mb-2 text-lg font-semibold text-gray-700">Detalles de la
@@ -113,7 +120,7 @@
         <!-- Fecha -->
         <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon name="bi-calendar-event-fill" class="text-xl text-blue-600" />
+            <v-icon class="text-xl text-blue-600" name="bi-calendar-event-fill" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Cita programada para el día:</p>
@@ -124,7 +131,7 @@
         <!-- Hora -->
         <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon name="fa-clock" class="text-xl text-blue-600" />
+            <v-icon class="text-xl text-blue-600" name="fa-clock" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Hora:</p>
@@ -135,7 +142,7 @@
         <!-- Usuario -->
         <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon name="fa-user" class="text-xl text-blue-600" />
+            <v-icon class="text-xl text-blue-600" name="fa-user" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Agendado por:</p>
@@ -146,13 +153,15 @@
         <!-- Enlace -->
         <article class="ios-detail-item flex items-center gap-3">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon name="co-link" class="text-xl text-blue-600" />
+            <v-icon class="text-xl text-blue-600" name="co-link" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Enlace:</p>
-            <p v-if="props.data.appointmentLink == 'En proceso...'" class="font-medium text-yellow-600">En proceso...
+            <p class="font-medium text-yellow-600" v-if="props.data.appointmentLink == 'En proceso...'">En proceso...
             </p>
-            <ion-button mode="ios" color="primary" v-else-if="props.data.acceptedByExpert" @click="markLinkAsOpened" class="font-medium text-blue-600 break-all cursor-pointer">Comenzar Cita</ion-button>
+            <button
+              class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 font-medium text-blue-600 break-all cursor-pointer"
+              mode="ios" v-else-if="props.data.acceptedByExpert" @click="markLinkAsOpened">Comenzar Cita</button>
           </div>
         </article>
       </div>
@@ -165,7 +174,7 @@
         <!-- Cédula -->
         <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon name="fa-id-card" class="text-xl text-blue-600" />
+            <v-icon class="text-xl text-blue-600" name="fa-id-card" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Cédula profesional:</p>
@@ -176,39 +185,45 @@
         <!-- Estado -->
         <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="hi-solid-information-circle" class="text-xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
+            :class="props.data.isFinished ? 'bg-green-50' : (props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50')">
+            <v-icon class="text-xl"
+              :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')"
+              name="hi-solid-information-circle" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Estado:</p>
             <p class="font-normal"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-blue-800'">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : '' }}
+              :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-blue-800')">
+              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Pendiente' }}
             </p>
-            <p v-if="!props.data.isFinished && !props.data.isCanceled && !props.data.acceptedByExpert" class="text-xs text-blue-600">ⓘ El enlace se generará cuando usted acepte la cita.</p>
-            <p v-else-if="!props.data.isFinished && !props.data.isCanceled && props.data.acceptedByExpert" class="text-xs text-blue-600">Espere el día de la cita para acceder al enlace.</p>
+            <p class="text-xs text-blue-600"
+              v-if="!props.data.isFinished && !props.data.isCanceled && !props.data.acceptedByExpert">ⓘ El enlace se
+              generará cuando usted acepte la cita.</p>
+            <p class="text-xs text-blue-600"
+              v-else-if="!props.data.isFinished && !props.data.isCanceled && props.data.acceptedByExpert">Espere el día
+              de la cita para acceder al enlace.</p>
           </div>
         </article>
 
         <!-- Fecha de finalización -->
-        <article v-if="props.data.isFinished"
-          class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
+          v-if="props.data.isFinished">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
-            <v-icon name="fa-calendar-check" class="text-xl text-green-600" />
+            <v-icon class="text-xl text-green-600" name="fa-calendar-check" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Finalizada el:</p>
             <p class="font-medium text-green-600">{{ props.data.finishedAt?.toDate().toLocaleString('es-MX', {
-              dateStyle: 'long', timeStyle: 'short' }) }}</p>
+              dateStyle: 'long', timeStyle: 'short'
+            }) }}</p>
           </div>
         </article>
 
         <!-- Finalizada por -->
-        <article v-if="props.data.isFinished"
-          class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
+          v-if="props.data.isFinished">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
-            <v-icon name="fa-user-check" class="text-xl text-green-600" />
+            <v-icon class="text-xl text-green-600" name="fa-user-check" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Finalizada por:</p>
@@ -217,10 +232,10 @@
         </article>
 
         <!-- Motivo de cancelación -->
-        <article v-if="props.data.isCanceled"
-          class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
+          v-if="props.data.isCanceled">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
-            <v-icon name="md-freecancellation-twotone" class="text-xl text-red-600" />
+            <v-icon class="text-xl text-red-600" name="md-freecancellation-twotone" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Motivo:</p>
@@ -230,10 +245,10 @@
         </article>
 
         <!-- Cancelado por -->
-        <article v-if="props.data.isCanceled"
-          class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
+        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
+          v-if="props.data.isCanceled">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
-            <v-icon name="fa-user-times" class="text-xl text-red-600" />
+            <v-icon class="text-xl text-red-600" name="fa-user-times" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Cancelado por:</p>
@@ -242,15 +257,16 @@
         </article>
 
         <!-- Fecha de cancelación -->
-        <article v-if="props.data.isCanceled" class="ios-detail-item flex items-center gap-3">
+        <article class="ios-detail-item flex items-center gap-3" v-if="props.data.isCanceled">
           <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
-            <v-icon name="bi-calendar-x-fill" class="text-xl text-red-600" />
+            <v-icon class="text-xl text-red-600" name="bi-calendar-x-fill" />
           </div>
           <div class="flex justify-between items-center w-full">
             <p class="font-medium text-gray-700">Cancelada el:</p>
             <p class="font-medium text-red-600">{{ props.data.canceledAt?.toDate().toLocaleString('es-MX', {
               dateStyle:
-                'long', timeStyle: 'short' }) }}</p>
+                'long', timeStyle: 'short'
+            }) }}</p>
           </div>
         </article>
       </div>
@@ -258,55 +274,101 @@
       <!-- Fecha de creación -->
       <div class="w-full flex justify-center mb-8">
         <span
-          class="text-center font-poppins p-1 text-xs text-gray-500 bg-white rounded-b-2xl  border-b-2 border-x-2 border-slate-100">
-          <v-icon name="fa-info-circle" class="inline mr-1" scale="0.8" /> Cita creada el {{
+          class="text-center font-poppins p-1 text-xs text-gray-500 bg-white rounded-b-2xl border-b-2 border-x-2 border-slate-100">
+          <v-icon class="inline mr-1" name="fa-info-circle" scale="0.8" /> Cita creada el {{
             props.data.createdAt.toDate().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'medium' }) }}
         </span>
       </div>
 
       <!-- Botones de acción -->
-      <div v-if="!props.data.isFinished && !props.data.isCanceled"
-        class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4">
-        <ion-button v-if="!props.data.isFinished" mode="ios" color="danger" class="ios-button" style="text-transform: none;"
-          @click="presentAlert">
+      <div class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4"
+        v-if="!props.data.isFinished && !props.data.isCanceled">
+        <button
+          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-rose-500 text-white hover:bg-rose-600 ios-button"
+          style="text-transform: none" v-if="!props.data.isFinished" @click="presentAlert">
           <div class="!flex !items-center gap-2 justify-between">
             <span>Cancelar cita</span>
-            <v-icon name="gi-cancel" class="mr-1" scale="1" />
+            <v-icon class="mr-1" name="gi-cancel" scale="1" />
           </div>
-          </ion-button>
-        <ion-button v-if="props.data.acceptedByExpert && !props.data.isFinished" mode="ios" color="primary" class="ios-button flex items-center gap-2" style="text-transform: none;"
+        </button>
+        <button
+          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 ios-button flex gap-2"
+          style="text-transform: none" v-if="props.data.acceptedByExpert && !props.data.isFinished"
           @click="finaliceAppointment">
           <div class="!flex !items-center gap-2 justify-between">
             <span>Marcar como finalizada</span>
-            <v-icon name="bi-calendar-check" class="inline mr-1" scale="1" />
+            <v-icon class="inline mr-1" name="bi-calendar-check" scale="1" />
           </div>
-          </ion-button>
-           <ion-button v-if="!props.data.acceptedByExpert" mode="ios" color="primary" class="ios-button flex items-center gap-2" style="text-transform: none;"
-          @click="confirmConsult">
+        </button>
+        <button
+          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 ios-button flex gap-2"
+          style="text-transform: none" v-if="!props.data.acceptedByExpert" @click="confirmConsult">
           <div class="!flex !items-center gap-2 justify-between">
             <span>Confirmar cita</span>
-            <v-icon name="bi-calendar-check" class="inline mr-1" scale="1" />
+            <v-icon class="inline mr-1" name="bi-calendar-check" scale="1" />
           </div>
-          </ion-button>
+        </button>
       </div>
-      <ion-loading :is-open="loadingFirebase" :duration="3000" :message="loadingFirebaseMessage"> </ion-loading>
+    </div>
 
+    <!-- Modals -->
+    <GenericModal v-model:show="showCancelModal" title="Cancelar Cita" confirmText="Confirmar Cancelación"
+      @confirm="handleCancelConfirm">
+      <div class="space-y-4">
+        <p class="text-sm text-gray-500">Por favor, indique el motivo de la cancelación:</p>
+        <textarea v-model="cancelationReason"
+          class="w-full p-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-100 outline-none" rows="3"
+          placeholder="Motivo de la cancelación..."></textarea>
+      </div>
+    </GenericModal>
+
+    <GenericModal v-model:show="showRatingModal" title="Calificar servicio" confirmText="Enviar Calificación"
+      @confirm="handleRatingConfirm">
+      <div class="space-y-4">
+        <p class="text-sm text-gray-500">Seleccione su calificación para el usuario:</p>
+        <div class="flex flex-col gap-2">
+          <button v-for="star in [5, 4, 3, 2, 1]" :key="star" @click="selectedStars = star"
+            class="flex items-center justify-between p-3 rounded-xl border transition-all"
+            :class="selectedStars === star ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-gray-100 text-gray-600 hover:bg-gray-50'">
+            <span class="font-medium">{{ star }} Estrellas</span>
+            <div class="flex gap-1">
+              <v-icon v-for="i in star" :key="i" name="bi-star-fill" scale="0.8" />
+            </div>
+          </button>
+        </div>
+      </div>
+    </GenericModal>
+
+    <!-- Custom Loader -->
+    <div v-if="loadingFirebase"
+      class="fixed inset-0 z-[110] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
+      <div class="bg-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        <p class="font-bold text-gray-900 font-manrope">{{ loadingFirebaseMessage }}</p>
+      </div>
     </div>
   </section>
-
 </template>
 
 <script lang="ts" setup>
-import { IExpert } from '@/interfaces/IExpert';
+// import { useRouter } from "vue-router";
+// import { IExpert } from '@/interfaces/IExpert';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import { authStore } from '@/store/auth';
-import { alertController, IonRippleEffect, useIonRouter } from '@ionic/vue';
-import { IonButton, IonLoading } from '@ionic/vue';
-import { collection, count, doc, DocumentReference, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
-import { computed, onMounted, ref, Slot } from 'vue';
+import GenericModal from '@/components/Common/GenericModal.vue';
+
+
+import { doc, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { computed, onMounted, ref } from 'vue';
 import emailjs from '@emailjs/browser';
-import { useExpertUiStore } from '@/stores/expertUi';
+// import { useExpertUiStore } from '@/stores/expertUi';
 import { Browser } from '@capacitor/browser';
+
+// const router = useRouter();
+const showCancelModal = ref(false);
+const showRatingModal = ref(false);
+const selectedStars = ref(5);
+const cancelationReason = ref('');
 const experts = ref([
   {
     specialty: "Importación y Exportación",
@@ -522,7 +584,7 @@ const sendEmail = async (cancelTime: Timestamp) => {
   try {
     loadingFirebase.value = true;
     loadingFirebaseMessage.value = 'Enviando correo...';
-    const dayName = (props.data as any).DayName || (props.data as any).dayName || formattedDay.value || 'Día desconocido';
+    // const dayName = (props.data as any).DayName || (props.data as any).dayName || formattedDay.value || 'Día desconocido';
 
     emailjs.send('service_q9e8lj2', 'template_lv5dfds', {
       // Header
@@ -586,8 +648,7 @@ const toggleView = () => {
 /***Firebase Values****/
 
 const db = getFirestore();
-const userCollection = collection(db, `users/${props.data.userUid}/schedule`);
-const expertCollection = collection(db, `experts/${props.data.expertUid}/schedule`);
+// unused collections
 
 /***Alert Values****/
 
@@ -710,20 +771,11 @@ const cancelAppointment = async () => {
 };
 
 //Updating user file to add this as finished consultation so user will not be able to book another consultation in the same category (for free) this handles the free consultation logic
-const updateCategoryConsultations = async() => {
-  const docRef = doc(db, `users/${authStore().userUid}`);
-  try {
-    await updateDoc(docRef, {
-    [`categoryConsultations.${props.data.expertSpecialty}`]:{
-      takenAt:Timestamp.now(),
-      hasFreeConsult:false,
-    }
-  })
-  } catch (error) {
-    console.log(error);
-  }
-  
+/*
+const updateCategoryConsultations = async () => {
+...
 }
+*/
 
 
 const finaliceAppointment = async () => {
@@ -775,16 +827,16 @@ const finaliceAppointment = async () => {
     batch.update(doc(db, `schedules/${props.data.docId}`), {
       isFinished: true,
       finishedAt: Timestamp.now(),
-      finishedByExpert:true,
+      finishedByExpert: true,
       finishedByUid: authStore().getUserUid || 'UID no disponible',
       finishedByName: authStore().getUserName || 'Nombre no disponible'
     })
 
     const userDocRef = doc(db, `users/${props.data.userUid}`);
     batch.update(userDocRef, {
-      [`categoryConsultations.${props.data.expertSpecialty}`]:{
-        takenAt:Timestamp.now(),
-        hasFreeConsult:false,
+      [`categoryConsultations.${props.data.expertSpecialty}`]: {
+        takenAt: Timestamp.now(),
+        hasFreeConsult: false,
       }
     });
 
@@ -794,7 +846,7 @@ const finaliceAppointment = async () => {
 
     // Call the rating alert
     try {
-      await presentRatingAlert();
+      presentRatingAlert();
     } catch (e) {
       console.error("Error presenting rating alert", e);
     }
@@ -807,20 +859,20 @@ const finaliceAppointment = async () => {
 
 
 const confirmConsult = async () => {
- try {
-  loadingFirebase.value = true;
-  loadingFirebaseMessage.value = 'Confirmando cita...';
-  const docRef = doc(db, `${props.data.docRef.path}`)
-  await updateDoc(docRef, {
-    acceptedByExpert:true,
-    acceptedAt:Timestamp.now(),
-    appointmentLink: `https://meet.greenhost.net/${props.data.expertName}${props.data.userName}${props.data.createdAt.toDate().getTime()}`//This could be redirected to my page and then I can redirect to the link //expert should enter first and then client should be able to join
-  })
+  try {
+    loadingFirebase.value = true;
+    loadingFirebaseMessage.value = 'Confirmando cita...';
+    const docRef = doc(db, `${props.data.docRef.path}`)
+    await updateDoc(docRef, {
+      acceptedByExpert: true,
+      acceptedAt: Timestamp.now(),
+      appointmentLink: `https://meet.greenhost.net/${props.data.expertName}${props.data.userName}${props.data.createdAt.toDate().getTime()}`//This could be redirected to my page and then I can redirect to the link //expert should enter first and then client should be able to join
+    })
     loadingFirebase.value = false;
- } catch (error) {
-  loadingFirebase.value = false;
-  console.log(`Error in confirming appointment function: ${error}`);
- }
+  } catch (error) {
+    loadingFirebase.value = false;
+    console.log(`Error in confirming appointment function: ${error}`);
+  }
 }
 
 const markLinkAsOpened = async () => {
@@ -835,95 +887,50 @@ const markLinkAsOpened = async () => {
     return;
   }
 
- try {
-  loadingFirebase.value = true;
-  loadingFirebaseMessage.value = 'Preparando para entrar al link...';
-  const docRef = doc(db, `${props.data.docRef.path}`)
-  await updateDoc(docRef, {
-    isOpenedLinkByExpert:true,
-    openedLinkAt:Timestamp.now(),
-    consultInCourse:true
-  })
+  try {
+    loadingFirebase.value = true;
+    loadingFirebaseMessage.value = 'Preparando para entrar al link...';
+    const docRef = doc(db, `${props.data.docRef.path}`)
+    await updateDoc(docRef, {
+      isOpenedLinkByExpert: true,
+      openedLinkAt: Timestamp.now(),
+      consultInCourse: true
+    })
     loadingFirebase.value = false;
     Browser.open({ url: props.data.appointmentLink });
 
- } catch (error) {
-  loadingFirebase.value = false;
-  console.log(`Error in confirming appointment function: ${error}`);
- }
+  } catch (error) {
+    loadingFirebase.value = false;
+    console.log(`Error in confirming appointment function: ${error}`);
+  }
 }
 
-const presentRatingAlert = async () => {
-  const isExpert = authStore().getUserUid === props.data.expertUid;
-  const targetName = isExpert ? props.data.userName : props.data.expertName;
-  const raterRole = isExpert ? 'Experto' : 'Usuario';
-
-  const alert = await alertController.create({
-    header: 'Calificar servicio',
-    subHeader: `Califique su experiencia con ${targetName}`,
-    message: 'Seleccione una calificación:',
-    inputs: [
-      { label: '⭐️⭐️⭐️⭐️⭐️ Excelente', type: 'radio', value: 5, checked: true },
-      { label: '⭐️⭐️⭐️⭐️ Muy bueno', type: 'radio', value: 4 },
-      { label: '⭐️⭐️⭐️ Bueno', type: 'radio', value: 3 },
-      { label: '⭐️⭐️ Regular', type: 'radio', value: 2 },
-      { label: '⭐️ Mal', type: 'radio', value: 1 },
-    ],
-    buttons: [
-      { text: 'Omitir', role: 'cancel' },
-      {
-        text: 'Enviar',
-        handler: async (stars) => {
-          console.log(`Estrellas dejadas por ${raterRole}:`, stars);
-          try {
-            await updateRoleStars(stars);
-            await updateConsultRating(stars);
-          } catch (error) {
-            console.log(`Error while trying to update ${raterRole} document with rating values: ${error}`);
-
-          }
-        }
-      }
-    ],
-  });
-
-  await alert.present();
+const presentAlert = () => {
+  showCancelModal.value = true;
 };
 
-const cancelationReason = ref('');
-
-const presentAlert = async () => {
-  const alert = await alertController.create({
-    header: 'Cancelar Cita',
-    message: 'Escriba el motivo de la cancelación',
-    inputs: [
-      {
-        name: 'reason',
-        type: 'text',
-        placeholder: 'Motivo',
-      },
-    ],
-    buttons: [
-      {
-        text: 'Cancelar',
-        role: 'cancel',
-      },
-      {
-        text: 'Ok',
-        handler: async (data) => {
-          if (!data.reason?.trim()) return false; // no cerrar
-          cancelationReason.value = data.reason.trim();
-          await cancelAppointment();
-        },
-      },
-    ],
-  });
-
-  await alert.present();
+const handleCancelConfirm = async () => {
+  if (!cancelationReason.value.trim()) return;
+  showCancelModal.value = false;
+  await cancelAppointment();
 };
 
-const updateRoleStars = async (starsGiven: number ) => {
-  
+const presentRatingAlert = () => {
+  showRatingModal.value = true;
+};
+
+const handleRatingConfirm = async () => {
+  try {
+    await updateRoleStars(selectedStars.value);
+    await updateConsultRating(selectedStars.value);
+  } catch (error) {
+    console.error("Error updating rating:", error);
+  }
+  showRatingModal.value = false;
+};
+
+const updateRoleStars = async (starsGiven: number) => {
+
   if (starsGiven < 1 || starsGiven > 5) return false;
 
   if (!authStore().getUserUid || !authStore().getUserName) {
@@ -931,22 +938,22 @@ const updateRoleStars = async (starsGiven: number ) => {
     return false;
   }
 
-console.log(`Is user Expert: ${authStore().getIsExpert}`);
-console.log(`User UID: ${authStore().getUserUid}`);
-console.log(`User Name: ${authStore().getUserName}`);
+  console.log(`Is user Expert: ${authStore().getIsExpert}`);
+  console.log(`User UID: ${authStore().getUserUid}`);
+  console.log(`User Name: ${authStore().getUserName}`);
 
 
   //If user is expert, update user rating, else update expert rating 
   const rolePath = authStore().getIsExpert ? 'users' : 'experts';
-  const roleType = authStore().getIsExpert ? 'User' : 'Expert';
+  // const roleType = authStore().getIsExpert ? 'User' : 'Expert';
   const roleUid = rolePath === 'users' ? props.data.userUid : props.data.expertUid;
-  let dynamicDocRef:DocumentReference;
+  let dynamicDocRef: DocumentReference;
   try {
-    dynamicDocRef = doc(db,`${rolePath}/${roleUid}`);
+    dynamicDocRef = doc(db, `${rolePath}/${roleUid}`);
     await updateDoc(dynamicDocRef, {
-    [`rating.stars.${starsGiven}`]: increment(1),
-    'rating.total': increment(starsGiven),
-    'rating.count': increment(1),
+      [`rating.stars.${starsGiven}`]: increment(1),
+      'rating.total': increment(starsGiven),
+      'rating.count': increment(1),
     })
 
     console.log(`${rolePath} stars updated successfully to user with uid: ${roleUid}`);
@@ -956,8 +963,8 @@ console.log(`User Name: ${authStore().getUserName}`);
   }
 }
 
-const updateConsultRating = async (starsGiven: number ) => {
-  
+const updateConsultRating = async (starsGiven: number) => {
+
   if (starsGiven < 1 || starsGiven > 5) return false;
 
   if (!authStore().getUserUid || !authStore().getUserName) {
@@ -970,12 +977,12 @@ const updateConsultRating = async (starsGiven: number ) => {
 
   //If user is expert, update user rating, else update expert rating 
   const roleType = authStore().getIsExpert ? 'Expert' : 'User';
-  let dynamicDocRef:DocumentReference;
+  let dynamicDocRef: DocumentReference;
   try {
-    dynamicDocRef = doc(db,`${props.data.docRef.path}`);
+    dynamicDocRef = doc(db, `${props.data.docRef.path}`);
     await updateDoc(dynamicDocRef, {
-    [`ratedBy${roleType}`]: true,
-    [`consultRatingBy${roleType}`]: starsGiven,
+      [`ratedBy${roleType}`]: true,
+      [`consultRatingBy${roleType}`]: starsGiven,
     })
 
     console.log(`${roleType} consult rating updated successfully to user with uid: ${authStore().getUserUid}`);
@@ -985,19 +992,12 @@ const updateConsultRating = async (starsGiven: number ) => {
   }
 }
 
-const ionRouter = useIonRouter();
+// router instance already defined
+/*
 const viewSchedule = async () => {
-  try {
-    if (!props.data.expertUid) {
-      console.error('No expert UID provided');
-      return;
-    }
-    useExpertUiStore().setExpertUid(props.data.expertUid);
-    ionRouter.navigate('/expert-info-fixed', 'back', 'push');
-  } catch (error) {
-    console.error('Navigation error:', error);
-  }
+...
 };
+*/
 
 </script>
 

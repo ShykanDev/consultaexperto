@@ -1,185 +1,181 @@
 <template>
-    <ion-page>
+    <div class="web-page min-h-screen bg-gray-50">
+        <header
+            class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
+            <nav class="web-toolbar h-16 flex items-center px-4">
+                <h1 class="web-title text-lg font-bold text-gray-900">Política de Privacidad</h1>
+            </nav>
+        </header>
 
-        <ion-header>
-            <ion-toolbar>
-                <ion-title>Política de Privacidad</ion-title>
-            </ion-toolbar>
-        </ion-header>
 
+        <main class="web-content overflow-y-auto bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden pb-10">
+                <h1 class="px-6 py-8 sm:p-10 text-3xl font-bold text-gray-900 mb-6 text-center">
+                    Política de Privacidad de consultaexperto.com
+                </h1>
 
-        <ion-content class="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-white shadow-xl rounded-lg overflow-hidden">
-                    <div class="px-6 py-8 sm:p-10">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-6 text-center">
-                            Política de Privacidad de consultaexperto.com
-                        </h1>
+                <div class="px-6 sm:px-10 space-y-8">
+                    <!-- Introducción -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">1. Introducción</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            En <strong>consultaexperto.com</strong>, nos comprometemos a proteger la privacidad y
+                            seguridad de los datos personales de nuestros usuarios y expertos. Esta política explica
+                            qué información recopilamos, cómo la utilizamos y las medidas que implementamos para
+                            garantizar su protección.
+                        </p>
+                    </section>
 
-                        <!-- Introducción -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">1. Introducción</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                En <strong>consultaexperto.com</strong>, nos comprometemos a proteger la privacidad y
-                                seguridad de los datos personales de nuestros usuarios y expertos. Esta política explica
-                                qué información recopilamos, cómo la utilizamos y las medidas que implementamos para
-                                garantizar su protección.
-                            </p>
+                    <!-- Datos que recopilamos -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">2. Datos que recopilamos</h2>
+                        <div class="mb-4">
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">De los usuarios (clientes):</h3>
+                            <ul class="list-disc pl-6 text-gray-600 space-y-1">
+                                <li>Nombre completo</li>
+                                <li>Correo electrónico</li>
+                                <li>Número de teléfono</li>
+                                <li>Fecha de nacimiento</li>
+                                <li>Información necesaria para la gestión de citas</li>
+                            </ul>
                         </div>
-
-                        <!-- Datos que recopilamos -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">2. Datos que recopilamos</h2>
-                            <div class="mb-4">
-                                <h3 class="text-lg font-medium text-gray-700 mb-2">De los usuarios (clientes):</h3>
-                                <ul class="list-disc pl-6 text-gray-600">
-                                    <li>Nombre completo</li>
-                                    <li>Correo electrónico</li>
-                                    <li>Número de teléfono</li>
-                                    <li>Fecha de nacimiento</li>
-                                    <li>Información necesaria para la gestión de citas</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-700 mb-2">De los expertos:</h3>
-                                <ul class="list-disc pl-6 text-gray-600">
-                                    <li>Nombre completo</li>
-                                    <li>Correo electrónico</li>
-                                    <li>Número de teléfono</li>
-                                    <li>Fecha de nacimiento</li>
-                                    <li>Cédula profesional</li>
-                                    <li>País de residencia</li>
-                                    <li>Edad</li>
-                                    <li>Documentos legales que acrediten su identidad</li>
-                                    <li>Títulos, certificados o documentos que avalen su experiencia profesional</li>
-                                </ul>
-                            </div>
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-700 mb-2">De los expertos:</h3>
+                            <ul class="list-disc pl-6 text-gray-600 space-y-1">
+                                <li>Nombre completo</li>
+                                <li>Correo electrónico</li>
+                                <li>Número de teléfono</li>
+                                <li>Fecha de nacimiento</li>
+                                <li>Cédula profesional</li>
+                                <li>País de residencia</li>
+                                <li>Edad</li>
+                                <li>Documentos legales que acrediten su identidad</li>
+                                <li>Títulos, certificados o documentos que avalen su experiencia profesional</li>
+                            </ul>
                         </div>
+                    </section>
 
-                        <!-- Uso de la información -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">3. Uso de la información</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Los datos recopilados se utilizan para crear y gestionar cuentas, programar citas,
-                                enviar notificaciones, mejorar el servicio, validar la autenticidad de los expertos y
-                                cumplir con obligaciones legales.
-                            </p>
-                        </div>
+                    <!-- Uso de la información -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">3. Uso de la información</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Los datos recopilados se utilizan para crear y gestionar cuentas, programar citas,
+                            enviar notificaciones, mejorar el servicio, validar la autenticidad de los expertos y
+                            cumplir con obligaciones legales.
+                        </p>
+                    </section>
 
-                        <!-- Verificación de expertos -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">4. Verificación de expertos</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Todos los expertos están sujetos a un proceso de verificación exhaustivo y manual para
-                                garantizar la autenticidad de sus credenciales. En casos necesarios, se utiliza
-                                verificación mediante servicios de terceros especializados.
-                            </p>
-                            <p class="text-gray-600 leading-relaxed mt-2">
-                                <strong>Si un experto no cumple con los requisitos o proporciona información falsa, su
-                                    cuenta será suspendida y, en caso de implicaciones legales, se procederá conforme a
-                                    la ley.</strong>
-                            </p>
-                        </div>
+                    <!-- Verificación de expertos -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">4. Verificación de expertos</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Todos los expertos están sujetos a un proceso de verificación exhaustivo y manual para
+                            garantizar la autenticidad de sus credenciales. En casos necesarios, se utiliza
+                            verificación mediante servicios de terceros especializados.
+                        </p>
+                        <p class="text-gray-600 leading-relaxed mt-2">
+                            <strong>Si un experto no cumple con los requisitos o proporciona información falsa, su
+                                cuenta será suspendida y, en caso de implicaciones legales, se procederá conforme a
+                                la ley.</strong>
+                        </p>
+                    </section>
 
-                        <!-- Acceso a datos -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">5. Acceso a datos entre usuarios y
-                                expertos</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Los expertos solo tendrán acceso al nombre del usuario y a los detalles de la cita
-                                programada. No se compartirá información de contacto personal entre usuarios y expertos.
-                                Las primeras consultas de 15 minutos son gratuitas y supervisadas por un representante
-                                de consultaexperto.com.
-                            </p>
-                        </div>
+                    <!-- Acceso a datos -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">5. Acceso a datos entre usuarios y expertos
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Los expertos solo tendrán acceso al nombre del usuario y a los detalles de la cita
+                            programada. No se compartirá información de contacto personal entre usuarios y expertos.
+                            Las primeras consultas de 15 minutos son gratuitas y supervisadas por un representante
+                            de consultaexperto.com.
+                        </p>
+                    </section>
 
-                        <!-- Protección de datos -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">6. Protección de datos</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Implementamos medidas de seguridad avanzadas, incluyendo tecnologías de cifrado y
-                                protocolos de acceso restringido, para proteger la información personal.
-                            </p>
-                        </div>
+                    <!-- Protección de datos -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">6. Protección de datos</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Implementamos medidas de seguridad avanzadas, incluyendo tecnologías de cifrado y
+                            protocolos de acceso restringido, para proteger la información personal.
+                        </p>
+                    </section>
 
-                        <!-- Compartir información -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">7. Compartir información con terceros
-                            </h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Los datos personales no se comparten con terceros, excepto cuando sea necesario para
-                                verificar la autenticidad de los expertos o cuando sea requerido por ley.
-                            </p>
-                        </div>
+                    <!-- Compartir información -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">7. Compartir información con terceros</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Los datos personales no se comparten con terceros, excepto cuando sea necesario para
+                            verificar la autenticidad de los expertos o cuando sea requerido por ley.
+                        </p>
+                    </section>
 
-                        <!-- Retención de datos -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">8. Retención de datos</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Los datos se conservan mientras la cuenta esté activa o según lo requiera la ley
-                                aplicable.
-                            </p>
-                        </div>
+                    <!-- Retención de datos -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">8. Retención de datos</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Los datos se conservan mientras la cuenta esté activa o según lo requiera la ley
+                            aplicable.
+                        </p>
+                    </section>
 
-                        <!-- Derechos -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">9. Derechos de los usuarios y expertos
-                            </h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Los usuarios y expertos pueden acceder, modificar o eliminar su información en cualquier
-                                momento, enviando una solicitud a <a href="mailto:ayuda@consultaexperto.com"
-                                    class="text-blue-600 hover:underline">ayuda@consultaexperto.com</a>. El
-                                consentimiento se otorga al crear una cuenta y aceptar los Términos de Servicio y la
-                                Política de Privacidad.
-                            </p>
-                        </div>
+                    <!-- Derechos -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">9. Derechos de los usuarios y expertos</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Los usuarios y expertos pueden acceder, modificar o eliminar su información en cualquier
+                            momento, enviando una solicitud a <a class="text-blue-600 hover:underline"
+                                href="mailto:ayuda@consultaexperto.com">ayuda@consultaexperto.com</a>. El
+                            consentimiento se otorga al crear una cuenta y aceptar los Términos de Servicio y la
+                            Política de Privacidad.
+                        </p>
+                    </section>
 
-                        <!-- Responsabilidad -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">10. Responsabilidad sobre el contenido
-                                compartido</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                <strong>consultaexperto.com no se hace responsable</strong> por el contenido, asesorías
-                                o información intercambiada entre usuarios y expertos durante las consultas.
-                            </p>
-                        </div>
+                    <!-- Responsabilidad -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">10. Responsabilidad sobre el contenido
+                            compartido</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            <strong>consultaexperto.com no se hace responsable</strong> por el contenido, asesorías
+                            o información intercambiada entre usuarios y expertos durante las consultas.
+                        </p>
+                    </section>
 
-                        <!-- Cambios -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">11. Cambios a la política de privacidad
-                            </h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Cualquier actualización a esta política se reflejará en esta página y en los Términos y
-                                Condiciones. Los usuarios y expertos serán notificados de cambios significativos.
-                            </p>
-                        </div>
+                    <!-- Cambios -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">11. Cambios a la política de privacidad
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Cualquier actualización a esta política se reflejará en esta página y en los Términos y
+                            Condiciones. Los usuarios y expertos serán notificados de cambios significativos.
+                        </p>
+                    </section>
 
-                        <!-- Contacto -->
-                        <div class="mb-8">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-3">12. Contacto</h2>
-                            <p class="text-gray-600 leading-relaxed">
-                                Para preguntas o solicitudes relacionadas con la privacidad, contacte a: <a
-                                    href="mailto:ayuda@consultaexperto.com"
-                                    class="text-blue-600 hover:underline">ayuda@consultaexperto.com</a>.
-                            </p>
-                        </div>
+                    <!-- Contacto -->
+                    <section>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">12. Contacto</h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Para preguntas o solicitudes relacionadas con la privacidad, contacte a: <a
+                                class="text-blue-600 hover:underline"
+                                href="mailto:ayuda@consultaexperto.com">ayuda@consultaexperto.com</a>.
+                        </p>
+                    </section>
 
-                        <!-- Fecha de última actualización -->
-                        <div class="text-center mt-10">
-                            <p class="text-sm text-gray-500">
-                                Última actualización: <strong>Diciembre 2025</strong>
-                            </p>
-                        </div>
+                    <!-- Fecha de última actualización -->
+                    <div class="text-center mt-10 pt-10 border-t border-gray-100">
+                        <p class="text-sm text-gray-500">
+                            Última actualización: <strong>Diciembre 2025</strong>
+                        </p>
                     </div>
                 </div>
             </div>
-        </ion-content>
-    </ion-page>
+        </main>
+    </div>
 
 </template>
 
 <script lang="ts" setup>
-import { IonContent, IonPage, IonHeader, IonToolbar, IonTitle } from '@ionic/vue';
+
 </script>
 
 <style scoped></style>

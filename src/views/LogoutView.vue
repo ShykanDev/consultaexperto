@@ -1,130 +1,118 @@
 <template>
-  <ion-page>
-    <ion-header class="ion-no-border">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button @click="router.back()">
-            <ion-icon :icon="chevronBackOutline" slot="start"></ion-icon>
-            Atrás
-          </ion-button>
-        </ion-buttons>
-        <ion-title class="font-bold">Mi Cuenta</ion-title>
-      </ion-toolbar>
-    </ion-header>
+  <div class="web-page min-h-screen bg-gray-50">
+    <header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
+      <nav class="web-toolbar h-16 flex items-center px-4">
+        <div class="web-buttons">
+          <button class="web-btn p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+            @click="router.back()">
+            <v-icon name="md-arrowbackiosnew-round" />
+          </button>
+        </div>
+        <h1 class="web-title ml-4 text-lg font-bold text-gray-900">Mi Cuenta</h1>
+      </nav>
+    </header>
 
-    <ion-content color="light">
+    <main class="web-content overflow-y-auto p-4 space-y-8">
       <!-- Perfil Header -->
-      <div class="flex flex-col items-center pt-8 pb-6">
-        <div class="relative w-24 h-24 mb-3">
-          <div class="w-full h-full rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-[2px] shadow-md">
-            <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
-              <span v-if="authStorePinia().getUserName" class="text-3xl font-bold text-gray-700">
-                {{ authStorePinia().getUserName?.charAt(0).toUpperCase() }}
-              </span>
-              <ion-icon v-else :icon="personCircleOutline" class="text-6xl text-gray-300"></ion-icon>
-            </div>
+      <div class="flex flex-col items-center py-8">
+        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-1 shadow-md mb-4">
+          <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+            <span class="text-3xl font-bold text-gray-700" v-if="authStore.getUserName">
+              {{ authStore.getUserName.charAt(0).toUpperCase() }}
+            </span>
+            <v-icon v-else name="hi-user-circle" scale="3" class="text-gray-300" />
           </div>
         </div>
-        <h2 class="text-xl font-bold text-gray-900">{{ authStorePinia().getUserName || 'Usuario' }}</h2>
-        <p class="text-sm text-gray-500 font-medium">{{ authStorePinia().getUserEmail }}</p>
-        <p>Data: {{ authStorePinia().getUserData?.isBanned }}</p>
+        <h2 class="text-xl font-bold text-gray-900">{{ authStore.getUserName || 'Usuario' }}</h2>
+        <p class="text-sm text-gray-500 font-medium">{{ authStore.getUserEmail }}</p>
       </div>
 
       <!-- Sección Seguridad -->
-      <ion-list :inset="true" class="rounded-xl overflow-hidden shadow-sm">
-        <ion-list-header>
-          <ion-label class="text-sm font-semibold text-gray-500 uppercase tracking-wider pl-4 mb-1">Seguridad</ion-label>
-        </ion-list-header>
-        
-        <ion-item lines="full">
-          <ion-icon :icon="lockClosedOutline" slot="start" class="text-indigo-500"></ion-icon>
-          <ion-input 
-            v-model="email" 
-            label="Recuperar contraseña" 
-            label-placement="stacked"
-            placeholder="ejemplo@correo.com"
-            type="email"
-            @ionInput="validateEmailInput"
-            @ionBlur="markTouched"
-            class="custom-input"
-          ></ion-input>
-        </ion-item>
-        
-        <div v-if="emailError && isTouched" class="px-5 pt-1 pb-2 text-xs text-red-500 animate-fade-in">
-           {{ emailError }}
-        </div>
-
-        <div class="p-3 bg-white">
-          <ion-button 
-            expand="block" 
-            color="primary"
-            :disabled="!isValidForm || isLoading"
-            @click="handlePasswordReset"
-            class="h-12 font-semibold shadow-none"
-            style="--border-radius: 10px;"
-          >
+      <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Seguridad</h3>
+        <div class="space-y-4">
+          <div class="flex items-center gap-4">
+            <v-icon name="md-lockreset" class="text-indigo-500" scale="1.2" />
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Recuperar contraseña</label>
+              <input
+                class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                v-model="email" placeholder="ejemplo@correo.com" type="email" @blur="markTouched">
+              <p class="mt-1 text-xs text-red-500" v-if="emailError && isTouched">{{ emailError }}</p>
+            </div>
+          </div>
+          <button
+            class="w-full h-12 bg-blue-600 text-white font-bold rounded-xl shadow-lg disabled:opacity-50 transition-all hover:bg-blue-700"
+            :disabled="!isValidForm || isLoading" @click="handlePasswordReset">
             <span v-if="!isLoading">Enviar enlace de recuperación</span>
-            <ion-spinner v-else name="crescent"></ion-spinner>
-          </ion-button>
+            <div v-else class="flex justify-center">
+              <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            </div>
+          </button>
         </div>
-      </ion-list>
+      </section>
 
       <!-- Sección Legal -->
-      <ion-list :inset="true" class="mt-6 rounded-xl overflow-hidden shadow-sm">
-        <ion-list-header>
-          <ion-label class="text-sm font-semibold text-gray-500 uppercase tracking-wider pl-4 mb-1">Legal</ion-label>
-        </ion-list-header>
-
-        <ion-item button :detail="true" @click="openModal('privacy')">
-          <ion-icon :icon="shieldCheckmarkOutline" slot="start" class="text-emerald-500"></ion-icon>
-          <ion-label class="font-medium text-gray-700">Política de Privacidad</ion-label>
-        </ion-item>
-        
-        <ion-item button :detail="true" lines="none" @click="openModal('terms')">
-          <ion-icon :icon="documentTextOutline" slot="start" class="text-blue-500"></ion-icon>
-          <ion-label class="font-medium text-gray-700">Términos y Condiciones</ion-label>
-        </ion-item>
-      </ion-list>
+      <section class="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-50 overflow-hidden">
+        <div class="px-6 py-4">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Legal</h3>
+        </div>
+        <button @click="openModal('privacy')"
+          class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+          <div class="flex items-center gap-4">
+            <v-icon name="hi-shield-check" class="text-emerald-500" />
+            <span class="font-medium text-gray-700">Política de Privacidad</span>
+          </div>
+          <v-icon name="fa-chevron-right" scale="0.8" class="text-gray-300" />
+        </button>
+        <button @click="openModal('terms')"
+          class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+          <div class="flex items-center gap-4">
+            <v-icon name="hi-document-text" class="text-blue-500" />
+            <span class="font-medium text-gray-700">Términos y Condiciones</span>
+          </div>
+          <v-icon name="fa-chevron-right" scale="0.8" class="text-gray-300" />
+        </button>
+      </section>
 
       <!-- Sección Cerrar Sesión -->
-      <ion-list :inset="true" class="mt-6 mb-12 rounded-xl overflow-hidden shadow-sm">
-        <ion-item button @click="handleLogout" lines="none" :detail="false">
-          <ion-label color="danger" class="text-center font-semibold text-lg">Cerrar Sesión</ion-label>
-        </ion-item>
-      </ion-list>
+      <button @click="handleLogout"
+        class="w-full py-4 bg-white border border-gray-100 shadow-sm rounded-2xl flex items-center justify-center gap-3 text-rose-500 hover:bg-rose-50 transition-colors">
+        <v-icon name="md-logout" />
+        <span class="font-bold">Cerrar Sesión</span>
+      </button>
 
       <!-- Modal Informativo -->
-      <ion-modal :is-open="isModalOpen" @didDismiss="closeModal" :initial-breakpoint="0.75" :breakpoints="[0, 0.75, 1]">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title>{{ modalTitle }}</ion-title>
-            <ion-buttons slot="end">
-              <ion-button @click="closeModal" color="primary" class="font-bold">Listo</ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding">
-          <div class="prose max-w-none px-2 pb-10 text-gray-600 leading-relaxed whitespace-pre-line">
+      <div v-if="isModalOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-2xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+          <header class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-gray-900">{{ modalTitle }}</h2>
+            <button @click="closeModal" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+              <v-icon name="md-close" />
+            </button>
+          </header>
+          <div class="flex-1 overflow-y-auto p-6 text-gray-600 leading-relaxed whitespace-pre-line">
             {{ modalContent }}
           </div>
-        </ion-content>
-      </ion-modal>
-
-    </ion-content>
-  </ion-page>
+          <footer class="p-6 border-t border-gray-100">
+            <button @click="closeModal"
+              class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">
+              Listo
+            </button>
+          </footer>
+        </div>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { 
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, 
-  IonButton, IonInput, IonItem, IonIcon, IonList, IonListHeader, 
-  IonLabel, IonButtons, IonSpinner, IonModal
-} from '@ionic/vue';
-import { 
-  chevronBackOutline, personCircleOutline, 
-  lockClosedOutline, shieldCheckmarkOutline, documentTextOutline 
-} from 'ionicons/icons';
+// import {
+//   chevronBackOutline, personCircleOutline,
+//   lockClosedOutline, shieldCheckmarkOutline, documentTextOutline
+// } from 'ionicons/icons';
 import { signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { useRouter } from 'vue-router';
@@ -171,7 +159,7 @@ const handleLogout = async () => {
     await signOut(auth);
     authStore.setLogout();
     window.location.reload();
-    router.push('/tabs/tab1');
+    router.push('/login');
   } catch (error) {
     console.error('Error al cerrar sesión:', error);
   }
@@ -255,7 +243,14 @@ ion-item {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

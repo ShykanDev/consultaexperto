@@ -1,0 +1,386 @@
+Encontrados 49 archivos .vue
+
+❌ Se encontraron 289 problemas en 31 archivos:
+
+
+📄 components/Admin/UserListCard.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 94: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+
+📄 components/Client/CardInfo.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 68: Cierre incorrecto. Se esperaba </section> pero se encontró </article>
+  Línea 77: Cierre incorrecto. Se esperaba </span> pero se encontró </button>
+  Línea 92: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 102: Cierre incorrecto. Se esperaba </div> pero se encontró </span>
+  Línea 151: Cierre incorrecto. Se esperaba </section> pero se encontró </button>
+  Línea 152: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 155: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 219: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 224: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 249: Cierre incorrecto. Se esperaba </article> pero se encontró </div>
+  Línea 328: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 336: Cierre incorrecto. Se esperaba </div> pero se encontró </span>
+  Línea 349: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 358: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+
+📄 components/Common/GenericModal.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 9: Cierre incorrecto. Se esperaba </Transition> pero se encontró </div>
+  Línea 28: Cierre incorrecto. Se esperaba </Transition> pero se encontró </div>
+
+📄 components/Expert/CardInfo.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 50: Cierre incorrecto. Se esperaba </div> pero se encontró </article>
+  Línea 59: Cierre incorrecto. Se esperaba </span> pero se encontró </button>
+  Línea 77: Cierre incorrecto. Se esperaba </div> pero se encontró </span>
+  Línea 246: Cierre incorrecto. Se esperaba </div> pero se encontró </span>
+  Línea 273: Cierre incorrecto. Se esperaba </article> pero se encontró </section>
+  Línea 275: Cierre incorrecto. Se esperaba </article> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <section>
+  Línea 4: Etiqueta sin cerrar: <article>
+
+📄 components/Expert/ExpertScheduleData.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 24: Cierre incorrecto. Se esperaba </section> pero se encontró </article>
+  Línea 33: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 61: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 73: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+
+📄 components/Expert/PrevInfoComponent.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 53: Cierre incorrecto. Se esperaba </div> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+
+📄 components/Expert/UserFutureAppointmentCard.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 16: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+  Línea 26: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+
+📄 components/ExpertList/SpecializationCard.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 8: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+
+📄 components/ExpertoInfoView/DateSquare.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 43: Cierre incorrecto. Se esperaba </div> pero se encontró </article>
+
+📄 components/Experts/ExpertCard.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 15: Cierre incorrecto. Se esperaba </span> pero se encontró </p>
+  Línea 18: Cierre incorrecto. Se esperaba </p> pero se encontró </div>
+  Línea 20: Cierre incorrecto. Se esperaba </p> pero se encontró </div>
+  Línea 64: Cierre incorrecto. Se esperaba </p> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 15: Etiqueta sin cerrar: <p>
+
+📄 components/Login/LoginComponent.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 26: Cierre incorrecto. Se esperaba </template> pero se encontró </aside>
+  Línea 48: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+  Línea 54: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 72: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 86: Cierre incorrecto. Se esperaba </div> pero se encontró </form>
+  Línea 101: Cierre incorrecto. Se esperaba </form> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 51: Etiqueta sin cerrar: <form>
+
+📄 components/Login/RegisterComponent.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 5: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 21: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 27: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 31: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 40: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 49: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 52: Cierre incorrecto. Se esperaba </form> pero se encontró </div>
+  Línea 98: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+
+📄 views/ContactView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 12: Cierre incorrecto. Se esperaba </div> pero se encontró </nav>
+  Línea 13: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 19: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 84: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 105: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 113: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 121: Cierre incorrecto. Se esperaba </div> pero se encontró </form>
+  Línea 122: Cierre incorrecto. Se esperaba </div> pero se encontró </section>
+  Línea 124: Cierre incorrecto. Se esperaba </div> pero se encontró </main>
+  Línea 128: Cierre incorrecto. Se esperaba </div> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 2: Etiqueta sin cerrar: <header>
+  Línea 3: Etiqueta sin cerrar: <nav>
+  Línea 8: Etiqueta sin cerrar: <div>
+  Línea 14: Etiqueta sin cerrar: <main>
+  Línea 47: Etiqueta sin cerrar: <section>
+  Línea 48: Etiqueta sin cerrar: <form>
+  Línea 74: Etiqueta sin cerrar: <div>
+
+📄 views/CreateExpert.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 8: Cierre incorrecto. Se esperaba </div> pero se encontró </nav>
+  Línea 9: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 37: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 42: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 89: Cierre incorrecto. Se esperaba </div> pero se encontró </main>
+  Línea 91: Cierre incorrecto. Se esperaba </div> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 2: Etiqueta sin cerrar: <header>
+  Línea 3: Etiqueta sin cerrar: <nav>
+  Línea 5: Etiqueta sin cerrar: <div>
+  Línea 11: Etiqueta sin cerrar: <main>
+  Línea 17: Etiqueta sin cerrar: <div>
+
+📄 views/ExpertInfoView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 12: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 44: Cierre incorrecto. Se esperaba </div> pero se encontró </span>
+  Línea 173: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </div>
+  Línea 174: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </div>
+  Línea 175: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </div>
+  Línea 198: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 202: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </section>
+  Línea 214: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </main>
+  Línea 215: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </div>
+  Línea 216: Cierre incorrecto. Se esperaba </DateSquare> pero se encontró </template>
+  Línea 604: Cierre incorrecto. Se esperaba </number> pero se encontró </script>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 3: Etiqueta sin cerrar: <main>
+  Línea 135: Etiqueta sin cerrar: <section>
+  Línea 154: Etiqueta sin cerrar: <div>
+  Línea 161: Etiqueta sin cerrar: <div>
+  Línea 162: Etiqueta sin cerrar: <div>
+  Línea 164: Etiqueta sin cerrar: <DateSquare>
+  Línea 219: Etiqueta sin cerrar: <script>
+  Línea 309: Etiqueta sin cerrar: <number>
+
+📄 views/ExpertListAdmin.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 18: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 29: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 52: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 197: Cierre incorrecto. Se esperaba </IExpert> pero se encontró </script>
+  Línea 57: Etiqueta sin cerrar: <script>
+  Línea 151: Etiqueta sin cerrar: <IExpert>
+
+📄 views/ExpertListModern.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 10: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 24: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 30: Cierre incorrecto. Se esperaba </div> pero se encontró </span>
+  Línea 38: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 59: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 66: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 72: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 79: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 85: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 86: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 111: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 126: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 140: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 141: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 160: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 174: Cierre incorrecto. Se esperaba </section> pero se encontró </button>
+  Línea 175: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 188: Cierre incorrecto. Se esperaba </section> pero se encontró </button>
+  Línea 189: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 190: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 223: Cierre incorrecto. Se esperaba </SelectExpertCard> pero se encontró </div>
+  Línea 224: Cierre incorrecto. Se esperaba </SelectExpertCard> pero se encontró </section>
+  Línea 243: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 273: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 291: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 292: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 316: Cierre incorrecto. Se esperaba </SelectExpertCard> pero se encontró </article>
+  Línea 324: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 335: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </div>
+  Línea 336: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </main>
+  Línea 337: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </div>
+  Línea 338: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </section>
+  Línea 339: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </main>
+  Línea 340: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </div>
+  Línea 341: Cierre incorrecto. Se esperaba </PrevInfoComponent> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 12: Etiqueta sin cerrar: <main>
+  Línea 13: Etiqueta sin cerrar: <section>
+  Línea 14: Etiqueta sin cerrar: <article>
+  Línea 214: Etiqueta sin cerrar: <section>
+  Línea 219: Etiqueta sin cerrar: <div>
+  Línea 220: Etiqueta sin cerrar: <SelectExpertCard>
+  Línea 319: Etiqueta sin cerrar: <div>
+  Línea 325: Etiqueta sin cerrar: <main>
+  Línea 332: Etiqueta sin cerrar: <div>
+  Línea 333: Etiqueta sin cerrar: <PrevInfoComponent>
+
+📄 views/ExpertPreview.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 8: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 10: Cierre incorrecto. Se esperaba </div> pero se encontró </nav>
+  Línea 11: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 27: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 31: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 75: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 108: Cierre incorrecto. Se esperaba </section> pero se encontró </article>
+  Línea 130: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 139: Cierre incorrecto. Se esperaba </nav> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 3: Etiqueta sin cerrar: <header>
+  Línea 4: Etiqueta sin cerrar: <nav>
+
+📄 views/ExpertsListView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 11: Cierre incorrecto. Se esperaba </div> pero se encontró </nav>
+  Línea 12: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 23: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 45: Cierre incorrecto. Se esperaba </div> pero se encontró </section>
+  Línea 60: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 95: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 106: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 117: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 119: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 134: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </div>
+  Línea 136: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </section>
+  Línea 137: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </div>
+  Línea 138: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </section>
+  Línea 149: Cierre incorrecto. Se esperaba </section> pero se encontró </button>
+  Línea 150: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 179: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 194: Cierre incorrecto. Se esperaba </fieldset> pero se encontró </button>
+  Línea 204: Cierre incorrecto. Se esperaba </fieldset> pero se encontró </button>
+  Línea 215: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </main>
+  Línea 217: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </div>
+  Línea 219: Cierre incorrecto. Se esperaba </SpecializationCard> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 2: Etiqueta sin cerrar: <header>
+  Línea 3: Etiqueta sin cerrar: <nav>
+  Línea 10: Etiqueta sin cerrar: <div>
+  Línea 14: Etiqueta sin cerrar: <main>
+  Línea 16: Etiqueta sin cerrar: <section>
+  Línea 24: Etiqueta sin cerrar: <div>
+  Línea 126: Etiqueta sin cerrar: <section>
+  Línea 128: Etiqueta sin cerrar: <section>
+  Línea 129: Etiqueta sin cerrar: <div>
+  Línea 131: Etiqueta sin cerrar: <SpecializationCard>
+
+📄 views/HelpView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 11: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 50: Cierre incorrecto. Se esperaba </div> pero se encontró </select>
+  Línea 51: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 56: Cierre incorrecto. Se esperaba </div> pero se encontró </option>
+  Línea 62: Cierre incorrecto. Se esperaba </div> pero se encontró </form>
+  Línea 64: Cierre incorrecto. Se esperaba </div> pero se encontró </section>
+  Línea 150: Cierre incorrecto. Se esperaba </div> pero se encontró </main>
+  Línea 152: Cierre incorrecto. Se esperaba </form> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 15: Etiqueta sin cerrar: <main>
+  Línea 17: Etiqueta sin cerrar: <section>
+  Línea 18: Etiqueta sin cerrar: <div>
+  Línea 24: Etiqueta sin cerrar: <form>
+
+📄 views/HiringView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 10: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 54: Cierre incorrecto. Se esperaba </div> pero se encontró </label>
+  Línea 107: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+
+📄 views/LogoutView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 11: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 85: Cierre incorrecto. Se esperaba </div> pero se encontró </nav>
+  Línea 86: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 94: Cierre incorrecto. Se esperaba </nav> pero se encontró </main>
+  Línea 95: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 96: Cierre incorrecto. Se esperaba </nav> pero se encontró </template>
+  Línea 1: Etiqueta sin cerrar: <template>
+  Línea 2: Etiqueta sin cerrar: <div>
+  Línea 15: Etiqueta sin cerrar: <main>
+  Línea 81: Etiqueta sin cerrar: <header>
+  Línea 82: Etiqueta sin cerrar: <nav>
+
+📄 views/PrivacyPolicy.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 8: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 160: Cierre incorrecto. Se esperaba </p> pero se encontró </a>
+
+📄 views/Tab1Page.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 73: Cierre incorrecto. Se esperaba </string> pero se encontró </script>
+  Línea 21: Etiqueta sin cerrar: <script>
+  Línea 46: Etiqueta sin cerrar: <string>
+
+📄 views/admin/UsersList.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 11: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 13: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+
+📄 views/client/ClientAppointmentsView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 17: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 20: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 41: Cierre incorrecto. Se esperaba </div> pero se encontró </select>
+  Línea 48: Cierre incorrecto. Se esperaba </div> pero se encontró </select>
+  Línea 127: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+  Línea 129: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+  Línea 130: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+
+📄 views/client/SelectExpertCard.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 8: Cierre incorrecto. Se esperaba </article> pero se encontró </div>
+  Línea 19: Cierre incorrecto. Se esperaba </template> pero se encontró </button>
+  Línea 20: Cierre incorrecto. Se esperaba </template> pero se encontró </div>
+
+📄 views/expert/ExpertProfileView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 16: Cierre incorrecto. Se esperaba </nav> pero se encontró </button>
+  Línea 17: Cierre incorrecto. Se esperaba </nav> pero se encontró </div>
+  Línea 19: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 81: Cierre incorrecto. Se esperaba </div> pero se encontró </article>
+  Línea 113: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 198: Cierre incorrecto. Se esperaba </IExpert> pero se encontró </script>
+  Línea 153: Etiqueta sin cerrar: <script>
+  Línea 164: Etiqueta sin cerrar: <IExpert>
+
+📄 views/expert/ExpertView.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 16: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 19: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 38: Cierre incorrecto. Se esperaba </div> pero se encontró </select>
+  Línea 44: Cierre incorrecto. Se esperaba </div> pero se encontró </select>
+  Línea 75: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+
+📄 views/expert/ExpertViewFixed.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 17: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 20: Cierre incorrecto. Se esperaba </div> pero se encontró </header>
+  Línea 77: Cierre incorrecto. Se esperaba </section> pero se encontró </button>
+  Línea 78: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 118: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 177: Cierre incorrecto. Se esperaba </section> pero se encontró </router-link>
+  Línea 178: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 203: Cierre incorrecto. Se esperaba </article> pero se encontró </div>
+  Línea 223: Cierre incorrecto. Se esperaba </div> pero se encontró </button>
+  Línea 225: Cierre incorrecto. Se esperaba </section> pero se encontró </div>
+  Línea 232: Cierre incorrecto. Se esperaba </main> pero se encontró </div>
+  Línea 878: Cierre incorrecto. Se esperaba </IExpert> pero se encontró </script>
+  Línea 240: Etiqueta sin cerrar: <script>
+  Línea 321: Etiqueta sin cerrar: <Slot>
+  Línea 696: Etiqueta sin cerrar: <string>
+  Línea 798: Etiqueta sin cerrar: <IExpert>
+
+📄 views/tests/FirebaseTest.vue
+────────────────────────────────────────────────────────────────────────────────
+  Línea 83: Cierre incorrecto. Se esperaba </IUser> pero se encontró </script>
+  Línea 55: Etiqueta sin cerrar: <script>
+  Línea 63: Etiqueta sin cerrar: <IUser>

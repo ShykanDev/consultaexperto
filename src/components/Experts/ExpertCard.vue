@@ -1,232 +1,109 @@
 <template>
-    <div class="flex overflow-hidden relative flex-col my-3 rounded-xl shadow-md font-poppins" :class="{'bg-red-100 ring-2 ring-red-300': props.expertData.isSuspended, 'bg-white': !props.expertData.isSuspended}">
+  <div class="flex overflow-hidden relative flex-col my-3 rounded-xl shadow-md font-poppins gap-4 items-start p-4"
+    :class="{ 'bg-red-100 ring-2 ring-red-300': props.expertData.isSuspended, 'bg-white': !props.expertData.isSuspended }">
 
-        <div class="flex relative gap-4 items-start p-4">
-            <img class="object-cover w-14 h-14 rounded-full shrink-0" 
-                :src="props.expertData.profilePicture || 'https://picsum.photos/200/300'" alt="Profile picture" />
-            <div class="flex-grow">
-                <div class="flex justify-between items-center">
-                    <p class="text-lg font-bold leading-tight text-blue-600 font-poppins">{{ props.expertData.fullName || ' Nombre del experto'}}
-                    </p>
-                    <p v-if="props.expertData.isSuspended" class="text-sm font-medium leading-tight text-red-700 font-poppins">(Suspendido)</p>
-                </div>
-                <p class="text-sm text-neutral-600">{{ props.expertData.specialty ?? 'Especialidad' }}</p>
-                <div v-if="props.expertData.rating" class="flex gap-1 items-center mt-1">
-                    <ion-icon :icon="starSharp" class="text-yellow-400" ></ion-icon>
-                    <p class="ml-1 text-xs text-neutral-500">{{ calcStarsValue(props.expertData.rating) }}</p> <span class="text-xs text-neutral-500">
-                        ({{ props.expertData.rating.count ?? 0 }} valoraciones)
-                    </span>
-                </div>
-                <p class="text-xs text-gray-500">{{ props.expertData.isBanned ? 'Bloqueado' : 'Activo' }}</p>
-            </div>
-        </div>
-
-           <!-- <ion-alert
-    trigger="unsuspend-alert"
-    header="¿Está seguro de desbloquear a este experto?"
-    message="Al desbloquear a este experto, podrá volver a atender nuevas solicitudes."
-    :buttons="alertButtons"
-   
-  ></ion-alert>
-<ion-button id="unsuspend-alert">Click Me</ion-button>
-  2. Ensure the trigger property references that ID 
-<ion-alert trigger="unsuspend-alert" header="Are you sure?"></ion-alert>
-  -->
-
-        <div class="flex relative flex-col gap-3 px-4 pb-4">
-            <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
-            <div v-if="props.expertData.isSuspended" class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200">
-                <p class="text-xs font-bold text-red-800 !font-poppins">Motivo de la suspension:</p>
-                <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || 'Este experto ha sido suspendido por violar las normas de la comunidad y no puede atender nuevas consultas.' }}</p>
-            </div>
-            <ion-alert :is-open="unsuspendAlert"  header="¿Está seguro de desbloquear a este experto?" message="Al desbloquear a este experto, podrá volver a atender nuevas consultas." :buttons="alertButtons">
-   
-           
-            </ion-alert>
-            <div class="grid grid-cols-3 gap-1 p-1 mt-2">
-                <ion-button  @click="toggleUnsuspendAlert" v-if="props.expertData.isSuspended" class="col-span-2 unblock-user" style="text-transform: none;">
-                    <ion-icon slot="start" :icon="checkmarkCircleSharp"></ion-icon>
-                    <span class="text-sm font-medium">Desbloquear</span>
-                </ion-button>
-            
-                <ion-button v-else @click="toggleModal" class="col-span-2 block-user"  style="text-transform: none;">
-                    <ion-icon slot="start" :icon="alertCircleSharp"></ion-icon>
-                    <span class="text-sm font-medium">Suspender</span>
-                </ion-button>
-                <ion-button @click="goToProfile" class="profile bg-primary" style="text-transform: none;">
-                    <ion-icon slot="start" :icon="eyeSharp"></ion-icon>
-                    <span class="text-sm font-base">Ver 
-                        perfil</span>
-                </ion-button>
-            </div>
-
-        </div>
+    <img class="object-cover w-14 h-14 rounded-full shrink-0"
+      :src="props.expertData.profilePicture || 'https://picsum.photos/200/300'" alt="Profile picture" />
+    <div class="flex-grow flex justify-between items-center w-full">
+      <p class="text-lg font-bold leading-tight text-blue-600 font-poppins">{{ props.expertData.fullName || `Nombre del
+        experto` }}</p>
+      <p class="text-sm font-medium leading-tight text-red-700 font-poppins" v-if="props.expertData.isSuspended">
+        (Suspendido)</p>
     </div>
+    <p class="text-sm text-neutral-600">{{ props.expertData.specialty ?? 'Especialidad' }}</p>
+    <div class="flex gap-1 items-center mt-1 text-yellow-400" v-if="props.expertData.rating">
+      <v-icon name="io-star" scale="0.8" />
+      <p class="ml-1 text-xs text-neutral-500">{{ calcStarsValue(props.expertData.rating) }}</p>
+      <span class="text-xs text-neutral-500">
+        ({{ props.expertData.rating.count ?? 0 }} valoraciones)
+      </span>
+    </div>
+    <p class="text-xs text-gray-500">{{ props.expertData.isBanned ? 'Bloqueado' : 'Activo' }}</p>
+  </div>
+
+  <div class="flex relative flex-col gap-3 px-4 pb-4">
+    <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
+    <div class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200" v-if="props.expertData.isSuspended">
+      <p class="text-xs font-bold text-red-800 !font-poppins">Motivo de la suspension:</p>
+      <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || `Este experto ha sido
+        suspendido por violar las normas de la comunidad.` }}</p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-1 p-1 mt-2">
+      <button v-if="props.expertData.isSuspended"
+        class="col-span-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-semibold hover:bg-emerald-100 transition-all text-sm"
+        @click="handleUnsuspend">
+        Desbloquear
+      </button>
+
+      <button v-else
+        class="col-span-2 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl font-semibold hover:bg-red-100 transition-all text-sm"
+        @click="toggleModal">
+        Suspender
+      </button>
+
+      <button class="px-4 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all text-sm"
+        @click="goToProfile">
+        Ver perfil
+      </button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { IonButton, IonIcon, useIonRouter, IonAlert } from '@ionic/vue';
-import { alertCircleSharp, checkmarkCircleSharp, eyeSharp, starSharp, toggle } from 'ionicons/icons';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import { IExpert } from '@/interfaces/IExpert';
 import { useExpertAdminStore } from '@/stores/expertAdmin';
 import { updateDoc } from 'firebase/firestore';
-import { toastController } from '@ionic/vue';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { useRating } from '@/composables/stars';
-
-
-const {calcStarsValue} = useRating();
-
-const presentToast = async (position: 'top' | 'middle' | 'bottom', message: string, color = 'light') => {
-    const toast = await toastController.create({
-      message: message,
-      duration: 1500,
-      position: position,
-      color: color,
-      swipeGesture:'vertical',
-      translucent: true,
-      buttons: [
-        {
-          text: 'cerrar',
-          role: 'cancel',
-        }
-      ]
-    });
-
-    await toast.present();
-  };
-const expertAdminStore = useExpertAdminStore();
-
-const alertButtons = [
-  {
-    text: 'Cancelar',
-    role: 'cancel',
-    handler: () => {
-      unsuspendAlert.value = false;
-    }
-  },
-  {
-    text: 'Desbloquear',
-    handler: () => {
-      unsuspendUser();
-    }
-  }
-];
-
-const router = useIonRouter();
-const goToProfile = () => {
-    expertAdminStore.setExpertData(props.expertData)
-    router.navigate(`/expert-preview`, 'forward', 'push');
-};
 
 const props = defineProps({
   expertData: {
     type: Object as () => IExpert,
-    default: () => ({})
+    default: () => ({} as IExpert)
   }
 });
 
-
 const emit = defineEmits(['reload', 'callOpenModal']);
 
+const router = useRouter();
+const toast = useToast();
+const expertAdminStore = useExpertAdminStore();
+const { calcStarsValue } = useRating();
+
+const goToProfile = () => {
+  expertAdminStore.setExpertData(props.expertData)
+  router.push(`/expert-preview`);
+};
+
 const toggleModal = () => {
-    emit('callOpenModal', props.expertData)
+  emit('callOpenModal', props.expertData)
 }
 
-const suspendUser = () => {
+const handleUnsuspend = async () => {
+  if (confirm('¿Está seguro de desbloquear a este experto?')) {
+    await unsuspendUser();
+  }
+};
 
-    if (!props.expertData.docRef) {
-        presentToast('top', 'Error: No se encontró el experto', 'danger');
-        console.log('ERROR: props.expertData.docRef is undefined');
-        console.log('Current expert:', props.expertData);
-        return;
-    }
-    
-    updateDoc(props.expertData.docRef!, {
-        isSuspended: true,
-        suspensionReason: 'Suspendido por administrador'
-    })
-    .then(() => {
-        emit('reload');
-        presentToast('top', 'Experto suspendido exitosamente', 'success');
-    })
-    .catch((error) => {
-        console.error('Error suspending expert:', error);
-        presentToast('top', 'Error al suspender al experto', 'danger');
+const unsuspendUser = async () => {
+  if (!props.expertData.docRef) {
+    toast.error('Error: No se encontró el experto');
+    return;
+  }
+
+  try {
+    await updateDoc(props.expertData.docRef!, {
+      isSuspended: false,
+      suspensionReason: null
     });
+    emit('reload');
+    toast.success('Experto reactivado exitosamente');
+  } catch (error) {
+    console.error('Error reactivating expert:', error);
+    toast.error('Error al reactivar al experto');
+  }
 }
-
-const unsuspendAlert = ref(false);
-const toggleUnsuspendAlert = () => unsuspendAlert.value = !unsuspendAlert.value;
-
-const unsuspendUser = () => {
-    if (!props.expertData.docRef) {
-        presentToast('top', 'Error: No se encontró el experto', 'danger');
-        console.log('ERROR: props.expertData.docRef is undefined');
-        console.log('Current expert:', props.expertData);
-        return;
-    }
-    
-    updateDoc(props.expertData.docRef!, {
-        isSuspended: false,
-        suspensionReason: null
-    })
-    .then(() => {
-        emit('reload');
-        presentToast('top', 'Experto reactivado exitosamente', 'success');
-    })
-    .catch((error) => {
-        console.error('Error reactivating expert:', error);
-        presentToast('top', 'Error al reactivar al experto', 'danger');
-    });
-}
-
-onMounted(() => {
-    console.log('ExpertCard mounted with data:', props.expertData);
-});
 </script>
-
-<style scoped>
-/* Reactivate Button */
-ion-button.reactivate {
-    --background: #FFF4E5;
-    --color: #FF9800;
-    --border-radius: 10px;
-    --background-activated: #FFE0B2; /* Lighter or darker shade of the original background */
-    --color-activated: #E65100; /* Lighter or darker shade of the original text color */
-}
-
-/* Block User Button */
-ion-button.block-user {
-    --background: #fff2f1;
-    --color: #D32F2F;
-    --border-radius: 10px;
-    --background-activated: #FFCDD2; /* Lighter or darker shade of the original background */
-    --color-activated: #B71C1C; /* Lighter or darker shade of the original text color */
-    --border-color: #D32F2F;
-    --border-width: 1px;
-    --border-style: solid;
-}
-
-/* Profile Button */
-ion-button.profile {
-    --background: #007AFF;
-    --color: white;
-    --border-radius: 10px;
-    --background-activated: #0062CC; /* Lighter or darker shade of the original background */
-    --color-activated: white; /* Keep the text color the same or change it */
-}
-
-/* Unblock User Button */
-ion-button.unblock-user {
-    --background: #f8fff9;
-    --color: #2E7D32;
-    --border-radius: 10px;
-    --background-activated: #C8E6C9; /* Lighter or darker shade of the original background */
-    --color-activated: #0f4513; /* Lighter or darker shade of the original text color */
-    --border-color: #2E7D32;
-    --border-width: 1px;
-    --border-style: solid;
-}
-
-</style>

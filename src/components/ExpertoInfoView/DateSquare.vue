@@ -1,7 +1,7 @@
 <template>
   <div class="transition-all duration-200 ease-in-out">
     <article
-      class="overflow-hidden mx-1 text-center bg-white rounded-xl border border-gray-200 shadow-lg transition-all duration-300 hover:shadow-xl">
+ class="overflow-hidden mx-1 text-center bg-white rounded-xl border border-gray-200 shadow-lg transition-all duration-300 hover:shadow-xl">
       <!-- Encabezado del día -->
       <div class="py-3 bg-gradient-to-r from-blue-600 to-indigo-700">
         <p class="text-lg font-medium text-white">{{ dayInfo.day }}</p>
@@ -12,9 +12,7 @@
 
       <!-- Horarios disponibles -->
       <div class="p-3 space-y-2">
-        <button v-for="(hour, index) in availableHours" :key="index" type="button" @click="selectHour(hour)"
-          :disabled="hoursTaken.includes(hour)" id="hourArea"
-          class="relative px-3 py-2 w-full text-left rounded-lg border transition-all duration-200 ease-out" :class="{
+        <button class="relative px-3 py-2 w-full text-left rounded-lg border transition-all duration-200 ease-out" v-for="(hour, index) in availableHours" :key="index" type="button" @click="selectHour(hour)" :disabled="hoursTaken.includes(hour)" id="hourArea" :class="{
             // Estado normal
             'border-gray-200 bg-gray-50 hover:bg-blue-50 hover:border-blue-200': !hoursTaken.includes(hour) && !(hour === userHourSelection && dayInfo.day === userDateSelection),
 
@@ -35,8 +33,7 @@
           </span>
 
           <!-- Overlay para horas no disponibles -->
-          <div v-if="hoursTaken.includes(hour)"
-            class="flex absolute inset-0 justify-center items-center bg-gray-800 bg-opacity-0 rounded-lg transition-all duration-300 pointer-events-none hover:bg-opacity-80">
+          <div class="flex absolute inset-0 justify-center items-center bg-gray-800 bg-opacity-0 rounded-lg transition-all duration-300 pointer-events-none hover:bg-opacity-80" v-if="hoursTaken.includes(hour)">
             <span class="text-xs font-medium text-white opacity-0 transition-opacity hover:opacity-100">
               No Disponible
             </span>

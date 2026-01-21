@@ -1,35 +1,28 @@
 <!-- ExpertCard.vue -->
 <template>
   <div
-    class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-    @click="$emit('select', props.name)"
-  >
+ class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer" @click="$emit('select', props.name)">
   <article class="flex justify-center items-center">
       <div
-      class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"
-      >
-      <ion-icon :icon="props.icon || languageOutline" size="large"></ion-icon>
-    </div>
+ class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center web-icon w-6 h-6 flex-shrink-0" :icon="props.icon || languageOutline" size="large">
+      </div>
+    
 </article>
     
-    <div class="flex flex-col gap-2">
-      <h4 class="font-bold text-base leading-tight text-slate-700">
-        {{ props.name || 'Expert' }} 
-      </h4>
+    <h4 class="flex flex-col gap-2 font-bold text-base leading-tight text-slate-700">{{ props.name || 'Expert' }}</h4>
       <p class="text-slate-500 text-xs">
         {{ props.summary || 'Summary' }}
       </p>
       <button
-        class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline"
-      >
+ class="text-blue-600 text-xs font-bold text-left uppercase tracking-wide hover:underline">
         Consultar
       </button>
     </div>
-  </div>
+  
 </template>
 
 <script setup>
-import { IonIcon } from '@ionic/vue';
+
 import { languageOutline } from 'ionicons/icons';
 
 

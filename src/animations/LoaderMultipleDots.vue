@@ -1,64 +1,95 @@
 <style scoped>
-  .dots-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
+.loader {
+  height: 5px;
+  width: 1px;
+  position: absolute;
+  animation: rotate0234 3.5s linear infinite;
+}
+
+.loader .dot {
+  top: 30px;
+  height: 7px;
+  width: 7px;
+  background: #268fe4;
+  border-radius: 50%;
+  position: relative;
+}
+
+.text {
+  position: absolute;
+  bottom: -85px;
+  font-size: 25px;
+  font-weight: 400;
+  color: #26aee4;
+}
+
+@keyframes rotate0234 {
+  30% {
+    transform: rotate(220deg);
   }
 
-  .dot {
-    height: 20px;
-    width: 20px;
-    margin-right: 10px;
-    border-radius: 10px;
-    background-color: #b3d4fc;
-    animation: pulse 1.5s infinite ease-in-out;
+  40% {
+    transform: rotate(450deg);
+    opacity: 1;
   }
 
-  .dot:last-child {
-    margin-right: 0;
+  75% {
+    transform: rotate(720deg);
+    opacity: 1;
   }
 
-  .dot:nth-child(1) {
-    animation-delay: -0.3s;
+  76% {
+    opacity: 0;
   }
 
-  .dot:nth-child(2) {
-    animation-delay: -0.1s;
+  100% {
+    opacity: 0;
+    transform: rotate(0deg);
   }
+}
 
-  .dot:nth-child(3) {
-    animation-delay: 0.1s;
-  }
+.loader:nth-child(1) {
+  animation-delay: 0.15s;
+}
 
-  @keyframes pulse {
-    0% {
-      transform: scale(0.8);
-      background-color: #b3d4fc;
-      box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
-    }
+.loader:nth-child(2) {
+  animation-delay: 0.3s;
+}
 
-    50% {
-      transform: scale(1.2);
-      background-color: #6793fb;
-      box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
-    }
+.loader:nth-child(3) {
+  animation-delay: 0.45s;
+}
 
-    100% {
-      transform: scale(0.8);
-      background-color: #b3d4fc;
-      box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
-    }
-  }
+.loader:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.loader:nth-child(5) {
+  animation-delay: 0.75s;
+}
+
+.loader:nth-child(6) {
+  animation-delay: 0.9s;
+}
 </style>
 
 <template>
-  <section class="dots-container">
+  <div class="loader">
     <div class="dot"></div>
+  </div>
+  <div class="loader">
     <div class="dot"></div>
+  </div>
+  <div class="loader">
     <div class="dot"></div>
+  </div>
+  <div class="loader">
     <div class="dot"></div>
+  </div>
+  <div class="loader">
     <div class="dot"></div>
-  </section>
+  </div>
+  <div class="loader">
+    <div class="dot"></div>
+  </div>
 </template>

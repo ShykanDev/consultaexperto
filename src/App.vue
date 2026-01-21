@@ -1,19 +1,19 @@
 <template>
-  <ion-app>
-    <ion-router-outlet />
-  </ion-app>
+  <div id="app-container">
+    <router-view />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { IonApp, IonRouterOutlet, isPlatform, onIonViewDidEnter, useIonRouter } from '@ionic/vue';
+
 import { onMounted, onBeforeMount, watch } from 'vue';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { authStore } from './store/auth';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'vue-router';
 
-
-const router = useIonRouter();
+const router = useRouter();
 console.log('App.vue script is executing...');
 
 onBeforeMount(() => {
@@ -22,20 +22,6 @@ onBeforeMount(() => {
 
 onMounted(async () => {
   console.log('App.vue: onMounted hook called - App is now mounted!');
-  
-  if (isPlatform('hybrid')) {
-    try {
-      // Force status bar text to be dark (black) because the app background is white
-      await StatusBar.setStyle({ style: Style.Light });
-      
-      if (isPlatform('android')) {
-        // Also ensure the background color of the status bar is white
-        await StatusBar.setBackgroundColor({ color: '#FFFFFF' });
-      }
-    } catch (error) {
-      console.warn('StatusBar configuration failed:', error);
-    }
-  }
 });
 
 onMounted(() => {
@@ -62,16 +48,26 @@ watch(() => authStore().getUserData, (userData) => {
   if (isClient && userData.isBanned) {
     console.log('Client is banned, redirecting...');
     authStore().setLogout();
-    router.navigate('/account-suspended');
+    router.push('/account-suspended');
     return;
   }
 
   if (isExpert && userData.isSuspended) {
     console.log('Expert is suspended, redirecting...');
     authStore().setLogout();
-    router.navigate('/account-suspended');
+    router.push('/account-suspended');
     return;
   }
 }, { deep: true });
 
 </script>
+
+<style>
+/* Global styles for the web-app */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--ion-font-family);
+  background-color: #f3f4f6;
+}
+</style>

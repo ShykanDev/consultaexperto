@@ -1,184 +1,199 @@
 <template>
   <section class="admin-appointment-card py-1">
     <!-- Vista en tarjeta (resumen) -->
-    <article
-      v-if="view === 'card'"
-      class="admin-card"
-      @click="toggleView"
-    >
-      <div class="admin-card-header">
-        <div class="admin-icon-container" :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
-          <v-icon
-            :name="getIcon(props.data.expertSpecialty)"
-            scale="1.4"
-            :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }"
-          />
-        </div>
-        <div class="admin-card-info">
-          <h3 class="admin-title">{{ props.data.expertSpecialty }} · {{ props.data.userName }}</h3>
-          <div class="admin-meta">
-            <span class="admin-date">{{ formattedDate }}</span>
-            <span class="admin-time">{{ formattedTime }} hrs</span>
-          </div>
-        </div>
-        <div class="admin-status" :class="{finished: props.data.isFinished, cancel: props.data.isCanceled, pending: !props.data.isFinished && !props.data.isCanceled}">
-         <p v-if="!props.data.isFinished && !props.data.isCanceled" class="">Agendada</p>
-         <p v-if="props.data.isFinished" class="finished">Finalizada</p>
-         <p v-if="props.data.isCanceled" class="cancel">Cancelada</p>
-        </div>
+    <article class="admin-card" v-if="view === 'card'" @click="toggleView">
+      <div class="admin-card-header admin-icon-container"
+        :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
+
+        <v-icon :name="getIcon(props.data.expertSpecialty)" scale="1.4"
+          :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }" />
       </div>
-      <ion-ripple-effect type="unbounded" class="admin-ripple"></ion-ripple-effect>
+      <h3 class="admin-card-info admin-title">{{ props.data.expertSpecialty }} · {{ props.data.userName }}</h3>
+      <div class="admin-meta">
+        <span class="admin-date">{{ formattedDate }}</span>
+        <span class="admin-time">{{ formattedTime }} hrs</span>
+      </div>
+
+      <div class="admin-status"
+        :class="{ finished: props.data.isFinished, cancel: props.data.isCanceled, pending: !props.data.isFinished && !props.data.isCanceled }">
+        <p class="" v-if="!props.data.isFinished && !props.data.isCanceled">Agendada</p>
+        <p class="finished" v-if="props.data.isFinished">Finalizada</p>
+        <p class="cancel" v-if="props.data.isCanceled">Cancelada</p>
+      </div>
+
+
     </article>
 
     <!-- Vista detallada (modal) -->
-    <div v-else class="admin-modal">
-      <!-- Header con botón de regreso -->
-      <div class="admin-modal-header">
-        <button @click="toggleView" class="admin-back-button">
-          <v-icon name="fa-chevron-left" class="text-blue-600" />
+    <div class="admin-modal" v-if="view === 'modal'"><!-- Header con botón de regreso -->
+      <div class="admin-modal-header"><button class="admin-back-button" @click="toggleView">
+          <v-icon class="text-blue-600" name="fa-chevron-left" />
           <span>Cerrar</span>
         </button>
         <h2 class="admin-modal-title">Detalles de la Cita</h2>
       </div>
 
       <!-- Sección de información de la cita -->
-      <div class="admin-section">
-        <h4 class="admin-section-title">Datos de la Cita</h4>
-        <div class="admin-grid">
-          <div class="admin-grid-item">
-            <v-icon name="fa-calendar-check" class="admin-grid-icon" />
-            <p class="admin-grid-label">Fecha:</p>
-            <p class="admin-grid-value">{{ formattedDate }}</p>
-          </div>
-          <div class="admin-grid-item">
-            <v-icon name="fa-clock" class="admin-grid-icon" />
-            <p class="admin-grid-label">Hora:</p>
-            <p class="admin-grid-value">{{ formattedTime }} hrs</p>
-          </div>
-          <div class="admin-grid-item">
-            <v-icon name="fa-user" class="admin-grid-icon" />
-            <p class="admin-grid-label">Agendado por:</p>
-            <p class="admin-grid-value">{{ props.data.userName }}</p>
-          </div>
-          <div class="admin-grid-item">
-            <v-icon name="co-link" class="admin-grid-icon" />
-            <p class="admin-grid-label">Enlace:</p>
-            <a v-if="props.data.appointmentLink !== 'En proceso...'" target="_blank" :href="props.data.appointmentLink" class="admin-grid-link  break-all">{{ props.data.appointmentLink }}</a>
-            <p v-else class="admin-grid-value pending">En proceso...</p>
-          </div>
+      <h4 class="admin-section admin-section-title">Datos de la Cita</h4>
+      <div class="admin-grid">
+        <div class="admin-grid-item">
+
+          <v-icon class="admin-grid-icon" name="fa-calendar-check" />
+          <p class="admin-grid-label">Fecha:</p>
+          <p class="admin-grid-value">{{ formattedDate }}</p>
         </div>
-        
+        <div class="admin-grid-item">
+          <v-icon class="admin-grid-icon" name="fa-clock" />
+          <p class="admin-grid-label">Hora:</p>
+          <p class="admin-grid-value">{{ formattedTime }} hrs</p>
+        </div>
+        <div class="admin-grid-item">
+          <v-icon class="admin-grid-icon" name="fa-user" />
+          <p class="admin-grid-label">Agendado por:</p>
+          <p class="admin-grid-value">{{ props.data.userName }}</p>
+        </div>
+        <div class="admin-grid-item">
+          <v-icon class="admin-grid-icon" name="co-link" />
+          <p class="admin-grid-label">Enlace:</p>
+          <a class="admin-grid-link break-all" v-if="props.data.appointmentLink !== 'En proceso...'" target="_blank"
+            :href="props.data.appointmentLink">{{ props.data.appointmentLink }}</a>
+          <p class="admin-grid-value pending">En proceso...</p>
+        </div>
+
+
       </div>
+
 
       <!-- Sección de información del experto -->
-      <div class="admin-section">
-        <h4 class="admin-section-title">Datos del Experto</h4>
-        <div class="admin-grid">
-          <div class="admin-grid-item">
-            <v-icon name="fa-id-card" class="admin-grid-icon" />
-            <p class="admin-grid-label">Cédula:</p>
-            <p class="admin-grid-value">{{ props.data.expertProfessionalId }}</p>
-          </div>
-    
+      <h4 class="admin-section admin-section-title">Datos del Experto</h4>
+      <div class="admin-grid">
+        <div class="admin-grid-item">
+
+          <v-icon class="admin-grid-icon" name="fa-id-card" />
+          <p class="admin-grid-label">Cédula:</p>
+          <p class="admin-grid-value">{{ props.data.expertProfessionalId }}</p>
         </div>
+
+
       </div>
-       <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
 
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3 "
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="hi-solid-information-circle" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
+      <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
 
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Status de la cita:</p>
-            <p class="font-medium text-gray-600" :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}</p>
-          </div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+          :class="props.data.isFinished ? 'bg-green-50' : (props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50')">
+          <v-icon class="text-2xl"
+            :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')"
+            name="hi-solid-information-circle" />
+        </div>
 
-          <!--If isCanceled show-->
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-600">Status de la cita:</p>
+          <p class="font-medium text-gray-600"
+            :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')">
+            {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Reservada' }}</p>
+        </div>
 
-        </article>
+        <!--If isCanceled show-->
+
+      </article>
 
 
 
 
-        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+      <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2" v-if="props.data.isCanceled">
+        <!--Time-->
 
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="md-freecancellation-twotone" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+          :class="props.data.isFinished ? 'bg-green-50' : (props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50')">
+          <v-icon class="text-2xl"
+            :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')"
+            name="md-freecancellation-twotone" />
+        </div>
 
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Motivo de cancelación:</p>
-            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
-              {{ props.data.cancelationReason }}
-            </p>
-            
-          </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-600">Motivo de cancelación:</p>
+          <p class="font-medium text-gray-600" v-if="props.data.canceledAt">
+            {{ props.data.cancelationReason }}
+          </p>
 
-          <!--If isCanceled show-->
+        </div>
 
-        </article>
-        <article v-if="props.data.isCanceled " class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+        <!--If isCanceled show-->
 
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="fa-user" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
+      </article>
+      <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2" v-if="props.data.isCanceled">
+        <!--Time-->
 
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Cancelado por:</p>
-            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
-              {{ props.data.canceledByName}}
-            </p>
+        <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+          :class="props.data.isFinished ? 'bg-green-50' : (props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50')">
+          <v-icon class="text-2xl"
+            :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')"
+            name="fa-user" />
+        </div>
 
-          </div>
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-600">Cancelado por:</p>
+          <p class="font-medium text-gray-600" v-if="props.data.canceledAt">
+            {{ props.data.canceledByName }}
+          </p>
 
-          <!--If isCanceled show-->
+        </div>
 
-        </article>
+        <!--If isCanceled show-->
 
-        <article v-if="props.data.isCanceled" class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2"> <!--Time-->
+      </article>
 
-          <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
-            :class="props.data.isFinished ? 'bg-green-50' : props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50'">
-            <v-icon name="fa-calendar-check" class="text-2xl"
-              :class="props.data.isFinished ? 'text-green-600' : props.data.isCanceled ? 'text-red-600' : 'text-yellow-600'" />
-          </div>
+      <article class="flex items-center gap-2 border-b border-b-gray-100 pb-2 mb-2" v-if="props.data.isCanceled">
+        <!--Time-->
 
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-600">Fecha de cancelación:</p>
-            <p v-if="props.data.canceledAt" class="font-medium text-gray-600">
-              {{ new Date(props.data.canceledAt!.toDate()).toLocaleString('es-MX', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
-            </p>
-          </div>
+        <div class="w-14 h-14 flex items-center justify-center rounded-2xl mr-3"
+          :class="props.data.isFinished ? 'bg-green-50' : (props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50')">
+          <v-icon class="text-2xl"
+            :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')"
+            name="fa-calendar-check" />
+        </div>
 
-          <!--If isCanceled show-->
+        <div class="flex justify-between items-center w-full">
+          <p class="font-medium text-gray-600">Fecha de cancelación:</p>
+          <p class="font-medium text-gray-600" v-if="props.data.canceledAt">
+            {{ new Date(props.data.canceledAt!.toDate()).toLocaleString('es-MX', {
+              day: '2-digit', month: 'long', year:
+                'numeric', hour: '2-digit', minute: '2-digit'
+            }) }}
+          </p>
+        </div>
 
-        </article>
+        <!--If isCanceled show-->
+
+      </article>
 
       <!-- Footer con fecha de creación -->
       <div class="admin-modal-footer">
-        <p class="admin-created-at">Creada el {{ props.data.createdAt.toDate().toLocaleString('es-ES', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}</p>
+        <p class="admin-created-at">Creada el {{ props.data.createdAt.toDate().toLocaleString('es-ES', {
+          day: '2-digit',
+          month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        }) }}</p>
       </div>
 
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
-        <button class="admin-action-button edit !text-xs" v-if="!props.data.isCanceled" @click="markFunction('notFinish')">No finalizada</button>
-        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled" @click="presentCancelAlert">Cancelar Cita</button>
-        <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished" @click="markFunction('finish')">Finalizar Cita</button>
-        <button class="admin-action-button link !text-xs" v-if="!props.data.isCanceled" @click="presentLinkAlert">Agregar Link</button>
+        <button class="admin-action-button edit !text-xs" v-if="!props.data.isCanceled"
+          @click="markFunction('notFinish')">No finalizada</button>
+        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled"
+          @click="presentCancelAlert">Cancelar Cita</button>
+        <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished"
+          @click="markFunction('finish')">Finalizar Cita</button>
+        <button class="admin-action-button link !text-xs" v-if="!props.data.isCanceled"
+          @click="presentLinkAlert">Agregar
+          Link</button>
       </div>
     </div>
+
   </section>
 </template>
- <script lang="ts" setup>
+<script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
-import { IonRippleEffect, alertController } from '@ionic/vue';
+
 import { collection, doc, getDoc, getDocs, getFirestore, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { computed, ref } from 'vue';
 import { writeBatch } from 'firebase/firestore';
@@ -208,71 +223,71 @@ const experts = ref([
     color: { light: "#F0E6FF", strong: "#6600CC" }, // Morado arquitectónico
     icon: "md-architecture-sharp",
     description: "Diseño y planificación de espacios con profesionalismo y creatividad.",
-      },
+  },
   {
     specialty: "Servicios Web",
     color: { light: "#E6F9FF", strong: "#00BFFF" }, // Azul tecnológico
     icon: "md-web",
     description: "Desarrollo de soluciones digitales a medida para potenciar tu presencia online.",
-    },
+  },
   {
     specialty: "Publicidad",
     color: { light: "#FFF0E6", strong: "#FF6600" }, // Naranja publicitario
     icon: "ri-newspaper-fill",
     description: "Estrategias creativas para difundir y potenciar la imagen de tu marca.",
-    },
+  },
   {
     specialty: "Traductores",
     color: { light: "#FFF8E6", strong: "#FFD700" }, // Amarillo lingüístico
     icon: "hi-solid-translate",
     description: "Especialistas en comunicación multilingüe para romper barreras idiomáticas.",
-    },
+  },
   {
     specialty: "Peritaje",
     color: { light: "#F0E6FF", strong: "#800080" }, // Morado técnico
     icon: "gi-sherlock-holmes",
     description: "Evaluaciones técnicas y profesionales con rigor y precisión.",
-    },
+  },
   {
     specialty: "Ingeniería en Computación",
     color: { light: "#E6FFFA", strong: "#00CED1" }, // Turquesa tecnológico
     icon: "md-computer-twotone",
     description: "Innovación tecnológica y desarrollo de sistemas a la vanguardia.",
-    },
+  },
   {
     specialty: "Gestoría en Trámites",
     color: { light: "#E6E6FF", strong: "#4B0082" }, // Índigo administrativo
     icon: "ri-newspaper-fill",
     description: "Optimiza tus gestiones administrativas con asesorías especializadas.",
-    },
+  },
   {
     specialty: "Marketing",
     color: { light: "#FFE6F0", strong: "#FF1493" }, // Rosa marketing
     icon: "ri-marketing-strategy-fill",
     description: "Conecta con tu audiencia a través de estrategias innovadoras y efectivas.",
-    },
+  },
   {
     specialty: "Abogado",
     color: { light: "#F5E6D3", strong: "#8B4513" }, // Café legal
     icon: "fa-balance-scale",
     description: "Conecta con un abogado especializado para recibir asesoría legal directa y resolver tus asuntos jurídicos.",
-    },
+  },
   {
     specialty: "Psicólogo/a",
     color: { light: "#E6E6FF", strong: "#6A5ACD" }, // Lila psicológico
     icon: "ri-psychotherapy-fill",
     description: "Asesoría psicológica para resolver tus dudas y resolver tus problemas.",
-    },
+  },
   {
     specialty: "Maestro",
     color: { light: "#F0FFF0", strong: "#2E8B57" }, // Verde educativo
     icon: "gi-teacher",
     description: "Asesoría educativa para resolver tus dudas y resolver tus problemas.",
-    },
+  },
   {
     specialty: "Chef",
     color: { light: "#FFE6E6", strong: "#FF4500" }, // Rojo culinario
-    icon: "gi-chef-toque",   
+    icon: "gi-chef-toque",
   }
 ]);
 
@@ -292,10 +307,10 @@ const getIcon = (specialty: string): string => {
 };
 
 const props = defineProps({
-  data:{
-    type:Object as () => ISchedule,
-    required:true,
-  } 
+  data: {
+    type: Object as () => ISchedule,
+    required: true,
+  }
 })
 
 const getDayIndex = (dayName: string): number => {
@@ -310,7 +325,7 @@ const calculatedAppointmentDate = computed(() => {
   const createdAtDate = new Date(props.data.createdAt.seconds * 1000);
   // Reset time to start of day for accurate day calculation
   const currentDayIndex = createdAtDate.getDay();
-  
+
   // Handle DayName property (supporting both DayName and dayName just in case)
   const targetDayName = props.data.DayName || (props.data as any).dayName || '';
   const targetDayIndex = getDayIndex(targetDayName);
@@ -318,7 +333,7 @@ const calculatedAppointmentDate = computed(() => {
   if (targetDayIndex === -1) return createdAtDate;
 
   let daysUntil = targetDayIndex - currentDayIndex;
-  
+
   // If the day is today or in the past, add 7 days to get the next occurrence
   // Unless it's today and the time hasn't passed? 
   // For simplicity and typical booking flows:
@@ -331,7 +346,7 @@ const calculatedAppointmentDate = computed(() => {
 
   const futureDate = new Date(createdAtDate);
   futureDate.setDate(createdAtDate.getDate() + daysUntil);
-  
+
   return futureDate;
 });
 
@@ -346,17 +361,17 @@ const formattedDate = computed(() => {
 });
 
 const formattedTime = computed(() => {
-    return props.data.expertSchedule.time;
+  return props.data.expertSchedule.time;
 })
 
 const formattedDay = computed(() => {
-    return calculatedAppointmentDate.value?.toLocaleDateString('es-MX', { weekday: 'long' }) || props.data.DayName;
+  return calculatedAppointmentDate.value?.toLocaleDateString('es-MX', { weekday: 'long' }) || props.data.DayName;
 })
 
 const view = ref<'card' | 'modal'>('card');
 
 const toggleView = () => {
-    view.value = view.value === 'card' ? 'modal' : 'card';
+  view.value = view.value === 'card' ? 'modal' : 'card';
 }
 
 const db = getFirestore();
@@ -365,13 +380,13 @@ const emit = defineEmits(['reloadData']);
 
 const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish' | 'link', reason?: string) => {
   try {
- 
+
     const docRef = doc(db, `schedules/${props.data.docId}`)
     const docSnapshot = await getDoc(docRef)
 
-    if(!docSnapshot.exists()){
+    if (!docSnapshot.exists()) {
       console.log('No se encontró el documento');
-    } 
+    }
     console.log(JSON.stringify(docSnapshot.data()));
     // Default state
     const updateData = {
@@ -402,7 +417,7 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish' | 'link', re
       updateData.appointmentLink = reason!;
     }
 
-   await updateDoc(docRef, updateData);
+    await updateDoc(docRef, updateData);
 
     emit('reloadData');
     console.log('Documentos actualizados correctamente');
@@ -536,7 +551,8 @@ const presentLinkAlert = async () => {
   gap: 8px;
 }
 
-.admin-date, .admin-time {
+.admin-date,
+.admin-time {
   font-size: 14px;
   color: #6b7280;
 }
@@ -557,6 +573,7 @@ const presentLinkAlert = async () => {
   background: #fef3c7;
   color: #92400e;
 }
+
 .admin-status.cancel {
   background: #fec7c7;
   color: #920e0e;
@@ -645,7 +662,7 @@ const presentLinkAlert = async () => {
 .admin-grid-link {
   color: #2563eb;
   text-decoration: none;
-  
+
 }
 
 .admin-grid-link:hover {
@@ -696,6 +713,7 @@ const presentLinkAlert = async () => {
   background: #c9ceff;
   color: #003045;
 }
+
 .admin-action-button:hover {
   opacity: 0.9;
 }
