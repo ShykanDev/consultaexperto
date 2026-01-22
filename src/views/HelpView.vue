@@ -1,77 +1,86 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
-    <header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
-      <nav class="web-toolbar h-16 flex items-center px-4 bg-white/80 backdrop-blur-md">
-        <div class="web-buttons">
-          <button
-            class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 group"
-            @click="router.back()">
-            <v-icon class="text-blue-600 transition-transform group-hover:-translate-x-1"
-              name="md-arrowbackiosnew-round" />
-            <span class="ml-1 text-lg font-semibold text-blue-600">Atrás</span>
-          </button>
-        </div>
-        <h1 class="web-title text-lg font-bold text-gray-800 ml-4 font-quicksand">Centro de Ayuda </h1>
-      </nav>
-    </header>
+    <header-component :pageTitle="'Ayuda'" />
 
-    <main class="web-content overflow-y-auto p-4 space-y-8">
-      <!-- Section 1: Contact Form -->
-      <section class="animate-fade-up">
-        <div class="p-6 bg-white shadow-xl rounded-2xl ring-1 ring-gray-100">
-          <h2 class="mb-2 text-2xl font-bold text-blue-600 text-center">Contacto</h2>
-          <p class="mb-6 text-sm text-gray-500 text-center">
-            ¿Tiene alguna duda o sugerencia? Envíenos un mensaje directo.
-          </p>
+    <section class="web-content overflow-y-auto p-4 space-y-8 mt-24">
+      <!-- Section 1: Contact Form – Versión Desktop/Web más limpia -->
+      <section class="animate-fade-up py-8">
+        <div class=" bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <!-- Header -->
+          <div class="px-8 pt-8 pb-4 border-b border-gray-100">
+            <h2 class="text-2xl font-semibold text-gray-800 text-center">Contacto</h2>
+            <p class="mt-2 text-sm text-gray-500 text-center">
+              ¿Alguna duda, sugerencia o problema? Escríbenos directamente.
+            </p>
+          </div>
 
-          <form class="space-y-4" @submit.prevent="handleContactSubmit">
-            <div class="space-y-1">
-              <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Asunto</label>
-              <input
-                class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                v-model="contactForm.subject" type="text" placeholder="Ej. Problema con mi cuenta" />
+          <!-- Form -->
+          <form class="px-8 py-6 space-y-6" @submit.prevent="handleContactSubmit">
+            <!-- Asunto -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Asunto
+              </label>
+              <input class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 
+                 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                 outline-none transition-all shadow-sm hover:border-gray-400" v-model="contactForm.subject" type="text"
+                placeholder="Ejemplo: Problema con mi cuenta o consulta pendiente" />
             </div>
 
-            <div>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                  type="checkbox" v-model="isConsultRelated">
-                <span class="px-1 font-poppins text-xs"
-                  :class="{ 'text-blue-600': isConsultRelated, 'text-gray-600': !isConsultRelated }">
-                  <v-icon class="mr-1" name="px-calendar-alert" scale="1.1" />
-                  Mi problema es sobre una consulta
-                </span>
+            <!-- Checkbox consulta -->
+            <div class="flex items-start">
+              <div class="flex items-center h-5">
+                <input id="is-consult-related" type="checkbox"
+                  class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  v-model="isConsultRelated" />
+              </div>
+              <label for="is-consult-related" class="ml-3 text-sm text-gray-700 flex items-center gap-2 cursor-pointer">
+                <v-icon name="px-calendar-alert" scale="1.1" class="text-gray-500" />
+                Mi mensaje está relacionado con una consulta anterior
               </label>
             </div>
 
-            <div v-if="isConsultRelated">
-              <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase block mb-1">Seleccionar
-                Consulta</label>
-              <select
-                class="web-select w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 transition-all font-poppins text-sm"
-                v-model="contactForm.scheduleId">
-                <option value="">Seleccione una consulta</option>
+            <!-- Selector de consulta (solo si aplica) -->
+            <div v-if="isConsultRelated" class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Seleccionar consulta relacionada
+              </label>
+              <select class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 
+                 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                 outline-none transition-all shadow-sm hover:border-gray-400" v-model="contactForm.scheduleId">
+                <option value="" disabled>— Selecciona una consulta —</option>
                 <option v-for="appointment in finishedAppointments" :key="appointment.docId" :value="appointment.docId">
-                  {{ appointment.expertName }} - {{ appointment.expertSpecialty }} ({{
-                    appointment.finishedAt?.toDate().toLocaleDateString() }})
+                  {{ appointment.expertName }} • {{ appointment.expertSpecialty }}
+                  <span class="text-gray-500 text-xs">
+                    ({{ appointment.finishedAt?.toDate().toLocaleDateString('es-MX') }})
+                  </span>
                 </option>
               </select>
             </div>
 
-            <div class="space-y-1">
-              <label class="text-xs font-semibold tracking-wide text-gray-500 uppercase">Mensaje</label>
-              <textarea
-                class="w-full px-4 py-3 text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
-                v-model="contactForm.message" :rows="4"
-                placeholder="Describa su situación detalladamente..."></textarea>
+            <!-- Mensaje -->
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                Mensaje
+              </label>
+              <textarea class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 
+                 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                 outline-none transition-all shadow-sm hover:border-gray-400 resize-y min-h-[140px]"
+                v-model="contactForm.message" placeholder="Describe con detalle tu situación, duda o sugerencia..."
+                rows="5"></textarea>
             </div>
 
-            <button
-              class="w-full py-4 text-white font-bold bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2"
-              type="submit" :disabled="isSending">
-              <v-icon name="fa-paper-plane" scale="1" />
-              <span>{{ isSending ? 'Enviando...' : 'Enviar Mensaje' }}</span>
-            </button>
+            <!-- Botón Enviar -->
+            <div class="pt-4">
+              <button type="submit" :disabled="isSending" class="w-full py-3.5 px-6 text-base font-medium text-white 
+                 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 
+                 focus:ring-2 focus:ring-blue-300 focus:outline-none 
+                 rounded-lg shadow-md transition-all duration-200 
+                 flex items-center justify-center gap-2.5 disabled:opacity-60 disabled:cursor-not-allowed">
+                <v-icon v-if="!isSending" name="fa-paper-plane" scale="1" />
+                <span>{{ isSending ? 'Enviando...' : 'Enviar mensaje' }}</span>
+              </button>
+            </div>
           </form>
         </div>
       </section>
@@ -164,7 +173,7 @@
           © 2026 ConsultaExperto. Todos los derechos reservados.
         </p>
       </footer>
-    </main>
+    </section>
   </div>
 </template>
 
@@ -176,6 +185,7 @@ import { computed, ref, onMounted, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import emailjs from '@emailjs/browser';
 import { useToast } from 'vue-toastification';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 
 const router = useRouter();
 const toast = useToast();

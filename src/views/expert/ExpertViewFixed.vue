@@ -1,25 +1,6 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
-    <header
-      class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm border-none shadow-none">
-      <nav class="web-toolbar h-16 flex items-center px-4">
-        <div class="web-buttons">
-          <button class="web-back-btn p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-            @click="$router.back()">
-            <v-icon name="md-arrowbackiosnew-round" />
-          </button>
-        </div>
-        <h1
-          class="web-title text-lg font-bold text-gray-900 text-sm text-center font-manrope bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200">
-          Perfil de {{ expertData?.fullName?.split(' ')[0] || 'Usuario' }}
-        </h1>
-        <div class="web-buttons flex items-center space-x-2 order-last">
-          <button
-            class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50"
-            style="width: 4rem"></button>
-        </div>
-      </nav>
-    </header>
+    <header-component :pageTitle="'Perfil de ' + expertData?.fullName" />
 
     <main class="web-content overflow-y-auto p-4">
       <section class="p-4 space-y-6" v-if="!expertDataLoaded">
@@ -81,7 +62,7 @@
 
         <!-- Profile Header -->
         <div
-          class="web-card bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden ion-no-margin flex flex-col items-center p-6"
+          class="web-card bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden ion-no-margin flex flex-col items-center p-6 mt-24"
           style="background-color: #fff">
 
 
@@ -196,10 +177,10 @@
                 'bg-gray-200 text-gray-400 line-through ring-gray-300 pointer-events-none': slot.isAvailable
               }">
               {{ slot.time }}
-              <div class="text-[9px] uppercase tracking-tighter mt-0.5">
+              <div class='text-[9px] uppercase tracking-tighter mt-0.5'>
                 <span v-if="!slot.isAvailable && slot.takenBy == null">Disponible</span>
                 <span v-else-if="slot.takenBy != null && slot.takenBy !== authStore().getUserUid">Ocupado</span>
-                <span v-else-if="slot.takenBy === authStore().getUserUid">Tuyo</span>
+                <span v-else-if="slot.takenBy === authStore().getUserUid">Tomado por usted</span>
               </div>
             </div>
           </article>
@@ -253,6 +234,7 @@ import emailjs from '@emailjs/browser';
 import { IExpert } from '@/interfaces/IExpert';
 import { useRating } from '@/composables/stars';
 import { useHiringStore } from '@/store/hiring';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 
 // Destructure the calcStarsValue function from useRating composable
 const { calcStarsValue } = useRating();

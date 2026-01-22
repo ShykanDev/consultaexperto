@@ -1,11 +1,12 @@
 <!-- ExpertCard.vue -->
 <template>
-  <div
-    class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm  hover:-translate-y-2 transition-all cursor-pointer"
+  <div @mouseover="hover = true" @mouseleave="hover = false"
+    :class="hover ? 'animate__animated animate__headShake' : ''"
+    class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:-translate-y-2 transition-all cursor-pointer"
     @click="$emit('select', props.name)">
     <article class="flex justify-center items-center">
       <div
-        class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center web-icon  flex-shrink-0">
+        class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center web-icon flex-shrink-0">
         <v-icon :name="props.icon" size="large" />
       </div>
 
@@ -23,6 +24,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import 'animate.css';
 
 const props = defineProps({
   name: {
@@ -38,6 +41,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const hover = ref(false);
 
 const emit = defineEmits(['select'])
 </script>

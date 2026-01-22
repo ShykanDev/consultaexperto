@@ -7,34 +7,7 @@
         </div>
 
         <!-- Floating Premium Header -->
-        <header class="fixed top-6 inset-x-4 md:inset-x-8 z-50 flex justify-center">
-            <nav
-                class="w-full max-w-7xl bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] rounded-[2rem] px-6 md:px-10 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                        <v-icon name="hi-sparkles" fill="white" scale="1.2" />
-                    </div>
-                    <h1
-                        class="text-2xl font-black bg-gradient-to-r from-blue-700 via-blue-500 to-indigo-600 bg-clip-text text-transparent tracking-tight">
-                        Expertos
-                    </h1>
-                </div>
-
-                <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                    <a href="#" class="hover:text-blue-600 transition-colors">Especialidades</a>
-                    <a href="#" class="hover:text-blue-600 transition-colors">Cómo funciona</a>
-                    <a href="#" class="hover:text-blue-600 transition-colors">Beneficios</a>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button @click="toggleExpertPopup('open')"
-                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-full shadow-lg shadow-blue-200 transition-all active:scale-95">
-                        Explorar Ahora
-                    </button>
-                </div>
-            </nav>
-        </header>
+        <HeaderComponent :pageTitle="'Listado de Expertos'" />
 
         <main class="relative z-10 pt-32 pb-20 px-4 md:px-8">
             <div class=" mx-auto space-y-24">
@@ -53,7 +26,7 @@
                         </div>
 
                         <h1 class="text-5xl md:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
-                            Encuentra el <span class="text-blue-600">conocimiento</span> que necesitas.
+                            Encuentre al <span class="text-blue-600">experto</span> que necesita.
                         </h1>
 
                         <p class="text-lg md:text-xl text-slate-500 max-w-2xl leading-relaxed">
@@ -81,7 +54,7 @@
                 </section>
 
                 <!-- Premium Service Grid -->
-                <section class="space-y-12">
+                <section id="how-it-works" class="space-y-12 scroll-mt-32">
                     <div class="text-center space-y-4">
                         <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">Especialidades
                             Destacadas</h2>
@@ -148,7 +121,7 @@
                 </section>
 
                 <!-- All Specialized Areas -->
-                <section class="space-y-12">
+                <section id="all-experts" class="space-y-12 scroll-mt-32">
                     <div class="flex items-end justify-between px-4">
                         <div>
                             <h2 class="text-3xl font-black text-slate-900 tracking-tight">Todas las áreas</h2>
@@ -311,11 +284,13 @@ import { useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
 
 import SelectExpertCard from './client/SelectExpertCard.vue';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 
 // Remove explicit ionicons import for icons in template if using v-icon or oh-vue-icons
 // But for the array 'experts', we use Ionic icons. SelectExpertCard handles them? 
 // Assuming SelectExpertCard accepts ionicons object or we need to map them if SelectExpertCard expects something else.
 // Based on previous code, it seems it expects ionicons.
+
 
 const toast = useToast();
 

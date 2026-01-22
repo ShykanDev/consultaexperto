@@ -1,26 +1,10 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
     <!--Header-->
-    <header
-      class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm ion-no-border font-poppins">
-      <nav class="web-toolbar h-16 flex items-center px-4 justify-between">
-        <h1 class="web-title text-lg font-bold text-gray-900 text-center text-blue-600">Agenda</h1>
-        <div class="web-buttons">
-          <button
-            class="web-btn inline-flex items-center justify-center bg-blue-600 text-white rounded-lg p-2 hover:bg-blue-700 shadow-md transition-all active:scale-95"
-            @click="refreshData">
-            <div class="w-5 h-5 flex items-center justify-center animate-spin" v-if="isLoading">
-              <v-icon name="md-refresh" />
-            </div>
-            <v-icon name="md-refresh" v-else />
-            <span class="ml-2 font-semibold text-sm">Actualizar</span>
-          </button>
-        </div>
-      </nav>
-    </header>
+    <HeaderComponent :pageTitle="'Agenda'" />
 
     <!--Content-->
-    <div class=" pb-24">
+    <div class="mt-24">
 
       <nav class="web-toolbar h-16 flex items-center px-4 mt-2">
         <div class="relative w-full">
@@ -137,6 +121,7 @@ import { authStore as authStoreInstance } from '@/store/auth';
 import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import 'animate.css';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 
 const authStore = authStoreInstance();
 const db = getFirestore();

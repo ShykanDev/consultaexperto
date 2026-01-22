@@ -89,7 +89,7 @@ const viewSchedule = async (expertUid?: string) => {
     }
     expertUiStore.resetExpertUid();
     expertUiStore.setExpertUid(props.expertData.userUid);
-    router.push('/expert-info');
+    router.push('/expert-info-fixed');
     closeCard();
   } catch (error) {
     console.error('Navigation error:', error);

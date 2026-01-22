@@ -45,6 +45,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/client/UserAccount.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/expert-info-fixed",
+    component: () => import("@/views/expert/ExpertViewFixed.vue"),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/client-appointments",
+    component: () => import("@/views/client/ClientAppointmentsView.vue"),
+    meta: { requiresAuth: true },
+  },
   // Expert Routes
   {
     path: "/expert-appointments",
@@ -92,6 +102,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/LogoutView.vue"),
     meta: { requiresAuth: true },
   },
+  {
+    path: "/hiring",
+    component: () => import("@/views/HiringView.vue"),
+    meta: { requiresAuth: false },
+  },
   // Legacy/Test
   {
     path: "/expert",
@@ -107,6 +122,15 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior(to) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: "smooth",
+      };
+    }
+    return { top: 0 };
+  },
 });
 
 router.beforeEach((to, from, next) => {
