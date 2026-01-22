@@ -1,260 +1,307 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900 antialiased">
-        <!-- Header moderno glass -->
-        <header class="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-xl border-b border-blue-100/30 shadow-sm">
-            <nav class="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-                <h1
-                    class="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent tracking-tight">
-                    Expertos
-                </h1>
-                <div class="flex items-center gap-4">
-                    <!-- Puedes agregar menú o login aquí si lo necesitas -->
+    <div class="min-h-screen bg-[#f8fafc] text-slate-900 selection:bg-blue-100 antialiased font-sans">
+        <!-- Main Background Decoration -->
+        <div class="fixed inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-100/40 rounded-full blur-[120px]"></div>
+            <div class="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-indigo-50/50 rounded-full blur-[100px]"></div>
+        </div>
+
+        <!-- Floating Premium Header -->
+        <header class="fixed top-6 inset-x-4 md:inset-x-8 z-50 flex justify-center">
+            <nav
+                class="w-full max-w-7xl bg-white/70 backdrop-blur-2xl border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] rounded-[2rem] px-6 md:px-10 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                        <v-icon name="hi-sparkles" fill="white" scale="1.2" />
+                    </div>
+                    <h1
+                        class="text-2xl font-black bg-gradient-to-r from-blue-700 via-blue-500 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+                        Expertos
+                    </h1>
+                </div>
+
+                <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+                    <a href="#" class="hover:text-blue-600 transition-colors">Especialidades</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Cómo funciona</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Beneficios</a>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button @click="toggleExpertPopup('open')"
+                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-full shadow-lg shadow-blue-200 transition-all active:scale-95">
+                        Explorar Ahora
+                    </button>
                 </div>
             </nav>
         </header>
 
-        <main class="px-6 lg:px-8 py-10 space-y-16">
-            <!-- Hero Section – más limpia y profesional -->
-            <section class="relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-100/20">
-                <img class="absolute inset-0 w-full h-full object-cover" src="../assets/img/vectorExperts.jpeg"
-                    alt="Background" />
-                <div class="absolute inset-0 bg-gradient-to-t from-blue-950/70 via-blue-900/40 to-transparent"></div>
+        <main class="relative z-10 pt-32 pb-20 px-4 md:px-8">
+            <div class=" mx-auto space-y-24">
 
-                <div class="relative z-10 px-8 py-16 md:py-24 flex flex-col gap-6 max-w-3xl">
-                    <span
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/90 text-white text-sm font-semibold rounded-full backdrop-blur-sm w-fit">
-                        #1 Plataforma de Expertos Verificados
-                    </span>
-                    <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
-                        Conecta con expertos <br class="hidden sm:block" />de élite en minutos
-                    </h1>
-                    <p class="text-lg md:text-xl text-blue-100 max-w-2xl">
-                        Asesoramiento profesional personalizado en negocios, salud, legal, arquitectura y más.
-                    </p>
-                    <button @click="toggleExpertPopup('open')"
-                        class="w-fit mt-4 px-8 py-4 bg-white text-blue-900 font-bold rounded-xl shadow-lg hover:bg-blue-50 hover:shadow-xl transition-all text-lg">
-                        Ver Expertos Disponibles
-                    </button>
-                </div>
-            </section>
-
-            <!-- Why Choose Us – bento grid style -->
-            <section class="space-y-8">
-                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900">
-                    ¿Por qué elegirnos?
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div
-                        class="bg-white/80 backdrop-blur-md border border-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group">
+                <!-- Modern Integrated Hero -->
+                <section class="relative flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    <div class="flex-1 space-y-8 text-center lg:text-left">
                         <div
-                            class="w-14 h-14 rounded-xl bg-blue-100/50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-                            <v-icon name="md-checkcircle-outline" scale="2" />
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-widest rounded-full border border-blue-100">
+                            <span class="relative flex h-2 w-2">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                            </span>
+                            Plataforma Líder de Consultoría
                         </div>
-                        <h3 class="text-xl font-bold mb-2">Profesionales Verificados</h3>
-                        <p class="text-gray-600">Revisión manual y certificación para cada experto.</p>
+
+                        <h1 class="text-5xl md:text-7xl font-black text-slate-900 leading-[1.1] tracking-tight">
+                            Encuentra el <span class="text-blue-600">conocimiento</span> que necesitas.
+                        </h1>
+
+                        <p class="text-lg md:text-xl text-slate-500 max-w-2xl leading-relaxed">
+                            Conecta en vivo con profesionales certificados. Desde medicina hasta estrategia legal, la
+                            respuesta que buscas está a un clic.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                            <button @click="toggleExpertPopup('open')"
+                                class="group px-8 py-5 bg-slate-900 text-white font-bold rounded-2xl flex items-center gap-3 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">
+                                Iniciar Consultoría
+                                <v-icon name="hi-arrow-right" class="group-hover:translate-x-1 transition-transform" />
+                            </button>
+                            <div class="flex items-center -space-x-3 px-4">
+                                <div v-for="i in 4" :key="i"
+                                    class="w-10 h-10 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold">
+                                    <img :src="`https://i.pravatar.cc/150?u=${i}`" class="rounded-full" />
+                                </div>
+                                <div class="pl-6 text-sm font-bold text-slate-600">+10k usuarios confían</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div
-                        class="bg-white/80 backdrop-blur-md border border-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-blue-100/50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-                            <v-icon name="md-lockclosed-outline" scale="2" />
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Plataforma 100% Segura</h3>
-                        <p class="text-gray-600">Encriptación avanzada y pagos protegidos.</p>
+
+                </section>
+
+                <!-- Premium Service Grid -->
+                <section class="space-y-12">
+                    <div class="text-center space-y-4">
+                        <h2 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">Especialidades
+                            Destacadas</h2>
+                        <p class="text-slate-500 max-w-xl mx-auto">Selecciona una categoría para ver los expertos
+                            disponibles en tiempo real.</p>
                     </div>
 
-                    <div
-                        class="bg-white/80 backdrop-blur-md border border-blue-100 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all group">
-                        <div
-                            class="w-14 h-14 rounded-xl bg-blue-100/50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
-                            <v-icon name="hi-sparkles" scale="2" />
-                        </div>
-                        <h3 class="text-xl font-bold mb-2">Calidad Garantizada</h3>
-                        <p class="text-gray-600">Asesorías de alto nivel con satisfacción asegurada.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Expertos en Acción – horizontal scroll moderno -->
-            <section class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-3xl font-bold text-gray-900">Expertos en Acción</h2>
-                </div>
-                <div class="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide">
-                    <div v-for="(item, i) in [
-                        { img: '../assets/img/lawyer.webp', cat: 'Negocios', title: 'Estrategia Corporativa', desc: 'Planificación y crecimiento empresarial.' },
-                        { img: '../assets/img/doctorTeal.webp', cat: 'Salud', title: 'Consulta Médica', desc: 'Asesoramiento confiable y especializado.' },
-                        { img: '../assets/img/constructor.webp', cat: 'Arquitectura', title: 'Diseño & Construcción', desc: 'Proyectos innovadores y sostenibles.' }
-                    ]" :key="i"
-                        class="flex-none w-80 md:w-96 snap-center bg-white rounded-2xl overflow-hidden border border-blue-100 shadow-md hover:shadow-xl transition-all">
-                        <img :src="item.img" class="w-full h-48 object-cover" />
-                        <div class="p-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        <div v-for="(item, i) in [
+                            { title: 'Medicina', icon: 'md-medicalinformation-outlined', bg: 'bg-emerald-50 text-emerald-600', sub: 'Salud y bienestar' },
+                            { title: 'Legal', icon: 'fa-gavel', bg: 'bg-blue-50 text-blue-600', sub: 'Leyes y trámites' },
+                            { title: 'Negocios', icon: 'bi-briefcase', bg: 'bg-indigo-50 text-indigo-600', sub: 'Estrategia y ventas' },
+                            { title: 'Tecnología', icon: 'md-computer-twotone', bg: 'bg-purple-50 text-purple-600', sub: 'Soporte y dev' }
+                        ]" :key="i" @click="getExpertSelection(item.title)"
+                            class="group p-8 bg-white border border-slate-100 rounded-[2.5rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all cursor-pointer">
                             <div
-                                class="flex items-center gap-2 text-blue-600 text-sm font-semibold uppercase tracking-wide mb-2">
-                                <v-icon
-                                    :name="i === 0 ? 'fa-briefcase' : i === 1 ? 'fa-user-md' : 'md-architecture-sharp'" />
-                                {{ item.cat }}
+                                :class="['w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform font-bold', item.bg]">
+                                <v-icon :name="item.icon" scale="2" />
                             </div>
-                            <h3 class="text-xl font-bold mb-2">{{ item.title }}</h3>
-                            <p class="text-gray-600">{{ item.desc }}</p>
+                            <h3 class="text-xl font-black text-slate-900 mb-1">{{ item.title }}</h3>
+                            <p class="text-sm font-medium text-slate-400">{{ item.sub }}</p>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Más Consultados – grid clean -->
-            <section class="space-y-6">
-                <h2 class="text-3xl font-bold text-gray-900">Más Consultados</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div v-for="(item, i) in [
-                        { title: 'Importación y Exportación', sub: 'Logística y Aduanas' },
-                        { title: 'Asesoramiento Legal', sub: 'Derecho Civil & Corporativo' },
-                        { title: 'Medicina', sub: 'Consulta Especializada' }
-                    ]" :key="i"
-                        class="bg-white border border-blue-100 rounded-2xl p-6 flex flex-col gap-4 hover:shadow-lg transition-all">
-                        <div class="flex items-center gap-4">
-                            <!-- Puedes mantener o reemplazar las imágenes de background -->
-                            <div
-                                class="w-16 h-16 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold">
-                                {{ item.title.charAt(0) }}
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-lg">{{ item.title }}</h3>
-                                <p class="text-sm text-gray-600">{{ item.sub }}</p>
-                            </div>
+                <!-- Bento Style Quality Section -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="md:col-span-2 bg-gradient-to-br from-blue-700 to-indigo-900 rounded-[3rem] p-12 text-white relative overflow-hidden">
+                        <div class="relative z-10 space-y-6 max-w-md">
+                            <h2 class="text-4xl font-black leading-tight">Garantía de Calidad Certificada</h2>
+                            <p class="text-blue-100/80 text-lg">Cada experto pasa por una validación exhaustiva de
+                                identidad y credenciales profesionales antes de unirse.</p>
+                            <ul class="space-y-4">
+                                <li v-for="text in ['Verificación de títulos', 'Pruebas de conocimiento', 'Entrevista técnica']"
+                                    :key="text" class="flex items-center gap-3 font-semibold">
+                                    <div class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                        <v-icon name="md-check" scale="0.8" />
+                                    </div>
+                                    {{ text }}
+                                </li>
+                            </ul>
                         </div>
-                        <button @click="getExpertSelection(item.title)"
-                            class="mt-auto w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
-                            Consultar Ahora
+                        <v-icon name="hi-shield-check" scale="15"
+                            class="absolute -right-10 -bottom-10 text-white/5 rotate-12" />
+                    </div>
+
+                    <div
+                        class="bg-white border border-slate-100 rounded-[3rem] p-10 flex flex-col justify-between shadow-sm">
+                        <div class="space-y-4">
+                            <div
+                                class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600">
+                                <v-icon name="hi-star" scale="1.5" />
+                            </div>
+                            <h3 class="text-2xl font-extrabold text-slate-900">4.9/5 Estrellas</h3>
+                            <p class="text-slate-500 font-medium leading-relaxed">Promedio de satisfacción basado en más
+                                de 20,000 sesiones de asesoría anuales.</p>
+                        </div>
+                        <button @click="toggleExpertPopup('open')"
+                            class="w-full py-4 bg-slate-50 text-slate-900 font-bold rounded-2xl hover:bg-slate-100 transition-colors">
+                            Ver Opiniones
                         </button>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <!-- Áreas de Especialización – usando tu componente -->
-            <section class="space-y-6">
-                <h2 class="text-3xl font-bold text-gray-900">Áreas de Especialización</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <SelectExpertCard v-for="expert in experts" :key="expert.name" :name="expert.name"
-                        :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)"
-                        :data-cy="`expert-card-${expert.name}`" />
-                </div>
-            </section>
-
-            <!-- Testimonials – scroll horizontal elegante -->
-            <section class="space-y-6 bg-blue-50/50 -mx-6 px-6 py-12 rounded-3xl">
-                <div class="text-center space-y-3">
-                    <h2 class="text-3xl font-bold text-gray-900">Lo que dicen nuestros clientes</h2>
-                    <p class="text-gray-600">Experiencias reales de quienes ya confiaron en nosotros.</p>
-                </div>
-                <div class="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory scrollbar-hide">
-                    <div v-for="(t, i) in testimonials" :key="i"
-                        class="flex-none w-80 md:w-96 snap-center bg-white p-6 rounded-2xl border border-blue-100 shadow-md">
-                        <div class="flex text-yellow-400 mb-4">
-                            <v-icon name="io-star" v-for="n in 5" :key="n" scale="1.2" />
-                        </div>
-                        <p class="text-gray-700 italic mb-6">{{ t.text }}</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-full bg-gray-200"
-                                :style="{ backgroundImage: `url('${t.img}')`, backgroundSize: 'cover' }" />
-                            <div>
-                                <p class="font-bold">{{ t.name }}</p>
-                                <p class="text-sm text-gray-500">{{ t.role }}</p>
-                            </div>
+                <!-- All Specialized Areas -->
+                <section class="space-y-12">
+                    <div class="flex items-end justify-between px-4">
+                        <div>
+                            <h2 class="text-3xl font-black text-slate-900 tracking-tight">Todas las áreas</h2>
+                            <p class="text-slate-500 font-medium">Contamos con una red global de expertos listos para
+                                ayudarte.</p>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <!-- Banners de anuncio – glass style -->
-            <section class="grid md:grid-cols-2 gap-6">
-                <div
-                    class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-900 to-blue-900 text-white shadow-2xl">
-                    <div class="absolute inset-0 bg-white/5 backdrop-blur-sm" />
-                    <div class="relative z-10 p-8 flex flex-col gap-4">
-                        <span class="text-sm font-semibold text-indigo-200">Recomendado</span>
-                        <h3 class="text-2xl font-bold">miexpareja.net</h3>
-                        <p class="text-indigo-100">Asesoramiento en relaciones y bienestar emocional.</p>
-                        <a href="https://miexpareja.net"
-                            class="mt-4 w-fit px-6 py-3 bg-white text-indigo-900 font-bold rounded-xl hover:bg-indigo-50 transition">
-                            Visitar Sitio
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <SelectExpertCard v-for="expert in experts" :key="expert.name" :name="expert.name"
+                            :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)"
+                            class="!rounded-[2.5rem] !border-slate-100 hover:!shadow-xl transition-all" />
+                    </div>
+                </section>
+
+                <!-- Premium Banner Recommendations -->
+                <section class="grid md:grid-cols-2 gap-8">
+                    <div
+                        class="group relative rounded-[3rem] overflow-hidden bg-slate-900 p-12 text-white h-[400px] flex flex-col justify-between">
+                        <div
+                            class="absolute inset-0 opacity-20 group-hover:scale-105 transition-transform duration-[2s]">
+                            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80"
+                                class="w-full h-full object-cover" />
+                        </div>
+                        <div class="relative z-10 space-y-4">
+                            <span
+                                class="px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-widest border border-white/20">Wellness</span>
+                            <h3 class="text-4xl font-black leading-tight">miexpareja.net</h3>
+                            <p class="text-slate-300 font-medium max-w-xs">Especialistas en relaciones y bienestar
+                                emocional disponibles 24/7.</p>
+                        </div>
+                        <a href="https://miexpareja.net" target="_blank"
+                            class="relative z-10 w-fit px-8 py-4 bg-white text-slate-900 font-bold rounded-2xl hover:bg-blue-50 transition-colors">
+                            Ir al Sitio
                         </a>
                     </div>
-                </div>
 
-                <div
-                    class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-900 to-teal-900 text-white shadow-2xl">
-                    <div class="absolute inset-0 bg-white/5 backdrop-blur-sm" />
-                    <div class="relative z-10 p-8 flex flex-col gap-4">
-                        <span class="text-sm font-semibold text-emerald-200">Recomendado</span>
-                        <h3 class="text-2xl font-bold">miarrendatario.com</h3>
-                        <p class="text-emerald-100">Soluciones para arrendadores y contratistas expertos.</p>
-                        <a href="https://miarrendatario.com"
-                            class="mt-4 w-fit px-6 py-3 bg-white text-emerald-900 font-bold rounded-xl hover:bg-emerald-50 transition">
-                            Visitar Sitio
+                    <div
+                        class="group relative rounded-[3rem] overflow-hidden bg-blue-600 p-12 text-white h-[400px] flex flex-col justify-between">
+                        <div
+                            class="absolute inset-0 opacity-20 group-hover:scale-105 transition-transform duration-[2s]">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80"
+                                class="w-full h-full object-cover" />
+                        </div>
+                        <div class="relative z-10 space-y-4">
+                            <span
+                                class="px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-widest border border-white/20">Propiedades</span>
+                            <h3 class="text-4xl font-black leading-tight">miarrendatario.com</h3>
+                            <p class="text-blue-100 font-medium max-w-xs">Todo lo que necesitas para gestionar tus
+                                rentas y arrendatarios.</p>
+                        </div>
+                        <a href="https://miarrendatario.com" target="_blank"
+                            class="relative z-10 w-fit px-8 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-white/90 transition-colors">
+                            Ir al Sitio
                         </a>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
+        </main>
 
-            <!-- Footer minimal -->
-            <footer class="border-t border-gray-200 pt-12 pb-8 text-center md:text-left">
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    <div class="space-y-4">
-                        <h4 class="font-bold text-lg">Legal</h4>
-                        <div class="flex flex-col gap-2 text-gray-600">
-                            <a href="#" class="hover:text-blue-600 transition">Política de privacidad</a>
-                            <a href="#" class="hover:text-blue-600 transition">Términos y condiciones</a>
+        <!-- Premium Minimal Footer -->
+        <footer class="bg-white border-t border-slate-100 pt-24 pb-12">
+            <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 justify-center md:justify-start">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <v-icon name="hi-sparkles" fill="white" scale="0.8" />
                         </div>
+                        <span class="text-xl font-black text-slate-900">Expertos</span>
                     </div>
-                    <div class="space-y-4">
-                        <h4 class="font-bold text-lg">Contacto</h4>
-                        <div class="flex flex-col gap-2 text-gray-600">
-                            <router-link to="/login" class="hover:text-blue-600 transition">Soporte</router-link>
-                            <router-link to="/register" class="hover:text-blue-600 transition">Únete como
-                                experto</router-link>
-                        </div>
-                    </div>
+                    <p class="text-slate-500 font-medium">Asesoría profesional al alcance de un clic. Conectamos
+                        expertos con soluciones.</p>
                 </div>
-                <p class="mt-12 text-sm text-gray-500">
-                    © 2026 Consulta Experto. Todos los derechos reservados.
-                </p>
-            </footer>
 
-            <!-- Modal de expertos (glass overlay) -->
-            <div v-if="expertPopup" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex flex-col">
+                <div v-for="group in [
+                    { title: 'Empresa', links: ['Sobre nosotros', 'Carreras', 'Blog'] },
+                    { title: 'Legal', links: ['Privacidad', 'Términos', 'Cookies'] },
+                    { title: 'Soporte', links: ['Centro de ayuda', 'Contacto', 'FAQ'] }
+                ]" :key="group.title" class="space-y-6">
+                    <h4 class="font-bold text-slate-900 uppercase tracking-widest text-xs">{{ group.title }}</h4>
+                    <ul class="space-y-4">
+                        <li v-for="link in group.links" :key="link">
+                            <a href="#" class="text-slate-500 hover:text-blue-600 font-medium transition-colors">{{ link
+                            }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                class="max-w-7xl mx-auto px-8 mt-20 pt-8 border-t border-slate-50 flex flex-col md:row items-center justify-between gap-6">
+                <p class="text-sm font-bold text-slate-400">© 2026 Consulta Experto. Todos los derechos reservados.</p>
+                <div class="flex gap-6">
+                    <v-icon v-for="social in ['fa-facebook', 'fa-twitter', 'fa-instagram', 'fa-linkedin']" :key="social"
+                        :name="social" class="text-slate-400 hover:text-blue-600 cursor-pointer" />
+                </div>
+            </div>
+        </footer>
+
+        <!-- Premium Glass Modal -->
+        <Transition enter-active-class="" leave-active-class="">
+            <div v-if="expertPopup" @click="toggleExpertPopup('close')"
+                class="fixed inset-0 z-[100] bg-slate-900/80  flex items-center justify-center p-4">
                 <div
-                    class="flex-1 flex flex-col bg-white/95 backdrop-blur-xl max-w-5xl mx-auto w-full my-6 rounded-2xl overflow-hidden shadow-2xl">
-                    <header class="h-16 flex items-center justify-between px-8 border-b border-gray-200">
-                        <h2 class="text-xl font-bold text-gray-900">Expertos Disponibles</h2>
+                    class="bg-white/95 backdrop-blur-2xl w-full max-w-6xl h-[90vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden border border-white/50 animate-fade-up animate-duration-75">
+                    <header class="px-10 h-24 flex items-center justify-between border-b border-slate-100 ">
+                        <div class="space-y-1">
+                            <h2 class="text-2xl font-black text-slate-900">Expertos Disponibles</h2>
+                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Encuentra a tu
+                                especialista ideal</p>
+                        </div>
                         <button @click="toggleExpertPopup('close')"
-                            class="text-blue-600 hover:text-blue-800 font-semibold transition">
-                            Cerrar
+                            class="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-all">
+                            <v-icon name="md-close" scale="1.2" />
                         </button>
                     </header>
-                    <main class="flex-1 overflow-y-auto p-8">
-                        <div v-if="loading" class="flex justify-center items-center h-40">
-                            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-600"></div>
+
+                    <main class="flex-1 overflow-y-auto p-10 custom-scrollbar">
+                        <div v-if="loading" class="flex flex-col justify-center items-center h-full gap-4">
+                            <div
+                                class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
+                            </div>
+                            <p class="font-black text-slate-400 uppercase tracking-tighter">Buscando especialistas...
+                            </p>
                         </div>
-                        <div v-else-if="!mockExperts.length" class="text-center py-20 text-gray-500 text-lg">
-                            No hay expertos disponibles en este momento.
+                        <div v-else-if="!mockExperts.length"
+                            class="flex flex-col items-center justify-center h-full text-center space-y-6">
+                            <div
+                                class="w-32 h-32 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
+                                <v-icon name="hi-search" scale="4" />
+                            </div>
+                            <div class="space-y-2">
+                                <h3 class="text-3xl font-black text-slate-900">No encontramos resultados</h3>
+                                <p class="text-slate-500 font-medium">Intenta seleccionando otra categoría de
+                                    especialidad.</p>
+                            </div>
                         </div>
-                        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
                             <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert"
-                                @closeCard="toggleExpertPopup('close')" />
+                                @closeCard="toggleExpertPopup('close')"
+                                class="!rounded-[2.5rem] !shadow-none hover:!shadow-2xl transition-all border border-slate-50" />
                         </div>
                     </main>
                 </div>
             </div>
-        </main>
+        </Transition>
     </div>
 </template>
 
 
 
 <script lang="ts" setup>
-import { collection, getDocs, getFirestore, query, where, QuerySnapshot } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import 'animate.css';
 import { ref, watch, onMounted } from 'vue';
 import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
@@ -262,23 +309,6 @@ import { IExpert } from '@/interfaces/IExpert';
 import { authStore } from '@/store/auth';
 import { useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
-
-import {
-    medicalOutline,
-    calculatorOutline,
-    constructOutline,
-    globeOutline,
-    desktopOutline,
-    languageOutline,
-    schoolOutline,
-    terminalOutline,
-    folderOpenOutline,
-    hammerOutline,
-    happyOutline,
-    easelOutline,
-    restaurantOutline,
-    documentOutline
-} from 'ionicons/icons';
 
 import SelectExpertCard from './client/SelectExpertCard.vue';
 
@@ -312,20 +342,20 @@ watch(() => authStorePinia.getUserData, () => {
 }, { deep: true });
 
 const experts = ref([
-    { name: "Médico", icon: medicalOutline, summary: "Si tiene alguna consulta sobre su salud, contacte a uno de nuestros expertos." },
-    { name: "Contador", icon: calculatorOutline, summary: "Si tiene alguna duda sobre sus finanzas o impuestos, contacte a uno de nuestros expertos." },
-    { name: "Arquitecto", icon: constructOutline, summary: "Si necesita diseñar o remodelar un espacio, contacte a uno de nuestros expertos." },
-    { name: "Servicios Web", icon: globeOutline, summary: "Si requiere desarrollo o soporte tecnológico, contacte a uno de nuestros expertos." },
-    { name: "Publicidad", icon: desktopOutline, summary: "Si desea promocionar su negocio o producto, contacte a uno de nuestros expertos." },
-    { name: "Traductor", icon: languageOutline, summary: "Si necesita traducir documentos o textos, contacte a uno de nuestros expertos." },
-    { name: "Peritaje", icon: schoolOutline, summary: "Si requiere una evaluación o dictamen técnico, contacte a uno de nuestros expertos." },
-    { name: "Ingeniería en Computación", icon: terminalOutline, summary: "Si necesita soluciones tecnológicas especializadas, contacte a uno de nuestros expertos." },
-    { name: "Marketing", icon: folderOpenOutline, summary: "Si desea impulsar su estrategia comercial, contacte a uno de nuestros expertos." },
-    { name: "Abogado", icon: hammerOutline, summary: "Si tiene alguna duda legal, contacte a uno de nuestros expertos." },
-    { name: "Psicólogo/a", icon: happyOutline, summary: "Si necesita orientación psicológica profesional, contacte a uno de nuestros expertos." },
-    { name: "Maestro", icon: easelOutline, summary: "Si requiere servicios educativos o tutoría, contacte a uno de nuestros expertos." },
-    { name: "Chef", icon: restaurantOutline, summary: "Si necesita servicios de cocina profesional o consultoría gastronómica, contacte a uno de nuestros expertos." },
-    { name: "Gestoría en Trámites", icon: documentOutline, summary: "Si necesita ayuda con gestiones administrativas, contacte a uno de nuestros expertos." }
+    { name: "Médico", icon: 'md-medicalinformation-outlined', summary: "Si tiene alguna consulta sobre su salud, contacte a uno de nuestros expertos." },
+    { name: "Contador", icon: 'bi-calculator-fill', summary: "Si tiene alguna duda sobre sus finanzas o impuestos, contacte a uno de nuestros expertos." },
+    { name: "Arquitecto", icon: 'md-architecture-sharp', summary: "Si necesita diseñar o remodelar un espacio, contacte a uno de nuestros expertos." },
+    { name: "Servicios Web", icon: 'md-web', summary: "Si requiere desarrollo o soporte tecnológico, contacte a uno de nuestros expertos." },
+    { name: "Publicidad", icon: 'fa-newspaper', summary: "Si desea promocionar su negocio o producto, contacte a uno de nuestros expertos." },
+    { name: "Traductor", icon: 'hi-solid-translate', summary: "Si necesita traducir documentos o textos, contacte a uno de nuestros expertos." },
+    { name: "Peritaje", icon: 'hi-academic-cap', summary: "Si requiere una evaluación o dictamen técnico, contacte a uno de nuestros expertos." },
+    { name: "Ingeniería en Computación", icon: 'md-computer-twotone', summary: "Si necesita soluciones tecnológicas especializadas, contacte a uno de nuestros expertos." },
+    { name: "Marketing", icon: 'fa-bullhorn', summary: "Si desea impulsar su estrategia comercial, contacte a uno de nuestros expertos." },
+    { name: "Abogado", icon: 'fa-gavel', summary: "Si tiene alguna duda legal, contacte a uno de nuestros expertos." },
+    { name: "Psicólogo/a", icon: 'ri-psychotherapy-fill', summary: "Si necesita orientación psicológica profesional, contacte a uno de nuestros expertos." },
+    { name: "Maestro", icon: 'gi-teacher', summary: "Si requiere servicios educativos o tutoría, contacte a uno de nuestros expertos." },
+    { name: "Chef", icon: 'gi-chef-toque', summary: "Si necesita servicios de cocina profesional o consultoría gastronómica, contacte a uno de nuestros expertos." },
+    { name: "Gestoría en Trámites", icon: 'oi-tasklist', summary: "Si necesita ayuda con gestiones administrativas, contacte a uno de nuestros expertos." }
 ]);
 
 const toggleExpertPopup = (action: 'open' | 'close') => {

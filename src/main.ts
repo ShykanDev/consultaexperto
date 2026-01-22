@@ -151,8 +151,10 @@ import {
   HiPaperAirplane,
   RiShieldCheckFill,
   FaUserSlash,
+  MdMedicalinformationOutlined,
 } from "oh-vue-icons/icons";
 addIcons(
+  MdMedicalinformationOutlined,
   FaFlag,
   RiZhihuFill,
   BiClipboard2CheckFill,
