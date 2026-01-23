@@ -1,21 +1,11 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
-    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
-      <nav class="h-16 flex items-center px-4 max-w-5xl mx-auto">
-        <RouterLink to="/home" class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
-          <v-icon name="md-arrowbackiosnew-round" />
-        </RouterLink>
-        <h1 class="ml-4 text-lg font-bold text-gray-900">
-          Perfil de {{ expertAdminStore.getCurrentExpert?.fullName?.split(' ')[0] || 'Usuario' }}
-        </h1>
-      </nav>
-    </header>
 
-    <main class="max-w-5xl mx-auto p-4 space-y-6">
+    <main class=" p-4 px-7 space-y-6 mt-24">
       <!-- Profile Header -->
       <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 flex flex-col items-center">
         <div class="relative mb-4">
-          <img class="w-32 h-32 rounded-full object-cover ring-4 ring-offset-4"
+          <img class="w-32 h-32 rounded-xl  object-cover ring-4 ring-offset-4"
             :src="expertAdminStore.getCurrentExpert?.profilePicture || 'https://picsum.photos/200/300'"
             :class="expertAdminStore.getCurrentExpert?.isSuspended ? 'ring-red-500' : 'ring-blue-500'"
             alt="Profile picture" />
@@ -44,7 +34,8 @@
       <!-- Bio -->
       <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6">
         <h2 class="text-lg font-bold text-gray-800 mb-3">Biografía</h2>
-        <p class="text-gray-600 leading-relaxed">{{ expertAdminStore.getCurrentExpert?.bio || 'Sin biografía disponible.' }}</p>
+        <p class="text-gray-600 leading-relaxed">{{ `${expertAdminStore.getCurrentExpert?.bio
+          || 'Sin biografía disponible.'}` }}</p>
       </div>
 
       <!-- Schedule Section -->

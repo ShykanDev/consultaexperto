@@ -152,9 +152,13 @@ import {
   RiShieldCheckFill,
   FaUserSlash,
   MdMedicalinformationOutlined,
+  MdClose,
+  HiSearch,
 } from "oh-vue-icons/icons";
 addIcons(
+  HiSearch,
   MdMedicalinformationOutlined,
+  MdClose,
   FaFlag,
   RiZhihuFill,
   BiClipboard2CheckFill,

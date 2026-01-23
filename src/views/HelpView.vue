@@ -1,6 +1,6 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
-    <header-component :pageTitle="'Ayuda'" />
+
 
     <section class="web-content overflow-y-auto p-4 space-y-8 mt-24">
       <!-- Section 1: Contact Form – Versión Desktop/Web más limpia -->
@@ -185,7 +185,7 @@ import { computed, ref, onMounted, watch, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import emailjs from '@emailjs/browser';
 import { useToast } from 'vue-toastification';
-import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
+
 
 const router = useRouter();
 const toast = useToast();

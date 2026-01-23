@@ -1,8 +1,8 @@
 <template>
-  <div class="web-page min-h-screen bg-gray-50 flex flex-col">
-    <header class="sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
-      <nav class="h-16 flex items-center px-4 max-w-5xl mx-auto justify-between">
-        <h1 class="text-xl font-bold text-gray-900 font-manrope">Administrar Expertos</h1>
+  <div class="web-page min-h-screen bg-gray-50 flex flex-col w-full">
+    <header class="sticky top-28 z-40 border-b border-gray-100 shadow-md bg-white rounded-3xl px-12 mx-12">
+      <nav class="h-16 flex items-center px-4 justify-between">
+        <h1 class="text-xl font-bold text-blue-700 font-manrope">Administrar Expertos</h1>
         <div class="flex items-center gap-3">
           <button
             class="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 text-sm"
@@ -28,7 +28,7 @@
       </div>
     </header>
 
-    <main class="flex-1 max-w-5xl mx-auto w-full p-4 overflow-y-auto">
+    <main class="flex-1  w-full p-4 overflow-y-auto mt-32">
       <div v-if="loading" class="flex flex-col items-center justify-center py-20 gap-4">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         <p class="text-gray-500 font-medium">Cargando expertos...</p>

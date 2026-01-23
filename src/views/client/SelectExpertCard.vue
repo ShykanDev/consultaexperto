@@ -1,13 +1,12 @@
 <!-- ExpertCard.vue -->
 <template>
   <div @mouseover="hover = true" @mouseleave="hover = false"
-    :class="hover ? 'animate__animated animate__headShake' : ''"
-    class="bg-white border border-slate-200 p-4 rounded-xl flex flex-col gap-3 shadow-sm hover:-translate-y-2 transition-all cursor-pointer"
+    class="bg-white border border-slate-200 p-4  hover:ring-2 hover:ring-blue-100 flex flex-col gap-3 shadow-sm hover:-translate-y-2 transition-all cursor-pointer ease-out"
     @click="$emit('select', props.name)">
     <article class="flex justify-center items-center">
       <div
-        class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center web-icon flex-shrink-0">
-        <v-icon :name="props.icon" size="large" />
+        class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center web-icon flex-shrink-0">
+        <v-icon :name="props.icon" scale="1.5" />
       </div>
 
     </article>

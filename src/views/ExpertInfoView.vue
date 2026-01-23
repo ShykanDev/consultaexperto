@@ -12,7 +12,7 @@
             </button>
           </div>
 
-          <h1 class="web-title text-lg font-bold text-gray-900 text-blue-500 font-quicksand text-center">
+          <h1 class="web-title text-lg font-bold  text-blue-500 font-quicksand text-center">
             Agendar Cita
           </h1>
 

@@ -17,6 +17,10 @@
                 v-html="currentName" :key="currentName">
               </span>
             </div>
+            <RouterLink to="/register" class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+              Registrarse
+              <v-icon class="text-blue-600 rotate-180" name="md-arrowbackiosnew-round" />
+            </RouterLink>
           </div>
         </nav>
       </div>

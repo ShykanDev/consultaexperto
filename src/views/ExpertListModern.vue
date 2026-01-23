@@ -7,11 +7,10 @@
         </div>
 
         <!-- Floating Premium Header -->
-        <HeaderComponent :pageTitle="'Listado de Expertos'" />
+
 
         <main class="relative z-10 pt-32 pb-20 px-4 md:px-8">
-            <div class=" mx-auto space-y-24">
-
+            <div class="mx-auto space-y-24">
                 <!-- Modern Integrated Hero -->
                 <section class="relative flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div class="flex-1 space-y-8 text-center lg:text-left">
@@ -64,10 +63,10 @@
 
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         <div v-for="(item, i) in [
-                            { title: 'Medicina', icon: 'md-medicalinformation-outlined', bg: 'bg-emerald-50 text-emerald-600', sub: 'Salud y bienestar' },
-                            { title: 'Legal', icon: 'fa-gavel', bg: 'bg-blue-50 text-blue-600', sub: 'Leyes y trámites' },
-                            { title: 'Negocios', icon: 'bi-briefcase', bg: 'bg-indigo-50 text-indigo-600', sub: 'Estrategia y ventas' },
-                            { title: 'Tecnología', icon: 'md-computer-twotone', bg: 'bg-purple-50 text-purple-600', sub: 'Soporte y dev' }
+                            { title: 'Médico', icon: 'md-medicalinformation-outlined', bg: 'bg-emerald-50 text-emerald-600', sub: 'Salud y bienestar' },
+                            { title: 'Abogado', icon: 'fa-gavel', bg: 'bg-blue-50 text-blue-600', sub: 'Leyes y trámites' },
+                            { title: 'Servicios Web', icon: 'bi-briefcase', bg: 'bg-indigo-50 text-indigo-600', sub: 'Estrategia y ventas' },
+                            { title: 'Contador', icon: 'md-computer-twotone', bg: 'bg-purple-50 text-purple-600', sub: 'Soporte y dev' }
                         ]" :key="i" @click="getExpertSelection(item.title)"
                             class="group p-8 bg-white border border-slate-100 rounded-[2.5rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] hover:-translate-y-2 transition-all cursor-pointer">
                             <div
@@ -148,7 +147,7 @@
                         </div>
                         <div class="relative z-10 space-y-4">
                             <span
-                                class="px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-widest border border-white/20">Wellness</span>
+                                class="px-4 py-1.5 bg-white/10  rounded-full text-xs font-black uppercase tracking-widest border border-white/20">Wellness</span>
                             <h3 class="text-4xl font-black leading-tight">miexpareja.net</h3>
                             <p class="text-slate-300 font-medium max-w-xs">Especialistas en relaciones y bienestar
                                 emocional disponibles 24/7.</p>
@@ -168,7 +167,7 @@
                         </div>
                         <div class="relative z-10 space-y-4">
                             <span
-                                class="px-4 py-1.5 bg-white/10 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-widest border border-white/20">Propiedades</span>
+                                class="px-4 py-1.5 bg-white/10 rounded-full text-xs font-black uppercase tracking-widest border border-white/20">Propiedades</span>
                             <h3 class="text-4xl font-black leading-tight">miarrendatario.com</h3>
                             <p class="text-blue-100 font-medium max-w-xs">Todo lo que necesitas para gestionar tus
                                 rentas y arrendatarios.</p>
@@ -224,22 +223,22 @@
         <!-- Premium Glass Modal -->
         <Transition enter-active-class="" leave-active-class="">
             <div v-if="expertPopup" @click="toggleExpertPopup('close')"
-                class="fixed inset-0 z-[100] bg-slate-900/80  flex items-center justify-center p-4">
+                class="fixed inset-0 z-[100] bg-blue-950/50   flex items-center justify-center p-4">
                 <div
-                    class="bg-white/95 backdrop-blur-2xl w-full max-w-6xl h-[90vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden border border-white/50 animate-fade-up animate-duration-75">
-                    <header class="px-10 h-24 flex items-center justify-between border-b border-slate-100 ">
+                    class="bg-white/70 w-full max-w-6xl h-[90vh] rounded-[3rem] shadow-2xl flex flex-col overflow-hidden border border-white/50 animate-fade-up animate-duration-75">
+                    <section class="px-10 h-24 flex items-center justify-between border-b border-slate-100 bg-white/85">
                         <div class="space-y-1">
                             <h2 class="text-2xl font-black text-slate-900">Expertos Disponibles</h2>
                             <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Encuentra a tu
                                 especialista ideal</p>
                         </div>
                         <button @click="toggleExpertPopup('close')"
-                            class="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-full flex items-center justify-center transition-all">
+                            class="min-w-32 h-12 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center transition-all">
                             <v-icon name="md-close" scale="1.2" />
                         </button>
-                    </header>
+                    </section>
 
-                    <main class="flex-1 overflow-y-auto p-10 custom-scrollbar">
+                    <main class="flex-1 overflow-y-auto p-10 custom-scrollbar bg-white/80">
                         <div v-if="loading" class="flex flex-col justify-center items-center h-full gap-4">
                             <div
                                 class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin">
@@ -250,12 +249,12 @@
                         <div v-else-if="!mockExperts.length"
                             class="flex flex-col items-center justify-center h-full text-center space-y-6">
                             <div
-                                class="w-32 h-32 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
+                                class="w-32 h-32 bg-blue-600 rounded-full flex items-center justify-center text-slate-200">
                                 <v-icon name="hi-search" scale="4" />
                             </div>
                             <div class="space-y-2">
                                 <h3 class="text-3xl font-black text-slate-900">No encontramos resultados</h3>
-                                <p class="text-slate-500 font-medium">Intenta seleccionando otra categoría de
+                                <p class="text-slate-500 font-medium">Intente seleccionando otra categoría de
                                     especialidad.</p>
                             </div>
                         </div>
@@ -276,15 +275,13 @@
 <script lang="ts" setup>
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import 'animate.css';
-import { ref, watch, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import PrevInfoComponent from '@/components/Expert/PrevInfoComponent.vue';
 import { IExpert } from '@/interfaces/IExpert';
-import { authStore } from '@/store/auth';
-import { useRouter } from 'vue-router';
 import { useToast } from "vue-toastification";
 
 import SelectExpertCard from './client/SelectExpertCard.vue';
-import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
+
 
 // Remove explicit ionicons import for icons in template if using v-icon or oh-vue-icons
 // But for the array 'experts', we use Ionic icons. SelectExpertCard handles them? 
@@ -298,23 +295,11 @@ const db = getFirestore();
 const expertsCollection = collection(db, 'experts');
 const expertPopup = ref(false);
 const mockExperts = ref<IExpert[]>([]);
-const router = useRouter();
-const authStorePinia = authStore();
 const loading = ref(false);
 
-const verifySuspended = () => {
-    if (authStorePinia.getUserData?.isSuspended) {
-        router.push('/account-suspended');
-    }
-}
-
 onMounted(() => {
-    verifySuspended();
+    // Other onMounted logic if any
 });
-
-watch(() => authStorePinia.getUserData, () => {
-    verifySuspended();
-}, { deep: true });
 
 const experts = ref([
     { name: "Médico", icon: 'md-medicalinformation-outlined', summary: "Si tiene alguna consulta sobre su salud, contacte a uno de nuestros expertos." },

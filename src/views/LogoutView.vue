@@ -1,109 +1,135 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
-    <header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
-      <nav class="web-toolbar h-16 flex items-center px-4">
-        <div class="web-buttons">
-          <button class="web-btn p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-            @click="router.back()">
-            <v-icon name="md-arrowbackiosnew-round" />
-          </button>
-        </div>
-        <h1 class="web-title ml-4 text-lg font-bold text-gray-900">Mi Cuenta</h1>
-      </nav>
-    </header>
 
-    <main class="web-content overflow-y-auto p-4 space-y-8">
-      <!-- Perfil Header -->
-      <div class="flex flex-col items-center py-8">
-        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 p-1 shadow-md mb-4">
-          <div class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
-            <span class="text-3xl font-bold text-gray-700" v-if="authStore.getUserName">
-              {{ authStore.getUserName.charAt(0).toUpperCase() }}
-            </span>
-            <v-icon v-else name="hi-user-circle" scale="3" class="text-gray-300" />
-          </div>
-        </div>
-        <h2 class="text-xl font-bold text-gray-900">{{ authStore.getUserName || 'Usuario' }}</h2>
-        <p class="text-sm text-gray-500 font-medium">{{ authStore.getUserEmail }}</p>
-      </div>
+    <header-component :page-title="'Mi Cuenta'" />
 
-      <!-- Sección Seguridad -->
-      <section class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-4">
-        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Seguridad</h3>
-        <div class="space-y-4">
-          <div class="flex items-center gap-4">
-            <v-icon name="md-lockreset" class="text-indigo-500" scale="1.2" />
-            <div class="flex-1">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Recuperar contraseña</label>
-              <input
-                class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-100 transition-all"
-                v-model="email" placeholder="ejemplo@correo.com" type="email" @blur="markTouched">
-              <p class="mt-1 text-xs text-red-500" v-if="emailError && isTouched">{{ emailError }}</p>
+    <section class="min-h-screen w-full bg-[#f8fafc] text-slate-900 overflow-y-auto px-6 md:px-12 py-12 mt-24">
+      <div class="max-w-6xl mx-auto space-y-12">
+
+        <header class="flex flex-col md:flex-row items-center gap-8 pb-12 border-b border-slate-200">
+          <div class="relative group">
+            <div
+              class="w-32 h-32 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden transition-all group-hover:border-blue-400">
+              <span v-if="authStore.getUserName" class="text-5xl font-light text-blue-600">
+                {{ authStore.getUserName.charAt(0).toUpperCase() }}
+              </span>
+              <v-icon v-else name="hi-user-circle" scale="4" class="text-slate-200" />
             </div>
           </div>
-          <button
-            class="w-full h-12 bg-blue-600 text-white font-bold rounded-xl shadow-lg disabled:opacity-50 transition-all hover:bg-blue-700"
-            :disabled="!isValidForm || isLoading" @click="handlePasswordReset">
-            <span v-if="!isLoading">Enviar enlace de recuperación</span>
-            <div v-else class="flex justify-center">
-              <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-            </div>
+
+          <div class="text-center md:text-left flex-1">
+            <h1 class="text-3xl font-semibold tracking-tight text-slate-900">
+              {{ authStore.getUserName || 'Usuario' }}
+            </h1>
+            <p class="text-slate-500 font-normal mt-1 italic">
+              {{ authStore.getUserEmail }}
+            </p>
+          </div>
+
+          <button @click="handleLogout"
+            class="md:flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all text-sm font-medium border border-transparent hover:border-rose-100">
+            <v-icon name="md-logout" scale="0.9" />
+            Cerrar sesión
           </button>
-        </div>
-      </section>
+        </header>
 
-      <!-- Sección Legal -->
-      <section class="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-50 overflow-hidden">
-        <div class="px-6 py-4">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Legal</h3>
-        </div>
-        <button @click="openModal('privacy')"
-          class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-          <div class="flex items-center gap-4">
-            <v-icon name="hi-shield-check" class="text-emerald-500" />
-            <span class="font-medium text-gray-700">Política de Privacidad</span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+          <div class="lg:col-span-7 space-y-8">
+            <div>
+              <h3 class="text-sm font-bold text-blue-600 uppercase tracking-[0.2em] mb-6">
+                Seguridad y Acceso
+              </h3>
+
+              <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                <div class="max-w-md space-y-6">
+                  <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-2">Restablecer contraseña</label>
+                    <p class="text-xs text-slate-400 mb-4">Enviaremos un enlace de verificación a tu dirección de correo
+                      electrónico institucional.</p>
+
+                    <input v-model="email" type="email" placeholder="correo@ejemplo.com" @blur="markTouched"
+                      class="w-full h-11 px-4 rounded-lg bg-white border border-slate-200 focus:border-blue-500 focus:ring-0 outline-none transition-all placeholder:text-slate-300" />
+                    <p v-if="emailError && isTouched" class="mt-2 text-xs text-rose-500">{{ emailError }}</p>
+                  </div>
+
+                  <button @click="handlePasswordReset" :disabled="!isValidForm || isLoading"
+                    class="inline-flex items-center justify-center px-8 h-11 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-all disabled:bg-slate-200 shadow-sm">
+                    <span v-if="!isLoading">Actualizar credenciales</span>
+                    <div v-else class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent">
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-          <v-icon name="fa-chevron-right" scale="0.8" class="text-gray-300" />
-        </button>
-        <button @click="openModal('terms')"
-          class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-          <div class="flex items-center gap-4">
-            <v-icon name="hi-document-text" class="text-blue-500" />
-            <span class="font-medium text-gray-700">Términos y Condiciones</span>
-          </div>
-          <v-icon name="fa-chevron-right" scale="0.8" class="text-gray-300" />
-        </button>
-      </section>
 
-      <!-- Sección Cerrar Sesión -->
-      <button @click="handleLogout"
-        class="w-full py-4 bg-white border border-gray-100 shadow-sm rounded-2xl flex items-center justify-center gap-3 text-rose-500 hover:bg-rose-50 transition-colors">
-        <v-icon name="md-logout" />
-        <span class="font-bold">Cerrar Sesión</span>
-      </button>
+          <div class="lg:col-span-5 space-y-8">
+            <h3 class="text-sm font-bold text-blue-600 uppercase tracking-[0.2em] mb-6">
+              Información Legal
+            </h3>
 
-      <!-- Modal Informativo -->
-      <div v-if="isModalOpen"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-2xl max-h-[80vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col">
-          <header class="p-6 border-b border-gray-100 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-gray-900">{{ modalTitle }}</h2>
-            <button @click="closeModal" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <v-icon name="md-close" />
+            <div
+              class="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+              <button @click="navigateTo('privacy')"
+                class="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition group">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="p-2 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <v-icon name="hi-shield-check" scale="1.1" />
+                  </div>
+                  <span class="font-medium text-slate-700">Política de Privacidad</span>
+                </div>
+                <v-icon name="fa-chevron-right" scale="0.7" class="text-slate-300" />
+              </button>
+
+              <button @click="navigateTo('terms')"
+                class="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition group">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="p-2 rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <v-icon name="hi-document-text" scale="1.1" />
+                  </div>
+                  <span class="font-medium text-slate-700">Términos del Servicio</span>
+                </div>
+                <v-icon name="fa-chevron-right" scale="0.7" class="text-slate-300" />
+              </button>
+            </div>
+
+            <button @click="handleLogout"
+              class="md:hidden w-full h-12 rounded-xl border border-rose-100 text-rose-500 font-medium hover:bg-rose-50 transition flex items-center justify-center gap-2">
+              <v-icon name="md-logout" />
+              Cerrar sesión
             </button>
-          </header>
-          <div class="flex-1 overflow-y-auto p-6 text-gray-600 leading-relaxed whitespace-pre-line">
-            {{ modalContent }}
           </div>
-          <footer class="p-6 border-t border-gray-100">
-            <button @click="closeModal"
-              class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors">
-              Listo
-            </button>
-          </footer>
+        </div>
+
+        <div v-if="isModalOpen"
+          class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md px-4">
+          <div
+            class="w-full max-w-2xl bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-200">
+            <header class="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-slate-50/50">
+              <h2 class="text-lg font-semibold text-slate-800">{{ modalTitle }}</h2>
+              <button @click="closeModal" class="p-2 rounded-full text-slate-400 hover:bg-slate-200/50 transition">
+                <v-icon name="md-close" />
+              </button>
+            </header>
+
+            <div class="flex-1 overflow-y-auto px-8 py-10 text-slate-500 text-sm leading-relaxed tracking-wide">
+              {{ modalContent }}
+            </div>
+
+            <footer class="px-8 py-6 border-t border-slate-100 flex justify-end bg-slate-50/50">
+              <button @click="closeModal"
+                class="px-8 py-2.5 rounded-lg bg-slate-800 text-white text-sm font-medium hover:bg-slate-900 transition shadow-lg">
+                Entendido
+              </button>
+            </footer>
+          </div>
         </div>
       </div>
-    </main>
+    </section>
+
   </div>
 </template>
 
@@ -117,6 +143,7 @@ import { signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { useRouter } from 'vue-router';
 import { authStore as authStorePinia } from '@/store/auth';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 
 const router = useRouter();
 const authStore = authStorePinia();
@@ -188,37 +215,12 @@ const handlePasswordReset = async () => {
 };
 
 // Legal Content Management
-const openModal = (type: 'privacy' | 'terms') => {
+const navigateTo = (type: 'privacy' | 'terms') => {
   if (type === 'privacy') {
-    modalTitle.value = 'Política de Privacidad';
-    modalContent.value = `
-      **1. Recopilación de Información**
-      Recopilamos información personal que usted nos proporciona voluntariamente...
-      
-      **2. Uso de la Información**
-      Usamos su información para proporcionar y mejorar nuestros servicios...
-      
-      **3. Seguridad**
-      Implementamos medidas de seguridad para proteger sus datos...
-      
-      (Este es un texto de ejemplo. Aquí iría la política real de la empresa.)
-    `;
+    router.push('/privacy-policy');
   } else {
-    modalTitle.value = 'Términos y Condiciones';
-    modalContent.value = `
-      **1. Aceptación de los Términos**
-      Al descargar o utilizar la aplicación, estos términos se aplicarán automáticamente...
-      
-      **2. Uso de la Aplicación**
-      Usted se compromete a utilizar la aplicación solo para fines legales...
-      
-      **3. Limitación de Responsabilidad**
-      No seremos responsables de daños directos o indirectos...
-      
-      (Este es un texto de ejemplo. Aquí irían los términos reales de la empresa.)
-    `;
+    router.push('/terms');
   }
-  isModalOpen.value = true;
 };
 
 const closeModal = () => {

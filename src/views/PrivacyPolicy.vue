@@ -1,17 +1,12 @@
 <template>
     <div class="web-page min-h-screen bg-gray-50">
-        <header
-            class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
-            <nav class="web-toolbar h-16 flex items-center px-4">
-                <h1 class="web-title text-lg font-bold text-gray-900">Política de Privacidad</h1>
-            </nav>
-        </header>
 
 
-        <main class="web-content overflow-y-auto bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden pb-10">
+
+        <main class="web-content overflow-y-auto bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
+            <div class=" bg-white shadow-xl rounded-lg overflow-hidden pb-10">
                 <h1 class="px-6 py-8 sm:p-10 text-3xl font-bold text-gray-900 mb-6 text-center">
-                    Política de Privacidad de consultaexperto.com
+                    Política de Privacidad
                 </h1>
 
                 <div class="px-6 sm:px-10 space-y-8">
@@ -164,7 +159,7 @@
                     <!-- Fecha de última actualización -->
                     <div class="text-center mt-10 pt-10 border-t border-gray-100">
                         <p class="text-sm text-gray-500">
-                            Última actualización: <strong>Diciembre 2025</strong>
+                            Última actualización: <strong>Enero 2026</strong>
                         </p>
                     </div>
                 </div>

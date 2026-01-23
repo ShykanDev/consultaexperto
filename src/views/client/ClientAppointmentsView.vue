@@ -1,10 +1,10 @@
 <template>
-  <div class="web-page min-h-screen bg-gray-50">
+  <div class="web-page min-h-screen bg-gradient-to-br from-blue-50 via-blue-50/50 to-white">
     <!--Header-->
-    <HeaderComponent :pageTitle="'Agenda'" />
+
 
     <!--Content-->
-    <div class="mt-24">
+    <div class="mt-28 ">
 
       <nav class="web-toolbar h-16 flex items-center px-4 mt-2">
         <div class="relative w-full">
@@ -121,7 +121,7 @@ import { authStore as authStoreInstance } from '@/store/auth';
 import CardInfo from '@/components/Client/CardInfo.vue';
 import { ISchedule } from '@/interfaces/user/ISchedule';
 import 'animate.css';
-import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
+
 
 const authStore = authStoreInstance();
 const db = getFirestore();

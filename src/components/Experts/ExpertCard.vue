@@ -1,51 +1,134 @@
 <template>
-  <div class="flex overflow-hidden relative flex-col my-3 rounded-xl shadow-md font-poppins gap-4 items-start p-4"
-    :class="{ 'bg-red-100 ring-2 ring-red-300': props.expertData.isSuspended, 'bg-white': !props.expertData.isSuspended }">
+  <div
+    class="group relative bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-500 overflow-hidden h-full flex flex-col"
+    :class="{ 'ring-2 ring-red-100 bg-red-50/40': props.expertData.isSuspended }">
 
-    <img class="object-cover w-14 h-14 rounded-full shrink-0"
-      :src="props.expertData.profilePicture || 'https://picsum.photos/200/300'" alt="Profile picture" />
-    <div class="flex-grow flex justify-between items-center w-full">
-      <p class="text-lg font-bold leading-tight text-blue-600 font-poppins">{{ props.expertData.fullName || `Nombre del
-        experto` }}</p>
-      <p class="text-sm font-medium leading-tight text-red-700 font-poppins" v-if="props.expertData.isSuspended">
-        (Suspendido)</p>
-    </div>
-    <p class="text-sm text-neutral-600">{{ props.expertData.specialty ?? 'Especialidad' }}</p>
-    <div class="flex gap-1 items-center mt-1 text-yellow-400" v-if="props.expertData.rating">
-      <v-icon name="io-star" scale="0.8" />
-      <p class="ml-1 text-xs text-neutral-500">{{ calcStarsValue(props.expertData.rating) }}</p>
-      <span class="text-xs text-neutral-500">
-        ({{ props.expertData.rating.count ?? 0 }} valoraciones)
-      </span>
-    </div>
-    <p class="text-xs text-gray-500">{{ props.expertData.isBanned ? 'Bloqueado' : 'Activo' }}</p>
-  </div>
-
-  <div class="flex relative flex-col gap-3 px-4 pb-4">
-    <p class="text-sm leading-relaxed text-neutral-600">{{ props.expertData.bio || 'Biografía del experto' }}</p>
-    <div class="p-2 mt-1 bg-red-50 rounded-lg border border-red-200" v-if="props.expertData.isSuspended">
-      <p class="text-xs font-bold text-red-800 !font-poppins">Motivo de la suspension:</p>
-      <p class="text-sm text-red-800 !font-poppins">{{ props.expertData.suspensionReason || `Este experto ha sido
-        suspendido por violar las normas de la comunidad.` }}</p>
+    <!-- Status Badge (Mobile focus) -->
+    <div v-if="props.expertData.isSuspended"
+      class="absolute top-4 right-4 z-10 px-3 py-1 bg-red-100 text-red-600 text-[10px] font-bold uppercase tracking-wider rounded-full md:hidden animate-pulse">
+      Suspendido
     </div>
 
-    <div class="grid grid-cols-3 gap-1 p-1 mt-2">
-      <button v-if="props.expertData.isSuspended"
-        class="col-span-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-semibold hover:bg-emerald-100 transition-all text-sm"
-        @click="handleUnsuspend">
-        Desbloquear
-      </button>
+    <div class="flex flex-col md:flex-row flex-1">
 
-      <button v-else
-        class="col-span-2 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-xl font-semibold hover:bg-red-100 transition-all text-sm"
-        @click="toggleModal">
-        Suspender
-      </button>
+      <!-- Left Section: Profile Info -->
+      <div
+        class="w-full md:w-[38%] p-6 flex flex-col items-center md:items-start text-center md:text-left border-b md:border-b-0 md:border-r border-gray-50 bg-gradient-to-br from-white to-gray-50/30"
+        :class="{ 'from-red-50/50 to-white': props.expertData.isSuspended }">
 
-      <button class="px-4 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all text-sm"
-        @click="goToProfile">
-        Ver perfil
-      </button>
+        <div class="relative mb-5 group-hover:scale-105 transition-transform duration-500">
+          <div class="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-2xl ring-4 ring-white relative">
+            <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              :src="props.expertData.profilePicture || 'https://picsum.photos/200/300'" alt="Profile picture" />
+            <div v-if="props.expertData.isSuspended"
+              class="absolute inset-0 bg-red-900/20 backdrop-blur-[1px] flex items-center justify-center">
+              <v-icon name="ri-error-warning-line" class="text-white" scale="1.5" />
+            </div>
+          </div>
+          <div v-if="!props.expertData.isSuspended"
+            class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full shadow-lg"></div>
+          <div v-else
+            class="absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 border-4 border-white rounded-full shadow-lg"></div>
+        </div>
+
+        <div class="space-y-1 w-full">
+          <h3
+            class="text-xl md:text-2xl font-black text-gray-800 leading-tight font-manrope tracking-tight break-words">
+            {{ props.expertData.fullName || 'Nombre del experto' }}
+          </h3>
+
+          <p class="text-blue-600 font-extrabold text-sm tracking-wide uppercase">
+            {{ props.expertData.specialty ?? 'Especialidad' }}
+          </p>
+        </div>
+
+        <div class="mt-5 flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+          <div
+            class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl shadow-sm border border-gray-100 transition-colors group-hover:border-blue-50"
+            v-if="props.expertData.rating">
+            <v-icon name="io-star" scale="0.8" class="text-yellow-400" />
+            <span class="text-sm font-black text-gray-700">{{ calcStarsValue(props.expertData.rating) }}</span>
+            <span class="text-[10px] text-gray-400 font-bold">({{ props.expertData.rating.count ?? 0 }})</span>
+          </div>
+
+          <div class="hidden md:block">
+            <span v-if="props.expertData.isBanned"
+              class="bg-gray-900 text-white border-gray-900 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border">
+              Bloqueado
+            </span>
+            <span v-else
+              :class="props.expertData.isSuspended ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'"
+              class="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border">
+              {{ props.expertData.isSuspended ? 'Suspendido' : 'Activo' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-4 flex items-center gap-2 text-gray-400">
+          <v-icon name="hi-identification" scale="0.7" />
+          <p class="text-[10px] font-bold uppercase tracking-tighter">
+            ID: {{ props.expertData.professionalId || 'No Registrado' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Section: Details & Actions -->
+      <div class="flex-1 p-6 md:p-8 flex flex-col justify-between bg-white">
+        <div class="space-y-6">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-6 h-1 bg-blue-500 rounded-full"></div>
+              <label class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] block">Biografía
+                Profesional</label>
+            </div>
+            <div class="relative">
+              <v-icon name="ri-zhihu-fill" scale="1.5" class="absolute -top-2 -left-2 text-blue-50/50 -z-0" />
+              <p
+                class="text-sm text-gray-600 leading-relaxed line-clamp-4 italic bg-gray-50/30 p-4 rounded-2xl border border-gray-50 relative z-10">
+                "{{ props.expertData.bio || 'Este experto aún no ha redactado su biografía profesional.' }}"
+              </p>
+            </div>
+          </div>
+
+          <div v-if="props.expertData.isSuspended"
+            class="p-5 bg-red-50/50 rounded-2xl border border-red-100/50 transition-all hover:bg-red-50">
+            <div class="flex items-center gap-2 mb-2">
+              <v-icon name="ri-error-warning-line" class="text-red-600" scale="0.9" />
+              <span class="text-[10px] font-black text-red-800 uppercase tracking-widest">Alerta Administrativa</span>
+            </div>
+            <div class="bg-white/80 p-3 rounded-xl border border-red-100 shadow-sm">
+              <p class="text-xs font-bold text-red-900 mb-1">Motivo de suspensión:</p>
+              <p class="text-sm text-red-700 leading-snug font-medium">
+                {{ props.expertData.suspensionReason || 'Incumplimiento de las políticas de la plataforma.' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-8">
+          <button v-if="props.expertData.isSuspended"
+            class="px-5 py-4 bg-white text-emerald-600 border-2 border-emerald-100 rounded-2xl font-black hover:bg-emerald-50 hover:border-emerald-200 transition-all text-sm active:scale-95 shadow-sm flex items-center justify-center gap-2"
+            @click="handleUnsuspend">
+            <v-icon name="ri-shield-check-fill" scale="0.9" />
+            <span>Reactivar</span>
+          </button>
+
+          <button v-else
+            class="px-5 py-4 bg-white text-rose-500 border-2 border-rose-50 rounded-2xl font-black hover:bg-rose-50 hover:border-rose-100 transition-all text-sm active:scale-95 shadow-sm flex items-center justify-center gap-2"
+            @click="toggleModal">
+            <v-icon name="fa-user-slash" scale="0.8" />
+            <span>Suspender</span>
+          </button>
+
+          <button
+            class="px-5 py-4 bg-blue-600 text-white rounded-2xl font-black hover:bg-blue-700 hover:shadow-blue-200 transition-all shadow-xl shadow-blue-100 text-sm active:scale-95 flex items-center justify-center gap-2"
+            @click="goToProfile">
+            <span>Ver Perfil</span>
+            <v-icon name="fa-chevron-right" scale="0.7" />
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 </template>

@@ -1,23 +1,27 @@
 <template>
-  <div class="ios-expert-card-container ios-expert-card">
+  <div class="ios-expert-card-container ios-expert-card relative">
+    <span v-if="props.expertData?.isSuspended"
+      class="absolute top-0 right-0 m-2 text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full">No disponible</span>
 
     <!-- Imagen de perfil o icono -->
     <div class="ios-expert-avatar">
       <img class="ios-expert-avatar-image" v-if="expertData?.imgUrl" :src="expertData.imgUrl" alt="Expert Profile" />
       <div class="ios-expert-avatar-placeholder" :class="isBlocked ? 'bg-slate-200' : 'ios-expert-avatar-placeholder'">
-        <v-icon v-if="!isBlocked" name="la-user-tie-solid" scale="2.2"
-          :class="isBlocked ? 'text-slate-500' : 'ios-expert-avatar-icon'" />
-        <v-icon class="text-slate-500" v-if="isBlocked" name="fa-user-slash" scale="2.2" />
+        <v-icon v-if="!isBlocked && !props.expertData?.isSuspended" name="la-user-tie-solid" scale="2.2"
+          :class="isBlocked || props.expertData?.isSuspended ? 'text-slate-500' : 'ios-expert-avatar-icon'" />
+        <v-icon class="text-slate-500" v-if="isBlocked || props.expertData?.isSuspended" name="fa-user-slash"
+          scale="2.2" />
       </div>
 
 
     </div>
     <!-- Detalles del experto -->
-    <div class="ios-expert-details flex items-center justify-around flex-col">
+    <div class="ios-expert-details flex items-center justify-around flex-col ">
       <h2 class="!text-xl font-normal font-poppins"
-        :class="{ 'text-slate-500': isBlocked, 'text-blue-600': !isBlocked }">
+        :class="{ 'text-slate-500': isBlocked || props.expertData?.isSuspended, 'text-blue-600': !isBlocked && !props.expertData?.isSuspended }">
         {{ expertData?.fullName || 'Experto' }}</h2>
-      <span class="text-white px-2 py-1 rounded-full" :class="{ 'bg-slate-500': isBlocked, 'bg-blue-500': !isBlocked }">
+      <span class="text-white px-2 py-1 rounded-full"
+        :class="{ 'bg-slate-500': isBlocked || props.expertData?.isSuspended, 'bg-blue-500': !isBlocked && !props.expertData?.isSuspended }">
         {{ expertData?.specialty || 'Especialidad' }}
       </span>
       <div v-if="expertData?.rating">
@@ -43,12 +47,12 @@
 
 
       <!-- Botón de acción -->
-      <button class="ios-expert-button" v-if="!isBlocked" @click="viewSchedule(expertData?.userUid)"
-        data-cy="view-schedule-button">
+      <button class="ios-expert-button" v-if="!isBlocked && !props.expertData?.isSuspended"
+        @click="viewSchedule(expertData?.userUid)" data-cy="view-schedule-button">
         Ver disponibilidad
       </button>
       <div class="flex items-center justify-center">
-        <button
+        <button v-if="props.expertData?.isSuspended"
           class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50"
           color="medium" size="default" data-cy="view-schedule-button">
           No disponible

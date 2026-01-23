@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { RouteRecordRaw } from "vue-router";
 import { authStore } from "@/store/auth";
-import expertStore from "@/store/expert";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -135,18 +134,31 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStorePinia = authStore();
-  const expertStorePinia = expertStore();
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const isAuth = authStorePinia.getIsAuth;
-  const isBannedUser = authStorePinia.getUserData?.isBanned ?? false;
-  const isBannedExpert = expertStorePinia.getExpertData?.isSuspended ?? false;
+  const isBannedOrSuspended =
+    (authStorePinia.getUserData?.isBanned ||
+      authStorePinia.getUserData?.isSuspended) ??
+    false;
+
+  console.log("[Router Guard]", {
+    to: to.path,
+    from: from.path,
+    isAuth,
+    isBanned: authStorePinia.getUserData?.isBanned,
+    isSuspended: authStorePinia.getUserData?.isSuspended,
+    isBannedOrSuspended,
+    isClient: authStorePinia.getIsClient,
+    isExpert: authStorePinia.getIsExpert,
+  });
 
   if (to.path === "/account-suspended") {
     return next();
   }
 
-  if (isAuth && (isBannedUser || isBannedExpert) && requiresAuth) {
+  if (isAuth && isBannedOrSuspended && requiresAuth) {
+    console.log("[Router Guard] ⚠️ Redirecting to account-suspended");
     return next({ path: "/account-suspended" });
   }
 
