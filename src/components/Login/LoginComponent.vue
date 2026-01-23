@@ -112,8 +112,12 @@
         </div>
 
         <div class="pt-4 space-y-5">
+          <RouterLink to="/register"
+            class="w-full block py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-center text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl active:scale-[0.98] transition-all duration-200">
+            Registrarse
+          </RouterLink>
           <button type="submit"
-            class="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl active:scale-[0.98] transition-all duration-200">
+            class="w-full py-4 bg-gradient-to-r bg-white text-blue-600 font-bold text-lg rounded-xl shadow-lg  hover:to-indigo-700 hover:shadow-xl active:scale-[0.98] transition-all duration-200">
             Iniciar Sesión
           </button>
 
@@ -148,6 +152,7 @@ import { onMounted, ref, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import GenericModal from '@/components/Common/GenericModal.vue';
+import { RouterLink } from 'vue-router';
 
 // Image imports
 import Abogado from '@/assets/img/Abogado.jpeg';

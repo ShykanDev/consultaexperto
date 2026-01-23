@@ -1,14 +1,7 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
-    <header
-      class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm border-none ">
-      <nav class="web-toolbar h-16 flex items-center px-4">
-        <h1
-          class="web-title text-lg font-bold text-gray-900 order-first text-base text-blue-500 text-start sm:text-xl font-quicksand">
-          Registrarse</h1>
-        <h1 class="order-last flex"><span class="text-sm" v-html="currentName" :key="currentName"></span></h1>
-      </nav>
-    </header>
+
+    <HeaderComponent :page-title="'Registro de usuario'" />
 
 
     <RegisterComponent></RegisterComponent>
@@ -20,6 +13,7 @@
 
 import ExploreContainer from '@/components/ExploreContainer.vue';
 import RegisterComponent from '@/components/Login/RegisterComponent.vue';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 import { ref, onMounted, onUnmounted } from 'vue';
 
 

@@ -19,19 +19,26 @@
             </div>
 
             <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                <RouterLink to="/home#all-experts" class="hover:text-blue-600 transition-colors active:text-blue-600"
+                <RouterLink v-if="!isAuth" to="/login"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
+                    active-class="text-blue-600 font-semibold">Iniciar sesión</RouterLink>
+                <RouterLink v-if="!isAuth" to="/register"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
+                    active-class="text-blue-600 font-semibold">Registrarse</RouterLink>
+                <RouterLink v-if="isAuth" to="/home#all-experts"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Especialidades</RouterLink>
-                <RouterLink to="/home#how-it-works"
+                <RouterLink v-if="isAuth" to="/home#how-it-works"
                     class="hover:text-blue-600 hidden transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Cómo funciona
                 </RouterLink>
                 <RouterLink to="/help" class="hover:text-blue-600 transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Ayuda
                 </RouterLink>
-                <RouterLink to="/client-appointments" class="hover:text-blue-600 transition-colors"
-                    active-class="text-blue-600 font-semibold">Mis citas
+                <RouterLink v-if="isAuth && authStore().getIsClient" to="/client-appointments"
+                    class="hover:text-blue-600 transition-colors" active-class="text-blue-600 font-semibold">Mis citas
                 </RouterLink>
-                <RouterLink to="/logout" class="hover:text-blue-600 transition-colors"
+                <RouterLink v-if="isAuth" to="/logout" class="hover:text-blue-600 transition-colors"
                     active-class="text-blue-600 font-semibold">Cerrar sesión
                 </RouterLink>
             </div>
@@ -40,6 +47,7 @@
 </template>
 
 <script lang="ts" setup>
+import { authStore } from '@/store/auth';
 import { useRoute } from 'vue-router';
 
 
@@ -51,6 +59,8 @@ const props = defineProps({
 })
 
 const currentRoute = useRoute();
+
+const isAuth = authStore().getIsAuth;
 
 const iconList = {
     '/home': 'fa-users',

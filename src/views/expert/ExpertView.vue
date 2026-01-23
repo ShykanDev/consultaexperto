@@ -1,25 +1,12 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
     <!-- Header -->
-    <header
-      class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm font-poppins">
-      <nav class="web-toolbar h-16 flex items-center px-4 justify-between">
-        <h1 class="web-title text-lg font-bold text-blue-600">Agenda Expertos</h1>
-        <div class="web-buttons flex items-center space-x-2">
-          <button
-            class="web-btn flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold transition-all active:scale-95 disabled:opacity-50 hover:bg-blue-700 shadow-md shadow-blue-200"
-            @click="refreshData">
-            <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
-              :class="{ 'animate-spin': isLoading }" v-if="isLoading"></div>
-            <v-icon name="md-refresh" v-else />
-            Actualizar
-          </button>
-        </div>
-      </nav>
-    </header>
+
+
+    <HeaderComponent :pageTitle="'Proximas citas'" />
 
     <!-- Content -->
-    <main class="web-content p-4 space-y-4">
+    <main class="web-content p-4 space-y-4 mt-28">
       <!-- Search -->
       <div class="relative w-full">
         <v-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" name="fa-search" />
@@ -85,6 +72,7 @@ import { ISchedule } from '@/interfaces/user/ISchedule';
 import CardInfo from '@/components/Expert/CardInfo.vue';
 import expertStore from '@/store/expert';
 import { IExpert } from '@/interfaces/IExpert';
+import HeaderComponent from '@/components/Templates/HeaderComponent.vue';
 
 const authStore = authStoreInstance();
 const userAppointments = ref<ISchedule[]>([]);
