@@ -21,8 +21,9 @@
 
         <div class="flex-1 md:border-l md:border-slate-200 md:pl-10">
           <p class="text-xl md:text-2xl text-slate-500 font-light leading-relaxed max-w-md">
-            Únete a nuestra comunidad y agenda una
-            <span class="text-slate-900 font-semibold border-b-2 border-indigo-500/30">sesión estratégica</span>
+            Únase a la comunidad de usuarios y agenda una
+            <span class="text-blue-600 font-semibold border-b-2 border-blue-600/30">sesión gratuita por 15
+              minutos*</span>
             con nuestros expertos.
           </p>
         </div>

@@ -85,65 +85,84 @@
         </div>
       </section>
 
-      <!-- Section 2: Important Info Cards -->
-      <section class="grid gap-4 md:grid-cols-2 animate-fade-up animate-delay-100">
-        <!-- Free Trial -->
-        <div class="p-5 bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm rounded-2xl">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="p-2 bg-blue-100 rounded-full">
-              <v-icon class="text-blue-600" name="fa-clock" />
-            </div>
-            <h3 class="text-lg font-bold text-gray-900">15 Minutos Gratis</h3>
+      <section class="grid gap-6 md:grid-cols-2 lg:gap-8 animate-fade-up animate-delay-100">
+
+        <div
+          class="group relative p-6 bg-white border border-blue-50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(59,130,246,0.1)] transition-all duration-300 rounded-3xl overflow-hidden">
+          <div
+            class="absolute top-0 right-0 w-24 h-24 -mr-8 -mt-8 bg-blue-50 rounded-full opacity-50 transition-transform group-hover:scale-110">
           </div>
-          <p class="text-sm leading-relaxed text-gray-600">
-            Su primera cita incluye <span class="font-bold text-blue-600">15 minutos sin costo</span>. No se requiere
-            tarjeta de crédito para agendar esta consulta de prueba.
-          </p>
+
+          <div class="relative flex flex-col gap-4">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200">
+              <v-icon class="text-white scale-125" name="fa-clock" />
+            </div>
+            <div>
+              <h3 class="text-xl font-extrabold tracking-tight text-gray-900 mb-2">15 Minutos Gratis</h3>
+              <p class="text-gray-500 leading-relaxed italic">
+                Tu primera cita incluye <span
+                  class="text-blue-600 font-semibold underline decoration-2 underline-offset-4">15 minutos sin
+                  costo</span>. Sin tarjetas, sin compromisos.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <!-- Verified Experts -->
-        <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="p-2 bg-green-100 rounded-full">
-              <v-icon class="text-green-600" name="fa-check-circle" />
+        <div
+          class="group p-6 bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-green-200 transition-all duration-300 rounded-3xl">
+          <div class="flex flex-col gap-4">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 bg-green-500 rounded-2xl shadow-lg shadow-green-100">
+              <v-icon class="text-white scale-125" name="fa-check-circle" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900">Expertos Verificados</h3>
+            <div>
+              <h3 class="text-xl font-extrabold tracking-tight text-gray-900 mb-2">Expertos Verificados</h3>
+              <p class="text-gray-500 leading-relaxed">
+                Seguridad ante todo. Validamos manualmente cada documento para garantizar asesoría de <span
+                  class="text-gray-900 font-medium text-sm px-2 py-0.5 bg-gray-100 rounded-full">Alto Nivel</span>.
+              </p>
+            </div>
           </div>
-          <p class="text-sm leading-relaxed text-gray-600">
-            Para su tranquilidad, todos nuestros expertos son sometidos a pruebas de veracidad y sus documentos son
-            validados manualmente.
-          </p>
         </div>
 
-        <!-- Account Recovery -->
-        <div class="p-5 bg-white border border-gray-100 shadow-sm rounded-2xl">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="p-2 bg-purple-100 rounded-full">
-              <v-icon class="text-purple-600" name="md-password-round" />
+        <div
+          class="group p-6 bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-purple-200 transition-all duration-300 rounded-3xl">
+          <div class="flex flex-col gap-4">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 bg-purple-500 rounded-2xl shadow-lg shadow-purple-100">
+              <v-icon class="text-white scale-125" name="md-password-round" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900">Recuperar Cuenta</h3>
+            <div>
+              <h3 class="text-xl font-extrabold tracking-tight text-gray-900 mb-2">Recuperar Cuenta</h3>
+              <p class="text-gray-500 leading-relaxed">
+                ¿Olvidaste tu acceso? No te preocupes. Recibe un enlace de restablecimiento seguro directamente en tu
+                bandeja de entrada.
+              </p>
+            </div>
           </div>
-          <p class="text-sm leading-relaxed text-gray-600">
-            Si olvida su contraseña, puede recuperarla fácilmente ingresando su correo electrónico registrado. Se le
-            enviará un enlace de restablecimiento.
-          </p>
         </div>
 
-        <!-- Account Deletion -->
-        <div class="p-5 bg-white border border-red-100 shadow-sm rounded-2xl">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="p-2 bg-red-100 rounded-full">
-              <v-icon class="text-red-600" name="fa-user-times" />
+        <div
+          class="group p-6 bg-slate-50 border-dashed border-2 border-slate-200 hover:border-red-200 hover:bg-red-50/30 transition-all duration-300 rounded-3xl">
+          <div class="flex flex-col gap-4">
+            <div
+              class="inline-flex items-center justify-center w-12 h-12 bg-white border border-red-100 rounded-2xl shadow-sm text-red-500">
+              <v-icon class="scale-125" name="fa-user-times" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900">Eliminar Cuenta</h3>
+            <div>
+              <h3 class="text-xl font-extrabold tracking-tight text-gray-900 mb-2">Control de Datos</h3>
+              <p class="text-gray-500 leading-relaxed">
+                Para eliminar tu cuenta, escríbenos a
+                <a class="text-red-600 font-bold hover:text-red-700 transition-colors"
+                  href="mailto:informes@grupochimex.com">
+                  informes@grupochimex.com
+                </a>. Gestionamos tu privacidad con seriedad.
+              </p>
+            </div>
           </div>
-          <p class="text-sm leading-relaxed text-gray-600">
-            Para eliminar permanentemente su cuenta, envíe un correo a <a
-              class="font-medium text-red-500 hover:underline"
-              href="mailto:informes@grupochimex.com">informes@grupochimex.com</a> indicando su nombre y el
-            motivo.
-          </p>
         </div>
+
       </section>
 
       <!-- Section 3: FAQ -->

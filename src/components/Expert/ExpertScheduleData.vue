@@ -183,9 +183,7 @@
           @click="presentCancelAlert">Cancelar Cita</button>
         <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished"
           @click="markFunction('finish')">Finalizar Cita</button>
-        <button class="admin-action-button link !text-xs" v-if="!props.data.isCanceled"
-          @click="presentLinkAlert">Agregar
-          Link</button>
+
       </div>
     </div>
 

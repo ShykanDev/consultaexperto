@@ -25,10 +25,7 @@
               <v-icon name="ri-error-warning-line" class="text-white" scale="1.5" />
             </div>
           </div>
-          <div v-if="!props.expertData.isSuspended"
-            class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full shadow-lg"></div>
-          <div v-else
-            class="absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 border-4 border-white rounded-full shadow-lg"></div>
+
         </div>
 
         <div class="space-y-1 w-full">
