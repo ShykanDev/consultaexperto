@@ -1,6 +1,14 @@
 <template>
-  <div class="ios-expert-card-container ios-expert-card relative">
-    <span v-if="props.expertData?.isSuspended"
+  <div :class="isBlocked || props.expertData?.isSuspended ? 'cursor-not-allowed ' : 'cursor-pointer'"
+    class="ios-expert-card-container ios-expert-card relative hover:translate-y-2 transition-all">
+    <div v-if="isBlocked || props.expertData?.isSuspended"
+      class="absolute inset-0 opacity-0 hover:opacity-100 hover:bg-black/80 transition-all z-20 flex items-center justify-center">
+      <p class="text-sky-950 text-center p-3 font-alexandria bg-white/95 text-md animate-fade-up">Este experto no esta
+        disponible en
+        este momento
+      </p>
+    </div>
+    <span v-if="isBlocked || props.expertData?.isSuspended"
       class="absolute top-0 right-0 m-2 text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full">No disponible</span>
 
     <!-- Imagen de perfil o icono -->

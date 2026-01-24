@@ -1,8 +1,6 @@
 <template>
   <div class="web-page min-h-screen bg-gray-50">
     <!-- Header -->
-
-
     <HeaderComponent :pageTitle="'Proximas citas'" />
 
     <!-- Content -->

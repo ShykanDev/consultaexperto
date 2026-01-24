@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-[#F8FAFC] pb-12 font-manrope">
+  <div class="min-h-screen bg-[#F8FAFC] pb-10 font-manrope">
 
 
-    <main class=" px-4 sm:px-6 lg:px-8 pt-28 mt-32">
+    <main class=" px-4 sm:px-6 lg:px-8 pt-28 mt-5">
       <!-- Loading Skeleton -->
       <div v-if="!expertDataLoaded" class="animate-pulse space-y-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div v-else class="space-y-8">
+      <div v-else class="space-y-2">
         <!-- Top Banner: Subscription/Free Consult Alert -->
         <transition enter-active-class="animate__animated animate__fadeInDown">
           <div v-if="!validateFreeConsults(expertData?.specialty!)"
@@ -40,7 +40,7 @@
           </div>
         </transition>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start ">
 
           <!-- LEFT COLUMN: Profile info -->
           <aside class="lg:col-span-4 space-y-6">
@@ -102,16 +102,16 @@
                 <div class="text-2xl font-bold text-blue-700">{{ expertData?.completedSessions || 120 }}+</div>
                 <div class="text-[10px] font-bold text-blue-600/70 uppercase">Consultas</div>
               </div>
-              <div class="p-4 bg-indigo-50 rounded-2xl text-center">
-                <div class="text-2xl font-bold text-indigo-700">98%</div>
-                <div class="text-[10px] font-bold text-indigo-600/70 uppercase">Éxito</div>
+              <div class="p-4 bg-blue-50 rounded-2xl text-center">
+                <div class="text-2xl font-bold text-blue-700">98%</div>
+                <div class="text-[10px] font-bold text-blue-600/70 uppercase">Éxito</div>
               </div>
             </div>
           </aside>
 
           <!-- RIGHT COLUMN: Bio & Agenda -->
           <section class="lg:col-span-8 space-y-8">
-            <!-- Biography Card -->
+            <!-- Biography Card 
             <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
               <div class="flex items-center gap-3 mb-6">
                 <div class="p-2.5 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-200">
@@ -124,14 +124,14 @@
                 || 'Este experto aún no ha agregado una biografía detallada, pero cuenta con toda la experiencia
                 necesaria para ayudarte en tu consulta.' ` }}"
               </p>
-            </div>
+            </div>-->
 
             <!-- Booking Section -->
             <div
               class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
               <div class="p-8 pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                  <div class="p-2.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-200">
+                  <div class="p-2.5 bg-blue-600 rounded-xl text-white shadow-lg shadow-blue-200">
                     <v-icon name="bi-calendar-check" />
                   </div>
                   <div>
@@ -141,16 +141,16 @@
                 </div>
 
                 <div v-if="userHasSlotsTaken"
-                  class="flex items-center gap-2 bg-amber-50 text-amber-700 px-4 py-2 rounded-xl border border-amber-100">
-                  <v-icon name="bi-calendar" scale="0.9" />
-                  <span class="text-xs font-bold">Tienes una cita agendada para el {{ userAppointmentString }}</span>
+                  class="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 ring-1 ring-blue-100">
+                  <v-icon class="animate-bounce" name="bi-calendar" scale="1.4" />
+                  <span class="text-xs font-bold">Tiene una cita agendada para el {{ userAppointmentString }}</span>
                 </div>
               </div>
 
               <!-- Schedule Grid -->
-              <div class="p-8">
+              <div class="p-4">
                 <div v-if="validateFreeConsults(expertData?.specialty!)"
-                  class="flex overflow-x-auto gap-6 pb-6 scrollbar-hide">
+                  class="flex overflow-x-auto gap-6 pb-2 scrollbar-hide">
                   <div v-for="(slots, dayName) in schedule" :key="dayName" class="flex-shrink-0 w-48 space-y-4">
                     <div
                       class="text-center py-2 bg-slate-50 rounded-xl border border-slate-100 text-blue-700 font-bold text-sm">
@@ -197,7 +197,7 @@
               <transition enter-active-class="animate__animated animate__fadeInUp"
                 leave-active-class="animate__animated animate__fadeOutDown">
                 <div v-if="calculatedAppointmentDate"
-                  class="bg-gradient-to-r from-blue-700 to-indigo-700 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                  class="bg-gradient-to-r from-blue-700 to-blue-700 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
                   <div class="flex items-center gap-4">
                     <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md">
                       <v-icon name="bi-calendar-check" scale="1.2" />

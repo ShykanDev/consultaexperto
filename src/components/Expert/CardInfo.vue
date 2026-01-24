@@ -1,350 +1,252 @@
 <template>
-  <section class="ios-appointment-section animate__animated animate__bounceInLeft animate__faster">
-    <!-- Vista de tarjeta -->
-    <article
-      :class="{ 'animate__animated animate__bounceInLeft animate__faster': firstLoad && props.index === 0 || !firstLoad }"
-      class="ios-card rounded-3xl shadow-sm bg-white p-4 ripple-parent" v-if="view === 'card'" @click="toggleView">
-      <div class="flex flex-row items-center justify-between w-full">
-        <!-- Icono de especialidad -->
-        <div class="ios-icon-container"
+  <section class="w-full animate__animated animate__fadeIn animate__faster font-sans text-slate-900">
+
+    <article v-if="view === 'card'" @click="toggleView"
+      :class="{ 'animate__animated animate__fadeInUp animate__faster': firstLoad && props.index === 0 || !firstLoad }"
+      class="group relative bg-white border border-slate-200 rounded-xl p-5 hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 cursor-pointer overflow-hidden">
+      <div class="absolute left-0 top-0 h-full w-1.5"
+        :style="{ backgroundColor: getStrongBackgroundColor(props.data.expertSpecialty) }"></div>
+
+      <div class="flex flex-col md:flex-row md:items-center gap-5">
+        <div
+          class="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
           :style="{ backgroundColor: getLightBackgroundColor(props.data.expertSpecialty) }">
-          <v-icon :name="getIcon(props.data.expertSpecialty)" scale="1.4"
+          <v-icon :name="getIcon(props.data.expertSpecialty)" scale="1.5"
             :style="{ color: getStrongBackgroundColor(props.data.expertSpecialty) }" />
         </div>
 
-        <!-- Contenido principal -->
-        <div class="flex relative flex-col text-left flex-1 font-poppins">
-          <!--Stars-->
-          <article class="absolute bottom-0 right-0 flex items-center gap-1 bg-slate-50 p-1 rounded-full"
-            v-if="authStore().getIsExpert && props.data.isFinished">
-            <p class="text-xs font-poppins text-slate-400">Calificación:</p>
-            <v-icon class="text-yellow-500" v-for="(star, index) in props.data.consultRatingByExpert" :key="index"
-              name="bi-star-fill" scale=".6" />
-          </article>
+        <div class="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="flex flex-col">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Paciente / Usuario</h4>
+            <span class="text-base font-semibold text-slate-800">
+              {{ props.data.userName }}
+            </span>
+            <span class="text-sm text-blue-600 font-medium">{{ props.data.expertSpecialty }}</span>
+          </div>
 
-          <span class="ios-title font-medium text-blue-900 text-base">
-            Consulta con
-            <span class="font-medium text-blue-600">{{ props.data.userName }}</span>
-          </span>
+          <div class="flex flex-col border-slate-100 lg:border-l lg:pl-6">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Programación</h4>
+            <div class="flex items-center gap-2 text-slate-700 text-sm">
+              <v-icon name="fa-calendar-alt" scale="0.7" />
+              <span>{{ formattedDate }}</span>
+            </div>
+            <div class="flex items-center gap-2 text-slate-700 text-sm font-medium mt-1">
+              <v-icon name="fa-clock" scale="0.7" />
+              <span>{{ formattedTime }} hrs</span>
+            </div>
+          </div>
 
-          <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
-            <v-icon class="inline mr-1" name="fa-calendar-alt" scale="0.8" /> Programada para el: {{ formattedDate }}
-          </span>
-          <span class="ios-subtitle text-gray-600 font-quicksand text-sm font-medium">
-            <v-icon class="inline mr-1" name="fa-clock" scale="0.8" /> Hora: {{ formattedTime }} hrs
-          </span>
-          <span class="ios-meta text-gray-500 font-quicksand text-xs font-semibold">
-            <v-icon class="inline mr-1" name="fa-info-circle" scale="0.8" /> Creada el: {{
-              props.data.createdAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
-          </span>
-          <span class="ios-status text-emerald-600 font-quicksand text-sm font-semibold"
-            v-if="props.data.finishedAt && !props.data.isCanceled && props.data.isFinished">
-            <v-icon class="inline mr-1" name="fa-check-circle" scale="0.8" /> Finalizada el: {{
-              props.data.finishedAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
-          </span>
-          <span class="ios-status text-red-600 font-quicksand text-sm font-semibold" v-if="props.data.isCanceled">
-            <v-icon class="inline mr-1" name="fa-times-circle" scale="0.8" /> Cancelada el: {{
-              props.data.canceledAt?.toDate().toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' }) }}
-          </span>
+          <div class="flex flex-col border-slate-100 lg:border-l lg:pl-6 justify-center">
+            <div v-if="props.data.isFinished && !props.data.isCanceled"
+              class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold w-fit">
+              <span class="relative flex h-2 w-2">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              FINALIZADA
+            </div>
+            <div v-else-if="props.data.isCanceled"
+              class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-red-50 text-red-600 text-xs font-bold w-fit">
+              <v-icon name="fa-times-circle" scale="0.6" /> CANCELADA
+            </div>
+            <div v-else
+              class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-xs font-bold w-fit">
+              <v-icon name="fa-calendar-check" scale="0.6" /> PROGRAMADA
+            </div>
+
+            <div v-if="authStore().getIsExpert && props.data.isFinished" class="mt-2 flex items-center gap-1">
+              <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill"
+                class="text-yellow-400" scale="0.6" />
+            </div>
+          </div>
         </div>
 
-        <!-- Flecha para expandir -->
-        <div class="flex items-center ml-2">
-          <v-icon class="text-blue-600" name="fa-chevron-right" scale="0.9" />
+        <div class="hidden md:flex items-center justify-center pr-2">
+          <div
+            class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+            <v-icon name="fa-chevron-right" scale="0.8" />
+          </div>
         </div>
-
-
       </div>
     </article>
 
-    <!-- Vista detallada -->
-    <div class="animate__animated animate__bounceInRight animate-duration-1000 animate__faster" v-if="view === 'modal'">
-      <!-- Encabezado -->
-      <div class="ios-header p-6 w-full max-w-full mb-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
-        <div class="flex items-center gap-2 animate-fade-left" @click="toggleView">
-          <v-icon class="text-blue-600" name="fa-chevron-left" />
-          <button
-            class="flex items-center gap-2 font-base text-blue-600 font-spline animate-fade-left animate-delay-75">Volver</button>
-        </div>
+    <div v-if="view === 'modal'" class="animate__animated animate__fadeIn animate__faster">
 
-        <div
-          class="flex flex-col items-center gap-2 mt-4 ios-header-icon inline-flex justify-center mx-auto mb-3 w-16 h-16 bg-blue-100 rounded-full animate-fade">
-
-          <v-icon class="text-2xl text-blue-600" name="fa-calendar-check" />
-        </div>
-
-        <div class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full"
-          v-if="!props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished">
-          <p>No ha calificado esta consulta</p>
-          <button
-            class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50"
-            size="small" @click="presentRatingAlert">Calificar <v-icon class="inline ml-1 text-white"
-              name="bi-star-fill" scale="0.8" /></button>
-        </div>
-        <div class="flex items-center gap-2 font-poppins text-xs bg-slate-100 p-2 rounded-full"
-          v-else-if="props.data.ratedByExpert && !props.data.isCanceled && props.data.isFinished">
-          <p>Usted calificó esta consulta con:</p>
-          <v-icon class="text-yellow-500" v-for="(star, index) in props.data.consultRatingByExpert" :key="index"
-            name="bi-star-fill" scale="0.8" />
-        </div>
-
-        <h3 class="mb-1 text-xl font-semibold text-gray-800 font-poppins text-center">Cita con <span
-            class="font-medium text-blue-600">{{ props.data.userName }}</span></h3>
-        <div class="flex justify-center">
-          <span class="text-red-600 font-medium" v-if="props.data.isCanceled">(Cancelada)</span>
-          <span class="text-green-500 font-medium" v-if="props.data.isFinished">(Finalizada)</span>
-          <span class="text-blue-600 font-medium"
-            v-if="!props.data.isCanceled && !props.data.isFinished">(Programada)</span>
-        </div>
-        <p class="font-medium text-gray-600 font-poppins text-center">
-          Especialidad: <span class="font-medium text-blue-600">{{ props.data.expertSpecialty }}</span>
-        </p>
-        <p class="font-medium text-gray-600 font-poppins text-center" v-if="authStore().getIsClient">
-          <v-icon class="text-yellow-500" v-for="(star, index) in props.data.userRating" :key="index"
-            name="bi-star-fill" scale=".6" />
-        </p>
-
-        <p class="font-medium text-gray-600 font-poppins text-center" v-if="authStore().getIsExpert">
-          <v-icon class="text-yellow-500" v-for="(star, index) in props.data.expertRating" :key="index"
-            name="bi-star-fill" scale=".6" />
-        </p>
-
-      </div>
-
-
-      <!-- Datos de la cita -->
-      <span class="ios-section-title p-6 w-full max-w-full mb-2 text-lg font-semibold text-gray-700">Detalles de la
-        cita</span>
-      <div
-        class="ios-detail-card p-6 w-full flex flex-col space-y-4 mb-5 max-w-full bg-white rounded-3xl border border-gray-100 shadow-lg">
-        <!-- Fecha -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon class="text-xl text-blue-600" name="bi-calendar-event-fill" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Cita programada para el día:</p>
-            <p class="font-medium text-blue-600">{{ formattedDate }}</p>
-          </div>
-        </article>
-
-        <!-- Hora -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon class="text-xl text-blue-600" name="fa-clock" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Hora:</p>
-            <p class="font-medium text-blue-600">{{ formattedTime }} hrs</p>
-          </div>
-        </article>
-
-        <!-- Usuario -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon class="text-xl text-blue-600" name="fa-user" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Agendado por:</p>
-            <p class="font-medium text-blue-600">{{ props.data.userName }}</p>
-          </div>
-        </article>
-
-        <!-- Enlace -->
-        <article class="ios-detail-item flex items-center gap-3">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon class="text-xl text-blue-600" name="co-link" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Enlace:</p>
-            <p class="font-medium text-yellow-600" v-if="props.data.appointmentLink == 'En proceso...'">En proceso...
-            </p>
-            <button
-              class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 font-medium text-blue-600 break-all cursor-pointer"
-              mode="ios" v-else-if="props.data.acceptedByExpert" @click="markLinkAsOpened">Comenzar Cita</button>
-          </div>
-        </article>
-      </div>
-
-      <!-- Datos del experto -->
-      <span class="ios-section-title p-6 w-full max-w-full mb-2 text-lg font-semibold text-gray-700">Información del
-        experto</span>
-      <div
-        class="ios-detail-card p-6 w-full flex flex-col space-y-4 max-w-full bg-white rounded-3xl border border-gray-100 shadow-lg">
-        <!-- Cédula -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-blue-100">
-            <v-icon class="text-xl text-blue-600" name="fa-id-card" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Cédula profesional:</p>
-            <p class="font-medium text-gray-800">{{ props.data.expertProfessionalId }}</p>
-          </div>
-        </article>
-
-        <!-- Estado -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl"
-            :class="props.data.isFinished ? 'bg-green-50' : (props.data.isCanceled ? 'bg-red-50' : 'bg-yellow-50')">
-            <v-icon class="text-xl"
-              :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-yellow-600')"
-              name="hi-solid-information-circle" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Estado:</p>
-            <p class="font-normal"
-              :class="props.data.isFinished ? 'text-green-600' : (props.data.isCanceled ? 'text-red-600' : 'text-blue-800')">
-              {{ props.data.isFinished ? 'Finalizada' : props.data.isCanceled ? 'Cancelada' : 'Pendiente' }}
-            </p>
-            <p class="text-xs text-blue-600"
-              v-if="!props.data.isFinished && !props.data.isCanceled && !props.data.acceptedByExpert">ⓘ El enlace se
-              generará cuando usted acepte la cita.</p>
-            <p class="text-xs text-blue-600"
-              v-else-if="!props.data.isFinished && !props.data.isCanceled && props.data.acceptedByExpert">Espere el día
-              de la cita para acceder al enlace.</p>
-          </div>
-        </article>
-
-        <!-- Fecha de finalización -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
-          v-if="props.data.isFinished">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
-            <v-icon class="text-xl text-green-600" name="fa-calendar-check" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Finalizada el:</p>
-            <p class="font-medium text-green-600">{{ props.data.finishedAt?.toDate().toLocaleString('es-MX', {
-              dateStyle: 'long', timeStyle: 'short'
-            }) }}</p>
-          </div>
-        </article>
-
-        <!-- Finalizada por -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
-          v-if="props.data.isFinished">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-green-50">
-            <v-icon class="text-xl text-green-600" name="fa-user-check" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Finalizada por:</p>
-            <p class="font-medium text-green-600">{{ props.data.finishedByName || 'Desconocido' }}</p>
-          </div>
-        </article>
-
-        <!-- Motivo de cancelación -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
-          v-if="props.data.isCanceled">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
-            <v-icon class="text-xl text-red-600" name="md-freecancellation-twotone" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Motivo:</p>
-            <p class="font-medium text-red-600">'{{ props.data.cancelationReason }}'
-            </p>
-          </div>
-        </article>
-
-        <!-- Cancelado por -->
-        <article class="ios-detail-item flex items-center gap-3 pb-3 border-b border-b-gray-100"
-          v-if="props.data.isCanceled">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
-            <v-icon class="text-xl text-red-600" name="fa-user-times" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Cancelado por:</p>
-            <p class="font-medium text-red-600">{{ props.data.canceledByName }}</p>
-          </div>
-        </article>
-
-        <!-- Fecha de cancelación -->
-        <article class="ios-detail-item flex items-center gap-3" v-if="props.data.isCanceled">
-          <div class="ios-detail-icon w-12 h-12 flex items-center justify-center rounded-xl bg-red-50">
-            <v-icon class="text-xl text-red-600" name="bi-calendar-x-fill" />
-          </div>
-          <div class="flex justify-between items-center w-full">
-            <p class="font-medium text-gray-700">Cancelada el:</p>
-            <p class="font-medium text-red-600">{{ props.data.canceledAt?.toDate().toLocaleString('es-MX', {
-              dateStyle:
-                'long', timeStyle: 'short'
-            }) }}</p>
-          </div>
-        </article>
-      </div>
-
-      <!-- Fecha de creación -->
-      <div class="w-full flex justify-center mb-8">
-        <span
-          class="text-center font-poppins p-1 text-xs text-gray-500 bg-white rounded-b-2xl border-b-2 border-x-2 border-slate-100">
-          <v-icon class="inline mr-1" name="fa-info-circle" scale="0.8" /> Cita creada el {{
-            props.data.createdAt.toDate().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'medium' }) }}
-        </span>
-      </div>
-
-      <!-- Botones de acción -->
-      <div class="ios-actions w-full flex justify-center mt-4 mb-6 space-x-4"
-        v-if="!props.data.isFinished && !props.data.isCanceled">
-        <button
-          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-rose-500 text-white hover:bg-rose-600 ios-button"
-          style="text-transform: none" v-if="!props.data.isFinished" @click="presentAlert">
-          <div class="!flex !items-center gap-2 justify-between">
-            <span>Cancelar cita</span>
-            <v-icon class="mr-1" name="gi-cancel" scale="1" />
-          </div>
+      <nav class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
+        <button @click="toggleView"
+          class="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors font-medium">
+          <v-icon name="fa-chevron-left" scale="0.8" />
+          <span>Volver al listado</span>
         </button>
-        <button
-          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 ios-button flex gap-2"
-          style="text-transform: none" v-if="props.data.acceptedByExpert && !props.data.isFinished"
-          @click="finaliceAppointment">
-          <div class="!flex !items-center gap-2 justify-between">
-            <span>Marcar como finalizada</span>
-            <v-icon class="inline mr-1" name="bi-calendar-check" scale="1" />
+
+        <div class="flex gap-3">
+          <span v-if="props.data.isCanceled"
+            class="px-4 py-1.5 rounded-lg bg-red-100 text-red-700 text-xs font-bold">CANCELADA</span>
+          <span v-if="props.data.isFinished"
+            class="px-4 py-1.5 rounded-lg bg-green-100 text-green-700 text-xs font-bold">COMPLETADA</span>
+        </div>
+      </nav>
+
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+        <div class="xl:col-span-8 space-y-6">
+
+          <header
+            class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+            <v-icon name="fa-calendar-check" class="absolute right-[-20px] top-[-20px] opacity-10" scale="10" />
+            <div class="relative z-10">
+              <p class="text-blue-400 font-bold text-sm tracking-widest uppercase mb-2">{{ props.data.expertSpecialty }}
+              </p>
+              <h2 class="text-3xl font-bold mb-4">Consulta con {{ props.data.userName }}</h2>
+
+              <div class="flex flex-wrap gap-6 text-slate-300">
+                <div class="flex items-center gap-2">
+                  <v-icon name="bi-calendar-event-fill" class="text-blue-400" />
+                  <span>{{ formattedDate }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <v-icon name="fa-clock" class="text-blue-400" />
+                  <span>{{ formattedTime }} hrs</span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <section class="bg-white border border-slate-100 p-6 rounded-2xl">
+              <h3 class="text-slate-400 text-xs font-bold uppercase mb-4 tracking-widest">Información de la Cita</h3>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                  <span class="text-slate-500">Agendado por:</span>
+                  <span class="font-semibold text-slate-800">{{ props.data.userName }}</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                  <span class="text-slate-500">ID Profesional:</span>
+                  <span class="font-mono text-sm bg-slate-100 px-2 py-1 rounded text-slate-700">{{
+                    props.data.expertProfessionalId }}</span>
+                </div>
+                <div class="flex flex-col gap-2 pt-2">
+                  <span class="text-slate-500">Enlace de la sesión:</span>
+                  <div v-if="props.data.appointmentLink == 'En proceso...'" class="text-yellow-600 font-medium italic">
+                    En proceso...</div>
+                  <button v-else-if="props.data.acceptedByExpert" @click="markLinkAsOpened"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
+                    <v-icon name="co-link" /> Comenzar Cita
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section class="bg-white border border-slate-100 p-6 rounded-2xl">
+              <h3 class="text-slate-400 text-xs font-bold uppercase mb-4 tracking-widest">Estado y Calificación</h3>
+
+              <div class="space-y-4">
+                <div v-if="authStore().getIsExpert && !props.data.isCanceled && props.data.isFinished"
+                  class="bg-slate-50 p-4 rounded-xl">
+                  <p class="text-xs text-slate-500 mb-2 uppercase font-bold">Tu calificación del paciente:</p>
+                  <div v-if="props.data.ratedByExpert" class="flex gap-1">
+                    <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill"
+                      class="text-yellow-500" />
+                  </div>
+                  <button v-else @click="presentRatingAlert"
+                    class="text-sm text-blue-600 font-bold hover:underline flex items-center gap-1">
+                    Calificar ahora <v-icon name="bi-star-fill" scale="0.7" />
+                  </button>
+                </div>
+
+                <div v-if="props.data.isFinished"
+                  class="text-sm p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <div class="flex items-center gap-2 text-emerald-700 font-bold mb-1">
+                    <v-icon name="fa-user-check" /> Finalizada por {{ props.data.finishedByName || 'Sistema' }}
+                  </div>
+                  <p class="text-emerald-600 text-xs">{{ props.data.finishedAt?.toDate().toLocaleString() }}</p>
+                </div>
+
+                <div v-if="props.data.isCanceled" class="text-sm p-4 bg-red-50 rounded-xl border border-red-100">
+                  <div class="flex items-center gap-2 text-red-700 font-bold mb-1">
+                    <v-icon name="fa-user-times" /> Cancelado por {{ props.data.canceledByName }}
+                  </div>
+                  <p class="text-red-800 italic mt-1 font-medium text-xs">"{{ props.data.cancelationReason }}"</p>
+                </div>
+              </div>
+            </section>
           </div>
-        </button>
-        <button
-          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 ios-button flex gap-2"
-          style="text-transform: none" v-if="!props.data.acceptedByExpert" @click="confirmConsult">
-          <div class="!flex !items-center gap-2 justify-between">
-            <span>Confirmar cita</span>
-            <v-icon class="inline mr-1" name="bi-calendar-check" scale="1" />
+        </div>
+
+        <aside class="xl:col-span-4 space-y-6">
+
+          <div v-if="!props.data.isFinished && !props.data.isCanceled"
+            class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+            <h3 class="text-slate-800 font-bold mb-4">Acciones de Gestión</h3>
+            <div class="flex flex-col gap-3">
+              <button v-if="!props.data.acceptedByExpert" @click="confirmConsult"
+                class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                <v-icon name="bi-calendar-check" /> Confirmar Cita
+              </button>
+
+              <button v-if="props.data.acceptedByExpert && !props.data.isFinished" @click="finaliceAppointment"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                <v-icon name="bi-calendar-check" /> Finalizar Cita
+              </button>
+
+              <button @click="presentAlert"
+                class="w-full bg-white border-2 border-rose-100 text-rose-500 hover:bg-rose-50 font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                <v-icon name="gi-cancel" /> Cancelar Cita
+              </button>
+            </div>
           </div>
-        </button>
+
+          <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-slate-500">
+            <h4 class="text-xs font-bold uppercase mb-3 tracking-widest">Registro de Actividad</h4>
+            <div class="flex items-start gap-3 text-xs leading-relaxed">
+              <v-icon name="fa-info-circle" class="mt-0.5" />
+              <p>Creada el {{ props.data.createdAt?.toDate().toLocaleString('es-MX', {
+                dateStyle: 'long', timeStyle:
+                'short' }) }}</p>
+            </div>
+            <div v-if="!props.data.acceptedByExpert"
+              class="mt-4 p-3 bg-blue-100/50 rounded-lg text-blue-700 text-[11px] font-medium uppercase">
+              ⓘ El enlace se generará una vez que aceptes la cita.
+            </div>
+          </div>
+        </aside>
+
       </div>
     </div>
 
-    <!-- Modals -->
     <GenericModal v-model:show="showCancelModal" title="Cancelar Cita" confirmText="Confirmar Cancelación"
       @confirm="handleCancelConfirm">
-      <div class="space-y-4">
-        <p class="text-sm text-gray-500">Por favor, indique el motivo de la cancelación:</p>
+      <div class="p-2">
+        <p class="text-sm text-slate-500 mb-3 font-medium">Por favor, indica el motivo de la cancelación:</p>
         <textarea v-model="cancelationReason"
-          class="w-full p-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-100 outline-none" rows="3"
-          placeholder="Motivo de la cancelación..."></textarea>
+          class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+          rows="4" placeholder="Escribe aquí el motivo..."></textarea>
       </div>
     </GenericModal>
 
     <GenericModal v-model:show="showRatingModal" title="Calificar servicio" confirmText="Enviar Calificación"
       @confirm="handleRatingConfirm">
-      <div class="space-y-4">
-        <p class="text-sm text-gray-500">Seleccione su calificación para el usuario:</p>
-        <div class="flex flex-col gap-2">
+      <div class="space-y-3">
+        <p class="text-sm text-slate-500 mb-2">Selecciona la calificación para el usuario:</p>
+        <div class="grid grid-cols-1 gap-2">
           <button v-for="star in [5, 4, 3, 2, 1]" :key="star" @click="selectedStars = star"
-            class="flex items-center justify-between p-3 rounded-xl border transition-all"
-            :class="selectedStars === star ? 'bg-blue-50 border-blue-200 text-blue-600' : 'bg-white border-gray-100 text-gray-600 hover:bg-gray-50'">
-            <span class="font-medium">{{ star }} Estrellas</span>
-            <div class="flex gap-1">
-              <v-icon v-for="i in star" :key="i" name="bi-star-fill" scale="0.8" />
+            class="flex items-center justify-between p-4 rounded-xl border transition-all"
+            :class="selectedStars === star ? 'bg-blue-600 border-blue-600 text-white shadow-lg' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'">
+            <span class="font-bold">{{ star }} Estrellas</span>
+            <div class="flex gap-0.5">
+              <v-icon v-for="i in star" :key="i" name="bi-star-fill" :scale="selectedStars === star ? '0.8' : '0.7'" />
             </div>
           </button>
         </div>
       </div>
     </GenericModal>
 
-    <!-- Custom Loader -->
     <div v-if="loadingFirebase"
-      class="fixed inset-0 z-[110] flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-      <div class="bg-white p-6 rounded-3xl shadow-xl flex flex-col items-center gap-4">
-        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
-        <p class="font-bold text-gray-900 font-manrope">{{ loadingFirebaseMessage }}</p>
+      class="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+      <div class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4">
+        <div class="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+        <p class="font-bold text-slate-800 tracking-tight">{{ loadingFirebaseMessage }}</p>
       </div>
     </div>
   </section>

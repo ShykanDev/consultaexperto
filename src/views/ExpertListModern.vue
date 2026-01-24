@@ -34,11 +34,11 @@
                         </p>
 
                         <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                            <button @click="toggleExpertPopup('open')"
+                            <a href="/home#all-experts"
                                 class="group px-8 py-5 bg-slate-900 text-white font-bold rounded-2xl flex items-center gap-3 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">
                                 Iniciar Consultoría
                                 <v-icon name="hi-arrow-right" class="group-hover:translate-x-1 transition-transform" />
-                            </button>
+                            </a>
                             <div class="flex items-center -space-x-3 px-4">
                                 <div v-for="i in 4" :key="i"
                                     class="w-10 h-10 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold">
@@ -204,7 +204,7 @@
                     <ul class="space-y-4">
                         <li v-for="link in group.links" :key="link">
                             <a href="#" class="text-slate-500 hover:text-blue-600 font-medium transition-colors">{{ link
-                            }}</a>
+                                }}</a>
                         </li>
                     </ul>
                 </div>
@@ -233,8 +233,8 @@
                                 especialista ideal</p>
                         </div>
                         <button @click="toggleExpertPopup('close')"
-                            class="min-w-32 h-12 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center transition-all">
-                            <v-icon name="md-close" scale="1.2" />
+                            class="min-w-32 h-12 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center transition-all">
+                            <v-icon class="text-white" name="md-close" scale="1.2" />
                         </button>
                     </section>
 
@@ -302,20 +302,76 @@ onMounted(() => {
 });
 
 const experts = ref([
-    { name: "Médico", icon: 'md-medicalinformation-outlined', summary: "Si tiene alguna consulta sobre su salud, contacte a uno de nuestros expertos." },
-    { name: "Contador", icon: 'bi-calculator-fill', summary: "Si tiene alguna duda sobre sus finanzas o impuestos, contacte a uno de nuestros expertos." },
-    { name: "Arquitecto", icon: 'md-architecture-sharp', summary: "Si necesita diseñar o remodelar un espacio, contacte a uno de nuestros expertos." },
-    { name: "Servicios Web", icon: 'md-web', summary: "Si requiere desarrollo o soporte tecnológico, contacte a uno de nuestros expertos." },
-    { name: "Publicidad", icon: 'fa-newspaper', summary: "Si desea promocionar su negocio o producto, contacte a uno de nuestros expertos." },
-    { name: "Traductor", icon: 'hi-solid-translate', summary: "Si necesita traducir documentos o textos, contacte a uno de nuestros expertos." },
-    { name: "Peritaje", icon: 'hi-academic-cap', summary: "Si requiere una evaluación o dictamen técnico, contacte a uno de nuestros expertos." },
-    { name: "Ingeniería en Computación", icon: 'md-computer-twotone', summary: "Si necesita soluciones tecnológicas especializadas, contacte a uno de nuestros expertos." },
-    { name: "Marketing", icon: 'fa-bullhorn', summary: "Si desea impulsar su estrategia comercial, contacte a uno de nuestros expertos." },
-    { name: "Abogado", icon: 'fa-gavel', summary: "Si tiene alguna duda legal, contacte a uno de nuestros expertos." },
-    { name: "Psicólogo/a", icon: 'ri-psychotherapy-fill', summary: "Si necesita orientación psicológica profesional, contacte a uno de nuestros expertos." },
-    { name: "Maestro", icon: 'gi-teacher', summary: "Si requiere servicios educativos o tutoría, contacte a uno de nuestros expertos." },
-    { name: "Chef", icon: 'gi-chef-toque', summary: "Si necesita servicios de cocina profesional o consultoría gastronómica, contacte a uno de nuestros expertos." },
-    { name: "Gestoría en Trámites", icon: 'oi-tasklist', summary: "Si necesita ayuda con gestiones administrativas, contacte a uno de nuestros expertos." }
+    {
+        name: "Médico",
+        icon: 'md-medicalinformation-outlined',
+        summary: "Atención médica especializada para el diagnóstico, tratamiento y seguimiento integral de tu salud y bienestar."
+    },
+    {
+        name: "Contador",
+        icon: 'bi-calculator-fill',
+        summary: "Optimización de recursos, gestión de impuestos y asesoría financiera estratégica para mantener tus cuentas claras."
+    },
+    {
+        name: "Arquitecto",
+        icon: 'md-architecture-sharp',
+        summary: "Diseño creativo y planificación técnica para transformar espacios, desde remodelaciones hasta proyectos de gran escala."
+    },
+    {
+        name: "Servicios Web",
+        icon: 'md-web',
+        summary: "Desarrollo de plataformas digitales modernas, mantenimiento de sitios y soluciones de software escalables para tu negocio."
+    },
+    {
+        name: "Publicidad",
+        icon: 'fa-newspaper',
+        summary: "Estrategias de comunicación y campañas creativas diseñadas para maximizar la visibilidad y el impacto de tu marca."
+    },
+    {
+        name: "Traductor",
+        icon: 'hi-solid-translate',
+        summary: "Traducción profesional de documentos y textos con precisión lingüística y adaptación cultural garantizada."
+    },
+    {
+        name: "Peritaje",
+        icon: 'hi-academic-cap',
+        summary: "Evaluaciones técnicas especializadas y dictámenes periciales con validez oficial para procesos legales o técnicos."
+    },
+    {
+        name: "Ingeniería en Computación",
+        icon: 'md-computer-twotone',
+        summary: "Arquitectura de sistemas, seguridad informática y consultoría técnica avanzada para resolver problemas complejos."
+    },
+    {
+        name: "Marketing",
+        icon: 'fa-bullhorn',
+        summary: "Análisis de mercado y estrategias de crecimiento enfocadas en aumentar tus ventas y fidelizar a tu audiencia."
+    },
+    {
+        name: "Abogado",
+        icon: 'fa-gavel',
+        summary: "Representación legal y consultoría jurídica para proteger tus intereses en asuntos civiles, laborales o penales."
+    },
+    {
+        name: "Psicólogo/a",
+        icon: 'ri-psychotherapy-fill',
+        summary: "Acompañamiento profesional y terapia enfocada en el bienestar emocional, la salud mental y el crecimiento personal."
+    },
+    {
+        name: "Maestro",
+        icon: 'gi-teacher',
+        summary: "Servicios educativos personalizados, regularización académica y tutorías diseñadas para potenciar el aprendizaje."
+    },
+    {
+        name: "Chef",
+        icon: 'gi-chef-toque',
+        summary: "Asesoría gastronómica, diseño de menús y servicios de cocina profesional para eventos o emprendimientos culinarios."
+    },
+    {
+        name: "Gestoría en Trámites",
+        icon: 'oi-tasklist',
+        summary: "Gestión eficiente de procesos administrativos y burocráticos para ahorrarte tiempo y asegurar resultados."
+    }
 ]);
 
 const toggleExpertPopup = (action: 'open' | 'close') => {
