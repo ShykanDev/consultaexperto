@@ -165,8 +165,10 @@ import {
   HiExternalLink,
   HiArrowLeft,
   MdRefresh,
+  FaArrowLeft,
 } from "oh-vue-icons/icons";
 addIcons(
+  FaArrowLeft,
   HiMailOpen,
   HiCheck,
   HiRefresh,

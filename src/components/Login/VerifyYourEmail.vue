@@ -42,7 +42,7 @@
                     </button>
                 </RouterLink>
 
-                <button
+                <button @click="resendVerificationEmail"
                     class="text-slate-500 hover:text-primary text-sm font-semibold transition-colors flex items-center gap-2 group">
                     <v-icon name="md-refresh" scale="0.9" />
                     Reenviar correo
@@ -67,6 +67,7 @@
 <script lang="ts" setup>
 import { auth as authFirebase } from '@/firebase'
 import { sendEmailVerification } from 'firebase/auth';
+
 const props = defineProps({
     email: {
         type: String,

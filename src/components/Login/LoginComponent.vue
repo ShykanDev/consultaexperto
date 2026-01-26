@@ -273,7 +273,7 @@ const login = async () => {
     const name = displayName || "Usuario";
 
     if (!userCredential.user.emailVerified) {
-      toast.error("Por favor, verifique su correo electrónica");
+      toast.error("Por favor, verifique su correo electrónico");
       showVerifyEmail.value = true;
       return;
     }

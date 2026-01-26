@@ -14,7 +14,7 @@
 
     <span v-if="isBlocked || props.expertData?.isSuspended"
       class="absolute top-4 right-4 z-20 text-[10px] uppercase tracking-widest font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-      Fuera de línea
+      No disponible
     </span>
 
     <div class="flex flex-col items-center">

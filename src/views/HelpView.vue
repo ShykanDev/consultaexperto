@@ -28,7 +28,8 @@
             </div>
 
             <!-- Checkbox consulta -->
-            <div class="flex items-start">
+            <div v-if="authStore().getIsAuth && authStore().getIsClient || authStore().getIsExpert"
+              class="flex items-start">
               <div class="flex items-center h-5">
                 <input id="is-consult-related" type="checkbox"
                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"

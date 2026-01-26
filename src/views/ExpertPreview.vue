@@ -23,7 +23,6 @@
           <h2 class="text-lg font-bold text-gray-800">Información del experto</h2>
         </div>
         <div class="divide-y divide-gray-100">
-          <p>ExpertInfo: {{ expertInfo }}</p>
           <div class="px-6 py-4 flex justify-between items-center" v-for="item in expertInfo" :key="item.label">
             <span class="text-gray-500 font-medium">{{ item.label }}</span>
             <span class="text-gray-900" :class="item.class">{{ item.value }}</span>
@@ -150,7 +149,7 @@ const schedule = computed(() => {
 
 const handleSlotClick = (day: string, time: string) => {
   if (!canEdit.value) {
-    toast.info('Habilita la edición para modificar los horarios');
+    toast.info('Habilite la edición para modificar los horarios');
     return;
   }
   const daySchedule = (schedule.value as any)[day];
