@@ -117,23 +117,28 @@
             Iniciar Sesión
           </button>
           <RouterLink to="/register"
-            class="w-full block py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-center text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl active:scale-[0.98] transition-all duration-200">
+            class="w-full block py-4 bg-gradient-to-r from-blue-500 to-blue-400 text-white font-bold text-center text-lg rounded-xl shadow-lg hover:from-blue-600 hover:to-blue-500 hover:shadow-xl active:scale-[0.98] transition-all duration-200">
             Registrarse
           </RouterLink>
 
           <div class="text-center">
             <button type="button" @click="showResetModal = true"
               class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
-              ¿Olvidó tu contraseña?
+              ¿Olvidó su contraseña?
             </button>
           </div>
         </div>
       </form>
     </div>
 
+
+    <div @click="showVerifyEmail = false" v-show="showVerifyEmail"
+      class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+      <VerifyYourEmail :email="email" class="animate-fade-in" />
+    </div>
     <!-- Modal de reset (con toques de color) -->
     <GenericModal v-model:show="showResetModal" title="Recupera tu acceso"
-      message="Te enviaremos un enlace a tu correo para restablecer la contraseña." confirmText="Enviar enlace"
+      message="Le enviaremos un enlace a su correo para restablecer la contraseña." confirmText="Enviar enlace"
       @confirm="handleResetPassword">
       <div class="mt-6">
         <div
@@ -181,6 +186,7 @@ import LoaderMultipleDots from '@/animations/LoaderMultipleDots.vue';
 import clientStore from '@/store/client';
 import expertStore from '@/store/expert';
 import { IExpert } from '@/interfaces/IExpert';
+import VerifyYourEmail from './VerifyYourEmail.vue';
 
 const toast = useToast();
 const router = useRouter();
@@ -193,6 +199,7 @@ const showPassword = ref(false);
 const loading = ref(false);
 const isAccordionOpen = ref(false);
 const showResetModal = ref(false);
+const showVerifyEmail = ref(false);
 const resetEmail = ref('');
 
 const experts = ref([
@@ -264,6 +271,12 @@ const login = async () => {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const { email: userEmail, uid, displayName } = userCredential.user;
     const name = displayName || "Usuario";
+
+    if (!userCredential.user.emailVerified) {
+      toast.error("Por favor, verifique su correo electrónica");
+      showVerifyEmail.value = true;
+      return;
+    }
 
     // Admin Check
     const adminQuery = query(collection(db, 'AdminEmails'), where('email', '==', userEmail));

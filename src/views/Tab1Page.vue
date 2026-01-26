@@ -3,7 +3,7 @@
     <header class="fixed top-0 z-50 w-full pt-3 px-4 sm:px-6 lg:px-8">
       <div class="web-header mx-auto max-w-8xl">
         <nav
-          class="h-14 md:h-16 bg-white/75 backdrop-blur-2xl border border-blue-100/40 rounded-2xl shadow-lg shadow-blue-100/20 overflow-hidden">
+          class="h-14 md:h-16 bg-white/75  border border-blue-100/40 rounded-2xl shadow-lg shadow-blue-100/20 overflow-hidden">
           <div class="h-full flex items-center justify-between px-6">
             <!-- Título / Logo -->
             <h1

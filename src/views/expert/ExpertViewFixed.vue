@@ -74,7 +74,7 @@
                   <div class="flex items-center gap-1">
                     <v-icon name="io-star" class="text-yellow-500" scale="1.1" />
                     <span class="text-xl font-bold text-slate-800">{{ calcStarsValue(expertData?.rating!).toFixed(1)
-                    }}</span>
+                      }}</span>
                   </div>
                   <div class="h-4 w-px bg-slate-200"></div>
                   <span class="text-xs text-slate-500 font-medium">{{ expertData?.rating?.count }} Calificaciones</span>
@@ -86,7 +86,7 @@
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Cédula Profesional</span>
                   <span class="text-sm font-semibold text-slate-700">{{ expertData?.professionalId || 'No registrada'
-                  }}</span>
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Años de Exp.</span>
@@ -186,10 +186,12 @@
                 <div v-else
                   class="text-center py-12 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
                   <v-icon name="ri-user-smile-line" scale="3" class="text-slate-300 mb-4" />
-                  <h3 class="text-lg font-bold text-slate-500">Funcionalidad solo para usuarios corporativos</h3>
-                  <p class="text-slate-400 max-w-xs mx-auto text-sm mt-2">Debes contratar al experto profesional para
-                    visualizar sus
-                    horarios de atención privada.</p>
+                  <h3 class="text-lg font-bold text-slate-500">Ha agotado sus citas gratuitas para esta categoria </h3>
+                  <p class="text-slate-400 max-w-xs mx-auto text-sm mt-2">Para poder continuar con una cita le
+                    recomendamos contratar al
+                    experto profesional.</p>
+                  <button @click="handleHiring"
+                    class="mt-4 px-6 py-2 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700">Contratar</button>
                 </div>
               </div>
 

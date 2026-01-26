@@ -108,6 +108,11 @@ const routes: Array<RouteRecordRaw> = [
   },
   // Legacy/Test
   {
+    path: "/verify",
+    component: () => import("@/views/VerifyEmail.vue"),
+    meta: { requiresAuth: false },
+  },
+  {
     path: "/expert",
     redirect: "/expert-appointments",
   },

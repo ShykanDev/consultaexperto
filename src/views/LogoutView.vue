@@ -202,13 +202,16 @@ const handlePasswordReset = async () => {
   try {
     isLoading.value = true;
     await sendPasswordResetEmail(auth, email.value);
-    // Usar alerta nativa o toast sería mejor, pero por simplicidad:
-    alert('Se ha enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada.');
     email.value = '';
     isTouched.value = false;
+    isModalOpen.value = true;
+    modalTitle.value = 'Restablecimiento de contraseña';
+    modalContent.value = 'Se ha enviado un correo para restablecer tu contraseña. Revisa tu bandeja de entrada.';
   } catch (error) {
     console.error('Error al enviar correo:', error);
-    alert('Error enviando el correo. Verifica que la cuenta exista.');
+    isModalOpen.value = true;
+    modalTitle.value = 'Error al restablecer contraseña';
+    modalContent.value = 'Error enviando el correo. Verifica que la cuenta exista.';
   } finally {
     isLoading.value = false;
   }
