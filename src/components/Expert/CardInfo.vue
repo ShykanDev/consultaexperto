@@ -203,7 +203,8 @@
               <v-icon name="fa-info-circle" class="mt-0.5" />
               <p>Creada el {{ props.data.createdAt?.toDate().toLocaleString('es-MX', {
                 dateStyle: 'long', timeStyle:
-                'short' }) }}</p>
+                  'short'
+              }) }}</p>
             </div>
             <div v-if="!props.data.acceptedByExpert"
               class="mt-4 p-3 bg-blue-100/50 rounded-lg text-blue-700 text-[11px] font-medium uppercase">
@@ -260,7 +261,7 @@ import { authStore } from '@/store/auth';
 import GenericModal from '@/components/Common/GenericModal.vue';
 
 
-import { doc, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
+import { doc, DocumentReference, getDoc, getFirestore, increment, Timestamp, updateDoc, writeBatch } from 'firebase/firestore';
 import { computed, onMounted, ref } from 'vue';
 import emailjs from '@emailjs/browser';
 // import { useExpertUiStore } from '@/stores/expertUi';
@@ -658,6 +659,13 @@ const cancelAppointment = async () => {
       canceledByUid: authStore().getUserUid || '',
       canceledByName: authStore().getUserName || ''
     })
+
+    // ✅ FIX: Delete the guardian to free up the slot for future bookings
+    const guardianId = `${props.data.expertUid}_${matchDay}_${slotMatch.time}`;
+    const guardianRef = doc(db, 'bookings', guardianId);
+    batch.delete(guardianRef);
+    console.log(`Guardian deleted: ${guardianId}`);
+
     await batch.commit();
     await sendEmail(cancellationTime);
     loadingFirebase.value = false;
@@ -742,6 +750,11 @@ const finaliceAppointment = async () => {
       }
     });
 
+    // ✅ FIX: Delete the guardian to free up the slot for future bookings
+    const guardianId = `${props.data.expertUid}_${matchDay}_${slotMatch.time}`;
+    const guardianRef = doc(db, 'bookings', guardianId);
+    batch.delete(guardianRef);
+    console.log(`Guardian deleted: ${guardianId}`);
 
     await batch.commit();
     loadingFirebase.value = false;

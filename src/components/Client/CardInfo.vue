@@ -791,6 +791,13 @@ const cancelAppointment = async () => {
       canceledByUid: authStore().getUserUid || '',
       canceledByName: authStore().getUserName || ''
     })
+
+    // ✅ FIX: Delete the guardian to free up the slot for future bookings
+    const guardianId = `${props.data.expertUid}_${matchDay}_${slotMatch.time}`;
+    const guardianRef = doc(db, 'bookings', guardianId);
+    batch.delete(guardianRef);
+    console.log(`Guardian deleted: ${guardianId}`);
+
     await batch.commit();
     await sendEmail(cancellationTime);
 
@@ -860,6 +867,11 @@ const finaliceAppointment = async () => {
       finishedByName: authStore().getUserName || 'Nombre no disponible'
     })
 
+    // ✅ FIX: Delete the guardian to free up the slot for future bookings
+    const guardianId = `${props.data.expertUid}_${matchDay}_${slotMatch.time}`;
+    const guardianRef = doc(db, 'bookings', guardianId);
+    batch.delete(guardianRef);
+    console.log(`Guardian deleted: ${guardianId}`);
 
     await batch.commit();
     loadingFirebase.value = false;
