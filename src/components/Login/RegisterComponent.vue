@@ -228,6 +228,7 @@ const register = async () => {
       createdAt: Timestamp.now(),
       userId: user.uid,
       freeConsultations: true,
+      categoryConsultations: {}, // Initialize empty object for tracking free consultations per category
     });
 
     toast.success('¡Cuenta creada! Verifica tu correo electrónico');

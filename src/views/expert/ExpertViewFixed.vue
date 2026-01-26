@@ -74,7 +74,7 @@
                   <div class="flex items-center gap-1">
                     <v-icon name="io-star" class="text-yellow-500" scale="1.1" />
                     <span class="text-xl font-bold text-slate-800">{{ calcStarsValue(expertData?.rating!).toFixed(1)
-                      }}</span>
+                    }}</span>
                   </div>
                   <div class="h-4 w-px bg-slate-200"></div>
                   <span class="text-xs text-slate-500 font-medium">{{ expertData?.rating?.count }} Calificaciones</span>
@@ -86,7 +86,7 @@
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Cédula Profesional</span>
                   <span class="text-sm font-semibold text-slate-700">{{ expertData?.professionalId || 'No registrada'
-                    }}</span>
+                  }}</span>
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Años de Exp.</span>
@@ -523,10 +523,15 @@ onUnmounted(() => {
 const validateFreeConsults = (expertSpecialty: string): boolean | undefined => {
   if (!expertSpecialty) return false;
   const userData = authStore().getUserData;
-  if (!userData?.categoryConsultations) return false;
+
+  // If user doesn't have categoryConsultations field, they're a new user with free consultations available
+  if (!userData?.categoryConsultations) return true;
 
   const category = userData.categoryConsultations[expertSpecialty];
+  // If category doesn't exist, user hasn't used a free consultation in this category yet
   if (!category) return true;
+
+  // Return the hasFreeConsult flag for this specific category
   return category.hasFreeConsult;
 }
 

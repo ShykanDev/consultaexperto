@@ -1,72 +1,83 @@
 <template>
-  <div :class="isBlocked || props.expertData?.isSuspended ? 'cursor-not-allowed ' : 'cursor-pointer'"
-    class="ios-expert-card-container ios-expert-card relative hover:translate-y-2 transition-all">
+  <div :class="isBlocked || props.expertData?.isSuspended ? 'cursor-not-allowed grayscale' : 'cursor-pointer'"
+    class="relative group overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500 hover:-translate-y-2 p-6">
+
     <div v-if="isBlocked || props.expertData?.isSuspended"
-      class="absolute inset-0 opacity-0 hover:opacity-100 hover:bg-black/80 transition-all z-20 flex items-center justify-center">
-      <p class="text-sky-950 text-center p-3 font-alexandria bg-white/95 text-md animate-fade-up">Este experto no esta
-        disponible en
-        este momento
-      </p>
+      class="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30 flex items-center justify-center p-4">
+      <div
+        class="bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-xl transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+        <p class="text-slate-800 text-center font-medium text-sm animate-fade-up">
+          Este experto no está disponible en este momento
+        </p>
+      </div>
     </div>
+
     <span v-if="isBlocked || props.expertData?.isSuspended"
-      class="absolute top-0 right-0 m-2 text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full">No disponible</span>
+      class="absolute top-4 right-4 z-20 text-[10px] uppercase tracking-widest font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+      Fuera de línea
+    </span>
 
-    <!-- Imagen de perfil o icono -->
-    <div class="ios-expert-avatar">
-      <img class="ios-expert-avatar-image" v-if="expertData?.imgUrl" :src="expertData.imgUrl" alt="Expert Profile" />
-      <div class="ios-expert-avatar-placeholder" :class="isBlocked ? 'bg-slate-200' : 'ios-expert-avatar-placeholder'">
-        <v-icon v-if="!isBlocked && !props.expertData?.isSuspended" name="la-user-tie-solid" scale="2.2"
-          :class="isBlocked || props.expertData?.isSuspended ? 'text-slate-500' : 'ios-expert-avatar-icon'" />
-        <v-icon class="text-slate-500" v-if="isBlocked || props.expertData?.isSuspended" name="fa-user-slash"
-          scale="2.2" />
+    <div class="flex flex-col items-center">
+      <div class="relative mb-5">
+        <div
+          class="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-slate-50 shadow-inner flex items-center justify-center bg-slate-100">
+          <img v-if="expertData?.imgUrl" :src="expertData.imgUrl" alt="Expert Profile"
+            class="w-full h-full object-cover" />
+          <div v-else class="flex items-center justify-center w-full h-full"
+            :class="isBlocked ? 'bg-slate-200' : 'bg-blue-50'">
+            <v-icon v-if="!isBlocked && !props.expertData?.isSuspended" name="la-user-tie-solid" scale="2"
+              class="text-blue-500" />
+            <v-icon v-else class="text-slate-400" name="fa-user-slash" scale="2" />
+          </div>
+        </div>
+        <div v-if="!isBlocked"
+          class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
       </div>
 
+      <div class="text-center w-full">
+        <h2 class="text-xl font-bold font-poppins tracking-tight mb-1"
+          :class="{ 'text-slate-400': isBlocked || props.expertData?.isSuspended, 'text-slate-800': !isBlocked && !props.expertData?.isSuspended }">
+          {{ expertData?.fullName || 'Experto' }}
+        </h2>
 
-    </div>
-    <!-- Detalles del experto -->
-    <div class="ios-expert-details flex items-center justify-around flex-col ">
-      <h2 class="!text-xl font-normal font-poppins"
-        :class="{ 'text-slate-500': isBlocked || props.expertData?.isSuspended, 'text-blue-600': !isBlocked && !props.expertData?.isSuspended }">
-        {{ expertData?.fullName || 'Experto' }}</h2>
-      <span class="text-white px-2 py-1 rounded-full"
-        :class="{ 'bg-slate-500': isBlocked || props.expertData?.isSuspended, 'bg-blue-500': !isBlocked && !props.expertData?.isSuspended }">
-        {{ expertData?.specialty || 'Especialidad' }}
-      </span>
-      <div v-if="expertData?.rating">
-        <article class="flex items-center my-2">
-          <span class="text-slate-500 font-manrope font-semibold mr-1">
-            {{ calcStarsValue(expertData.rating).toFixed(1) }}
-          </span>
-          <v-icon class="text-yellow-500" name="io-star" scale="1" />
-          <p class="text-slate-500 text-xs">({{ expertData.rating.count }} calificaciones) </p>
+        <div class="inline-block px-3 py-1 rounded-lg text-xs font-semibold tracking-wide mb-3"
+          :class="{ 'bg-slate-100 text-slate-400': isBlocked || props.expertData?.isSuspended, 'bg-blue-50 text-blue-600': !isBlocked && !props.expertData?.isSuspended }">
+          {{ expertData?.specialty || 'Especialidad' }}
+        </div>
 
-        </article>
+        <div v-if="expertData?.rating" class="flex items-center justify-center space-x-1 mb-4">
+          <div class="flex items-center bg-yellow-50 px-2 py-0.5 rounded-md">
+            <v-icon class="text-yellow-500 mr-1" name="io-star" scale="0.8" />
+            <span class="text-yellow-700 font-bold text-sm">
+              {{ calcStarsValue(expertData.rating).toFixed(1) }}
+            </span>
+          </div>
+          <span class="text-slate-400 text-[11px]">({{ expertData.rating.count }} reseñas)</span>
+        </div>
+
+        <p class="text-slate-500 text-sm leading-relaxed line-clamp-2 px-2 mb-4 italic min-h-[40px]">
+          "{{ expertData?.bio || 'Sin descripción disponible' }}"
+        </p>
+
+        <div class="border-t border-slate-50 pt-4 mb-5">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cédula Profesional</span>
+          <p class="text-slate-600 text-xs font-mono">{{ expertData?.professionalId || 'N/A' }}</p>
+        </div>
+
+        <div class="mt-auto">
+          <button v-if="!isBlocked && !props.expertData?.isSuspended" @click="viewSchedule(expertData?.userUid)"
+            class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-sm transition-all shadow-[0_10px_20px_-5px_rgba(37,99,235,0.4)] active:scale-95"
+            data-cy="view-schedule-button">
+            Ver Disponibilidad
+          </button>
+
+          <button v-if="props.expertData?.isSuspended"
+            class="w-full py-3 px-4 bg-slate-100 text-slate-400 rounded-xl font-semibold text-sm cursor-not-allowed"
+            disabled>
+            Temporalmente fuera
+          </button>
+        </div>
       </div>
-
-
-      <p class="ios-expert-bio">
-        {{ expertData?.bio || 'Sin descripción disponible' }}
-      </p>
-
-      <!-- Rating con estrellas -->
-      <div class="w-full my-2">
-        <span class="text-gray-500">Cédula: {{ expertData?.professionalId }}</span>
-      </div>
-
-
-      <!-- Botón de acción -->
-      <button class="ios-expert-button" v-if="!isBlocked && !props.expertData?.isSuspended"
-        @click="viewSchedule(expertData?.userUid)" data-cy="view-schedule-button">
-        Ver disponibilidad
-      </button>
-      <div class="flex items-center justify-center">
-        <button v-if="props.expertData?.isSuspended"
-          class="web-btn inline-flex items-center justify-center font-semibold transition-all active:scale-95 disabled:opacity-50"
-          color="medium" size="default" data-cy="view-schedule-button">
-          No disponible
-        </button>
-      </div>
-
     </div>
   </div>
 </template>
