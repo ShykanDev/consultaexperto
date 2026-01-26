@@ -177,17 +177,84 @@
 
       <!-- Botones de acción (opcional) -->
       <div class="admin-actions">
-        <button class="admin-action-button edit !text-xs" v-if="!props.data.isCanceled"
+        <button class="admin-action-button edit !text-xs hidden" v-if="!props.data.isCanceled"
           @click="markFunction('notFinish')">No finalizada</button>
-        <button class="admin-action-button cancel !text-xs" v-if="!props.data.isCanceled"
+        <button class="admin-action-button cancel text-md ring-1 ring-red-500" v-if="!props.data.isCanceled"
           @click="presentCancelAlert">Cancelar Cita</button>
-        <button class="admin-action-button complete !text-xs" v-if="!props.data.isFinished"
+        <button class="admin-action-button complete text-xs" v-if="!props.data.isFinished"
           @click="markFunction('finish')">Finalizar Cita</button>
 
       </div>
     </div>
 
   </section>
+
+  <!-- Modals Portal -->
+  <Teleport to="body">
+    <!-- Cancel Modal -->
+    <div v-if="isCancelModalOpen"
+      class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
+      <div
+        class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl transform transition-all scale-100 animate-jump-in">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Cancelar Cita</h3>
+          <button @click="closeCancelModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <v-icon name="io-close" scale="1.2" />
+          </button>
+        </div>
+
+        <p class="text-gray-600 mb-4 text-sm">Por favor, ingrese el motivo de la cancelación. Es obligatorio para
+          continuar.</p>
+
+        <textarea v-model="cancelReason" rows="3"
+          class="w-full border border-gray-200 bg-gray-50 rounded-xl p-3 mb-6 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all resize-none text-gray-700 placeholder-gray-400"
+          placeholder="Escriba el motivo detallado aquí...">
+        </textarea>
+
+        <div class="flex justify-end gap-3">
+          <button @click="closeCancelModal"
+            class="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors">
+            Regresar
+          </button>
+          <button @click="confirmCancel"
+            class="px-5 py-2.5 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 shadow-lg shadow-red-200 transition-all flex items-center gap-2">
+            <span>Confirmar Cancelación</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link Modal -->
+    <div v-if="isLinkModalOpen"
+      class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
+      <div
+        class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl transform transition-all scale-100 animate-jump-in">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Agregar Enlace</h3>
+          <button @click="closeLinkModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <v-icon name="io-close" scale="1.2" />
+          </button>
+        </div>
+
+        <p class="text-gray-600 mb-4 text-sm">Por favor, ingrese el enlace de la reunión o videollamada.</p>
+
+        <input v-model="appointmentLinkUrl" type="text"
+          class="w-full border border-gray-200 bg-gray-50 rounded-xl p-3 mb-6 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-gray-700 placeholder-gray-400"
+          placeholder="https://meet.google.com/..." />
+
+        <div class="flex justify-end gap-3">
+          <button @click="closeLinkModal"
+            class="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors">
+            Cancelar
+          </button>
+          <button @click="confirmLink"
+            class="px-5 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
+            Guardar Enlace
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 <script lang="ts" setup>
 import { ISchedule } from '@/interfaces/user/ISchedule';
@@ -425,71 +492,48 @@ const markFunction = async (mode: 'finish' | 'cancel' | 'notFinish' | 'link', re
   }
 };
 
-const presentCancelAlert = async () => {
-  const alert = await alertController.create({
-    header: 'Cancelar Cita',
-    message: 'Por favor, ingrese el motivo de la cancelación (obligatorio).',
-    inputs: [
-      {
-        name: 'reason',
-        type: 'textarea',
-        placeholder: 'Escriba el motivo aquí...',
-      },
-    ],
-    buttons: [
-      {
-        text: 'Volver',
-        role: 'cancel',
-        cssClass: 'secondary',
-      },
-      {
-        text: 'Confirmar Cancelación',
-        handler: (data) => {
-          if (!data.reason || data.reason.trim() === '') {
-            // Regresa false para mantener la alerta abierta si está vacío
-            return false;
-          }
-          markFunction('cancel', data.reason);
-          return true;
-        },
-      },
-    ],
-  });
+const isCancelModalOpen = ref(false);
+const cancelReason = ref('');
 
-  await alert.present();
+const isLinkModalOpen = ref(false);
+const appointmentLinkUrl = ref('');
+
+const presentCancelAlert = () => {
+  cancelReason.value = '';
+  isCancelModalOpen.value = true;
 };
-const presentLinkAlert = async () => {
-  const alert = await alertController.create({
-    header: 'Agregar Link',
-    message: 'Por favor, ingrese el link de la consulta (obligatorio).',
-    inputs: [
-      {
-        name: 'link',
-        type: 'textarea',
-        placeholder: 'Escriba el link aquí...',
-      },
-    ],
-    buttons: [
-      {
-        text: 'Volver',
-        role: 'cancel',
-        cssClass: 'secondary',
-      },
-      {
-        text: 'Confirmar Link',
-        handler: (data) => {
-          if (!data.link || data.link.trim() === '') {
-            // Regresa false para mantener la alerta abierta si está vacío
-            return false;
-          }
-          markFunction('link', data.link);
-          return true;
-        },
-      },
-    ],
-  });
 
-  await alert.present();
+const closeCancelModal = () => {
+  isCancelModalOpen.value = false;
+};
+
+const confirmCancel = () => {
+  if (!cancelReason.value || cancelReason.value.trim() === '') {
+    // Simple validation feedback
+    alert('El motivo es obligatorio para cancelar la cita.');
+    return;
+  }
+  markFunction('cancel', cancelReason.value);
+  closeCancelModal();
+};
+
+const presentLinkAlert = () => {
+  const currentLink = props.data.appointmentLink && props.data.appointmentLink !== 'En proceso...' ? props.data.appointmentLink : '';
+  appointmentLinkUrl.value = currentLink;
+  isLinkModalOpen.value = true;
+};
+
+const closeLinkModal = () => {
+  isLinkModalOpen.value = false;
+};
+
+const confirmLink = () => {
+  if (!appointmentLinkUrl.value || appointmentLinkUrl.value.trim() === '') {
+    alert('El enlace es obligatorio.');
+    return;
+  }
+  markFunction('link', appointmentLinkUrl.value);
+  closeLinkModal();
 };
 
 
