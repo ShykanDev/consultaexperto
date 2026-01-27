@@ -1,0 +1,1 @@
+import{d as r}from"./index-B-kkMO9M.js";const p=r("hiring",{state:()=>({expertName:"",expertSpecialty:"",expertUid:""}),actions:{setExpertHiringData(e,t,i){this.expertName=e,this.expertSpecialty=t,this.expertUid=i}},getters:{getExpertHiringData:e=>e}});export{p as u};
