@@ -1,1 +1,0 @@
-import{d as e}from"./index-B-kkMO9M.js";const a=e("expertAdmin",{state:()=>({expertData:{}}),getters:{getCurrentExpert:t=>t.expertData},actions:{setExpertData(t){this.expertData=t},resetCurrentExpert(){this.expertData={}}},persist:!0});export{a as u};
