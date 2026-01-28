@@ -130,7 +130,8 @@
                   <span class="text-slate-500">Enlace de la sesión:</span>
                   <div v-if="props.data.appointmentLink == 'En proceso...'" class="text-yellow-600 font-medium italic">
                     En proceso...</div>
-                  <button v-else-if="props.data.acceptedByExpert" @click="markLinkAsOpened"
+                  <button v-else-if="props.data.acceptedByExpert && !props.data.isOpenedLinkByExpert"
+                    @click="markLinkAsOpened"
                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200 flex items-center justify-center gap-2">
                     <v-icon name="co-link" /> Comenzar Cita
                   </button>
@@ -144,7 +145,7 @@
               <div class="space-y-4">
                 <div v-if="authStore().getIsExpert && !props.data.isCanceled && props.data.isFinished"
                   class="bg-slate-50 p-4 rounded-xl">
-                  <p class="text-xs text-slate-500 mb-2 uppercase font-bold">Tu calificación del paciente:</p>
+                  <p class="text-xs text-slate-500 mb-2 uppercase font-bold">Su calificación del usuario:</p>
                   <div v-if="props.data.ratedByExpert" class="flex gap-1">
                     <v-icon v-for="(star, index) in props.data.consultRatingByExpert" :key="index" name="bi-star-fill"
                       class="text-yellow-500" />
@@ -208,7 +209,7 @@
             </div>
             <div v-if="!props.data.acceptedByExpert"
               class="mt-4 p-3 bg-blue-100/50 rounded-lg text-blue-700 text-[11px] font-medium uppercase">
-              ⓘ El enlace se generará una vez que aceptes la cita.
+              ⓘ El enlace se generará una vez que acepte la cita.
             </div>
           </div>
         </aside>

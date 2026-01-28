@@ -19,7 +19,7 @@
         <div class="relative mb-5 group-hover:scale-105 transition-transform duration-500">
           <div class="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden shadow-2xl ring-4 ring-white relative">
             <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              :src="props.expertData.profilePicture || 'https://picsum.photos/200/300'" alt="Profile picture" />
+              :src="props.expertData.imgUrl || 'https://picsum.photos/200/300'" alt="Profile picture" />
             <div v-if="props.expertData.isSuspended"
               class="absolute inset-0 bg-red-900/20 backdrop-blur-[1px] flex items-center justify-center">
               <v-icon name="ri-error-warning-line" class="text-white" scale="1.5" />
@@ -44,7 +44,8 @@
             class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl shadow-sm border border-gray-100 transition-colors group-hover:border-blue-50"
             v-if="props.expertData.rating">
             <v-icon name="io-star" scale="0.8" class="text-yellow-400" />
-            <span class="text-sm font-black text-gray-700">{{ calcStarsValue(props.expertData.rating) }}</span>
+            <span class="text-sm font-black text-gray-700">{{ calcStarsValue(props.expertData.rating).toFixed(1)
+              }}</span>
             <span class="text-[10px] text-gray-400 font-bold">({{ props.expertData.rating.count ?? 0 }})</span>
           </div>
 

@@ -13,7 +13,9 @@ const __dirname = path.dirname(__filename);
 // Force the editor to our script
 process.env.LAUNCH_EDITOR = path.resolve(
   __dirname,
-  process.platform === "win32" ? "./scripts/agy.cmd" : "./scripts/agy-wrapper.sh"
+  process.platform === "win32"
+    ? "./scripts/agy.cmd"
+    : "./scripts/agy-wrapper.sh",
 );
 
 // https://vitejs.dev/config/
@@ -26,7 +28,7 @@ export default defineConfig({
         __dirname,
         process.platform === "win32"
           ? "./scripts/agy.cmd"
-          : "./scripts/agy-wrapper.sh"
+          : "./scripts/agy-wrapper.sh",
       ),
     }),
   ],
@@ -35,6 +37,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  base: "/consultaexperto/",
   test: {
     globals: true,
     environment: "jsdom",

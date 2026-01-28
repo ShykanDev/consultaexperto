@@ -3,7 +3,7 @@
 
 
 
-        <main class="web-content overflow-y-auto bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
+        <section class="web-content overflow-y-auto bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 mt-24">
             <div class=" bg-white shadow-xl rounded-lg overflow-hidden pb-10">
                 <h1 class="px-6 py-8 sm:p-10 text-3xl font-bold text-gray-900 mb-6 text-center">
                     Política de Privacidad
@@ -120,7 +120,7 @@
                         <p class="text-gray-600 leading-relaxed">
                             Los usuarios y expertos pueden acceder, modificar o eliminar su información en cualquier
                             momento, enviando una solicitud a <a class="text-blue-600 hover:underline"
-                                href="mailto:ayuda@consultaexperto.com">ayuda@consultaexperto.com</a>. El
+                                href="mailto:informes@grupochimex.com">informes@grupochimex.com</a>. El
                             consentimiento se otorga al crear una cuenta y aceptar los Términos de Servicio y la
                             Política de Privacidad.
                         </p>
@@ -152,7 +152,7 @@
                         <p class="text-gray-600 leading-relaxed">
                             Para preguntas o solicitudes relacionadas con la privacidad, contacte a: <a
                                 class="text-blue-600 hover:underline"
-                                href="mailto:ayuda@consultaexperto.com">ayuda@consultaexperto.com</a>.
+                                href="mailto:informes@grupochimex.com">informes@grupochimex.com</a>.
                         </p>
                     </section>
 
@@ -164,7 +164,7 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </section>
     </div>
 
 </template>

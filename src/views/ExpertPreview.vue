@@ -6,7 +6,7 @@
       <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 flex flex-col items-center">
         <div class="relative mb-4">
           <img class="w-32 h-32 rounded-xl  object-cover ring-4 ring-offset-4"
-            :src="expertAdminStore.getCurrentExpert?.profilePicture || 'https://picsum.photos/200/300'"
+            :src="expertAdminStore.getCurrentExpert?.imgUrl || 'https://picsum.photos/200/300'"
             :class="expertAdminStore.getCurrentExpert?.isSuspended ? 'ring-red-500' : 'ring-blue-500'"
             alt="Profile picture" />
         </div>

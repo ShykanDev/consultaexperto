@@ -45,19 +45,25 @@
           <!-- LEFT COLUMN: Profile info -->
           <aside class="lg:col-span-4 space-y-6">
             <!-- Profile Card -->
-            <div
-              class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 group">
+            <div class=" rounded-[2.5rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100 group">
               <div class="p-8 text-center">
-                <div class="relative inline-block mb-6">
+                <div class="relative group inline-block mb-6">
+                  <!--Chip -->
+                  <div
+                    class="absolute z-10 bottom-0 opacity-0 group-hover:animate-fade-up group-hover:opacity-100  min-w-40 left-36 bg-white ring-[1px] ring-blue-500 text-blue-600  flex items-center justify-center rounded-lg p-2 ">
+                    <p class="text-xs font-quicksand">Este experto esta verificado por el equipo de
+                      Consulta
+                      Experto</p>
+                  </div>
                   <div
                     class="w-32 h-32 rounded-[2rem] overflow-hidden ring-4 ring-offset-4 ring-blue-500 transition-all group-hover:scale-105">
                     <img class="w-full h-full object-cover"
-                      :src="expertData?.profilePicture || 'https://ui-avatars.com/api/?name=' + expertData?.fullName + '&background=0D8ABC&color=fff'"
+                      :src="expertData?.imgUrl || 'https://ui-avatars.com/api/?name=' + expertData?.fullName + '&background=0D8ABC&color=fff'"
                       :alt="expertData?.fullName">
                   </div>
-                  <div
-                    class="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-4 border-white shadow-sm"
-                    title="Expert Verified"></div>
+                  <v-icon
+                    class="absolute -bottom-2 -right-2 bg-blue-500 text-white w-10 h-10 p-1 rounded-full border-4 border-white shadow-sm"
+                    name="ri-shield-check-fill" scale="0.7" />
                 </div>
 
                 <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">{{ expertData?.fullName }}</h1>
@@ -93,18 +99,30 @@
                   <span class="text-sm font-semibold text-slate-700">{{ expertData?.experienceYears || '10+' }}
                     años</span>
                 </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-slate-400 uppercase">Cédula Profesional</span>
+                  <span class="text-sm font-semibold text-slate-700">{{ expertData?.professionalId || 'No registrada'
+                  }}</span>
+                </div>
+                <div class="flex items-center justify-between flex-col">
+                  <span class="text-xs font-bold text-slate-400 uppercase">Resúmen</span>
+                  <span class="text-sm font-semibold text-slate-700">{{ expertData?.bio || 'No registrado'
+                  }}</span>
+                </div>
               </div>
             </div>
 
             <!-- Stats/Highlights Card -->
             <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 grid grid-cols-2 gap-4">
               <div class="p-4 bg-blue-50 rounded-2xl text-center">
-                <div class="text-2xl font-bold text-blue-700">{{ expertData?.completedSessions || 120 }}+</div>
+                <div class="text-2xl font-bold text-blue-700">{{ expertData?.rating?.count || 0 }}+</div>
                 <div class="text-[10px] font-bold text-blue-600/70 uppercase">Consultas</div>
               </div>
               <div class="p-4 bg-blue-50 rounded-2xl text-center">
-                <div class="text-2xl font-bold text-blue-700">98%</div>
-                <div class="text-[10px] font-bold text-blue-600/70 uppercase">Éxito</div>
+                <div class="text-2xl font-bold text-blue-700">{{ calcStarsValue(expertData?.rating!).toFixed(1)
+                }}</div>
+                <div class="text-[10px] font-bold text-blue-600/70 uppercase">Extrellas ({{ expertData?.rating?.count
+                }} calificaciones)</div>
               </div>
             </div>
           </aside>

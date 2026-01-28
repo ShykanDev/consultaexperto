@@ -1,22 +1,19 @@
 <template>
-  <div class="web-page min-h-screen bg-gray-50">
-    <header class="web-header sticky top-0 z-40 w-full bg-white/80 backdrop-blur border-b border-gray-100 shadow-sm">
-      <nav class="web-toolbar h-16 flex items-center px-4">
-        <div class="web-buttons flex items-center space-x-2 order-first">
-          <button class="web-back-btn p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-            @click="$router.back()">
-            <v-icon name="hi-solid-chevron-left" scale="1.5" />
-          </button>
-        </div>
-        <h1 class="web-title text-lg font-bold text-gray-900 font-nunito">Crear Nuevo Experto</h1>
-      </nav>
-    </header>
+  <div class="web-page min-h-screen bg-gray-50 mt-28">
 
-    <main class="web-content overflow-y-auto p-6 max-w-4xl mx-auto">
+    <!--Loader-->
+    <div v-if="loading" class="fixed inset-0 bg-blue-900 bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white flex items-center justify-center relative">
+        <v-icon name="fa-user" class="text-white absolute animate-spin animate-reverse " scale="3" />
+      </div>
+    </div>
+
+    <main class="web-content overflow-y-auto p-6 ">
       <!-- Basic Information Section -->
       <div class="space-y-8">
         <div class="web-card bg-white shadow-sm border border-gray-100 rounded-2xl overflow-hidden">
-          <div class="web-card-header p-4 border-b bg-blue-600 text-white">
+          <div class="web-card-header p-4 border-b bg-slate-200 text-slate-700">
             <h2 class="text-lg font-bold font-nunito text-center">Información del nuevo experto</h2>
           </div>
 
@@ -49,11 +46,20 @@
             </div>
 
             <div class="space-y-1">
-              <label class="text-sm font-semibold text-gray-700 ml-1">URL de imagen</label>
+              <label class="text-sm font-semibold text-gray-700 ml-1">Imagen del experto</label>
               <input
-                class="w-full py-3 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors"
-                type="url" placeholder="https://ejemplo.com/imagen.png" v-model="form.imgUrl">
+                class="w-full py-2 px-4 bg-white border-2 border-slate-200 rounded-xl outline-none focus:border-blue-600 font-poppins transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer"
+                @change="handleImageChange($event)" type="file" accept="image/*">
+              <img v-if="previewImage" :src="previewImage!" alt=""
+                class="w-40 h-40 rounded-xl ring-2 ring-blue-600 !mt-2">
+              <button v-if="previewImage" @click="removeImage"
+                class="hover:bg-red-600 hover:text-white cursor-pointer transition-colors bg-white text-red-600 border border-red-600 rounded-xl px-2 py-1 font-poppins !mt-3">Eliminar
+                imagen</button>
             </div>
+
+
+
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-1">
@@ -126,10 +132,13 @@ import { addDoc, collection, doc, getFirestore, setDoc, updateDoc } from 'fireba
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { useToast } from 'vue-toastification';
+import imageCompression from 'browser-image-compression';
 
 const toast = useToast();
 const db = getFirestore();
 const auth = authFirebase;
+
+const loading = ref(false);
 
 const experts = ref([
   { name: "Abogado", icon: "fa-balance-scale" },
@@ -220,7 +229,20 @@ const getDateSelected = (dayName: string, timeSelected: string) => {
 const createExpert = async () => {
   if (!isFormValid.value) return;
 
+  loading.value = true;
   try {
+    if (!imageFile.value) {
+      toast.error('Por favor, seleccione una imagen para el experto');
+      return;
+    }
+
+    await handleImageCompression();
+    if (compressedImageFile.value) {
+      const base64 = await imgToBase64(compressedImageFile.value);
+      form.value.imgUrl = base64;
+      console.log(`Formulario completo:`, form.value);
+    }
+
     const userCredential = await createUserWithEmailAndPassword(auth, form.value.email, '1234567890');
     const user = userCredential.user;
 
@@ -239,9 +261,88 @@ const createExpert = async () => {
 
     toast.success('Experto creado exitosamente. Se ha enviado verificación por email.');
     resetForm();
+    imageFile.value = null;
+    compressedImageFile.value = null;
+    previewImage.value = null;
+
+    loading.value = false;
   } catch (error: any) {
+    loading.value = false;
     console.error('Error creating expert:', error);
     toast.error('Error: ' + error.message);
+  } finally {
+    loading.value = false;
   }
 };
+
+const handleImageChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file) {
+    imageFile.value = file;
+    previewImage.value = URL.createObjectURL(file);
+  }
+};
+
+const imageFile = ref<File | null>(null);
+const compressedImageFile = ref<File | null>(null);
+const previewImage = ref<string | null>(null);
+
+const base64Image = ref<string | null>(null);
+
+
+
+async function handleImageCompression() {
+
+  if (!imageFile.value) {
+    toast.error('Por favor, seleccione una imagen para el experto');
+    console.log('No image file selected');
+    return;
+  }
+
+  console.log('originalFile instanceof Blob', imageFile.value instanceof Blob); // true
+  console.log(`originalFile size ${imageFile.value.size / 1024 / 1024} MB`);
+
+  const options = {
+    maxSizeMB: 0.1,
+    maxWidthOrHeight: 720,
+    useWebWorker: true,
+  }
+
+  try {
+    const compressedFile = await imageCompression(imageFile.value, options);
+    console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+    console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+    compressedImageFile.value = compressedFile;
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
+
+
+const removeImage = () => {
+  imageFile.value = null;
+  previewImage.value = null;
+  compressedImageFile.value = null;
+  form.value.imgUrl = '';
+}
+
+const imgToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
+
 </script>

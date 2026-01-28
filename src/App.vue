@@ -2,6 +2,7 @@
   <div id="app-container">
     <HeaderComponent v-if="showHeader" :pageTitle="currentPageTitle" />
     <router-view />
+    <FooterComponent v-if="showFooter" />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useRouter, useRoute } from 'vue-router';
 import HeaderComponent from './components/Templates/HeaderComponent.vue';
+import FooterComponent from './components/Templates/FooterComponent.vue';
 
 import expertStore from '@/store/expert';
 
@@ -21,6 +23,11 @@ const route = useRoute();
 const expertStorePinia = expertStore();
 
 const showHeader = computed(() => {
+  const excludedRoutes = ['/login', '/register', '/account-suspended', '/logout'];
+  return !excludedRoutes.includes(route.path);
+});
+
+const showFooter = computed(() => {
   const excludedRoutes = ['/login', '/register', '/account-suspended', '/logout'];
   return !excludedRoutes.includes(route.path);
 });

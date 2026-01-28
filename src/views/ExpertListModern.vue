@@ -29,16 +29,16 @@
                         </h1>
 
                         <p class="text-lg md:text-xl text-slate-500 max-w-2xl leading-relaxed">
-                            Conecta en vivo con profesionales certificados. Desde medicina hasta estrategia legal, la
-                            respuesta que buscas está a un clic.
+                            Conecte en vivo con profesionales certificados. Desde medicina hasta estrategia legal, la
+                            respuesta que busca está a un clic.
+                            Inicialmente tiene 15 minutos gratuitos por categoría.
                         </p>
+                        <p>No se requiere tarjeta de crédito</p>
 
                         <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
-                            <a href="/home#all-experts"
-                                class="group px-8 py-5 bg-slate-900 text-white font-bold rounded-2xl flex items-center gap-3 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200">
-                                Iniciar Consultoría
-                                <v-icon name="hi-arrow-right" class="group-hover:translate-x-1 transition-transform" />
-                            </a>
+                            <RouterLink to="/home#all-experts"
+                                class="hover:text-blue-600  active:text-blue-600 px-8 py-5 bg-slate-900 text-white font-bold rounded-2xl flex items-center gap-3 hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+                                active-class="text-blue-600 font-semibold">Especialidades</RouterLink>
                             <div class="flex items-center -space-x-3 px-4">
                                 <div v-for="i in 4" :key="i"
                                     class="w-10 h-10 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-[10px] font-bold">
@@ -108,14 +108,14 @@
                                 class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600">
                                 <v-icon name="hi-star" scale="1.5" />
                             </div>
-                            <h3 class="text-2xl font-extrabold text-slate-900">4.9/5 Estrellas</h3>
-                            <p class="text-slate-500 font-medium leading-relaxed">Promedio de satisfacción basado en más
-                                de 20,000 sesiones de asesoría anuales.</p>
+                            <h3 class="text-2xl font-extrabold text-slate-900">Confianza en cada experto</h3>
+                            <p class="text-slate-500 font-medium leading-relaxed">Cada experto pasa por una validación
+                                exhaustiva de identidad y credenciales profesionales antes de unirse.</p>
                         </div>
-                        <button @click="toggleExpertPopup('open')"
-                            class="w-full py-4 bg-slate-50 text-slate-900 font-bold rounded-2xl hover:bg-slate-100 transition-colors">
-                            Ver Opiniones
-                        </button>
+                        <router-link to="/home#all-experts"
+                            class="w-full py-4 bg-slate-50 p-2 text-slate-900 font-bold rounded-2xl hover:bg-slate-100 transition-colors">
+                            Ver Expertos
+                        </router-link>
                     </div>
                 </section>
 
@@ -181,44 +181,7 @@
             </div>
         </main>
 
-        <!-- Premium Minimal Footer -->
-        <footer class="bg-white border-t border-slate-100 pt-24 pb-12">
-            <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3 justify-center md:justify-start">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <v-icon name="hi-sparkles" fill="white" scale="0.8" />
-                        </div>
-                        <span class="text-xl font-black text-slate-900">Expertos</span>
-                    </div>
-                    <p class="text-slate-500 font-medium">Asesoría profesional al alcance de un clic. Conectamos
-                        expertos con soluciones.</p>
-                </div>
 
-                <div v-for="group in [
-                    { title: 'Empresa', links: ['Sobre nosotros', 'Carreras', 'Blog'] },
-                    { title: 'Legal', links: ['Privacidad', 'Términos', 'Cookies'] },
-                    { title: 'Soporte', links: ['Centro de ayuda', 'Contacto', 'FAQ'] }
-                ]" :key="group.title" class="space-y-6">
-                    <h4 class="font-bold text-slate-900 uppercase tracking-widest text-xs">{{ group.title }}</h4>
-                    <ul class="space-y-4">
-                        <li v-for="link in group.links" :key="link">
-                            <a href="#" class="text-slate-500 hover:text-blue-600 font-medium transition-colors">{{ link
-                                }}</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div
-                class="max-w-7xl mx-auto px-8 mt-20 pt-8 border-t border-slate-50 flex flex-col md:row items-center justify-between gap-6">
-                <p class="text-sm font-bold text-slate-400">© 2026 Consulta Experto. Todos los derechos reservados.</p>
-                <div class="flex gap-6">
-                    <v-icon v-for="social in ['fa-facebook', 'fa-twitter', 'fa-instagram', 'fa-linkedin']" :key="social"
-                        :name="social" class="text-slate-400 hover:text-blue-600 cursor-pointer" />
-                </div>
-            </div>
-        </footer>
 
         <!-- Premium Glass Modal -->
         <Transition enter-active-class="" leave-active-class="">
@@ -229,7 +192,7 @@
                     <section class="px-10 h-24 flex items-center justify-between border-b border-slate-100 bg-white/85">
                         <div class="space-y-1">
                             <h2 class="text-2xl font-black text-slate-900">Expertos Disponibles</h2>
-                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Encuentra a tu
+                            <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Encuentre a su
                                 especialista ideal</p>
                         </div>
                         <button @click="toggleExpertPopup('close')"

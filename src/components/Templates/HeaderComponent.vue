@@ -1,10 +1,5 @@
 <template>
-    <section :class="{
-        'right-6 left-6 md:left-[60%] md:right-10 md:w-auto': currentRoute.path === '/client-appointments', // Client Appointments
-        'inset-x-7': currentRoute.path === '/home', //Home,
-        'inset-x-1/3': currentRoute.path === '/logout', //Logout,
-        'left-4 right-4 md:left-10 md:right-10': currentRoute.path !== '/client-appointments' && currentRoute.path !== '/home'
-    }" class="fixed top-6 z-50 flex justify-center transition-all duration-700 ease-in-out">
+    <section class="fixed top-6 z-50 flex justify-center transition-all duration-700 ease-in-out w-full left-2 right-2">
         <nav
             class="w-full  bg-white  backdrop-blur-2xl border border-slate-100/90 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-[2rem] px-6 md:px-10 h-20 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -18,6 +13,13 @@
                 </p>
             </div>
 
+
+            <div class="flex items-center gap-3">
+                <span class="text-xl font-semibold text-slate-600 hidden sm:block  max-w-[180px] mr-5"
+                    v-html="currentName" :key="currentName">
+                </span>
+            </div>
+
             <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                 <RouterLink v-if="!isAuth" to="/login"
                     class="hover:text-blue-600 transition-colors active:text-blue-600"
@@ -25,19 +27,42 @@
                 <RouterLink v-if="!isAuth" to="/register"
                     class="hover:text-blue-600 transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Registrarse</RouterLink>
-                <RouterLink v-if="isAuth" to="/home#all-experts"
+                <RouterLink v-if="isClient" to="/home#all-experts"
                     class="hover:text-blue-600 transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Especialidades</RouterLink>
-                <RouterLink v-if="isAuth" to="/home#how-it-works"
+                <RouterLink v-if="isClient" to="/home#how-it-works"
                     class="hover:text-blue-600 hidden transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Cómo funciona
                 </RouterLink>
-                <RouterLink to="/help" class="hover:text-blue-600 transition-colors active:text-blue-600"
+                <RouterLink v-if="!isAdmin" to="/help"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
                     active-class="text-blue-600 font-semibold">Ayuda
                 </RouterLink>
-                <RouterLink v-if="isAuth && authStore().getIsClient" to="/client-appointments"
-                    class="hover:text-blue-600 transition-colors" active-class="text-blue-600 font-semibold">Mis citas
+                <RouterLink v-if="isClient" to="/client-appointments" class="hover:text-blue-600 transition-colors"
+                    active-class="text-blue-600 font-semibold">Mis citas
                 </RouterLink>
+
+
+
+                <!--Admin Navs-->
+
+                <!--Home-->
+                <RouterLink v-if="isAdmin" to="/expert-list-admin"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
+                    active-class="text-blue-600 font-semibold">Panel principal</RouterLink>
+
+                <!-- Expert Preview-->
+                <RouterLink v-if="isAdmin" to="/users-list-admin"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
+                    active-class="text-blue-600 font-semibold">Lista de Usuarios</RouterLink>
+
+                <!-- Create Expert -->
+                <RouterLink v-if="isAdmin" to="/create-expert"
+                    class="hover:text-blue-600 transition-colors active:text-blue-600"
+                    active-class="text-blue-600 font-semibold">Crear experto</RouterLink>
+
+
+                <!--Logout -->
                 <RouterLink v-if="isAuth" to="/logout" class="hover:text-blue-600 transition-colors"
                     active-class="text-blue-600 font-semibold">Cerrar sesión
                 </RouterLink>
@@ -47,9 +72,14 @@
 </template>
 
 <script lang="ts" setup>
-import { authStore } from '@/store/auth';
+import { authStore as authStorePinia } from '@/store/auth';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
+const authStore = authStorePinia();
+const isAuth = authStore.getIsAuth;
+const isAdmin = authStore.getIsAdmin && authStore.isAuth;
+const isClient = authStore.getIsClient && authStore.isAuth;
 
 const props = defineProps({
     pageTitle: {
@@ -60,7 +90,6 @@ const props = defineProps({
 
 const currentRoute = useRoute();
 
-const isAuth = authStore().getIsAuth;
 
 const iconList = {
     '/home': 'fa-users',
@@ -73,6 +102,41 @@ const iconList = {
     '/expert-profile': 'fa-user'
 };
 
+
+
+const names = [
+    '<span class="animate-fade-down animate-duration-300 animate-delay-100">consulta</span>' +
+    '<span class="text-sky-700 animate-fade animate-duration-300 animate-delay-200">gratis</span>' +
+    '<span class="animate-fade animate-duration-300 animate-delay-300">en</span>' +
+    '<span class="animate-fade animate-duration-300 animate-delay-500">linea</span>' +
+    '<span class="text-sky-500 animate-fade animate-duration-300 animate-delay-500">.com</span>',
+
+    '<span class="animate-fade animate-duration-300 animate-delay-100">consulta</span>' +
+    '<span class="text-sky-700 animate-fade animate-duration-300 animate-delay-200">experto</span>' +
+    '<span class="text-sky-500 animate-fade animate-duration-300 animate-delay-300">.com</span>',
+
+    '<span class="animate-fade-down animate-delay-100">consulta</span>' +
+    '<span class="text-sky-700 animate-fade animate-delay-200">especializada</span>' +
+    '<span class="text-sky-500 animate-fade animate-delay-300">.com</span>'
+];
+
+let timeoutId: any = null;
+const currentName = ref<string>(names[0]);
+
+const animateNames = () => {
+    timeoutId = setInterval(() => {
+        const randomIndex = Math.floor(Math.random() * names.length);
+        currentName.value = names[randomIndex];
+    }, 2000);
+};
+
+onMounted(() => {
+    animateNames();
+});
+
+onUnmounted(() => {
+    clearInterval(timeoutId);
+});
 
 </script>
 

@@ -21,7 +21,7 @@
 
         <div class="flex-1 md:border-l md:border-slate-200 md:pl-10">
           <p class="text-xl md:text-2xl text-slate-500 font-light leading-relaxed max-w-md">
-            Únase a la comunidad de usuarios y agenda una
+            Únase a la comunidad de usuarios y agende una
             <span class="text-blue-600 font-semibold border-b-2 border-blue-600/30">sesión gratuita por 15
               minutos*</span>
             con nuestros expertos.
@@ -120,7 +120,7 @@
               class="absolute text-white scale-0 peer-checked:scale-100 transition-transform pointer-events-none w-5 h-5 p-0.5" />
           </div>
           <span class="text-sm text-slate-600 leading-tight">
-            Acepto los <router-link class="text-blue-600 font-bold hover:underline" to="/privacy-policy">términos de
+            Acepto los <router-link class="text-blue-600 font-bold hover:underline" to="/terms">términos de
               servicio</router-link>
             y la <router-link class="text-blue-600 font-bold hover:underline" to="/privacy-policy">política de
               privacidad</router-link>.
@@ -137,7 +137,7 @@
           <router-link
             class="block text-center text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors uppercase tracking-widest"
             to="/login">
-            ¿Ya tienes cuenta? Inicia sesión
+            ¿Ya tiene cuenta? Inicia sesión
           </router-link>
         </div>
       </div>

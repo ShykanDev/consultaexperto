@@ -99,7 +99,7 @@
                 scale="2.5" />
             </div>
             <div v-if="props.data.isFinished && !props.data.ratedByUser"
-              class="absolute -bottom-2 -right-2 bg-yellow-400 text-white p-1.5 rounded-full shadow-sm animate-bounce">
+              class="absolute -bottom-2 -right-2 bg-yellow-400 text-white p-1.5 rounded-full shadow-sm ">
               <v-icon name="bi-star-fill" scale="0.8" />
             </div>
           </div>
@@ -124,7 +124,7 @@
               <v-icon name="bi-star" scale="1" />
             </button>
             <div v-else class="flex flex-col items-center gap-1 bg-gray-50 px-4 py-2 rounded-xl">
-              <span class="text-xs text-gray-400">Tu calificación</span>
+              <span class="text-xs text-gray-400">Su calificación</span>
               <div class="flex gap-1">
                 <v-icon class="text-yellow-400" v-for="star in props.data.consultRatingByUser" :key="star"
                   name="bi-star-fill" scale="0.9" />
@@ -154,7 +154,7 @@
                 <span class="text-gray-500 text-sm">Creada</span>
                 <span class="font-semibold text-gray-800 text-xs">{{
                   props.data.createdAt?.toDate().toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })
-                }}</span>
+                  }}</span>
               </div>
 
               <!-- Link info -->
@@ -180,7 +180,7 @@
                       v-if="props.data.appointmentLink && props.data.acceptedByExpert && props.data.isOpenedLinkByExpert">
                       <p class="text-xs text-blue-800 mb-2">¡La sala está abierta!</p>
                       <button @click="joinCall"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-2 animate-pulse">
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-2 animate-fade-up">
                         <v-icon name="bi-camera-video-fill" /> Unirse ahora
                       </button>
                     </div>
@@ -233,8 +233,8 @@
                     <v-icon name="fa-briefcase" />
                   </div>
                   <div class="flex-1">
-                    <p class="font-bold text-sm">¿Te gustó el servicio?</p>
-                    <p class="text-xs text-blue-100">Contrata una asesoría completa</p>
+                    <p class="font-bold text-sm">¿Le gustó el servicio?</p>
+                    <p class="text-xs text-blue-100">Contratae una asesoría completa</p>
                   </div>
                   <v-icon name="fa-chevron-right" scale="0.8" class="group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -310,7 +310,7 @@
             class="w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer group"
             :class="selectedStars === star ? 'border-blue-500 bg-blue-50/50' : 'border-gray-100 hover:border-blue-200 bg-white'">
             <span class="font-bold text-sm" :class="selectedStars === star ? 'text-blue-600' : 'text-gray-600'">{{ star
-            }} Estrellas</span>
+              }} Estrellas</span>
             <div class="flex gap-1 text-lg group-hover:scale-110 transition-transform">
               <v-icon v-for="i in star" :key="i" name="bi-star-fill" class="text-yellow-400" />
             </div>

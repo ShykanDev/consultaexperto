@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  createWebHashHistory,
+} from "vue-router";
 import { RouteRecordRaw } from "vue-router";
 import { authStore } from "@/store/auth";
 
@@ -106,7 +110,17 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/HiringView.vue"),
     meta: { requiresAuth: false },
   },
+  {
+    path: "/create-expert",
+    component: () => import("@/views/CreateExpert.vue"),
+    meta: { requiresAuth: true },
+  },
   // Legacy/Test
+  {
+    path: "/terms",
+    component: () => import("@/views/TermsView.vue"),
+    meta: { requiresAuth: false },
+  },
   {
     path: "/verify",
     component: () => import("@/views/VerifyEmail.vue"),
@@ -124,7 +138,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to) {
     if (to.hash) {

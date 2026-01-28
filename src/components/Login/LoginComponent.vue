@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative pt-24 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 flex items-center justify-center p-6">
+    class="relative pt-32 min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 flex items-center justify-center p-6">
     <!-- Loader -->
     <section v-if="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
       <LoaderMultipleDots />
@@ -18,29 +18,51 @@
         </p>
       </div>
 
-      <!-- Tarjeta del experto destacado – más linda y moderna -->
       <div
         class="bg-white/80 backdrop-blur-md border border-blue-100 rounded-2xl shadow-xl p-6 transition-all hover:shadow-2xl">
-        <div class="flex items-center gap-5">
+        <div class="flex flex-col md:flex-row items-center gap-6">
+
           <div class="relative flex-shrink-0">
-            <img class="w-20 h-20 rounded-full object-cover ring-4 ring-blue-200/60 shadow-lg"
+            <img class="w-24 h-24 rounded-full object-cover ring-4 ring-blue-200/60 shadow-lg"
               :src="experts[currentExpert].img" :alt="experts[currentExpert].name" :key="experts[currentExpert].name" />
-            <div class="absolute -bottom-1 -right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-white">
+            <div class="absolute bottom-1 right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
+          </div>
+
+          <div class="flex flex-col items-center md:items-start text-center md:text-left min-w-fit">
+            <p class="text-[10px] uppercase tracking-wider text-blue-600 mb-1 font-bold">Experto Destacado</p>
+            <h3 class="text-xl font-bold text-gray-900 leading-tight">{{ experts[currentExpert].name }}</h3>
+
+            <div
+              class="mt-2 inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full shadow-md">
+              <v-icon name="bi-gift-fill" scale="0.85" />
+              <span>¡15 min gratis!*</span>
+            </div>
+            <small class="text-[10px] text-gray-400 mt-1 font-poppins">*Por categoría</small>
+          </div>
+
+          <div class="w-full md:w-auto flex flex-col items-center justify-center">
+            <RouterLink to="/register">
+              <button
+                class="w-full md:w-40 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-blue-100 flex items-center justify-center gap-2 group">
+                <span>Crear Cuenta</span>
+                <v-icon name="bi-chat-fill" scale="0.9" class="group-hover:scale-110 transition-transform" />
+              </button>
+            </RouterLink>
+          </div>
+
+          <div class="flex-1 md:border-l md:border-gray-100 md:pl-6 text-center md:text-left">
+            <span class="block md:hidden text-[10px] font-bold text-gray-400 uppercase mb-2">Sobre el experto:</span>
+
+            <p class="text-gray-600 italic text-sm leading-relaxed" :key="'resumen-' + currentExpert">
+              “{{ experts[currentExpert].summary }}”
+            </p>
+
+            <div class="mt-2 flex items-center justify-center md:justify-start gap-1">
+              <v-icon name="bi-star-fill" class="text-yellow-400" scale="0.7" v-for="i in 5" :key="i" />
+              <span class="text-[10px] text-green-600 font-bold ml-2">Disponible ahora</span>
             </div>
           </div>
 
-          <div class="flex-1 flex-col flex items-start">
-            <p class="text-sm text-gray-500 mb-1 font-medium">Hable ahora con</p>
-            <h3 class="text-lg font-bold text-gray-900">{{ experts[currentExpert].name }}</h3>
-            <div
-              class="mt-2 inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-sm">
-              <v-icon name="bi-gift-fill" scale="0.85" />
-              <span>¡Primera consulta gratis!*</span>
-            </div>
-            <small class="text-xs text-gray-400 mt-2 font-poppins">*Las consultas gratuitas son de 15 minutos gratuitos
-              por
-              categoría</small>
-          </div>
         </div>
       </div>
 
@@ -60,16 +82,20 @@
         <div v-show="isAccordionOpen"
           class="mt-3 bg-white border border-blue-100 rounded-xl shadow-lg overflow-hidden divide-y divide-blue-50 animate-fade-in">
           <ul class="max-h-72 overflow-y-auto">
-            <li v-for="(expert, index) in experts" :key="index" @click="setUserSelection(expert.name)"
+            <li v-for="(expert, index) in experts.sort((a, b) => a.name.localeCompare(b.name))" :key="index"
+              @click="setUserSelection(expert.name)"
               class="px-5 py-4 cursor-pointer hover:bg-blue-50/70 transition-colors flex items-center gap-4" :class="{
                 'bg-blue-100/60 font-semibold text-blue-800': expert.name === experts[currentExpert].name,
                 'border-l-4 border-blue-500': expert.name === userSelection
               }">
               <div
                 class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-blue-600 font-medium">
-                {{ expert.name.charAt(0) }}
+                <img class="w-full h-full object-cover rounded-2xl" :src="expert.img" alt="">
               </div>
-              <span>{{ expert.name.replace('en ', '') }}</span>
+
+              <span class="font-semibold text-blue-500 group-hover:text-blue-700 transition-colors">{{
+                expert.name.replace('en ', '') }}</span>
+              <span class="text-gray-500 italic ">{{ expert.summary }}</span>
             </li>
           </ul>
         </div>
@@ -167,9 +193,9 @@ import Contador from '@/assets/img/Contador.jpeg';
 import Gestor from '@/assets/img/Gestor.jpeg';
 import Ingeniero from '@/assets/img/Ingeniero.jpeg';
 import Maestro from '@/assets/img/Maestro.jpeg';
-import Marketing from '@/assets/img/Marketing.jpeg';
+import Marketing from '@/assets/img/Marketingv2.jpg';
 import Medico from '@/assets/img/Medico.jpeg';
-import Peritaje from '@/assets/img/Peritaje.jpeg';
+import Peritaje from '@/assets/img/PeritajeV2.jpeg';
 import Psicologo from '@/assets/img/Psicologo.jpeg';
 import Publicidad from '@/assets/img/Publicidad.jpeg';
 import Traductor from '@/assets/img/Traductor.jpeg';
@@ -203,22 +229,91 @@ const showVerifyEmail = ref(false);
 const resetEmail = ref('');
 
 const experts = ref([
-  { name: "Abogado", icon: "fa-balance-scale", img: Abogado },
-  { name: "Médico", icon: "fa-user-md", img: Medico },
-  { name: "Contador", icon: "fa-calculator", img: Contador },
-  { name: "Arquitecto", icon: "fa-building", img: Arquitecto },
-  { name: "en Servicios Web", icon: "fa-laptop-code", img: WebDesigner },
-  { name: "en Publicidad", icon: "fa-bullhorn", img: Publicidad },
-  { name: "Traductor", icon: "fa-language", img: Traductor },
-  { name: "en Peritaje", icon: "fa-search", img: Peritaje },
-  { name: "en Ingeniería en Computación", icon: "fa-cog", img: Ingeniero },
-  { name: "en Gestoría en Trámites", icon: "fa-file-alt", img: Gestor },
-  { name: "en Marketing", icon: "fa-chart-line", img: Marketing },
-  { name: "Psicólogo/a", icon: "fa-user-graduate", img: Psicologo },
-  { name: "Maestro", icon: "fa-chalkboard-teacher", img: Maestro },
-  { name: "Chef", icon: "fa-utensils", img: Chef }
+  {
+    name: "Abogado",
+    icon: "fa-balance-scale",
+    img: Abogado,
+    summary: "Si usted se encuentra enfrentando un proceso legal, requiere la redacción de contratos específicos o necesita asesoría jurídica preventiva para proteger sus intereses, agende una consulta con uno de nuestros expertos para obtener claridad legal."
+  },
+  {
+    name: "Médico",
+    icon: "fa-user-md",
+    img: Medico,
+    summary: "Si usted presenta síntomas que le preocupan, requiere una interpretación de estudios clínicos o simplemente desea mejorar su bienestar general con una guía profesional, agende a uno de nuestros expertos para recibir atención médica personalizada."
+  },
+  {
+    name: "Contador",
+    icon: "fa-calculator",
+    img: Contador,
+    summary: "Si usted necesita poner en orden sus finanzas, gestionar el cumplimiento de sus obligaciones fiscales o busca estrategias para optimizar el rendimiento de su patrimonio, agende a uno de nuestros expertos para asegurar su tranquilidad contable."
+  },
+  {
+    name: "Arquitecto",
+    icon: "fa-building",
+    img: Arquitecto,
+    summary: "Si usted tiene en mente un proyecto de construcción, desea renovar sus espacios actuales o necesita asesoría técnica sobre la viabilidad de una obra, agende a uno de nuestros expertos para transformar sus ideas en planos y realidades sólidas."
+  },
+  {
+    name: "en Servicios Web",
+    icon: "fa-laptop-code",
+    img: WebDesigner,
+    summary: "Si usted busca lanzar su primer sitio web, necesita solucionar fallos técnicos en su plataforma actual o desea implementar herramientas digitales avanzadas, agende a uno de nuestros expertos para llevar su infraestructura tecnológica al siguiente nivel."
+  },
+  {
+    name: "en Publicidad",
+    icon: "fa-bullhorn",
+    img: Publicidad,
+    summary: "Si usted necesita que su negocio destaque frente a la competencia, desea crear campañas de alto impacto o busca mejorar la comunicación visual de su marca, agende a uno de nuestros expertos para conectar de manera efectiva con su audiencia."
+  },
+  {
+    name: "Traductor",
+    icon: "fa-language",
+    img: Traductor,
+    summary: "Si usted requiere traducir documentos oficiales, necesita apoyo en la interpretación de conversaciones de negocios o busca adaptar sus contenidos a otros idiomas, agende a uno de nuestros expertos para eliminar cualquier barrera lingüística."
+  },
+  {
+    name: "en Peritaje",
+    icon: "fa-search",
+    img: Peritaje,
+    summary: "Si usted necesita un análisis técnico especializado, una valuación precisa de bienes o un dictamen profesional que sirva como evidencia técnica, agende a uno de nuestros expertos para obtener un informe detallado y con validez oficial."
+  },
+  {
+    name: "en Ingeniería en Computación",
+    icon: "fa-cog",
+    img: Ingeniero,
+    summary: "Si usted busca optimizar sus sistemas de red, requiere asesoría en seguridad informática o necesita resolver problemas complejos de hardware y software, agende a uno de nuestros expertos para garantizar la estabilidad de su entorno digital."
+  },
+  {
+    name: "en Gestoría en Trámites",
+    icon: "fa-file-alt",
+    img: Gestor,
+    summary: "Si usted se siente abrumado por la burocracia, necesita agilizar trámites ante instituciones públicas o requiere apoyo con licencias y permisos, agende a uno de nuestros expertos para ahorrar tiempo y evitar complicaciones administrativas."
+  },
+  {
+    name: "en Marketing",
+    icon: "fa-chart-line",
+    img: Marketing,
+    summary: "Si usted desea entender mejor el comportamiento de su mercado, busca definir su público objetivo o necesita un plan estratégico de ventas, agende a uno de nuestros expertos para hacer crecer su negocio de manera sostenible."
+  },
+  {
+    name: "Psicólogo/a",
+    icon: "fa-user-graduate",
+    img: Psicologo,
+    summary: "Si usted está atravesando un momento difícil, desea trabajar en su crecimiento personal o busca herramientas para gestionar el estrés y la ansiedad, agende a uno de nuestros expertos para iniciar un proceso de acompañamiento terapéutico."
+  },
+  {
+    name: "Maestro",
+    icon: "fa-chalkboard-teacher",
+    img: Maestro,
+    summary: "Si usted necesita regularización en alguna materia escolar, desea aprender una nueva habilidad académica o busca preparación para exámenes importantes, agende a uno de nuestros expertos para recibir tutoría personalizada."
+  },
+  {
+    name: "Chef",
+    icon: "fa-utensils",
+    img: Chef,
+    summary: "Si usted planea diseñar el menú de un restaurante, necesita asesoría técnica en procesos gastronómicos o busca consultoría para un evento exclusivo, agende a uno de nuestros expertos para elevar la calidad de su propuesta culinaria."
+  }
 ]);
-
 const currentExpert = ref(0);
 let expertInterval: any = null;
 
