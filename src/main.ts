@@ -166,8 +166,19 @@ import {
   HiArrowLeft,
   MdRefresh,
   FaArrowLeft,
+  HiSparkles,
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
 } from "oh-vue-icons/icons";
+
 addIcons(
+  HiSparkles,
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedinIn,
   FaArrowLeft,
   HiMailOpen,
   HiCheck,

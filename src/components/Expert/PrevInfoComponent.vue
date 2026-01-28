@@ -21,13 +21,14 @@
       <div class="relative mb-5">
         <div
           class="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-slate-50 shadow-inner flex items-center justify-center bg-slate-100">
-          <img v-if="expertData?.imgUrl" :src="expertData.imgUrl" alt="Expert Profile"
-            class="w-full h-full object-cover" />
-          <div v-else class="flex items-center justify-center w-full h-full"
-            :class="isBlocked ? 'bg-slate-200' : 'bg-blue-50'">
-            <v-icon v-if="!isBlocked && !props.expertData?.isSuspended" name="la-user-tie-solid" scale="2"
-              class="text-blue-500" />
-            <v-icon v-else class="text-slate-400" name="fa-user-slash" scale="2" />
+          <img
+            :src="expertData?.imgUrl || `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 99) + 1}.jpg`"
+            alt="Expert Profile" class="w-full h-full object-cover" />
+          <div v-if="!isBlocked && !props.expertData?.isSuspended"
+            class="flex items-center justify-center w-full h-full" :class="isBlocked ? 'bg-slate-200' : 'bg-blue-50'">
+
+            <v-icon v-if="isBlocked || props.expertData?.isSuspended" class="text-slate-400" name="fa-user-slash"
+              scale="2" />
           </div>
         </div>
         <div v-if="!isBlocked"
