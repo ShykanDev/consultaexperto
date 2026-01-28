@@ -1,1 +1,0 @@
-System.register(["./index-legacy-DyUhWv_v.js"],function(t,e){"use strict";var r;return{setters:[t=>{r=t.d}],execute:function(){t("u",r("expertAdmin",{state:()=>({expertData:{}}),getters:{getCurrentExpert:t=>t.expertData},actions:{setExpertData(t){this.expertData=t},resetCurrentExpert(){this.expertData={}}},persist:!0}))}}});
