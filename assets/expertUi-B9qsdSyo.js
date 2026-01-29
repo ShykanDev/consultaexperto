@@ -1,1 +1,0 @@
-import{d as t}from"./index-BYM5y-Co.js";const i=t("expertUi",{state:()=>({expertUid:""}),getters:{getExpertUid:e=>e.expertUid},actions:{resetExpertUid(){this.expertUid=""},setExpertUid(e){this.expertUid=e}},persist:!0});export{i as u};
