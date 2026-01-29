@@ -39,12 +39,6 @@
                     &copy; 2026 Consulta Experto. Todos los derechos reservados.
                 </p>
 
-                <div class="flex gap-4">
-                    <a v-for="social in socialIcons" :key="social.name" href="#"
-                        class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-600 hover:shadow-md transition-all duration-300">
-                        <v-icon :name="social.icon" scale="1.0" />
-                    </a>
-                </div>
             </div>
         </div>
     </footer>
@@ -58,8 +52,7 @@ const footerGroups = ref([
         title: 'Plataforma',
         links: [
             { label: 'Inicio', route: '/home' },
-            { label: 'Expertos', route: '/experts' },
-            { label: 'Mi Cuenta', route: '/account' },
+
         ]
     },
     {
@@ -67,7 +60,6 @@ const footerGroups = ref([
         links: [
             { label: 'Términos y Condiciones', route: '/terms' },
             { label: 'Política de Privacidad', route: '/privacy-policy' },
-            { label: 'Trabaja con nosotros', route: '/hiring' },
         ]
     },
     {

@@ -127,10 +127,18 @@
                             <p class="text-slate-500 font-medium">Contamos con una red global de expertos listos para
                                 ayudarte.</p>
                         </div>
+
+                        <div
+                            class="flex items-center gap-2 w-64 bg-slate-50 ring-1 ring-blue-500 p-2 rounded-2xl md:hover:w-1/2 transition-all ease-in-out duration-300">
+                            <v-icon name="bi-search" scale="1.5" />
+                            <input @input="filterExperts(queryFilter)" type="text" placeholder="Buscar experto"
+                                v-model="queryFilter"
+                                class="w-full p-2 border border-slate-100 rounded-2xl bg-transparent outline-none border-none font-poppins text-blue-600 font-medium" />
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        <SelectExpertCard v-for="expert in experts" :key="expert.name" :name="expert.name"
+                        <SelectExpertCard v-for="expert in expertsFiltered" :key="expert.name" :name="expert.name"
                             :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)"
                             class="!rounded-[2.5rem] !border-slate-100 hover:!shadow-xl transition-all" />
                     </div>
@@ -336,6 +344,20 @@ const experts = ref([
         summary: "Gestión eficiente de procesos administrativos y burocráticos para ahorrarte tiempo y asegurar resultados."
     }
 ]);
+
+const expertsFiltered = ref([...experts.value]);
+const queryFilter = ref();
+const filterExperts = () => {
+    if (!queryFilter.value) {
+        expertsFiltered.value = [...experts.value];
+        return;
+    }
+    const query = queryFilter.value.toLowerCase().trim();
+    expertsFiltered.value = experts.value.filter(i =>
+        i.name.toLowerCase().includes(query)
+    );
+};
+
 
 const toggleExpertPopup = (action: 'open' | 'close') => {
     expertPopup.value = action === 'open';

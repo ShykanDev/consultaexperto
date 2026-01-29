@@ -1,6 +1,6 @@
 <template>
-  <div class="web-page min-h-screen bg-gray-50 p-4">
-    <div class="flex p-1 bg-gray-100 rounded-xl mb-4">
+  <div class="web-page min-h-screen bg-gray-50 p-4 mt-36">
+    <div class="flex p-1 bg-gray-100 rounded-xl mb-4 hidden">
       <button class="flex-1 py-2 text-sm font-bold rounded-lg transition-all" value="users">
         <div class="web-label flex-1">Users</div>
       </button>
@@ -10,7 +10,7 @@
     </div>
 
     <div id="users">
-      <main class="web-content overflow-y-auto">
+      <main class="web-content overflow-y-auto hidden">
         <div class="font-bold text-lg mb-4">Testing Get Users (When user is auth)</div>
         <div class="flex gap-2 mb-4">
           <button class="web-btn bg-blue-600 text-white px-4 py-2 rounded-lg" @click="getUsers">Get Users</button>
@@ -46,8 +46,10 @@
     </div>
 
     <div class="mt-8" id="experts">
-      <h2 class="font-bold">Experts</h2>
-      <p>Experts testing section...</p>
+      <h2 class="font-bold">API</h2>
+      <button @click="getApiResponse" class="bg-blue-500 p-3 rounded-xl text-white">Get Api Response</button>
+
+      <p>Api response: {{ apiStatus ?? 'No data yet' }}</p>
     </div>
   </div>
 </template>
@@ -80,4 +82,18 @@ const getSelfUser = () => {
   // Logic for self user
   toast.info('Feature post-migration');
 }
+
+const apiStatus = ref();
+const getApiResponse = async () => {
+  try {
+    const api = await fetch('https://backend-350palvmy-shykandevs-projects.vercel.app/api/hello');
+    if (api.status == 200) {
+      console.log(api.statusText);
+      apiStatus.value = api.statusText;
+    }
+  } catch (error) {
+    toast.error(`Error while getting api response: ${error}`)
+  }
+}
+
 </script>
