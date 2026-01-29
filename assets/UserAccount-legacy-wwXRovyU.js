@@ -1,1 +1,0 @@
-System.register(["./index-legacy-DpLLrPhQ.js"],function(e,t){"use strict";var s,n,c,r,u,a;return{setters:[e=>{s=e.a,n=e.j,c=e.G,r=e.k,u=e.b,a=e.o}],execute:function(){const t={class:""};e("default",s({__name:"UserAccount",setup(e){const s=n();return c(s,"Dates"),r(!1),r([]),(e,s)=>(a(),u("div",t))}}))}}});
