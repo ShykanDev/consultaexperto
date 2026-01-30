@@ -1,1 +1,0 @@
-System.register(["./index-legacy-h0psoif2.js"],function(e,t){"use strict";var i;return{setters:[e=>{i=e.d}],execute:function(){e("u",i("hiring",{state:()=>({expertName:"",expertSpecialty:"",expertUid:""}),actions:{setExpertHiringData(e,t,i){this.expertName=e,this.expertSpecialty=t,this.expertUid=i}},getters:{getExpertHiringData:e=>e}}))}}});
