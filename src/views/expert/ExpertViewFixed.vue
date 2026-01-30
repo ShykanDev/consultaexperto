@@ -80,7 +80,7 @@
                   <div class="flex items-center gap-1">
                     <v-icon name="io-star" class="text-yellow-500" scale="1.1" />
                     <span class="text-xl font-bold text-slate-800">{{ calcStarsValue(expertData?.rating!).toFixed(1)
-                    }}</span>
+                      }}</span>
                   </div>
                   <div class="h-4 w-px bg-slate-200"></div>
                   <span class="text-xs text-slate-500 font-medium">{{ expertData?.rating?.count }} Calificaciones</span>
@@ -92,7 +92,7 @@
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Cédula Profesional</span>
                   <span class="text-sm font-semibold text-slate-700">{{ expertData?.professionalId || 'No registrada'
-                  }}</span>
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Años de Exp.</span>
@@ -102,12 +102,12 @@
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-400 uppercase">Cédula Profesional</span>
                   <span class="text-sm font-semibold text-slate-700">{{ expertData?.professionalId || 'No registrada'
-                  }}</span>
+                    }}</span>
                 </div>
                 <div class="flex items-center justify-between flex-col">
                   <span class="text-xs font-bold text-slate-400 uppercase">Resúmen</span>
                   <span class="text-sm font-semibold text-slate-700">{{ expertData?.bio || 'No registrado'
-                  }}</span>
+                    }}</span>
                 </div>
               </div>
             </div>
@@ -120,9 +120,9 @@
               </div>
               <div class="p-4 bg-blue-50 rounded-2xl text-center">
                 <div class="text-2xl font-bold text-blue-700">{{ calcStarsValue(expertData?.rating!).toFixed(1)
-                }}</div>
+                  }}</div>
                 <div class="text-[10px] font-bold text-blue-600/70 uppercase">Extrellas ({{ expertData?.rating?.count
-                }} calificaciones)</div>
+                  }} calificaciones)</div>
               </div>
             </div>
           </aside>
@@ -162,6 +162,13 @@
                   class="flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-xl border border-blue-100 ring-1 ring-blue-100">
                   <v-icon class="animate-bounce" name="bi-calendar" scale="1.4" />
                   <span class="text-xs font-bold">Tiene una cita agendada para el {{ userAppointmentString }}</span>
+                  <RouterLink to="/client-appointments">
+                    <button
+                      class="ml-2 text-xs font-bold bg-blue-600 p-2 rounded-2xl text-white  transition-colors flex items-center gap-1">Ver
+                      citas
+                      <v-icon name="bi-arrow-right" scale="1" />
+                    </button>
+                  </RouterLink>
                 </div>
               </div>
 

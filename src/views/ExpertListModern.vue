@@ -129,7 +129,7 @@
                         </div>
 
                         <div
-                            class="flex items-center gap-2 w-64 bg-slate-50 ring-1 ring-blue-500 p-2 rounded-2xl md:hover:w-1/2 transition-all ease-in-out duration-300">
+                            class="flex items-center gap-2 w-64 bg-white hover:ring-1 ring-blue-500 p-2 rounded-2xl md:hover:w-1/2 transition-all ease-in-out duration-300">
                             <v-icon name="bi-search" scale="1.5" />
                             <input @input="filterExperts(queryFilter)" type="text" placeholder="Buscar experto"
                                 v-model="queryFilter"
@@ -137,11 +137,13 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                        <SelectExpertCard v-for="expert in expertsFiltered" :key="expert.name" :name="expert.name"
-                            :icon="expert.icon" :summary="expert.summary" @select="getExpertSelection(expert.name)"
+                    <TransitionGroup name="list" tag="div"
+                        class="relative grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <SelectExpertCard v-for="expert in expertsFiltered.sort((a, b) => a.name.localeCompare(b.name))"
+                            :key="expert.name" :name="expert.name" :icon="expert.icon" :summary="expert.summary"
+                            @select="getExpertSelection(expert.name)"
                             class="!rounded-[2.5rem] !border-slate-100 hover:!shadow-xl transition-all" />
-                    </div>
+                    </TransitionGroup>
                 </section>
 
                 <!-- Premium Banner Recommendations -->
@@ -229,11 +231,13 @@
                                     especialidad.</p>
                             </div>
                         </div>
-                        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
-                            <PrevInfoComponent v-for="(expert, index) in mockExperts" :key="index" :expert-data="expert"
+                        <TransitionGroup name="list" tag="div" appear
+                            class="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-10">
+                            <PrevInfoComponent v-for="expert in mockExperts" :key="expert.id" :expert-data="expert"
                                 @closeCard="toggleExpertPopup('close')"
                                 class="!rounded-[2.5rem] !shadow-none hover:!shadow-2xl transition-all border border-slate-50" />
-                        </div>
+                        </TransitionGroup>
+
                     </main>
                 </div>
             </div>
@@ -390,3 +394,23 @@ const getExpertSelection = (expert: string) => {
     gettingMockExperts(expert);
 }
 </script>
+
+
+<style scoped>
+.list-move,
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.7s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+}
+
+/* Para que los elementos que se quedan se muevan suavemente */
+.list-leave-active {
+    position: absolute;
+}
+</style>

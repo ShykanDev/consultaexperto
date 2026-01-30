@@ -310,6 +310,7 @@ import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } 
 import { auth as authFirebase } from '@/firebase';
 import { useToast } from 'vue-toastification';
 import imageCompression from 'browser-image-compression';
+import { createUserData } from '@/composables/createUserData';
 
 const toast = useToast();
 const db = getFirestore();
@@ -407,9 +408,11 @@ const getDateSelected = (dayName: string, timeSelected: string) => {
   }
 };
 
+//A1Handler composable for create (user/client data to be able to log in both as expert and client/user)
+const { setUserData } = createUserData();
+
 const createExpert = async () => {
   if (!isFormValid.value) return;
-
   loading.value = true;
   try {
     if (!imageFile.value) {
@@ -440,10 +443,17 @@ const createExpert = async () => {
     // Add to EmailsExperts collection
     await addDoc(collection(db, 'EmailsExperts'), { email: form.value.email });
 
+    await setUserData(
+      form.value.fullName,
+      form.value.email,
+      form.value.phone,
+      '01/01/2000',
+      user.uid
+    )
+
     toast.success('Experto creado exitosamente.');
 
     // Store credentials for the modal
-    createdExpertEmail.value = form.value.email;
     createdExpertPassword.value = tempPassword.value;
     showSuccessModal.value = true;
 
@@ -505,8 +515,6 @@ async function handleImageCompression() {
   }
 
 }
-
-
 
 const removeImage = () => {
   imageFile.value = null;

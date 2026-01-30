@@ -2,7 +2,6 @@
   <main class="web-content overflow-y-auto mt-20" color="light">
     <div class="w-full max-w-6xl mx-auto pt-16 pb-12 px-6">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 border-b border-slate-100 pb-10">
-
         <div class="flex-1">
           <div
             class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mb-4">
@@ -50,7 +49,7 @@
           <div class="group">
             <label class="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">Correo electrónico</label>
             <div
-              class="flex items-center bg-white gap-3 px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50 transition-all duration-300">
+              class="flex items-center gap-3 px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50 transition-all duration-300">
               <v-icon class="text-slate-400 group-focus-within:text-blue-500" name="md-email" />
               <input
                 class="bg-transparent border-none outline-none flex-1 text-slate-700 placeholder:text-slate-400 font-medium"

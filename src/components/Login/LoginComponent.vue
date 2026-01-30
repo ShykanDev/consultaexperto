@@ -104,12 +104,31 @@
       <!-- Formulario de login – más lindo, con mejor espaciado y color -->
       <form @submit.prevent="login"
         class="bg-white border border-blue-100 rounded-2xl shadow-xl p-8 space-y-7 backdrop-blur-sm">
-        <div class="text-center space-y-2">
-          <h2 class="text-3xl font-bold text-blue-500 font-manrope">Le damos la bienvenida</h2>
-          <p class="text-gray-600">Ingresa para conectar con tu experto</p>
+
+        <div :id="loginRoleStore.role" class="text-center space-y-2">
+          <h2 class="text-3xl font-bold text-blue-500 font-manrope">Iniciar Sesión como {{ loginRoleStore.role ===
+            'user' ? 'Usuario' : loginRoleStore.role === 'expert' ? 'Experto' : 'Administrador' }}</h2>
+          <p class="text-gray-600">Inicie sesión para iniciar la gestión de sus consultas</p>
         </div>
 
-        <!-- Email -->
+        <div class="flex p-1 bg-blue-50/50 rounded-xl border border-blue-100">
+          <button type="button" @click="loginRoleStore.setRole('user')"
+            :class="loginRoleStore.role === 'user' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-blue-500'"
+            class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200">
+            Usuario
+          </button>
+          <button type="button" @click="loginRoleStore.setRole('expert')"
+            :class="loginRoleStore.role === 'expert' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-blue-500'"
+            class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200">
+            Experto
+          </button>
+          <button type="button" @click="loginRoleStore.setRole('admin')"
+            :class="loginRoleStore.role === 'admin' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-blue-500'"
+            class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all duration-200">
+            Admin
+          </button>
+        </div>
+
         <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">Correo electrónico</label>
           <div
@@ -121,7 +140,6 @@
           </div>
         </div>
 
-        <!-- Password -->
         <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">Contraseña</label>
           <div
@@ -203,7 +221,8 @@ import WebDesigner from '@/assets/img/webDev.jpeg';
 
 import {
   sendPasswordResetEmail,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  User
 } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { authStore } from '@/store/auth';
@@ -213,6 +232,7 @@ import clientStore from '@/store/client';
 import expertStore from '@/store/expert';
 import { IExpert } from '@/interfaces/IExpert';
 import VerifyYourEmail from './VerifyYourEmail.vue';
+import { useLoginRoleStore } from '@/store/loginRole';
 
 const toast = useToast();
 const router = useRouter();
@@ -355,6 +375,53 @@ const handleResetPassword = async () => {
   }
 };
 
+//A1Handler handle login based on userRole
+const adminCollection = collection(db, 'AdminEmails');
+const expertCollection = collection(db, 'EmailsExperts');
+const userCollection = collection(db, 'users');
+
+const verifyExistInDb = async (user: User, role: string) => {
+
+  const collectionRole = role === 'admin' ? adminCollection : role === 'expert' ? expertCollection : userCollection;
+
+  const queryRole = query(collectionRole, where('email', '==', user.email));
+
+  const snap = await getDocs(queryRole);
+
+  if (snap.empty) {
+    return null;
+  }
+
+  return {
+    role: role,
+    data: snap.docs[0].data()
+  };
+};
+
+
+
+//A1Handler handle login based on userRole
+const handleRoleLogin = async (user: User) => {
+
+  const userRole = await verifyExistInDb(user, loginRoleStore.getRole);
+
+  if (!userRole) {
+    toast.error(`${loginRoleStore.getRole == 'admin' ? 'Administrador' : loginRoleStore.getRole == 'expert' ? 'Experto' : 'Cliente'} no encontrado, por favor verifique su correo y contraseña y que pertenezca al rol seleccionado`);
+    return;
+  }
+
+  //Verify what the client says in the selection
+  if (userRole?.role === 'admin') {
+    handleAdminLogin(user.uid, user.displayName || 'Admin', user.email || '');
+  } else if (userRole?.role === 'expert') {
+    handleExpertLogin(user.uid, user.displayName || 'Experto', user.email || '', userRole.data as IExpert);
+  } else {
+    handleClientLogin(user.uid, user.displayName || 'Cliente', user.email || '');
+  }
+
+
+}
+
 const login = async () => {
   if (!email.value || !password.value) {
     toast.warning("Por favor, ingrese su correo y contraseña");
@@ -362,7 +429,11 @@ const login = async () => {
   }
 
   loading.value = true;
+
+
   try {
+
+    /*
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const { email: userEmail, uid, displayName } = userCredential.user;
     const name = displayName || "Usuario";
@@ -394,6 +465,21 @@ const login = async () => {
     } else {
       handleClientLogin(uid, name, userEmail || '');
     }
+      */
+
+    const user = await signInWithEmailAndPassword(auth, email.value, password.value);
+    //A1Handler based on user role, redirect to the current expert to the view   
+
+
+    //Verify email verified
+    if (!user.user.emailVerified) {
+      toast.error("Por favor, verifique su correo electrónico");
+      showVerifyEmail.value = true;
+      return;
+    }
+
+    handleRoleLogin(user.user);
+
   } catch (error) {
     toast.error("Error al iniciar sesión. Verifique sus credenciales.");
   } finally {
@@ -402,6 +488,7 @@ const login = async () => {
 };
 
 const handleAdminLogin = (uid: string, name: string, email: string) => {
+  console.log(`Login as admin: ${name}`);
   const store = authStore();
   store.setIsAuth(true);
   store.setUserUid(uid);
@@ -413,6 +500,7 @@ const handleAdminLogin = (uid: string, name: string, email: string) => {
 };
 
 const handleExpertLogin = (uid: string, name: string, email: string, data: IExpert) => {
+  console.log(`Login as expert: ${data}`);
   const store = authStore();
   store.setIsAuth(true);
   store.setUserUid(uid);
@@ -426,6 +514,7 @@ const handleExpertLogin = (uid: string, name: string, email: string, data: IExpe
 };
 
 const handleClientLogin = (uid: string, name: string, email: string) => {
+  console.log(`Login as client: ${name}`);
   const store = authStore();
   store.setIsAuth(true);
   store.setUserUid(uid);
@@ -437,6 +526,12 @@ const handleClientLogin = (uid: string, name: string, email: string) => {
   toast.success(`Bienvenido ${name}`);
   router.push("/home");
 };
+
+
+//A1Handler
+const loginRoleStore = useLoginRoleStore();
+
+
 </script>
 
 <style scoped>

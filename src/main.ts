@@ -187,9 +187,11 @@ import {
   HiArrowNarrowRight,
   HiStar,
   BiSearch,
+  BiArrowRight,
 } from "oh-vue-icons/icons";
 
 addIcons(
+  BiArrowRight,
   BiSearch,
   MdCheck,
   HiArrowNarrowRight,

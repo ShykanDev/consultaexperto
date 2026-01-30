@@ -1,71 +1,80 @@
 <template>
-    <section class="fixed top-6 z-50 flex justify-center transition-all duration-700 ease-in-out w-full left-2 right-2">
+    <section
+        class="fixed top-6 z-50 flex justify-center transition-all duration-700 ease-in-out w-full left-2 right-2 px-4">
         <nav
-            class="w-full  bg-white  backdrop-blur-2xl border border-slate-100/90 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-[2rem] px-6 md:px-10 h-20 flex items-center justify-between">
+            class="w-full max-w-7xl bg-white/90 backdrop-blur-2xl border border-slate-100/90 shadow-[0_12px_40px_rgba(0,0,0,0.08)] rounded-[2.5rem] px-6 md:px-10 h-20 flex items-center justify-between">
+
             <div class="flex items-center gap-3">
                 <div
-                    class="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                    class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200/50 hover:rotate-3 transition-transform">
                     <v-icon class="text-white" name="fa-users" scale="1.2" />
                 </div>
                 <p
-                    class="text-md font-normal font-poppins bg-gradient-to-r from-blue-700 via-blue-500 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+                    class="text-md font-bold font-manrope bg-gradient-to-r from-blue-700 via-blue-500 to-indigo-600 bg-clip-text text-transparent tracking-tight">
                     {{ pageTitle }}
                 </p>
             </div>
 
-
-            <div class="flex items-center gap-3">
-                <span class="text-xl font-semibold text-slate-600 hidden sm:block  max-w-[180px] mr-5"
+            <div class="flex items-center gap-3 bg-white rounded-full px-2  border border-blue-200">
+                <span
+                    class="text-sm md:text-lg font-semibold text-slate-500 bg-slate-50  py-2 rounded-full border border-slate-100 hidden sm:block  mr-5"
                     v-html="currentName" :key="currentName">
                 </span>
             </div>
 
-            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                <RouterLink v-if="!isAuth" to="/login"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Iniciar sesión</RouterLink>
+            <div class="hidden md:flex items-center gap-6 text-[15px] font-semibold text-slate-600">
+
+                <div v-if="!isAuth" class="relative group">
+                    <button
+                        class="px-4 py-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-all duration-300">
+                        Iniciar sesión
+                    </button>
+
+                    <div
+                        class="absolute hidden group-hover:flex flex-col space-y-2  left-1/2 -translate-x-1/2 bg-white border border-slate-100 shadow-2xl rounded-2xl p-2 min-w-[160px] z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
+                        <RouterLink @click="loginRoleStore.setRole('user')"
+                            class="px-4 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors text-center"
+                            active-class="text-blue-600 bg-blue-50" to="/login#user">Usuario</RouterLink>
+                        <RouterLink @click="loginRoleStore.setRole('expert')"
+                            class="px-4 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors text-center"
+                            active-class="text-blue-600 bg-blue-50" to="/login#expert">Experto</RouterLink>
+                        <RouterLink @click="loginRoleStore.setRole('admin')"
+                            class="px-4 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors text-center"
+                            active-class="text-blue-600 bg-blue-50" to="/login#admin">Admin</RouterLink>
+                    </div>
+                </div>
+
                 <RouterLink v-if="!isAuth" to="/register"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Registrarse</RouterLink>
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Registrarse</RouterLink>
+
                 <RouterLink v-if="isClient" to="/home#all-experts"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Especialidades</RouterLink>
-                <RouterLink v-if="isClient" to="/home#how-it-works"
-                    class="hover:text-blue-600 hidden transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Cómo funciona
-                </RouterLink>
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Expertos</RouterLink>
+
+                <RouterLink v-if="isClient" to="/client-appointments"
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Mis citas</RouterLink>
+
                 <RouterLink v-if="!isAdmin" to="/help"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Ayuda
-                </RouterLink>
-                <RouterLink v-if="isClient" to="/client-appointments" class="hover:text-blue-600 transition-colors"
-                    active-class="text-blue-600 font-semibold">Mis citas
-                </RouterLink>
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Ayuda</RouterLink>
 
-
-
-                <!--Admin Navs-->
-
-                <!--Home-->
                 <RouterLink v-if="isAdmin" to="/expert-list-admin"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Panel principal</RouterLink>
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Panel principal</RouterLink>
 
-                <!-- Expert Preview-->
                 <RouterLink v-if="isAdmin" to="/users-list-admin"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Lista de Usuarios</RouterLink>
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Lista de Usuarios</RouterLink>
 
-                <!-- Create Expert -->
                 <RouterLink v-if="isAdmin" to="/create-expert"
-                    class="hover:text-blue-600 transition-colors active:text-blue-600"
-                    active-class="text-blue-600 font-semibold">Crear experto</RouterLink>
+                    class="px-3 py-2 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    active-class="text-blue-600 font-bold bg-blue-50">Crear experto</RouterLink>
 
-
-                <!--Logout -->
-                <RouterLink v-if="isAuth" to="/logout" class="hover:text-blue-600 transition-colors"
-                    active-class="text-blue-600 font-semibold">Cerrar sesión
-                </RouterLink>
+                <RouterLink v-if="isAuth" to="/logout"
+                    class="px-3 py-2 rounded-xl hover:text-red-600 hover:bg-red-50 transition-all"
+                    active-class="text-red-600 font-bold bg-red-50">Ajustes</RouterLink>
             </div>
         </nav>
     </section>
@@ -73,6 +82,7 @@
 
 <script lang="ts" setup>
 import { authStore as authStorePinia } from '@/store/auth';
+import { useLoginRoleStore } from '@/store/loginRole';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -137,6 +147,9 @@ onMounted(() => {
 onUnmounted(() => {
     clearInterval(timeoutId);
 });
+
+//A1 Handler
+const loginRoleStore = useLoginRoleStore();
 
 </script>
 

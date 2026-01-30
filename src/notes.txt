@@ -9,8 +9,6 @@ If user select a specific expert, the app must push the view to the expert detai
 If user is already logged in, the app must push the view to the expert list view [NOT DONE]
 If user is not logged in, the app must push the view to the login view [NOT DONE]
 
-
-
 TODO:
 When user logs in, if she is not an expert user should be redirected to the expert list view [DONE ✔]
 When user logs in, if she is an expert user should be redirected to the expert details view [NOT DONE]
@@ -20,8 +18,7 @@ When user logs out, the app must push the view to the login view [NOT DONE]
 When user is already logged in, the app must push the view to the expert list view [NOT DONE]
 When user is not logged in, the app must push the view to the login view [NOT DONE]
 
-
-//Changes to be added to 
+//Changes to be added to
 //When user clicks on an expert, the app must dave the expert UID in the system store
 // In the schedule view, the app must use the expert UID to get the expert schedule from Firebase
 
@@ -62,7 +59,6 @@ Actualizar las reglas de seguridad de Firestore
 Modificar la interfaz para mostrar claramente el estado
 Implementar la sincronización en tiempo real de los cambios de estado
 
-
 //
 1. Agregar Collection de Usuarios que son expertos (email), la collection será llamada "EmailsExperts" [Done ✔]
 2. Cuando el usuario inicie sesion con email, el app debe buscar si el email está en la collection "EmailsExperts", si está, el usuario es un experto y se le redirige a la vista de detalles del experto, si no está, el usuario es un cliente y se le redirige a la vista de lista de expertos.[Done ✔]
@@ -71,11 +67,10 @@ Implementar la sincronización en tiempo real de los cambios de estado
 3. Si el usuario no esta logeado e intenta acceder a la vista de detalles del experto, la app lo redirigirá a la vista de login.
 4. En el caso de que sea cliente la app lo redirigirá a la lista de expertos y se le pedirá que elija un experto, una vez seleccionado el experto, la app guardará el UID del experto en el store
 5. Siendo el usuario cliente, cuando el cliente seleccione un experto, la app verificará si tiene citas agendadas en base a los resultados de firebase en el onMounted que obtiene los datos del experto seleccionado se debe verificar si el UID del cliente esta incluido en alguna key (takenBy) de los documentos de citas, si está, el usuario no puede agendar una cita.
-6. En caso de que no haya citas agendadas, el usuario puede agendar una cita, la cita llevara el estado "Por Confirmar" y el experto podrá confirmarla o rechazarla, una solucion es que el usuario tenga una subcollection de citas donde se tenrán los datos, se creará una nueva subcollection por caada cita agendada, dentro llevará el (isDateConfirmed) donde el cliente solo tendra derechos de read y el experto tendra derechos de read y write;
-
+6. En caso de que no haya citas agendadas, el usuario puede agendar una cita, la cita llevara el estado "Por Confirmar" y el experto podrá confirmarla o rechazarla, una solucion es que el usuario tenga una subcollection de citas donde se tenrán los datos, se creará una nueva subcollection por caada cita agendada, dentro llevará el (isDateConfirmed) donde el cliente solo tendra derechos de read y el experto tendra derechos de read y write ;
 
 //TODO:
-1. Add a function  to verify if client has an appointment scheduled with the expert selected, if the client has an appointment scheduled with the expert selected, the app should show a message to the user that he can't schedule another appointment with the same expert, if the client doesn't have an appointment scheduled with the expert selected, the app should allow the user to schedule an appointment with the expert selected.
+1. Add a function to verify if client has an appointment scheduled with the expert selected, if the client has an appointment scheduled with the expert selected, the app should show a message to the user that he can't schedule another appointment with the same expert, if the client doesn't have an appointment scheduled with the expert selected, the app should allow the user to schedule an appointment with the expert selected.
 2. If some slot includes the key takenBy with the client UID, the square will display 'Su cita'
 3. Add UI notification to notify the user when the expert confirms the appointment or an error occurs
 
@@ -107,21 +102,21 @@ This document outlines the roadmap for upcoming features and improvements for th
 **Goal:** Gather user feedback immediately after a consultation concludes to ensure quality control.
 
 ### Implementation Steps:
-1.  **Trigger Logic:**
-    *   Identify the logic in `ClientAppointmentsView.vue` or `CardInfo.vue` that determines when an appointment is "finished".
-    *   Add a listener or check to detect when a user views a finished appointment that hasn't been rated yet.
+1. **Trigger Logic:**
+* Identify the logic in `ClientAppointmentsView.vue` or `CardInfo.vue` that determines when an appointment is "finished".
+* Add a listener or check to detect when a user views a finished appointment that hasn't been rated yet.
 
-2.  **UI Component (Popup):**
-    *   Create a reusable `RatingModal` component (or use an existing generic modal).
-    *   **Fields:**
-        *   Star Rating (1-5).
-        *   Optional text area for comments.
-    *   **Styling:** Match the existing premium/iOS aesthetic using the design system in `index.css`.
+2. **UI Component (Popup):**
+* Create a reusable `RatingModal` component (or use an existing generic modal).
+* **Fields:**
+* Star Rating (1-5).
+* Optional text area for comments.
+* **Styling:** Match the existing premium/iOS aesthetic using the design system in `index.css`.
 
-3.  **Backend/Firestore:**
-    *   Update the Appointment interface/document to include a `rating` field.
-    *   Create a function to save the rating to the specific appointment document in Firebase.
-    *   (Optional) Update the Expert's aggregate rating in their user profile.
+3. **Backend/Firestore:**
+* Update the Appointment interface/document to include a `rating` field.
+* Create a function to save the rating to the specific appointment document in Firebase.
+* (Optional) Update the Expert's aggregate rating in their user profile.
 
 ---
 
@@ -129,14 +124,14 @@ This document outlines the roadmap for upcoming features and improvements for th
 **Goal:** Provide users with a direct channel to resolve issues with completed appointments.
 
 ### Implementation Steps:
-1.  **Target Component:** `src/components/Client/CardInfo.vue`.
-2.  **Condition:**
-    *   Only display this option if the appointment status is `finished` (finalized).
-3.  **UI Implementation:**
-    *   Add a "Report Issue" or "Contact Support" button/link visually distinct from the main actions.
-    *   **Micro-copy:** "Have you encountered an issue with your appointment? Contact us."
-4.  **Action:**
-    *   Implement a `mailto:` link pre-filled with the appointment ID in the subject line (e.g., `mailto:admin@shykan.com?subject=Issue with Appointment ID: 123`).
+1. **Target Component:** `src/components/Client/CardInfo.vue`.
+2. **Condition:**
+* Only display this option if the appointment status is `finished` (finalized).
+3. **UI Implementation:**
+* Add a "Report Issue" or "Contact Support" button/link visually distinct from the main actions.
+* **Micro-copy:** "Have you encountered an issue with your appointment? Contact us."
+4. **Action:**
+* Implement a `mailto:` link pre-filled with the appointment ID in the subject line (e.g., `mailto:admin@shykan.com?subject=Issue with Appointment ID: 123`).
 
 ---
 
@@ -144,29 +139,60 @@ This document outlines the roadmap for upcoming features and improvements for th
 **Goal:** Allow users to "block" an expert they were unsatisfied with during a free appointment, preventing future matches with that specific expert while allowing them to reschedule.
 
 ### Implementation Steps:
-1.  **Data Structure Update (TypeScript Interfaces):**
-    *   Update the User interface (likely in `src/interfaces` or `types`) to include a new optional field:
-        ```typescript
-        expertsBlocked?: {
-            expertEmail: string;
-            expertName: string;
-            expertUid: string;
-            expertSpecialty: string;
-        }[];
-        ```
+1. **Data Structure Update (TypeScript Interfaces):**
+* Update the User interface (likely in `src/interfaces` or `types`) to include a new optional field:
+```typescript
+expertsBlocked?: {
+expertEmail: string                                                                                  ;
+expertName: string                                                                                   ;
+expertUid: string                                                                                    ;
+expertSpecialty: string                                                                              ;
+}[]                                                                                                  ;
+```
 
-2.  **Logic & UI:**
-    *   **Trigger:** Likely part of the Rating System (e.g., if rating is low) or a specific "Request Re-schedule" button if the user marks the appointment as "unsatisfactory".
-    *   **Action:**
-        *   Push the current expert's details into the user's `expertsBlocked` array in Firestore.
-        *   (Note: The actual resetting of the `freeAppointments` boolean is handled manually by the admin for now, as per instructions).
+2. **Logic & UI:**
+* **Trigger:** Likely part of the Rating System (e.g., if rating is low) or a specific "Request Re-schedule" button if the user marks the appointment as "unsatisfactory".
+* **Action:**
+* Push the current expert's details into the user's `expertsBlocked` array in Firestore.
+* (Note: The actual resetting of the `freeAppointments` boolean is handled manually by the admin for now, as per instructions).
 
-3.  **Future Consideration:**
-    *   Ensure the "Find Expert" logic filters out UIDs present in the `expertsBlocked` list.
+3. **Future Consideration:**
+* Ensure the "Find Expert" logic filters out UIDs present in the `expertsBlocked` list.
 
 ---
 
 ## 4. Admin Workflow (Manual Context)
 *Note: This step requires no code changes but is part of the operational flow.*
-*   **Scenario:** User reports an issue or requests a re-schedule via email (Step 2).
-*   **Admin Action:** Admin verifies the claim and manually toggles the `free_appointment` boolean in Firebase to allow the user to book again.
+* **Scenario:** User reports an issue or requests a re-schedule via email (Step 2).
+* **Admin Action:** Admin verifies the claim and manually toggles the `free_appointment` boolean in Firebase to allow the user to book again.
+
+//Next Refactor:
+In /composables
+there will be a new composable to handle the logic for create an user (Just Firebase Data) the parameters will be used the same as the admin expert creation
+Example:
+// Create user document in Firestore
+await setDoc(doc(db, "users", user.uid), {
+name: formData.fullName,
+email: formData.email,
+phone: formData.phone,
+birthDate: date.value,
+isBanned: false,
+terms: formData.acceptedTerms,
+createdAt: Timestamp.now(),
+userId: user.uid,
+freeConsultations: true,
+categoryConsultations: {}, // Initialize empty object for tracking free consultations per category
+})                                                                                                                                                           ;
+
+//New login handle
+now when any (user, expert or admin) tries to login, when hover on login button there will show up three buttons for loggin in as (user, expert or admin) inside login function now it will
+check the role clicked and then it will check the credentials and then it will login the user as the role clicked
+//UI for login
+Login button will now display a dropdown menu with three options: User, Expert, and Admin.
+
+//Pinia will handle the role selected of user
+loginRole.ts was created to handle the role selected of user
+when user clicks on login button role, pinia will store the role selected
+LoginComponent.vue will use the role selected to login the user as the role clicked
+
+//Create expert now will create expert data using atomic function
