@@ -10,7 +10,7 @@
     </div>
 
     <!-- Success Modal -->
-    <div v-if="showSuccessModal" class="fixed inset-0 bg-slate-900/70 flex items-center justify-center z-50 p-4">
+    <div v-if="!!showSuccessModal" class="fixed inset-0 bg-slate-900/70 flex items-center justify-center z-50 p-4">
       <div
         class="bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.2)] max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
         <!-- Header -->
@@ -305,7 +305,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { addDoc, collection, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getFirestore, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { auth as authFirebase } from '@/firebase';
 import { useToast } from 'vue-toastification';
@@ -435,7 +435,7 @@ const createExpert = async () => {
 
     form.value.userUid = user.uid;
     const docRef = doc(db, `experts/${user.uid}`);
-    await setDoc(docRef, form.value);
+    await setDoc(docRef, { ...form.value, createdAt: Timestamp.now() });
 
     // Save schedule
     await updateDoc(docRef, { schedule: schedule.value });
@@ -443,13 +443,18 @@ const createExpert = async () => {
     // Add to EmailsExperts collection
     await addDoc(collection(db, 'EmailsExperts'), { email: form.value.email });
 
-    await setUserData(
-      form.value.fullName,
-      form.value.email,
-      form.value.phone,
-      '01/01/2000',
-      user.uid
-    )
+    await setDoc(doc(db, "users", user.uid), {
+      name: form.value.fullName,
+      email: form.value.email,
+      phone: form.value.phone,
+      birthDate: '01/01/2000',
+      isBanned: false,
+      terms: true,
+      createdAt: Timestamp.now(),
+      userId: user.uid,
+      freeConsultations: true,
+      categoryConsultations: {}, // Initialize empty object for tracking free consultations per category
+    });
 
     toast.success('Experto creado exitosamente.');
 
@@ -457,7 +462,7 @@ const createExpert = async () => {
     createdExpertPassword.value = tempPassword.value;
     showSuccessModal.value = true;
 
-    resetForm();
+    //resetForm();
     imageFile.value = null;
     compressedImageFile.value = null;
     previewImage.value = null;
@@ -576,6 +581,7 @@ Importante actualizar la contraseña tras el primer inicio de sesion por segurid
 const closeSuccessModal = () => {
   showSuccessModal.value = false;
   createdExpertPassword.value = '';
+  resetForm();
 }
 
 onMounted(() => {

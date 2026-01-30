@@ -15,9 +15,9 @@
                 </p>
             </div>
 
-            <div class="flex items-center gap-3 bg-white rounded-full px-2  border border-blue-200">
+            <div class="flex items-center gap-3 bg-slate-50 rounded-full px-2  border border-blue-200">
                 <span
-                    class="text-sm md:text-lg font-semibold text-slate-500 bg-slate-50  py-2 rounded-full border border-slate-100 hidden sm:block  mr-5"
+                    class="text-sm md:text-lg font-semibold text-slate-500   py-2 rounded-full border border-slate-100 hidden sm:block  mr-5"
                     v-html="currentName" :key="currentName">
                 </span>
             </div>

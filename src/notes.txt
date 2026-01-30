@@ -195,4 +195,4 @@ loginRole.ts was created to handle the role selected of user
 when user clicks on login button role, pinia will store the role selected
 LoginComponent.vue will use the role selected to login the user as the role clicked
 
-//Create expert now will create expert data using atomic function
+//Create expert now will create expert data using atomic function and it will add the birthDate to the user document in firestore

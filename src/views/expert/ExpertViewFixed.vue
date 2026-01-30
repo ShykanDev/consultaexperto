@@ -225,14 +225,29 @@
                 leave-active-class="animate__animated animate__fadeOutDown">
                 <div v-if="calculatedAppointmentDate"
                   class="bg-gradient-to-r from-blue-700 to-blue-700 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div class="flex items-center gap-4">
-                    <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md">
-                      <v-icon name="bi-calendar-check" scale="1.2" />
+
+                  <div class="flex flex-col gap-4 max-w-2xl">
+                    <div class="flex items-center gap-4">
+                      <div class="p-3 bg-white/20 rounded-2xl text-white backdrop-blur-md">
+                        <v-icon name="bi-calendar-check" scale="1.2" />
+                      </div>
+                      <div>
+                        <p class="text-white/60 text-xs font-bold uppercase tracking-widest">Cita Seleccionada</p>
+                        <h4 class="text-white font-bold text-lg md:text-xl">{{ calculatedAppointmentDate }}</h4>
+                      </div>
                     </div>
-                    <div>
-                      <p class="text-white/60 text-xs font-bold uppercase tracking-widest">Cita Seleccionada</p>
-                      <h4 class="text-white font-bold text-lg md:text-xl">{{ calculatedAppointmentDate }}</h4>
-                    </div>
+
+                    <p class="text-white/80 text-sm leading-tight mt-2">
+                      Al confirmar la cita, usted está de acuerdo con nuestras
+                      <router-link to="/privacy-policy" class="underline hover:text-white">Políticas de
+                        Privacidad</router-link> y
+                      <router-link to="/terms" class="underline hover:text-white">Términos y Condiciones</router-link>.
+                      Queda <strong>estrictamente prohibido</strong> el intercambio de datos personales entre el usuario
+                      y el experto
+                      durante una cita gratuita; el incumplimiento podría resultar en la <strong>suspensión indefinida
+                        de la
+                        cuenta</strong>.
+                    </p>
                   </div>
 
                   <button @click="updateSubcollectionSchedule" :disabled="savingChanges"
